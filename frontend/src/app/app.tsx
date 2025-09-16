@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline, Container } from '@mui/material';
 import { HomePage } from '@/pages/home';
-// import { LearnPage } from '@/pages/learn';
+import { LearnPage } from '@/pages/learn';
 
 export default function App() {
     return (
@@ -10,7 +10,7 @@ export default function App() {
             <Container maxWidth="lg">
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    {/*<Route path="/learn/:folderId" element={<LearnPage />} />*/}
+                    <Route path="/learn/:folderId" element={<LearnPage />} />
                 </Routes>
             </Container>
         </BrowserRouter>

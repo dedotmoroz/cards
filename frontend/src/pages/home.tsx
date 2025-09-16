@@ -22,7 +22,9 @@ export const HomePage = () => {
         isLoading,
         setSelectedFolder,
         fetchFolders,
-        fetchCards
+        fetchCards,
+        updateFolderName,
+        deleteFolder
     } = useCardsStore();
     
     const { createFolder } = useCreateFolder();
@@ -65,21 +67,23 @@ export const HomePage = () => {
 
     return (
         <Grid container spacing={2} sx={{ height: '100vh', p: 2 }}>
-            <Grid item xs={3}>
+            <Grid size={3}>
                 <Paper sx={{ p: 2, height: '100%' }}>
                     <Typography variant="h6">Папки</Typography>
+                    <Button fullWidth sx={{ mt: 2 }} onClick={() => setIsCreatingFolder(true)}>
+                        Добавить папку
+                    </Button>
                     <FolderList
                         folders={folders}
                         selectedId={selectedFolderId}
                         onSelect={setSelectedFolder}
+                        onRename={updateFolderName}
+                        onDelete={deleteFolder}
                     />
-                    <Button fullWidth sx={{ mt: 2 }} onClick={() => setIsCreatingFolder(true)}>
-                        Добавить папку
-                    </Button>
                 </Paper>
             </Grid>
 
-            <Grid item xs={9}>
+            <Grid size={9}>
                 <Paper sx={{ p: 2, height: '100%' }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography variant="h6">Карточки</Typography>

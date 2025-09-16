@@ -23,7 +23,7 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
     const [index, setIndex] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
     const [cycleCompleted, setCycleCompleted] = useState(false);
-    const { updateCard } = useCardsStore();
+    const { updateCardLearnStatus } = useCardsStore();
 
     const unlearnedCards = cards.filter((card) => !card.isLearned);
 
@@ -94,8 +94,8 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
                         <Button
                             variant="contained"
                             color="success"
-                            onClick={() => {
-                                updateCard(current.id, { isLearned: true });
+                            onClick={async () => {
+                                await updateCardLearnStatus(current.id, true);
                                 onMarkAsLearned(current.id);
                                 handleNext();
                             }}
