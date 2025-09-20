@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Box, Grid, Paper, Typography, Button, CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { FolderList } from '@/widgets/folder-list';
 import { CardList } from '@/widgets/card-list';
 import { CreateFolderDialog } from '@/features/create-folder';
 import { CreateCardDialog } from '@/features/create-card';
-import { LearnSection } from '@/widgets/learn-section';
+import { ImportCardsDialog } from '@/features/import-cards/import-cards-dialog';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
 import { useCreateFolder } from '@/features/create-folder/useCreateFolder';
 import { useCreateCard } from '@/features/create-card/useCreateCard';
+import { useImportCards } from '@/features/import-cards/useImportCards';
 
 export const HomePage = () => {
     const [isCreatingFolder, setIsCreatingFolder] = useState(false);
     const [isCreatingCard, setIsCreatingCard] = useState(false);
-    const [isLearning, setIsLearning] = useState(false);
+    const [isImportingCards, setIsImportingCards] = useState(false);
+    const navigate = useNavigate();
 
     const { 
         folders, 
@@ -29,6 +32,7 @@ export const HomePage = () => {
     
     const { createFolder } = useCreateFolder();
     const { createCard } = useCreateCard();
+    const { importCards } = useImportCards();
 
     // Загружаем папки при монтировании компонента
     useEffect(() => {
@@ -50,7 +54,15 @@ export const HomePage = () => {
     }, [folders, selectedFolderId, setSelectedFolder]);
 
     const handleStartLearning = () => {
-        setIsLearning(true);
+        if (selectedFolderId) {
+            navigate(`/learn/${selectedFolderId}`);
+        }
+    };
+
+    const handleStartLearningUnlearned = () => {
+        if (selectedFolderId) {
+            navigate(`/learn/${selectedFolderId}?mode=unlearned`);
+        }
     };
 
     const handleCreateFolder = async (name: string) => {
@@ -62,6 +74,13 @@ export const HomePage = () => {
         if (selectedFolderId) {
             await createCard(selectedFolderId, card.question, card.answer);
             setIsCreatingCard(false);
+        }
+    };
+
+    const handleImportCards = async (cards: { question: string; answer: string }[]) => {
+        if (selectedFolderId) {
+            await importCards(selectedFolderId, cards);
+            setIsImportingCards(false);
         }
     };
 
@@ -85,8 +104,10 @@ export const HomePage = () => {
 
             <Grid size={9}>
                 <Paper sx={{ p: 2, height: '100%' }}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h6">Карточки</Typography>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Typography variant="h6">
+                                Карточки {cards.length > 0 && `(${cards.length})`}
+                            </Typography>
                         <Box>
                             <Button
                                 onClick={() => setIsCreatingCard(true)}
@@ -97,11 +118,29 @@ export const HomePage = () => {
                                 Добавить карточку
                             </Button>
                             <Button
+                                onClick={() => setIsImportingCards(true)}
+                                sx={{ mr: 2 }}
+                                variant="outlined"
+                                color="secondary"
+                                disabled={!selectedFolderId}
+                            >
+                                Импортировать
+                            </Button>
+                            <Button
                                 onClick={handleStartLearning}
+                                sx={{ mr: 2 }}
                                 variant="contained"
                                 disabled={!selectedFolderId || cards.length === 0}
                             >
-                                Учить
+                                Учить все
+                            </Button>
+                            <Button
+                                onClick={handleStartLearningUnlearned}
+                                variant="contained"
+                                color="secondary"
+                                disabled={!selectedFolderId || cards.length === 0}
+                            >
+                                Учить выбранные
                             </Button>
                         </Box>
                     </Box>
@@ -110,8 +149,6 @@ export const HomePage = () => {
                         <Box mt={4} display="flex" justifyContent="center">
                             <CircularProgress />
                         </Box>
-                    ) : isLearning ? (
-                        <LearnSection cards={cards} onExit={() => setIsLearning(false)} />
                     ) : (
                         <CardList cards={cards} />
                     )}
@@ -130,6 +167,15 @@ export const HomePage = () => {
                     folderId={selectedFolderId}
                     onClose={() => setIsCreatingCard(false)}
                     onCreate={handleCreateCard}
+                />
+            )}
+
+            {selectedFolderId && (
+                <ImportCardsDialog
+                    open={isImportingCards}
+                    folderId={selectedFolderId}
+                    onClose={() => setIsImportingCards(false)}
+                    onImport={handleImportCards}
                 />
             )}
         </Grid>

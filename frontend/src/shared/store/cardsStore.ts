@@ -127,14 +127,13 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     createFolder: async (name: string) => {
         set({ isLoading: true, error: null })
         try {
-            const res = await axios.post('http://localhost:3000/folders', {
+            await axios.post('http://localhost:3000/folders', {
                 name,
                 userId: USER_ID,
             })
-            const newFolder = res.data
             
-            // Add to local state immediately
-            get().addFolder(newFolder)
+            // Перезагружаем папки с бэкенда для сохранения порядка
+            await get().fetchFolders()
         } catch (error) {
             console.error('Error creating folder:', error)
             set({ error: 'Failed to create folder' })
@@ -146,15 +145,14 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     createCard: async (folderId: string, question: string, answer: string) => {
         set({ isLoading: true, error: null })
         try {
-            const res = await axios.post('http://localhost:3000/cards', {
+            await axios.post('http://localhost:3000/cards', {
                 folderId,
                 question,
                 answer,
             })
-            const newCard = res.data
             
-            // Add to local state immediately
-            get().addCard(newCard)
+            // Перезагружаем карточки с бэкенда для сохранения порядка
+            await get().fetchCards(folderId)
         } catch (error) {
             console.error('Error creating card:', error)
             set({ error: 'Failed to create card' })
