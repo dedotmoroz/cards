@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Paper, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Grid, Paper, Typography, Button, CircularProgress, AppBar, Toolbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { FolderList } from '@/widgets/folder-list';
 import { CardList } from '@/widgets/card-list';
@@ -8,6 +8,7 @@ import { CreateCardDialog } from '@/features/create-card';
 import { ImportCardsDialog } from '@/features/import-cards/import-cards-dialog';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
+import { useAuthStore } from '@/shared/store/authStore';
 import { useCreateFolder } from '@/features/create-folder/useCreateFolder';
 import { useCreateCard } from '@/features/create-card/useCreateCard';
 import { useImportCards } from '@/features/import-cards/useImportCards';
@@ -29,6 +30,8 @@ export const HomePage = () => {
         updateFolderName,
         deleteFolder
     } = useCardsStore();
+    
+    const { user, logout } = useAuthStore();
     
     const { createFolder } = useCreateFolder();
     const { createCard } = useCreateCard();
@@ -85,7 +88,35 @@ export const HomePage = () => {
     };
 
     return (
-        <Grid container spacing={2} sx={{ height: '100vh', p: 2 }}>
+        <>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        Карточки для изучения
+                    </Typography>
+                    {user ? (
+                        <Box display="flex" alignItems="center" gap={2}>
+                            <Typography variant="body2">
+                                Привет, {user.username}!
+                            </Typography>
+                            <Button color="inherit" onClick={logout}>
+                                Выйти
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Box display="flex" gap={1}>
+                            <Button color="inherit" onClick={() => navigate('/signin')}>
+                                Войти
+                            </Button>
+                            <Button color="inherit" onClick={() => navigate('/signup')}>
+                                Регистрация
+                            </Button>
+                        </Box>
+                    )}
+                </Toolbar>
+            </AppBar>
+            
+            <Grid container spacing={2} sx={{ height: 'calc(100vh - 64px)', p: 2 }}>
             <Grid size={3}>
                 <Paper sx={{ p: 2, height: '100%' }}>
                     <Typography variant="h6">Папки</Typography>
@@ -177,7 +208,8 @@ export const HomePage = () => {
                     onClose={() => setIsImportingCards(false)}
                     onImport={handleImportCards}
                 />
-            )}
-        </Grid>
-    );
-};
+                )}
+            </Grid>
+        </>
+        );
+    };

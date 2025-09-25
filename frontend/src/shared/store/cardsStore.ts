@@ -1,5 +1,9 @@
 import { create } from 'zustand'
 import axios from 'axios'
+import { useAuthStore } from './authStore'
+
+// Настраиваем axios для работы с httpOnly cookies
+axios.defaults.withCredentials = true;
 
 export type Folder = {
     id: string;
@@ -50,7 +54,11 @@ interface CardsState {
     deleteCard: (id: string) => Promise<void>
 }
 
-const USER_ID = '11111111-1111-1111-1111-111111111111'
+// Получаем ID пользователя из authStore
+const getUserId = () => {
+  const state = useAuthStore.getState()
+  return state.user?.id || null
+}
 
 export const useCardsStore = create<CardsState>((set, get) => ({
     // Initial state
@@ -101,7 +109,11 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     fetchFolders: async () => {
         set({ isLoading: true, error: null })
         try {
-            const res = await axios.get<Folder[]>(`http://localhost:3000/folders/${USER_ID}`)
+            const userId = getUserId()
+            if (!userId) {
+                throw new Error('User not authenticated')
+            }
+            const res = await axios.get<Folder[]>(`http://localhost:3000/folders/${userId}`)
             set({ folders: res.data })
         } catch (error) {
             console.error('Error fetching folders:', error)
@@ -127,11 +139,15 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     createFolder: async (name: string) => {
         set({ isLoading: true, error: null })
         try {
+            const userId = getUserId()
+            if (!userId) {
+                throw new Error('User not authenticated')
+            }
             await axios.post('http://localhost:3000/folders', {
                 name,
-                userId: USER_ID,
+                userId,
             })
-            
+
             // Перезагружаем папки с бэкенда для сохранения порядка
             await get().fetchFolders()
         } catch (error) {

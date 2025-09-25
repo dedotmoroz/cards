@@ -9,19 +9,50 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import jwt from '@fastify/jwt';
+import * as dotenv from 'dotenv';
+import cookie from '@fastify/cookie';
+dotenv.config();
 
 import { CardService } from '../../application/card-service';
 import { FolderService } from '../../application/folder-service';
-import { InMemoryCardRepository } from '../db/in-memory-card-repo';
+import { UserService } from '../../application/user-service';
 import { PostgresCardRepository } from '../db/postgres-card-repo';
-// import { InMemoryFolderRepository } from '../db/in-memory-folder-repo';
 import { PostgresFolderRepository } from '../db/postgres-folder-repo';
+import { PostgresUserRepository } from '../db/postgres-user-repo';
+
 import { CreateCardDTO, CardDTO, UpdateCardDTO, CreateFolderDTO, FolderDTO } from './dto'
 
 type CreateCardInput = z.infer<typeof CreateCardDTO>;
 
 export async function buildServer() {
     const fastify = Fastify({ logger: true });
+
+
+    // ✅ Регистрируем cookie для http only
+    await fastify.register(cookie);
+
+    // ✅ JWT setup
+    fastify.register(jwt, {
+        secret: process.env.JWT_SECRET!,
+        cookie: {
+            cookieName: 'token', // откуда брать токен
+            signed: false,
+        },
+    });
+
+    // ✅ Декоратор для получения текущего пользователя
+    fastify.decorate(
+        'authenticate',
+        async function (request: any, reply: any) {
+            try {
+                // await request.jwtVerify();
+                await request.jwtVerify({ token: request.cookies.token });
+            } catch (err) {
+                reply.code(401).send({ message: 'Unauthorized' });
+            }
+        }
+    );
 
     // ✅ Регистрируем CORS
     await fastify.register(cors, {
@@ -38,29 +69,50 @@ export async function buildServer() {
                 description: 'Документация для REST API',
                 version: '1.0.0',
             },
+            components: {
+                securitySchemes: {
+                    cookieAuth: {
+                        type: 'apiKey',
+                        in: 'cookie',
+                        name: 'token', // имя cookie, в которой хранится JWT
+                    },
+                },
+            },
+            security: [
+                {
+                    cookieAuth: [],
+                },
+            ],
         },
     });
+
+    // ✅ Swagger доступен /docs
     await fastify.register(fastifySwaggerUI, {
         routePrefix: '/docs',
     });
 
-    // const cardRepo = new InMemoryCardRepository();
     const cardRepo = new PostgresCardRepository();
     const folderRepo = new PostgresFolderRepository();
 
     const cardService = new CardService(cardRepo);
     const folderService = new FolderService(folderRepo);
 
+    const userRepo = new PostgresUserRepository();
+    const userService = new UserService(userRepo);
+
     /**
      * Создать Карточку
      */
     fastify.post('/cards',
         {
+            preHandler: [fastify.authenticate],
             schema: {
                 body: zodToJsonSchema(CreateCardDTO),
                 response: {
                     201: zodToJsonSchema(CardDTO)
                 },
+                tags: ['cards'],
+                summary: 'Create a card',
             }
         },
         async (
@@ -77,6 +129,7 @@ export async function buildServer() {
      */
     fastify.patch('/cards/:id/learn-status',
         {
+            preHandler: [fastify.authenticate],
             schema: {
                 body: {
                     type: 'object',
@@ -93,6 +146,8 @@ export async function buildServer() {
                         },
                     },
                 },
+                tags: ['cards'],
+                summary: 'Change card status',
             },
         },
         async (
@@ -116,6 +171,7 @@ export async function buildServer() {
      */
     fastify.patch('/cards/:id',
       {
+        preHandler: [fastify.authenticate],
         schema: {
           body: zodToJsonSchema(UpdateCardDTO),
           response: {
@@ -127,6 +183,8 @@ export async function buildServer() {
               },
             },
           },
+            tags: ['cards'],
+            summary: 'Edit card',
         },
       },
       async (
@@ -147,6 +205,7 @@ export async function buildServer() {
      */
     fastify.patch('/cards/:id/move',
       {
+        preHandler: [fastify.authenticate],
         schema: {
           params: {
             type: 'object',
@@ -171,6 +230,8 @@ export async function buildServer() {
               },
             },
           },
+            tags: ['cards'],
+            summary: 'Move the card to another folder',
         },
       },
       async (
@@ -188,10 +249,36 @@ export async function buildServer() {
     );
 
     /**
+     * Удалить карточку
+     */
+    fastify.delete('/cards/:id',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            status: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Delete card',
+            },
+        },
+        async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+            await cardService.deleteCard(req.params.id);
+            return reply.send({ status: 'ok' });
+        }
+    );
+
+    /**
      * Получить список Карточек из папки
      */
     fastify.get('/cards/folder/:folderId',
       {
+        preHandler: [fastify.authenticate],
         schema: {
           params: {
             type: 'object',
@@ -206,6 +293,8 @@ export async function buildServer() {
               items: zodToJsonSchema(CardDTO),
             },
           },
+            tags: ['folders'],
+            summary: 'Get the list of cards from the folder',
         },
       },
       async (req: FastifyRequest<{ Params: { folderId: string } }>, reply: FastifyReply) => {
@@ -215,37 +304,18 @@ export async function buildServer() {
     );
 
     /**
-     * Удалить карточку
-     */
-    fastify.delete('/cards/:id',
-      {
-        schema: {
-          response: {
-            200: {
-              type: 'object',
-              properties: {
-                status: { type: 'string' },
-              },
-            },
-          },
-        },
-      },
-      async (req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
-        await cardService.deleteCard(req.params.id);
-        return reply.send({ status: 'ok' });
-      }
-    );
-
-    /**
      * Создать Папку
      */
     fastify.post('/folders',
       {
+        preHandler: [fastify.authenticate],
         schema: {
           body: zodToJsonSchema(CreateFolderDTO),
           response: {
             201: zodToJsonSchema(FolderDTO),
           },
+            tags: ['folders'],
+            summary: 'Create a folder',
         },
       },
       async (
@@ -263,6 +333,7 @@ export async function buildServer() {
      */
     fastify.patch('/folders/:id',
         {
+            preHandler: [fastify.authenticate],
             schema: {
                 params: {
                     type: 'object',
@@ -287,6 +358,8 @@ export async function buildServer() {
                         },
                     },
                 },
+                tags: ['folders'],
+                summary: 'Rename folder',
             },
         },
         async (
@@ -308,6 +381,7 @@ export async function buildServer() {
      */
     fastify.delete('/folders/:id',
       {
+        preHandler: [fastify.authenticate],
         schema: {
           params: {
             type: 'object',
@@ -330,6 +404,8 @@ export async function buildServer() {
               },
             },
           },
+            tags: ['folders'],
+            summary: 'Delete folder',
         },
       },
       async (
@@ -349,6 +425,7 @@ export async function buildServer() {
      */
     fastify.get('/folders/:userId',
       {
+        preHandler: [fastify.authenticate],
         schema: {
           params: {
             type: 'object',
@@ -363,6 +440,8 @@ export async function buildServer() {
               items: zodToJsonSchema(FolderDTO),
             },
           },
+            tags: ['folders'],
+            summary: 'Get the list of folders',
         },
       },
       async (
@@ -372,6 +451,174 @@ export async function buildServer() {
         const folders = await folderService.getAll(req.params.userId);
         return reply.send(folders);
       }
+    );
+
+    /**
+     * Регистрация и аутентификация
+     */
+    fastify.post('/auth/register',
+        {
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['email', 'password'],
+                    properties: {
+                        email: { type: 'string', format: 'email' },
+                        password: { type: 'string', minLength: 6 },
+                    },
+                },
+                response: {
+                    201: {
+                        type: 'object',
+                        properties: {
+                            id: { type: 'string', format: 'uuid' },
+                            email: { type: 'string', format: 'email' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Register new user',
+            },
+        },
+        async (req, reply) => {
+            const body = z.object({ email: z.string().email(), password: z.string().min(6) }).parse(req.body);
+            const user = await userService.register(body.email, body.password);
+            return reply.code(201).send({ id: user.id, email: user.email });
+        }
+    );
+
+    fastify.post('/auth/login',
+        {
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['email', 'password'],
+                    properties: {
+                        email: { type: 'string', format: 'email' },
+                        password: { type: 'string' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            status: { type: 'string', enum: ['ok'] },
+                        },
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Login user and set cookie',
+            },
+        },
+        async (req, reply) => {
+            const body = z.object({ email: z.string().email(), password: z.string() }).parse(req.body);
+            const token = await userService.login(body.email, body.password);
+            if (!token) return reply.code(401).send({ error: 'Invalid credentials' });
+
+            return reply
+                .setCookie('token', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                    path: '/',
+                    maxAge: 60 * 60 * 24 * 7,
+                })
+                .send({ status: 'ok' });
+        }
+    );
+
+    fastify.get('/auth/me',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                security: [{ cookieAuth: [] }], // чтобы Swagger понял, что ручка защищена
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            id: { type: 'string', format: 'uuid' },
+                            email: { type: 'string', format: 'email' },
+                            createdAt: { type: 'string', format: 'date-time' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Get current user by token',
+            },
+        },
+        async (req, reply) => {
+            const userId = req.user.userId;
+            const user = await userService.getById(userId);
+            if (!user) {
+                return reply.code(404).send({ error: 'User not found' });
+            }
+            return reply.send({
+                id: user.id,
+                email: user.email,
+                createdAt: user.createdAt,
+            });
+        }
+    );
+
+    fastify.post('/auth/logout',
+        {
+            schema: {
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            ok: { type: 'boolean' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Clear auth cookie',
+            },
+        },
+        async (req, reply) => {
+            reply.clearCookie('token', { path: '/' }).send({ ok: true });
+        }
+    );
+
+    fastify.post('/auth/google',
+        {
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['idToken'],
+                    properties: {
+                        idToken: { type: 'string' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            token: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Login via Google',
+            },
+        },
+        async (req, reply) => {
+            const body = z.object({ idToken: z.string() }).parse(req.body);
+            const token = await userService.loginWithGoogle(body.idToken);
+            return reply.send({ token });
+        }
     );
 
     return fastify;

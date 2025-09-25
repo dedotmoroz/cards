@@ -1,18 +1,37 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { CssBaseline, Container } from '@mui/material';
+import { CssBaseline, CircularProgress, Box } from '@mui/material';
 import { HomePage } from '@/pages/home';
 import { LearnPage } from '@/pages/learn';
+import { SignUpPage } from '@/pages/signup';
+import { SignInPage } from '@/pages/signin';
+import { useAuthStore } from '@/shared/store/authStore';
 
 export default function App() {
+    const { checkAuth, isLoading } = useAuthStore();
+
+    useEffect(() => {
+        // Проверяем аутентификацию только один раз при загрузке приложения
+        checkAuth();
+    }, []); // Убираем checkAuth из зависимостей
+
+    if (isLoading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
     return (
         <BrowserRouter>
             <CssBaseline />
-            <Container maxWidth="lg">
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/learn/:folderId" element={<LearnPage />} />
-                </Routes>
-            </Container>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/learn/:folderId" element={<LearnPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/signin" element={<SignInPage />} />
+            </Routes>
         </BrowserRouter>
     );
 }

@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { buildServer } from '../adapters/http/build-server';
-import request = require('supertest');
+import request from "supertest"
 
 describe('Fastify API', () => {
     let fastify: FastifyInstance;

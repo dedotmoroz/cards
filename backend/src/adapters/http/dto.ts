@@ -32,6 +32,20 @@ export const FolderDTO = z.object({
   name: z.string(),
 }).describe('FolderDTO');
 
+export const CreateUserDTO = z.object({
+  email: z.string().email(),
+  password: z.string().min(6), // если нужна регистрация
+});
+
+export const LoginDTO = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
+
+export const GoogleLoginDTO = z.object({
+  credential: z.string(), // id_token от Google
+});
+
 export type CreateCardDTO = z.infer<typeof CreateCardDTO>;
 export type CardDTO = z.infer<typeof CardDTO>;
 export type UpdateCardDTO = z.infer<typeof UpdateCardDTO>;
