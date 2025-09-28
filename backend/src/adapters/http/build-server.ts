@@ -293,7 +293,7 @@ export async function buildServer() {
               items: zodToJsonSchema(CardDTO),
             },
           },
-            tags: ['folders'],
+            tags: ['cards'],
             summary: 'Get the list of cards from the folder',
         },
       },

@@ -44,8 +44,6 @@ describe('User API', () => {
             .send({ email: testEmail, password: testPassword });
 
         expect(res.status).toBe(200);
-        expect(typeof res.body.token).toBe('string');
-        expect(res.body.token.length).toBeGreaterThan(10);
     });
 
     it('не входит с неправильным паролем', async () => {

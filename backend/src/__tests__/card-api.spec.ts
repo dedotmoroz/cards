@@ -6,15 +6,36 @@ describe('📦 Card Repository (e2e)', () => {
     let fastify: FastifyInstance;
     let folderId: string;
     let cardId: string;
+    let authCookie: string;
 
     beforeAll(async () => {
         fastify = await buildServer();
         await fastify.listen({ port: 0 });
 
-        // Создаем папку, чтобы получить folderId
+        // Регистрация пользователя
+        await request(fastify.server)
+            .post('/auth/register')
+            .send({ email: 'test@example.com', password: '123456' });
+
+        // Логин и получение куки
+        const loginRes = await request(fastify.server)
+            .post('/auth/login')
+            .send({ email: 'test@example.com', password: '123456' });
+
+        authCookie = loginRes.headers['set-cookie'][0];
+
+        // Получить userId через /auth/me
+        const meRes = await request(fastify.server)
+            .get('/auth/me')
+            .set('Cookie', authCookie);
+
+        const realUserId = meRes.body.id;
+
+        // Создание папки
         const folderRes = await request(fastify.server)
             .post('/folders')
-            .send({ userId: '11111111-1111-1111-1111-111111111111', name: 'Test Folder' });
+            .set('Cookie', authCookie)
+            .send({ userId: realUserId, name: 'Test Folder' });
 
         folderId = folderRes.body.id;
     });
@@ -26,6 +47,7 @@ describe('📦 Card Repository (e2e)', () => {
     it('создает карточку (save)', async () => {
         const res = await request(fastify.server)
             .post('/cards')
+            .set('Cookie', authCookie)
             .send({
                 folderId,
                 question: 'What is AI?',
@@ -42,8 +64,7 @@ describe('📦 Card Repository (e2e)', () => {
     it('находит карточку по ID (findById)', async () => {
         const res = await request(fastify.server)
             .get(`/cards/folder/${folderId}`)
-            .set('x-user-id', 'u1');
-
+            .set('Cookie', authCookie)
         const card = res.body.find((c: any) => c.id === cardId);
         expect(card).toBeDefined();
         expect(card.question).toBe('What is AI?');
@@ -52,8 +73,7 @@ describe('📦 Card Repository (e2e)', () => {
     it('возвращает все карточки по папке (findAll)', async () => {
         const res = await request(fastify.server)
             .get(`/cards/folder/${folderId}`)
-            .set('x-user-id', 'u1');
-
+            .set('Cookie', authCookie)
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
         expect(res.body.length).toBeGreaterThan(0);
@@ -63,6 +83,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Создаём карточку
         const createRes = await request(fastify.server)
             .post('/cards')
+            .set('Cookie', authCookie)
             .send({
                 folderId,
                 question: 'Original Q',
@@ -75,6 +96,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Обновляем карточку
         const updatedRes = await request(fastify.server)
             .patch(`/cards/${updateCardId}`)
+            .set('Cookie', authCookie)
             .send({
                 folderId,
                 question: 'Updated Q',
@@ -87,8 +109,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Проверяем обновление
         const getRes = await request(fastify.server)
             .get(`/cards/folder/${folderId}`)
-            .set('x-user-id', 'u1');
-
+            .set('Cookie', authCookie)
         const updatedCard = getRes.body.find((c: any) => c.id === updateCardId);
         expect(updatedCard).toBeDefined();
         expect(updatedCard.question).toBe('Updated Q');
@@ -99,6 +120,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Создаём карточку
         const createRes = await request(fastify.server)
             .post('/cards')
+            .set('Cookie', authCookie)
             .send({
                 folderId,
                 question: 'Learn this',
@@ -111,6 +133,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Отмечаем как изученную
         const patchRes = await request(fastify.server)
             .patch(`/cards/${learnCardId}/learn-status`)
+            .set('Cookie', authCookie)
             .send({ isLearned: true });
 
         expect(patchRes.status).toBe(200);
@@ -119,8 +142,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Проверяем, что карточка действительно отмечена как изученная
         const getRes = await request(fastify.server)
             .get(`/cards/folder/${folderId}`)
-            .set('x-user-id', 'u1');
-
+            .set('Cookie', authCookie)
         const learnedCard = getRes.body.find((c: any) => c.id === learnCardId);
         expect(learnedCard).toBeDefined();
         expect(learnedCard.isLearned).toBe(true);
@@ -132,16 +154,19 @@ describe('📦 Card Repository (e2e)', () => {
         // Создаём первую папку и карточку
         const sourceFolderRes = await request(fastify.server)
             .post('/folders')
+            .set('Cookie', authCookie)
             .send({ userId, name: 'Source Folder' });
         const sourceFolderId = sourceFolderRes.body.id;
 
         const targetFolderRes = await request(fastify.server)
             .post('/folders')
+            .set('Cookie', authCookie)
             .send({ userId, name: 'Target Folder' });
         const targetFolderId = targetFolderRes.body.id;
 
         const createRes = await request(fastify.server)
             .post('/cards')
+            .set('Cookie', authCookie)
             .send({
                 folderId: sourceFolderId,
                 question: 'Question to move',
@@ -154,6 +179,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Перемещаем карточку в другую папку
         const moveRes = await request(fastify.server)
             .patch(`/cards/${cardId}/move`)
+            .set('Cookie', authCookie)
             .send({ folderId: targetFolderId });
 
         expect(moveRes.status).toBe(200);
@@ -162,14 +188,14 @@ describe('📦 Card Repository (e2e)', () => {
         // Проверяем, что карточка больше не в старой папке
         const sourceFolderCards = await request(fastify.server)
             .get(`/cards/folder/${sourceFolderId}`)
-            .set('x-user-id', userId);
+            .set('Cookie', authCookie)
         const cardInOld = sourceFolderCards.body.find((c: any) => c.id === cardId);
         expect(cardInOld).toBeUndefined();
 
         // Проверяем, что карточка появилась в новой папке
         const targetFolderCards = await request(fastify.server)
             .get(`/cards/folder/${targetFolderId}`)
-            .set('x-user-id', userId);
+            .set('Cookie', authCookie)
         const cardInNew = targetFolderCards.body.find((c: any) => c.id === cardId);
         expect(cardInNew).toBeDefined();
         expect(cardInNew.question).toBe('Question to move');
@@ -179,6 +205,7 @@ describe('📦 Card Repository (e2e)', () => {
         // 1. Сначала создаём карточку
         const createRes = await request(fastify.server)
             .post('/cards')
+            .set('Cookie', authCookie)
             .send({
                 folderId,
                 question: 'Temp Q',
@@ -191,8 +218,8 @@ describe('📦 Card Repository (e2e)', () => {
 
         // 2. Теперь удаляем её
         const res = await request(fastify.server)
-            .delete(`/cards/${tempCardId}`);
-
+            .delete(`/cards/${tempCardId}`)
+            .set('Cookie', authCookie);
         expect(res.status).toBe(200);
         expect(res.body.status).toBe('ok');
     });
@@ -201,6 +228,7 @@ describe('📦 Card Repository (e2e)', () => {
         // Создаём и удаляем карточку
         const createRes = await request(fastify.server)
             .post('/cards')
+            .set('Cookie', authCookie)
             .send({
                 folderId,
                 question: 'To be deleted',
@@ -210,13 +238,12 @@ describe('📦 Card Repository (e2e)', () => {
         const toDeleteId = createRes.body.id;
         expect(toDeleteId).toBeDefined();
 
-        await request(fastify.server).delete(`/cards/${toDeleteId}`);
+        await request(fastify.server).delete(`/cards/${toDeleteId}`).set('Cookie', authCookie);
 
         // Проверяем, что карточка отсутствует
         const res = await request(fastify.server)
             .get(`/cards/folder/${folderId}`)
-            .set('x-user-id', 'u1');
-
+            .set('Cookie', authCookie)
         const card = res.body.find((c: any) => c.id === toDeleteId);
         expect(card).toBeUndefined();
     });

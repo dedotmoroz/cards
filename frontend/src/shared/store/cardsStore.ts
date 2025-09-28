@@ -1,23 +1,8 @@
 import { create } from 'zustand'
-import axios from 'axios'
-import { useAuthStore } from './authStore'
+import type { Folder, Card } from '../types/cards'
+import { cardsApi } from '../api/cardsApi'
+import { foldersApi } from '../api/foldersApi'
 
-// Настраиваем axios для работы с httpOnly cookies
-axios.defaults.withCredentials = true;
-
-export type Folder = {
-    id: string;
-    name: string;
-    userId: string;
-}
-
-export type Card = {
-    id: string;
-    question: string;
-    answer: string;
-    isLearned: boolean;
-    folderId: string;
-}
 
 interface CardsState {
     // State
@@ -54,11 +39,6 @@ interface CardsState {
     deleteCard: (id: string) => Promise<void>
 }
 
-// Получаем ID пользователя из authStore
-const getUserId = () => {
-  const state = useAuthStore.getState()
-  return state.user?.id || null
-}
 
 export const useCardsStore = create<CardsState>((set, get) => ({
     // Initial state
@@ -109,12 +89,8 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     fetchFolders: async () => {
         set({ isLoading: true, error: null })
         try {
-            const userId = getUserId()
-            if (!userId) {
-                throw new Error('User not authenticated')
-            }
-            const res = await axios.get<Folder[]>(`http://localhost:3000/folders/${userId}`)
-            set({ folders: res.data })
+            const folders = await foldersApi.getFolders()
+            set({ folders })
         } catch (error) {
             console.error('Error fetching folders:', error)
             set({ error: 'Failed to fetch folders' })
@@ -126,8 +102,8 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     fetchCards: async (folderId: string) => {
         set({ isLoading: true, error: null })
         try {
-            const res = await axios.get<Card[]>(`http://localhost:3000/cards/folder/${folderId}`)
-            set({ cards: res.data })
+            const cards = await cardsApi.getCards(folderId)
+            set({ cards })
         } catch (error) {
             console.error('Error fetching cards:', error)
             set({ error: 'Failed to fetch cards' })
@@ -139,15 +115,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     createFolder: async (name: string) => {
         set({ isLoading: true, error: null })
         try {
-            const userId = getUserId()
-            if (!userId) {
-                throw new Error('User not authenticated')
-            }
-            await axios.post('http://localhost:3000/folders', {
-                name,
-                userId,
-            })
-
+            await foldersApi.createFolder({ name })
             // Перезагружаем папки с бэкенда для сохранения порядка
             await get().fetchFolders()
         } catch (error) {
@@ -161,12 +129,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     createCard: async (folderId: string, question: string, answer: string) => {
         set({ isLoading: true, error: null })
         try {
-            await axios.post('http://localhost:3000/cards', {
-                folderId,
-                question,
-                answer,
-            })
-            
+            await cardsApi.createCard({ folderId, question, answer })
             // Перезагружаем карточки с бэкенда для сохранения порядка
             await get().fetchCards(folderId)
         } catch (error) {
@@ -180,8 +143,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     updateFolderName: async (id: string, name: string) => {
         set({ isLoading: true, error: null })
         try {
-            await axios.patch(`http://localhost:3000/folders/${id}`, { name })
-            
+            await foldersApi.updateFolder(id, { name })
             // Update local state immediately
             get().updateFolder(id, { name })
         } catch (error) {
@@ -195,8 +157,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     deleteFolder: async (id: string) => {
         set({ isLoading: true, error: null })
         try {
-            await axios.delete(`http://localhost:3000/folders/${id}`)
-            
+            await foldersApi.deleteFolder(id)
             // Remove from local state immediately
             get().removeFolder(id)
         } catch (error) {
@@ -210,8 +171,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     updateCardApi: async (id: string, updates: { question?: string; answer?: string }) => {
         set({ isLoading: true, error: null })
         try {
-            const res = await axios.patch(`http://localhost:3000/cards/${id}`, updates)
-            const updated = res.data as Card
+            const updated = await cardsApi.updateCard(id, updates)
             // Sync local state
             get().updateCard(id, { question: updated.question, answer: updated.answer })
         } catch (error) {
@@ -225,7 +185,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     updateCardLearnStatus: async (id: string, isLearned: boolean) => {
         set({ isLoading: true, error: null })
         try {
-            await axios.patch(`http://localhost:3000/cards/${id}/learn-status`, { isLearned })
+            await cardsApi.updateCardLearnStatus(id, { isLearned })
             // Update local state immediately
             get().updateCard(id, { isLearned })
         } catch (error) {
@@ -239,7 +199,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     deleteCard: async (id: string) => {
         set({ isLoading: true, error: null })
         try {
-            await axios.delete(`http://localhost:3000/cards/${id}`)
+            await cardsApi.deleteCard(id)
             get().removeCard(id)
         } catch (error) {
             console.error('Error deleting card:', error)

@@ -37,6 +37,8 @@ describe('FolderService', () => {
     });
 
     it('удаляет папку', async () => {
+        const mockFolder = new Folder('123', 'Test Folder', 'user1');
+        repo.findById.mockResolvedValue(mockFolder);
         await service.deleteFolder('123');
         expect(repo.delete).toHaveBeenCalledWith('123');
     });

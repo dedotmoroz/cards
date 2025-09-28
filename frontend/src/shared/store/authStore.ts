@@ -1,14 +1,6 @@
 import { create } from 'zustand';
-import axios from 'axios';
-
-// Настраиваем axios для работы с httpOnly cookies
-axios.defaults.withCredentials = true;
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-}
+import type { User } from '../types/auth';
+import { authApi } from '../api/authApi';
 
 interface AuthState {
   user: User | null;
@@ -41,24 +33,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (username: string, email: string, password: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post('http://localhost:3000/auth/register', {
-        username,
-        email,
-        password
-      }, {
-        withCredentials: true // Важно для получения httpOnly cookies
-      });
+      await authApi.register({ username, email, password });
       
-      const { user } = response.data;
+      // Получаем полную информацию о пользователе
+      const user = await authApi.getMe();
       
-      // Получаем полную информацию о пользователе через /auth/me
-      const meResponse = await axios.get('http://localhost:3000/auth/me', {
-        withCredentials: true
-      });
-      
-      // Синхронно обновляем состояние с полной информацией пользователя
       set({ 
-        user: meResponse.data, 
+        user, 
         isAuthenticated: true,
         isLoading: false
       });
@@ -72,23 +53,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   login: async (email: string, password: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post('http://localhost:3000/auth/login', {
-        email,
-        password
-      }, {
-        withCredentials: true // Важно для получения httpOnly cookies
-      });
+      await authApi.login({ email, password });
       
-      const { user } = response.data;
+      // Получаем полную информацию о пользователе
+      const user = await authApi.getMe();
       
-      // Получаем полную информацию о пользователе через /auth/me
-      const meResponse = await axios.get('http://localhost:3000/auth/me', {
-        withCredentials: true
-      });
-      
-      // Синхронно обновляем состояние с полной информацией пользователя
       set({ 
-        user: meResponse.data, 
+        user, 
         isAuthenticated: true,
         isLoading: false
       });
@@ -102,13 +73,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: async () => {
     set({ isLoading: true, error: null });
     try {
-      // Вызываем logout на сервере для очистки httpOnly cookie
-      await axios.post('http://localhost:3000/auth/logout', {}, {
-        withCredentials: true
-      });
-    } catch (error) {
-      // Игнорируем ошибки logout, так как cookie может быть уже очищен
-      console.warn('Logout error:', error);
+      await authApi.logout();
     } finally {
       set({ 
         user: null, 
@@ -128,13 +93,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     
     set({ isLoading: true });
     try {
-      // Проверяем аутентификацию через защищенный эндпоинт
-      // httpOnly cookie автоматически отправляется с запросом
-      const response = await axios.get('http://localhost:3000/auth/me', {
-        withCredentials: true
-      });
+      const user = await authApi.getMe();
       set({ 
-        user: response.data, 
+        user, 
         isAuthenticated: true 
       });
     } catch (error) {
