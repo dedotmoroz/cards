@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { db } from '../../db/db';
 import { Card } from '../../domain/card';
 import { CardRepository } from '../../ports/card-repository';
@@ -16,6 +16,20 @@ export class PostgresCardRepository implements CardRepository {
                 answer: card.answer,
                 folderId: card.folderId,
                 isLearned: card.isLearned,
+                // Интервальное повторение
+                lastShownAt: card.lastShownAt,
+                lastLearnedAt: card.lastLearnedAt,
+                nextReviewAt: card.nextReviewAt,
+                // Статистика
+                reviewCount: card.reviewCount,
+                correctCount: card.correctCount,
+                incorrectCount: card.incorrectCount,
+                // SM-2
+                currentInterval: card.currentInterval,
+                repetitions: card.repetitions,
+                easeFactor: card.easeFactor,
+                lastRating: card.lastRating,
+                averageRating: card.averageRating,
             }).where(eq(cards.id, card.id));
         } else {
             await db.insert(cards).values({
@@ -24,6 +38,21 @@ export class PostgresCardRepository implements CardRepository {
                 answer: card.answer,
                 folderId: card.folderId,
                 isLearned: card.isLearned,
+                createdAt: card.createdAt,
+                // Интервальное повторение
+                lastShownAt: card.lastShownAt,
+                lastLearnedAt: card.lastLearnedAt,
+                nextReviewAt: card.nextReviewAt,
+                // Статистика
+                reviewCount: card.reviewCount,
+                correctCount: card.correctCount,
+                incorrectCount: card.incorrectCount,
+                // SM-2
+                currentInterval: card.currentInterval,
+                repetitions: card.repetitions,
+                easeFactor: card.easeFactor,
+                lastRating: card.lastRating,
+                averageRating: card.averageRating,
             });
         }
     }
@@ -39,7 +68,8 @@ export class PostgresCardRepository implements CardRepository {
         const rows = await db
             .select()
             .from(cards)
-            .where(eq(cards.folderId, folderId));
+            .where(eq(cards.folderId, folderId))
+            .orderBy(desc(cards.createdAt));
         return rows.map(toCard);
     }
 

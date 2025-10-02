@@ -1,6 +1,25 @@
-import { List, ListItemButton, ListItemText, IconButton, Box, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import {
+    List,
+    ListItemButton,
+    ListItemText,
+    IconButton,
+    Box,
+    Menu,
+    MenuItem,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    Button,
+    ListItemIcon
+} from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { useState } from 'react';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
+import React, { useState } from 'react';
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export interface Folder {
     id: string;
@@ -83,6 +102,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
                         onClick={() => onSelect(folder.id)}
                     >
                         <Box display="flex" alignItems="center" width="100%" justifyContent="space-between">
+                            {selectedId === folder.id ? <FolderOpenOutlinedIcon sx={{mr: 1}}/> : <FolderOutlinedIcon sx={{mr: 1}}/>}
                             <ListItemText primary={folder.name} />
                             <IconButton
                                 edge="end"
@@ -109,8 +129,22 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
                     horizontal: 'right',
                 }}
             >
-                <MenuItem onClick={handleRename}>Переименовать</MenuItem>
-                <MenuItem onClick={handleDelete}>Удалить</MenuItem>
+                <MenuItem onClick={handleRename}>
+                    <ListItemIcon>
+                        <DriveFileRenameOutlineIcon/>
+                    </ListItemIcon>
+                    <ListItemText>
+                        Переименовать
+                    </ListItemText>
+                </MenuItem>
+                <MenuItem onClick={handleDelete}>
+                    <ListItemIcon>
+                        <DeleteIcon/>
+                    </ListItemIcon>
+                    <ListItemText>
+                        Удалить
+                    </ListItemText>
+                </MenuItem>
             </Menu>
 
             <Dialog open={renameOpen} onClose={handleRenameCancel} fullWidth>

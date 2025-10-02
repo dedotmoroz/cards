@@ -121,7 +121,7 @@ export async function buildServer() {
         ) => {
         const { folderId, question, answer } = req.body;
         const card = await cardService.createCard(folderId, question, answer);
-        return reply.code(201).send(card);
+        return reply.code(201).send(card.toPublicDTO());
     });
 
     /**
@@ -196,7 +196,7 @@ export async function buildServer() {
         if (!updatedCard) {
           return reply.code(404).send({ message: 'Card not found' });
         }
-        return reply.code(200).send(updatedCard);
+        return reply.code(200).send(updatedCard.toPublicDTO());
       }
     );
 
@@ -244,7 +244,7 @@ export async function buildServer() {
         if (!updated) {
           return reply.code(404).send({ message: 'Card not found' });
         }
-        return reply.send(updated);
+        return reply.send(updated.toPublicDTO());
       }
     );
 
@@ -299,7 +299,7 @@ export async function buildServer() {
       },
       async (req: FastifyRequest<{ Params: { folderId: string } }>, reply: FastifyReply) => {
         const cards = await cardService.getAll(req.params.folderId);
-        return reply.send(cards);
+        return reply.send(cards.map(card => card.toPublicDTO()));
       }
     );
 

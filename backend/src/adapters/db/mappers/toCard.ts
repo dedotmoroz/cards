@@ -6,6 +6,21 @@ type CardRow = {
     question: string;
     answer: string;
     isLearned: boolean;
+    createdAt: Date;
+    // Интервальное повторение
+    lastShownAt: Date | null;
+    lastLearnedAt: Date | null;
+    nextReviewAt: Date | null;
+    // Статистика
+    reviewCount: number;
+    correctCount: number;
+    incorrectCount: number;
+    // SM-2
+    currentInterval: number;
+    repetitions: number;
+    easeFactor: number;
+    lastRating: number | null;
+    averageRating: number;
 };
 
 export function toCard(row: CardRow): Card {
@@ -15,5 +30,20 @@ export function toCard(row: CardRow): Card {
         row.question,
         row.answer,
         row.isLearned,
+        row.createdAt,
+        // Интервальное повторение
+        row.lastShownAt,
+        row.lastLearnedAt,
+        row.nextReviewAt,
+        // Статистика
+        row.reviewCount,
+        row.correctCount,
+        row.incorrectCount,
+        // SM-2
+        row.currentInterval,
+        row.repetitions,
+        row.easeFactor,
+        row.lastRating,
+        row.averageRating
     );
 }

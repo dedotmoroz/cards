@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Checkbox, List, ListItem, ListItemText, Box, IconButton, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import { Checkbox, ListItemIcon, List, ListItem, ListItemText, Box, IconButton, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { useCardsStore } from '@/shared/store/cardsStore';
+import { useCardsStore } from '@/shared/store/cardsStore.ts';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type Card = {
   id: string;
@@ -106,14 +108,28 @@ export const CardList: React.FC<CardListProps> = ({
           ))}
 
           <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+              transformOrigin={{vertical: 'top', horizontal: 'right'}}
           >
-            <MenuItem onClick={handleRename}>Переименовать</MenuItem>
-            <MenuItem onClick={handleDelete}>Удалить</MenuItem>
+            <MenuItem onClick={handleRename}>
+              <ListItemIcon>
+                <DriveFileRenameOutlineIcon/>
+              </ListItemIcon>
+              <ListItemText>
+                Переименовать
+              </ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleDelete}>
+              <ListItemIcon>
+                <DeleteIcon/>
+              </ListItemIcon>
+              <ListItemText>
+                Удалить
+              </ListItemText>
+            </MenuItem>
           </Menu>
         </List>
 

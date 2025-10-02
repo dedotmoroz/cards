@@ -20,7 +20,6 @@ interface ImportCardsDialogProps {
 
 export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
     open,
-    folderId,
     onClose,
     onImport,
 }) => {

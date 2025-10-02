@@ -12,6 +12,7 @@ export const CardDTO = z.object({
   question: z.string(),
   answer: z.string(),
   isLearned: z.boolean(),
+  createdAt: z.date(),
 }).describe('CardDTO');
 
 export const UpdateCardDTO = z.object({
