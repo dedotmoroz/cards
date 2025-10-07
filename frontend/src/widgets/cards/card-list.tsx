@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Checkbox, ListItemIcon, List, ListItem, ListItemText, Box, IconButton, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { List } from '@mui/material';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import DeleteIcon from '@mui/icons-material/Delete';
+import {MenuCard} from "@/widgets/cards/menu-card.tsx";
+import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
+import {CardItem} from "@/widgets/cards/card-item.tsx";
 
 type Card = {
   id: string;
@@ -15,10 +15,14 @@ type Card = {
 type CardListProps = {
   cards: Card[];
   onToggleLearned?: (id: string) => void;
+  displayFilter?: 'A' | 'AB' | 'B';
+  showOnlyUnlearned?: boolean;
 };
 
 export const CardList: React.FC<CardListProps> = ({
                                                     cards,
+                                                    displayFilter = 'AB',
+                                                    showOnlyUnlearned = false,
                                                      // onToggleLearned
 }) => {
   const { updateCardApi, updateCardLearnStatus, deleteCard } = useCardsStore();
@@ -28,6 +32,7 @@ export const CardList: React.FC<CardListProps> = ({
   const [renameQuestion, setRenameQuestion] = useState('');
   const [renameAnswer, setRenameAnswer] = useState('');
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLElement>, id: string) => {
     e.stopPropagation();
@@ -83,79 +88,44 @@ export const CardList: React.FC<CardListProps> = ({
     handleMenuClose();
   };
 
+  const handleCardClick = (cardId: string) => {
+    setExpandedCardId(expandedCardId === cardId ? null : cardId);
+  };
+
+  // Фильтрация карточек по выученности
+  const filteredCards = showOnlyUnlearned 
+    ? cards.filter(card => !card.isLearned)
+    : cards;
+
   return (
       <>
         <List>
-          {cards.length && cards.map((card) => (
-              <ListItem key={card.id} divider>
-                <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-                  <ListItemText
-                      primary={card.question}
-                      secondary={card.answer}
-                  />
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Checkbox
-                        edge="end"
-                        checked={card.isLearned}
-                        onChange={(e) => updateCardLearnStatus(card.id, e.target.checked)}
-                    />
-                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, card.id)}>
-                      <MoreHorizIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </ListItem>
+          {filteredCards.length && filteredCards.map((card) => (
+              <CardItem
+                  card={card}
+                  handleCardClick={handleCardClick}
+                  displayFilter={displayFilter}
+                  expandedCardId={expandedCardId}
+                  updateCardLearnStatus={updateCardLearnStatus}
+                  handleMenuOpen={handleMenuOpen}
+              />
           ))}
-
-          <Menu
+          <MenuCard
+              handleMenuClose={handleMenuClose}
+              handleDelete={handleDelete}
               anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-              transformOrigin={{vertical: 'top', horizontal: 'right'}}
-          >
-            <MenuItem onClick={handleRename}>
-              <ListItemIcon>
-                <DriveFileRenameOutlineIcon/>
-              </ListItemIcon>
-              <ListItemText>
-                Переименовать
-              </ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleDelete}>
-              <ListItemIcon>
-                <DeleteIcon/>
-              </ListItemIcon>
-              <ListItemText>
-                Удалить
-              </ListItemText>
-            </MenuItem>
-          </Menu>
+              handleRename={handleRename}
+          />
         </List>
-
-        <Dialog open={renameOpen} onClose={handleRenameCancel} fullWidth>
-          <DialogTitle>Редактировать карточку</DialogTitle>
-          <DialogContent>
-            <TextField
-              margin="dense"
-              label="Вопрос"
-              fullWidth
-              value={renameQuestion}
-              onChange={(e) => setRenameQuestion(e.target.value)}
-            />
-            <TextField
-              margin="dense"
-              label="Ответ"
-              fullWidth
-              value={renameAnswer}
-              onChange={(e) => setRenameAnswer(e.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleRenameCancel}>Отмена</Button>
-            <Button onClick={handleRenameSave} variant="contained">Сохранить</Button>
-          </DialogActions>
-        </Dialog>
+        <DialogCard
+            renameOpen={renameOpen}
+            handleRenameCancel={handleRenameCancel}
+            renameQuestion={renameQuestion}
+            setRenameQuestion={setRenameQuestion}
+            renameAnswer={renameAnswer}
+            setRenameAnswer={setRenameAnswer}
+            handleRenameSave={handleRenameSave}
+        />
       </>
   );
 };

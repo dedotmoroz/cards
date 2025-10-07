@@ -1,4 +1,4 @@
-import {Box, Button, CircularProgress, Paper, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Paper, Typography, IconButton, Menu, MenuItem, ToggleButton, ToggleButtonGroup, Checkbox, FormControlLabel} from "@mui/material";
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState} from "react";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
@@ -9,18 +9,24 @@ import {ImportCardsDialog} from "@/features/import-cards/import-cards-dialog.tsx
 import {useImportCards} from "@/features/import-cards/useImportCards.ts";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import GetAppIcon from '@mui/icons-material/GetApp';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 
 export const Cards = () => {
 
     const [isCreatingCard, setIsCreatingCard] = useState(false);
     const [isImportingCards, setIsImportingCards] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [displayFilter, setDisplayFilter] = useState<'A' | 'AB' | 'B'>('AB');
+    const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
+    const [selectAll, setSelectAll] = useState(false);
     const { importCards } = useImportCards();
 
     const {
         cards,
         selectedFolderId,
         isLoading,
+        updateCardLearnStatus,
     } = useCardsStore();
 
     const { createCard } = useCreateCard();
@@ -52,6 +58,42 @@ export const Cards = () => {
         }
     };
 
+    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleImportClick = () => {
+        setIsImportingCards(true);
+        handleMenuClose();
+    };
+
+    const handleFilterChange = (
+        _event: React.MouseEvent<HTMLElement>,
+        newFilter: 'A' | 'AB' | 'B' | null,
+    ) => {
+        if (newFilter !== null) {
+            setDisplayFilter(newFilter);
+        }
+    };
+
+    const handleUnlearnedToggle = () => {
+        setShowOnlyUnlearned(!showOnlyUnlearned);
+    };
+
+    const handleSelectAllChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = event.target.checked;
+        setSelectAll(isChecked);
+        
+        // Массово обновляем статус всех карточек
+        for (const card of cards) {
+            await updateCardLearnStatus(card.id, isChecked);
+        }
+    };
+
     return(
         <>
             <Paper sx={{p: 2, height: '100%'}}>
@@ -76,13 +118,39 @@ export const Cards = () => {
                     </Box>
                 </Box>
 
-                <Box display="flex" justifyContent="flex-start" alignItems="center">
+                <Box display="flex" alignItems="center">
                     <Typography variant="h6">
                         Карточки {cards.length > 0 && `(${cards.length})`}
                     </Typography>
+                    <IconButton
+                        onClick={handleMenuClick}
+                        size="small"
+                        sx={{ ml: 1 }}
+                    >
+                        <MoreHorizIcon />
+                    </IconButton>
                 </Box>
 
-                <Box display="flex" sx={{mt: 2}} justifyContent="flex-start" alignItems="center">
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                >
+                    <MenuItem onClick={handleImportClick} disabled={!selectedFolderId}>
+                        <GetAppIcon sx={{ mr: 1 }} />
+                        Импортировать
+                    </MenuItem>
+                </Menu>
+
+                <Box display="flex" sx={{mt: 2}} justifyContent="space-between" alignItems="center">
                     <Box>
                         <Button
                             onClick={() => setIsCreatingCard(true)}
@@ -93,16 +161,44 @@ export const Cards = () => {
                         >
                             Добавить карточку
                         </Button>
-                        <Button
-                            onClick={() => setIsImportingCards(true)}
-                            sx={{mr: 2}}
-                            variant="outlined"
-                            color="secondary"
-                            disabled={!selectedFolderId}
-                            startIcon={<GetAppIcon />}
+                    </Box>
+                    <Box display="flex" alignItems="center" gap={1}>
+                        <ToggleButtonGroup
+                            value={displayFilter}
+                            exclusive
+                            onChange={handleFilterChange}
+                            aria-label="display filter"
+                            size="small"
                         >
-                            Импортировать
+                            <ToggleButton value="A" aria-label="show questions only">
+                                A
+                            </ToggleButton>
+                            <ToggleButton value="AB" aria-label="show questions and answers">
+                                AB
+                            </ToggleButton>
+                            <ToggleButton value="B" aria-label="show answers only">
+                                B
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                        <Button
+                            variant={showOnlyUnlearned ? "contained" : "outlined"}
+                            size="small"
+                            onClick={handleUnlearnedToggle}
+                            sx={{ ml: 1 }}
+                        >
+                            Учу
                         </Button>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={selectAll}
+                                    onChange={handleSelectAllChange}
+                                    size="small"
+                                />
+                            }
+                            label="Все"
+                            sx={{ ml: 1 }}
+                        />
                     </Box>
                 </Box>
 
@@ -111,7 +207,11 @@ export const Cards = () => {
                         <CircularProgress/>
                     </Box>
                 ) : (
-                    <CardList cards={cards}/>
+                    <CardList 
+                        cards={cards} 
+                        displayFilter={displayFilter}
+                        showOnlyUnlearned={showOnlyUnlearned}
+                    />
                 )}
             </Paper>
 
