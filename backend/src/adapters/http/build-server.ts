@@ -559,7 +559,7 @@ export async function buildServer() {
             },
         },
         async (req, reply) => {
-            const userId = req.user.userId;
+            const userId = (req.user as any).userId;
             const user = await userService.getById(userId);
             if (!user) {
                 return reply.code(404).send({ error: 'User not found' });

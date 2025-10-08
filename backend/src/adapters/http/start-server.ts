@@ -1,7 +1,7 @@
 // src/adapters/http/start-server.ts
 import { buildServer } from './build-server';
 
-async function main() {
+export async function startServer() {
     const fastify = await buildServer();
 
     fastify.listen({ port: 3000 }, (err, address) => {
@@ -14,4 +14,7 @@ async function main() {
     });
 }
 
-main();
+// Автоматически запускаем, если файл запущен напрямую (node start-server.js)
+if (process.argv[1]?.endsWith('start-server.js')) {
+    startServer();
+}

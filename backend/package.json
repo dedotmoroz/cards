@@ -1,17 +1,17 @@
 {
   "name": "flashcards-app",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "db": "docker compose up --build",
     "stop": "docker compose down",
     "docker": "docker-compose -f docker-compose.yml up -d",
     "push": "npx drizzle-kit push --config drizzle.config.ts",
-    "dev": "tsx src/adapters/http/start-server.ts",
+    "dev": "tsx src/index.ts",
     "build": "tsc",
     "test": "jest",
     "migrate": "npx drizzle-kit generate --config drizzle.config.ts",
-    "start": "npm run docker && npm run push && npm run dev"
+    "start": "node dist/index.js",
+    "startdocker": "npm run docker && npm run push && npm run dev"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
