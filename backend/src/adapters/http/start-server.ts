@@ -4,7 +4,8 @@ import { buildServer } from './build-server';
 export async function startServer() {
     const fastify = await buildServer();
 
-    fastify.listen({ port: 3000 }, (err, address) => {
+    const port = Number(process.env.PORT) || 3000;
+    fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {
         if (err) {
             // @ts-ignore
             fastify.log.error(err);
