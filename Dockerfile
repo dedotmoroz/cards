@@ -35,8 +35,8 @@ COPY backend/package*.json ./
 EXPOSE 5000
 
 # (опционально) Healthcheck: вернёт healthy, если порт отвечает
-HEALTHCHECK --interval=20s --timeout=3s --retries=3 CMD \
-  wget -qO- http://127.0.0.1:${PORT}/health || exit 1
+# HEALTHCHECK --interval=20s --timeout=3s --retries=3 CMD \
+#  wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 
 # ожидается точка входа dist/index.js (поменяй при необходимости)
 CMD ["node", "dist/index.js"]
