@@ -26,7 +26,6 @@ export const LearningNavigation = ({
     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
       <IconButton
         onClick={onBack}
-        variant="outlined"
         size="small"
       >
         Вернуться

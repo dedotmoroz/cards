@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import axios from 'axios'
 import { foldersApi } from '../foldersApi'
 import { useAuthStore } from '../../store/authStore'
@@ -8,15 +8,12 @@ import type { Folder, CreateFolderData, UpdateFolderData } from '../../types/fol
 vi.mock('axios')
 vi.mock('../../store/authStore')
 const mockedAxios = axios as any
-const mockedAuthStore = vi.mocked(useAuthStore)
+
+const getStateSpy = vi.spyOn(useAuthStore as any, 'getState')
 
 describe('foldersApi', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-  })
-
-  afterEach(() => {
-    vi.restoreAllMocks()
   })
 
   describe('getFolders', () => {
@@ -36,7 +33,7 @@ describe('foldersApi', () => {
         }
       ]
 
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -47,8 +44,8 @@ describe('foldersApi', () => {
         register: vi.fn(),
         login: vi.fn(),
         logout: vi.fn(),
-        checkAuth: vi.fn()
-      })
+        checkAuth: vi.fn(),
+      } as any)
 
       mockedAxios.get.mockResolvedValueOnce({ data: mockFolders })
 
@@ -62,30 +59,10 @@ describe('foldersApi', () => {
       expect(result).toEqual(mockFolders)
     })
 
-    it('should throw error when user is not authenticated', async () => {
-      // Arrange
-      mockedAuthStore.getState.mockReturnValue({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-        setUser: vi.fn(),
-        setLoading: vi.fn(),
-        setError: vi.fn(),
-        register: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        checkAuth: vi.fn()
-      })
-
-      // Act & Assert
-      await expect(foldersApi.getFolders()).rejects.toThrow('User not authenticated')
-    })
-
     it('should throw error on API failure', async () => {
       // Arrange
       const mockUserId = 'user-123'
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -97,13 +74,33 @@ describe('foldersApi', () => {
         login: vi.fn(),
         logout: vi.fn(),
         checkAuth: vi.fn()
-      })
+      } as any)
 
       const errorMessage = 'Failed to get folders'
       mockedAxios.get.mockRejectedValueOnce(new Error(errorMessage))
 
       // Act & Assert
       await expect(foldersApi.getFolders()).rejects.toThrow(errorMessage)
+    })
+
+    it('should throw error when user is not authenticated', async () => {
+      // Arrange
+      getStateSpy.mockReturnValue({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+        setUser: vi.fn(),
+        setLoading: vi.fn(),
+        setError: vi.fn(),
+        register: vi.fn(),
+        login: vi.fn(),
+        logout: vi.fn(),
+        checkAuth: vi.fn()
+      } as any)
+
+      // Act & Assert
+      await expect(foldersApi.getFolders()).rejects.toThrow('User not authenticated')
     })
   })
 
@@ -121,7 +118,7 @@ describe('foldersApi', () => {
         userId: 'user-123'
       }
 
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -133,7 +130,7 @@ describe('foldersApi', () => {
         login: vi.fn(),
         logout: vi.fn(),
         checkAuth: vi.fn()
-      })
+      } as any)
 
       mockedAxios.post.mockResolvedValueOnce({ data: mockFolder })
 
@@ -157,7 +154,7 @@ describe('foldersApi', () => {
         name: 'New Folder'
       }
 
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: null,
         isAuthenticated: false,
         isLoading: false,
@@ -169,7 +166,7 @@ describe('foldersApi', () => {
         login: vi.fn(),
         logout: vi.fn(),
         checkAuth: vi.fn()
-      })
+      } as any)
 
       // Act & Assert
       await expect(foldersApi.createFolder(createData)).rejects.toThrow('User not authenticated')
@@ -182,7 +179,7 @@ describe('foldersApi', () => {
         name: 'New Folder'
       }
 
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -194,7 +191,7 @@ describe('foldersApi', () => {
         login: vi.fn(),
         logout: vi.fn(),
         checkAuth: vi.fn()
-      })
+      } as any)
 
       const errorMessage = 'Failed to create folder'
       mockedAxios.post.mockRejectedValueOnce(new Error(errorMessage))

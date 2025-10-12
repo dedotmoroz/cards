@@ -1,13 +1,11 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
 import { foldersApi } from '../foldersApi'
 import { useAuthStore } from '../../store/authStore'
 import type { Folder, CreateFolderData, UpdateFolderData } from '../../types/folders'
 
-// Мокаем authStore
-vi.mock('../../store/authStore')
-const mockedAuthStore = vi.mocked(useAuthStore)
+const getStateSpy = vi.spyOn(useAuthStore as any, 'getState')
 
 // Создаем mock сервер
 const server = setupServer(
@@ -70,8 +68,9 @@ describe('foldersApi Integration Tests', () => {
   describe('getFolders', () => {
     it('should get folders successfully when user is authenticated', async () => {
       // Arrange
+
       const mockUserId = 'user-123'
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -82,8 +81,8 @@ describe('foldersApi Integration Tests', () => {
         register: vi.fn(),
         login: vi.fn(),
         logout: vi.fn(),
-        checkAuth: vi.fn()
-      })
+        checkAuth: vi.fn(),
+      } as any)
 
       // Act
       const result = await foldersApi.getFolders()
@@ -105,7 +104,7 @@ describe('foldersApi Integration Tests', () => {
     it('should handle get folders error', async () => {
       // Arrange
       const mockUserId = 'user-123'
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -116,8 +115,8 @@ describe('foldersApi Integration Tests', () => {
         register: vi.fn(),
         login: vi.fn(),
         logout: vi.fn(),
-        checkAuth: vi.fn()
-      })
+        checkAuth: vi.fn(),
+      } as any)
 
       // Переопределяем handler для возврата ошибки
       server.use(
@@ -142,7 +141,7 @@ describe('foldersApi Integration Tests', () => {
         name: 'New Folder'
       }
 
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -153,8 +152,8 @@ describe('foldersApi Integration Tests', () => {
         register: vi.fn(),
         login: vi.fn(),
         logout: vi.fn(),
-        checkAuth: vi.fn()
-      })
+        checkAuth: vi.fn(),
+      } as any)
 
       // Act
       const result = await foldersApi.createFolder(createData)
@@ -174,7 +173,7 @@ describe('foldersApi Integration Tests', () => {
         name: 'New Folder'
       }
 
-      mockedAuthStore.getState.mockReturnValue({
+      getStateSpy.mockReturnValue({
         user: { id: mockUserId, username: 'testuser', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
@@ -185,8 +184,8 @@ describe('foldersApi Integration Tests', () => {
         register: vi.fn(),
         login: vi.fn(),
         logout: vi.fn(),
-        checkAuth: vi.fn()
-      })
+        checkAuth: vi.fn(),
+      } as any)
 
       // Переопределяем handler для возврата ошибки
       server.use(
