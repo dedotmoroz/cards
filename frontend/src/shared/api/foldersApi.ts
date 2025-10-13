@@ -1,11 +1,10 @@
 import axios from 'axios';
 import type { Folder, CreateFolderData, UpdateFolderData } from '../types/folders.ts';
 import { useAuthStore } from '../store/authStore';
+import { API_BASE_URL } from '../config/api';
 
 // Настраиваем axios для работы с httpOnly cookies
 axios.defaults.withCredentials = true;
-
-const API_BASE_URL = 'http://localhost:3000';
 
 // Получаем ID пользователя из authStore
 const getUserId = () => {
