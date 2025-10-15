@@ -70,6 +70,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ||
 
 Не забудьте настроить CORS на вашем API сервере:
 
+
 ```javascript
 // Express пример
 app.use(cors({
