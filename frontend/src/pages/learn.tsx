@@ -4,7 +4,7 @@ import { Container, Paper, CircularProgress, Typography, Box, Button } from '@mu
 import { Home } from '@mui/icons-material';
 
 // Shared UI
-import { CardFlip } from '@/shared/ui/card-flip/card-flip';
+import { CardFlip } from '@/widgets/learn-process/card-flip/card-flip';
 
 // Features
 import { useCardLearning } from '@/features/card-learning/model/useCardLearning';
@@ -12,6 +12,7 @@ import { useCardSwipe } from '@/features/card-swipe/model/useCardSwipe';
 import { LearningControls } from '@/features/card-learning/ui/learning-controls';
 import { LearningNavigation } from '@/features/card-learning/ui/learning-navigation';
 import { CompletionScreen } from '@/features/learning-completion/ui/completion-screen';
+import { LearnProcess } from '@/widgets/learn-process';
 
 export const LearnPage = () => {
   const { folderId } = useParams<{ folderId: string }>();
@@ -28,7 +29,7 @@ export const LearnPage = () => {
     if (mode === 'unlearned') {
       learning.setLearningMode(true);
     }
-  }, [searchParams]);
+  }, [searchParams, learning]);
 
   // Keyboard handlers
   useEffect(() => {
@@ -60,30 +61,40 @@ export const LearnPage = () => {
   }, [swipe.isAnimating, learning, navigate]);
 
   // Swipe handlers
-  // const handleSwipeAction = (action: string) => {
-  //   switch (action) {
-  //     case 'know':
-  //       learning.handleKnow();
-  //       break;
-  //     case 'dontKnow':
-  //       learning.handleDontKnow();
-  //       break;
-  //   }
-  // };
+  const handleSwipeAction = (action: string) => {
+    switch (action) {
+      case 'know':
+        swipe.animateSwipe('right');
+        setTimeout(() => {
+          learning.handleKnow();
+          swipe.resetCard();
+        }, 500);
+        break;
+      case 'dontKnow':
+        swipe.animateSwipe('left');
+        setTimeout(() => {
+          learning.handleDontKnow();
+          swipe.resetCard();
+        }, 500);
+        break;
+    }
+  };
 
-  // const handleMouseUp = () => {
-  //   const result = swipe.handleMouseUp();
-  //   if (result) {
-  //     handleSwipeAction(result.action);
-  //   }
-  // };
-  //
-  // const handleTouchEnd = () => {
-  //   const result = swipe.handleTouchEnd();
-  //   if (result) {
-  //     handleSwipeAction(result.action);
-  //   }
-  // };
+  const handleMouseUp = () => {
+    const result = swipe.handleMouseUp();
+    if (result) {
+      console.log('Mouse swipe result:', result);
+      handleSwipeAction(result.action);
+    }
+  };
+  
+  const handleTouchEnd = () => {
+    const result = swipe.handleTouchEnd();
+    if (result) {
+      console.log('Touch swipe result:', result);
+      handleSwipeAction(result.action);
+    }
+  };
 
   // Navigation handlers
   const handleBackToFolders = () => navigate('/');
@@ -195,7 +206,7 @@ export const LearnPage = () => {
           onPrevious={handlePrevious}
           onNext={handleNext}
           onBack={handleBackToFolders}
-          disabled={swipe.isAnimating}
+          // disabled={swipe.isAnimating}
         />
 
         {/* Card or completion screen */}
@@ -208,27 +219,29 @@ export const LearnPage = () => {
         ) : (
           <>
             {/* 3D Card with swipe support */}
-              <CardFlip
-                ref={swipe.cardRef}
-                question={learning.currentCard.question}
-                answer={learning.currentCard.answer}
-                showAnswer={learning.showAnswer}
-                onClick={learning.toggleAnswer}
-                // onMouseDown={swipe.handleMouseDown}
-                // onMouseMove={swipe.handleMouseMove}
-                // onMouseUp={handleMouseUp}
-                // onMouseLeave={handleMouseUp}
-                // onTouchStart={swipe.handleTouchStart}
-                // onTouchMove={swipe.handleTouchMove}
-                // onTouchEnd={handleTouchEnd}
-              />
+            {/* <CardFlip
+              ref={swipe.cardRef}
+              question={learning.currentCard.question}
+              answer={learning.currentCard.answer}
+              showAnswer={learning.showAnswer}
+              onClick={learning.toggleAnswer}
+              onMouseDown={swipe.handleMouseDown}
+              onMouseMove={swipe.handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={swipe.handleTouchStart}
+              onTouchMove={swipe.handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            /> */}
+
+            <LearnProcess learning={learning} />
 
             {/* Controls */}
             <LearningControls
               onKnow={learning.handleKnow}
               onDontKnow={learning.handleDontKnow}
               onFlip={learning.toggleAnswer}
-              disabled={swipe.isAnimating}
+              // disabled={swipe.isAnimating}
             />
 
             {/* Help text */}

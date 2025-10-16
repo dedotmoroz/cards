@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCardsStore } from '@/shared/store/cardsStore';
 
 export const useCardLearning = (folderId: string | undefined) => {
@@ -7,13 +7,17 @@ export const useCardLearning = (folderId: string | undefined) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
+  const lastFetchedFolderId = useRef<string | null>(null);
 
   // Загружаем карточки при монтировании
   useEffect(() => {
-    if (folderId) {
+    console.log('useCardLearning useEffect triggered:', { folderId, lastFetched: lastFetchedFolderId.current });
+    if (folderId && folderId !== lastFetchedFolderId.current) {
+      console.log('Fetching cards for folder:', folderId);
+      lastFetchedFolderId.current = folderId;
       fetchCards(folderId);
     }
-  }, [folderId, fetchCards]);
+  }, [folderId]); // Загружаем только если папка изменилась
 
   // Сбрасываем индекс при изменении фильтра карточек
   useEffect(() => {

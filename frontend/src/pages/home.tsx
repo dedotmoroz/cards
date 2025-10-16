@@ -27,21 +27,21 @@ export const HomePage = () => {
     // Загружаем папки при монтировании компонента
     useEffect(() => {
         fetchFolders();
-    }, [fetchFolders]);
+    }, []); // Убираем fetchFolders из зависимостей
 
     // Загружаем карточки при изменении выбранной папки
     useEffect(() => {
         if (selectedFolderId) {
             fetchCards(selectedFolderId);
         }
-    }, [selectedFolderId, fetchCards]);
+    }, [selectedFolderId]); // Убираем fetchCards из зависимостей
 
     // Автоматически выбираем первую папку
     useEffect(() => {
         if (folders.length > 0 && !selectedFolderId) {
             setSelectedFolder(folders[0].id);
         }
-    }, [folders, selectedFolderId, setSelectedFolder]);
+    }, [folders, selectedFolderId]); // Убираем setSelectedFolder из зависимостей
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);

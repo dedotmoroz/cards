@@ -7,10 +7,30 @@ interface CardFlipProps {
   showAnswer: boolean;
   onClick?: () => void;
   className?: string;
+  onMouseDown?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseMove?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseUp?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onTouchStart?: (event: React.TouchEvent<HTMLDivElement>) => void;
+  onTouchMove?: (event: React.TouchEvent<HTMLDivElement>) => void;
+  onTouchEnd?: (event: React.TouchEvent<HTMLDivElement>) => void;
 }
 
 export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
-  ({ question, answer, showAnswer, onClick, className }, ref) => {
+  ({ 
+    question, 
+    answer, 
+    showAnswer, 
+    onClick, 
+    className,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+    onMouseLeave,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd
+  }, ref) => {
     return (
         <Box
             sx={{
@@ -40,6 +60,13 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
         }}
         onClick={onClick}
         className={className}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         {/* Передняя сторона карточки (вопрос) */}
         <Card
