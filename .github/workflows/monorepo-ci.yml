@@ -91,16 +91,12 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  deploy:
-    # деплойнём, если изменился хотя бы один из сервисов
-    needs: [detect-changes, build-backend, build-frontend]
-    if: |
-      needs.detect-changes.outputs.backend == 'true' ||
-      needs.detect-changes.outputs.frontend == 'true'
+  deploy-backend:
+    needs: [detect-changes, build-backend]
+    if: always() && needs.detect-changes.outputs.backend == 'true' && (needs.build-backend.result == 'success' || needs.build-backend.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v0.1.10
+      - uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -109,15 +105,24 @@ jobs:
           script: |
             set -euo pipefail
             cd /srv/selltime.org
-            # Только нужные сервисы перетягиваем и перезапускаем:
-            BACKEND="${{ needs.detect-changes.outputs.backend }}"
-            FRONTEND="${{ needs.detect-changes.outputs.frontend }}"
-            if [ "$BACKEND" = "true" ]; then
-              docker compose pull api
-              docker compose up -d api
-            fi
-            if [ "$FRONTEND" = "true" ]; then
-              docker compose pull web
-              docker compose up -d web
-            fi
+            docker compose pull api
+            docker compose up -d api
+            docker image prune -f
+
+  deploy-frontend:
+    needs: [detect-changes, build-frontend]
+    if: always() && needs.detect-changes.outputs.frontend == 'true' && (needs.build-frontend.result == 'success' || needs.build-frontend.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /srv/selltime.org
+            docker compose pull web
+            docker compose up -d web
             docker image prune -f
