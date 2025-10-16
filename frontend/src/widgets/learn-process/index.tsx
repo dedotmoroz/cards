@@ -5,8 +5,33 @@ import {Box, Typography} from "@mui/material";
 import {LearningNavigation} from "@/features/card-learning/ui/learning-navigation.tsx";
 import {CompletionScreen} from "@/features/learning-completion/ui/completion-screen.tsx";
 import {useNavigate} from "react-router-dom";
+import type { Card } from "@/shared/types/cards";
 
-export const LearnProcess = ({learning}: {learning: any}) => {
+interface LearningHook {
+  // State
+  cards: Card[];
+  displayCards: Card[];
+  currentCard: Card | undefined;
+  currentIndex: number;
+  showAnswer: boolean;
+  showOnlyUnlearned: boolean;
+  isCompleted: boolean;
+  isLoading: boolean;
+  error: string | null;
+  
+  // Actions
+  toggleAnswer: () => void;
+  handleKnow: () => Promise<void>;
+  handleDontKnow: () => Promise<void>;
+  navigateToCard: (index: number) => void;
+  setLearningMode: (unlearnedOnly: boolean) => void;
+}
+
+interface LearnProcessProps {
+  learning: LearningHook;
+}
+
+export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
     const swipe = useCardSwipe();
     const navigate = useNavigate();
 
@@ -72,7 +97,7 @@ export const LearnProcess = ({learning}: {learning: any}) => {
                     onContinueLearning={handleContinueLearning}
                     hasUnlearnedCards={learning.cards.some(card => !card.isLearned)}
                 />
-            ) : (<>
+            ) : learning.currentCard ? (<>
                     <CardFlip
                         ref={swipe.cardRef}
                         question={learning.currentCard.question}
@@ -101,6 +126,12 @@ export const LearnProcess = ({learning}: {learning: any}) => {
                         </Typography>
                     </Box>
                 </>
+            ) : (
+                <Box textAlign="center" mt={4}>
+                    <Typography variant="h6" color="text.secondary">
+                        Карточка не найдена
+                    </Typography>
+                </Box>
             )}
         </>
     );
