@@ -1,5 +1,5 @@
 import { Button, Stack } from '@mui/material';
-import { ThumbUp, ThumbDown, Flip } from '@mui/icons-material';
+import { ThumbUp, ThumbDown } from '@mui/icons-material';
 
 interface LearningControlsProps {
   onKnow: () => void;
@@ -8,7 +8,7 @@ interface LearningControlsProps {
   disabled?: boolean;
 }
 
-export const LearningControls = ({ onKnow, onDontKnow, onFlip, disabled }: LearningControlsProps) => {
+export const LearningControls = ({ onKnow, onDontKnow, disabled }: LearningControlsProps) => {
   return (
     <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
       <Button
@@ -25,16 +25,6 @@ export const LearningControls = ({ onKnow, onDontKnow, onFlip, disabled }: Learn
         }}
       >
         ← Не знаю
-      </Button>
-      <Button
-        variant="outlined"
-        onClick={onFlip}
-        disabled={disabled}
-        size="large"
-        startIcon={<Flip />}
-        sx={{ minWidth: 120 }}
-      >
-        Перевернуть
       </Button>
       <Button
         variant="contained"

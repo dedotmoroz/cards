@@ -58,16 +58,16 @@ export const LearnPage = () => {
   const handleBackToFolders = () => navigate('/');
 
   // Loading state
-  if (learning.isLoading) {
-    return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Загрузка карточек...</Typography>
-        </Paper>
-      </Container>
-    );
-  }
+  // if (learning.isLoading) {
+  //   return (
+  //     <Container maxWidth="md" sx={{ mt: 4 }}>
+  //       <Paper sx={{ p: 4, textAlign: 'center' }}>
+  //         <CircularProgress />
+  //         <Typography sx={{ mt: 2 }}>Загрузка карточек...</Typography>
+  //       </Paper>
+  //     </Container>
+  //   );
+  // }
 
   // Error state
   if (learning.error) {
@@ -150,10 +150,8 @@ export const LearnPage = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Paper sx={{ p: 3 }}>
+    <Container maxWidth="md" sx={{mt: 4,}}>
             <LearnProcess learning={learning} />
-      </Paper>
     </Container>
   );
 };
