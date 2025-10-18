@@ -1,7 +1,11 @@
 import {Card, CardContent, Typography} from "@mui/material";
+import React from "react";
 
+interface CardBoxProps {
+    children: React.ReactNode;
+}
 
-export const CardBox = ({children}) => {
+export const CardBox: React.FC<CardBoxProps> = ({children}) => {
 
     return (
         <Card

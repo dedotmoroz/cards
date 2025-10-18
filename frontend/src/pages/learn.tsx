@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { Container, Paper, CircularProgress, Typography, Button } from '@mui/material';
+import { Container, Paper, Typography, Button } from '@mui/material';
 import { Home } from '@mui/icons-material';
 
 // Features

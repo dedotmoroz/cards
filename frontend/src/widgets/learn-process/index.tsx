@@ -55,13 +55,6 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
         }
     };
 
-    const handleMouseUp = () => {
-        const result = swipe.handleMouseUp();
-        if (result) {
-            console.log('Mouse swipe result:', result);
-            handleSwipeAction(result.action);
-        }
-    };
 
     // const handleTouchEnd = () => {
     //     const result = swipe.handleTouchEnd();
@@ -87,16 +80,30 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
         (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
         start.current = { x: e.clientX, y: e.clientY, t: performance.now() };
         dragging.current = false;
-        // твоя логика начала свайпа:
-        swipe.handleMouseDown?.(e as any);
+        // Создаем MouseEvent из PointerEvent для совместимости с swipe логикой
+        const mouseEvent = {
+            ...e,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            preventDefault: e.preventDefault,
+            stopPropagation: e.stopPropagation,
+        } as React.MouseEvent;
+        swipe.handleMouseDown(mouseEvent);
     };
 
     const onPointerMove = (e: React.PointerEvent) => {
         const dx = Math.abs(e.clientX - start.current.x);
         const dy = Math.abs(e.clientY - start.current.y);
         if (dx > THRESHOLD_PX || dy > THRESHOLD_PX) dragging.current = true;
-        // твоя логика перемещения:
-        swipe.handleMouseMove?.(e as any);
+        // Создаем MouseEvent из PointerEvent для совместимости с swipe логикой
+        const mouseEvent = {
+            ...e,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            preventDefault: e.preventDefault,
+            stopPropagation: e.stopPropagation,
+        } as React.MouseEvent;
+        swipe.handleMouseMove(mouseEvent);
     };
 
     const onPointerUp = (e: React.PointerEvent) => {
@@ -105,8 +112,12 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
         const dt = performance.now() - start.current.t;
         const wasDrag = dragging.current || dx > THRESHOLD_PX || dy > THRESHOLD_PX || dt > THRESHOLD_MS;
 
-        // завершаем свайп:
-        handleMouseUp?.(e as any);
+        // Завершаем свайп
+        const result = swipe.handleMouseUp();
+        if (result) {
+            console.log('Mouse swipe result:', result);
+            handleSwipeAction(result.action);
+        }
 
         if (wasDrag) {
             console.log('---- это был свайп');
@@ -128,7 +139,11 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
             e.preventDefault();
             e.stopPropagation();
         }
-        handleMouseUp?.(e as any);
+        const result = swipe.handleMouseUp();
+        if (result) {
+            console.log('Mouse swipe result:', result);
+            handleSwipeAction(result.action);
+        }
         dragging.current = false;
     };
 
@@ -171,12 +186,6 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                         onFlip={learning.toggleAnswer}
                         // disabled={swipe.isAnimating}
                     />
-                    {/* Help text */}
-                    {/*<Box textAlign="center" mt={3}>*/}
-                    {/*    <Typography variant="body2" color="text.secondary">*/}
-                    {/*        💡 Управление: ← Не знаю | → Знаю | Пробел - перевернуть | ESC - назад*/}
-                    {/*    </Typography>*/}
-                    {/*</Box>*/}
                 </>
             ) : (
                 <Box textAlign="center" mt={4}>

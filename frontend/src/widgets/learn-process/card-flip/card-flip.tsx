@@ -15,11 +15,10 @@ interface CardFlipProps {
     onTouchStart?: (event: React.TouchEvent<HTMLDivElement>) => void;
     onTouchMove?: (event: React.TouchEvent<HTMLDivElement>) => void;
     onTouchEnd?: (event: React.TouchEvent<HTMLDivElement>) => void;
-
-    onPointerDown?: (event: React.TouchEvent<HTMLDivElement>) => void;
-    onPointerMove?: (event: React.TouchEvent<HTMLDivElement>) => void;
-    onPointerUp?: (event: React.TouchEvent<HTMLDivElement>) => void;
-    onPointerLeave?: (event: React.TouchEvent<HTMLDivElement>) => void;
+    onPointerDown?: (event: React.PointerEvent<HTMLDivElement>) => void;
+    onPointerMove?: (event: React.PointerEvent<HTMLDivElement>) => void;
+    onPointerUp?: (event: React.PointerEvent<HTMLDivElement>) => void;
+    onPointerLeave?: (event: React.PointerEvent<HTMLDivElement>) => void;
 }
 
 export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
