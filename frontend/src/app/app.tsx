@@ -5,6 +5,7 @@ import { HomePage } from '@/pages/home';
 import { LearnPage } from '@/pages/learn';
 import { SignUpPage } from '@/pages/signup';
 import { SignInPage } from '@/pages/signin';
+import { NotFoundPage } from '@/pages/404';
 import { useAuthStore } from '@/shared/store/authStore';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
                 <Route path="/learn/:folderId" element={<LearnPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/signin" element={<SignInPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </BrowserRouter>
     );
