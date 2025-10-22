@@ -5,11 +5,13 @@ import { HomePage } from '@/pages/home';
 import { LearnPage } from '@/pages/learn';
 import { SignUpPage } from '@/pages/signup';
 import { SignInPage } from '@/pages/signin';
+import { LandingPage } from '@/pages/landing';
 import { NotFoundPage } from '@/pages/404';
 import { useAuthStore } from '@/shared/store/authStore';
+import { PageContainer } from '@/shared/ui/page-container';
 
 export default function App() {
-    const { checkAuth, isLoading } = useAuthStore();
+    const { checkAuth, isLoading, isAuthenticated } = useAuthStore();
 
     useEffect(() => {
         // Проверяем аутентификацию только один раз при загрузке приложения
@@ -25,15 +27,24 @@ export default function App() {
     }
 
     return (
-        <BrowserRouter>
-            <CssBaseline />
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/learn/:folderId" element={<LearnPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/signin" element={<SignInPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-        </BrowserRouter>
+            <BrowserRouter>
+                <CssBaseline />
+                <Routes>
+                    {isAuthenticated ? (
+                        <>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/learn/:folderId" element={<PageContainer><LearnPage /></PageContainer>} />
+                            <Route path="*" element={<NotFoundPage />} />
+                        </>
+                    ) : (
+                        <>
+                            <Route path="/" element={<LandingPage />} />
+                            <Route path="/signup" element={<SignUpPage />} />
+                            <Route path="/signin" element={<SignInPage />} />
+                            <Route path="*" element={<LandingPage />} />
+                        </>
+                    )}
+                </Routes>
+            </BrowserRouter>
     );
 }
