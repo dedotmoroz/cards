@@ -1,4 +1,5 @@
 import {Box, Button, CircularProgress, Paper, Typography, IconButton, Menu, MenuItem, ToggleButton, ToggleButtonGroup, Checkbox, FormControlLabel} from "@mui/material";
+import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState} from "react";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
@@ -13,7 +14,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 
 export const Cards = () => {
-
+    const { t } = useTranslation();
     const [isCreatingCard, setIsCreatingCard] = useState(false);
     const [isImportingCards, setIsImportingCards] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -105,7 +106,7 @@ export const Cards = () => {
                             variant="contained"
                             disabled={!selectedFolderId || cards.length === 0}
                         >
-                            Учить все
+                            {t('buttons.startLearning')}
                         </Button>
                         <Button
                             onClick={handleStartLearningUnlearned}
@@ -113,14 +114,14 @@ export const Cards = () => {
                             color="secondary"
                             disabled={!selectedFolderId || cards.length === 0}
                         >
-                            Учить выбранные
+                            {t('learning.wantToContinue')}
                         </Button>
                     </Box>
                 </Box>
 
                 <Box display="flex" alignItems="center">
                     <Typography variant="h6">
-                        Карточки {cards.length > 0 && `(${cards.length})`}
+                        {t('cards.title')} {cards.length > 0 && `(${cards.length})`}
                     </Typography>
                     <IconButton
                         onClick={handleMenuClick}
@@ -146,7 +147,7 @@ export const Cards = () => {
                 >
                     <MenuItem onClick={handleImportClick} disabled={!selectedFolderId}>
                         <GetAppIcon sx={{ mr: 1 }} />
-                        Импортировать
+                        {t('import.import')}
                     </MenuItem>
                 </Menu>
 
@@ -159,7 +160,7 @@ export const Cards = () => {
                             disabled={!selectedFolderId}
                             startIcon={<NoteAddIcon />}
                         >
-                            Добавить карточку
+                            {t('cards.create')}
                         </Button>
                     </Box>
                     <Box display="flex" alignItems="center" gap={1}>
@@ -186,7 +187,7 @@ export const Cards = () => {
                             onClick={handleUnlearnedToggle}
                             sx={{ ml: 1 }}
                         >
-                            Учу
+                            {t('learning.learned')}
                         </Button>
                         <FormControlLabel
                             control={
@@ -196,7 +197,7 @@ export const Cards = () => {
                                     size="small"
                                 />
                             }
-                            label="Все"
+                            label={t('forms.create')}
                             sx={{ ml: 1 }}
                         />
                     </Box>

@@ -1,5 +1,6 @@
 import { Box, Typography, IconButton } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface LearningNavigationProps {
   currentIndex: number;
@@ -22,13 +23,14 @@ export const LearningNavigation = ({
   onBack,
   disabled
 }: LearningNavigationProps) => {
+  const { t } = useTranslation();
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
       <IconButton
         onClick={onBack}
         size="small"
       >
-        Вернуться
+        {t('forms.back')}
       </IconButton>
 
       <Typography variant="h6">

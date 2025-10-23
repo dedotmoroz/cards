@@ -14,6 +14,7 @@ import {
     Button,
     ListItemIcon
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
@@ -35,6 +36,7 @@ interface FolderListProps {
 }
 
 export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }: FolderListProps) => {
+    const { t } = useTranslation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
     const [renameOpen, setRenameOpen] = useState(false);
@@ -85,7 +87,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
     const handleDelete = () => {
         if (selectedFolderId && onDelete) {
             const folder = folders.find(f => f.id === selectedFolderId);
-            if (folder && confirm(`Вы уверены, что хотите удалить папку "${folder.name}"?`)) {
+            if (folder && confirm(`${t('folders.delete')} "${folder.name}"?`)) {
                 onDelete(selectedFolderId);
             }
         }
@@ -134,7 +136,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
                         <DriveFileRenameOutlineIcon/>
                     </ListItemIcon>
                     <ListItemText>
-                        Переименовать
+                        {t('buttons.edit')}
                     </ListItemText>
                 </MenuItem>
                 <MenuItem onClick={handleDelete}>
@@ -142,26 +144,26 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
                         <DeleteIcon/>
                     </ListItemIcon>
                     <ListItemText>
-                        Удалить
+                        {t('buttons.delete')}
                     </ListItemText>
                 </MenuItem>
             </Menu>
 
             <Dialog open={renameOpen} onClose={handleRenameCancel} fullWidth>
-                <DialogTitle>Переименовать папку</DialogTitle>
+                <DialogTitle>{t('folders.edit')}</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="Название папки"
+                        label={t('forms.folderName')}
                         fullWidth
                         value={renameName}
                         onChange={(e) => setRenameName(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleRenameCancel}>Отмена</Button>
-                    <Button onClick={handleRenameSave} variant="contained">Сохранить</Button>
+                    <Button onClick={handleRenameCancel}>{t('auth.cancel')}</Button>
+                    <Button onClick={handleRenameSave} variant="contained">{t('buttons.save')}</Button>
                 </DialogActions>
             </Dialog>
         </>

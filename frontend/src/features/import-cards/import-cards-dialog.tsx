@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -23,6 +24,7 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
     onClose,
     onImport,
 }) => {
+    const { t } = useTranslation();
     const [text, setText] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isImporting, setIsImporting] = useState(false);
@@ -37,14 +39,14 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
             
             const hashIndex = trimmedLine.indexOf('#');
             if (hashIndex === -1) {
-                throw new Error(`Неверный формат в строке: "${trimmedLine}". Используйте формат "вопрос#ответ"`);
+                throw new Error(`${t('import.format')}: "${trimmedLine}"`);
             }
             
             const question = trimmedLine.substring(0, hashIndex).trim();
             const answer = trimmedLine.substring(hashIndex + 1).trim();
             
             if (!question || !answer) {
-                throw new Error(`Пустой вопрос или ответ в строке: "${trimmedLine}"`);
+                throw new Error(`${t('forms.question')} ${t('forms.answer')}: "${trimmedLine}"`);
             }
             
             cards.push({ question, answer });
@@ -55,7 +57,7 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
 
     const handleImport = async () => {
         if (!text.trim()) {
-            setError('Введите текст для импорта');
+            setError(t('import.selectFile'));
             return;
         }
 
@@ -66,7 +68,7 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
             const cards = parseCards(text);
             
             if (cards.length === 0) {
-                setError('Не найдено ни одной карточки для импорта');
+                setError(t('import.title'));
                 return;
             }
             
@@ -74,7 +76,7 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
             setText('');
             onClose();
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Ошибка при парсинге текста');
+            setError(err instanceof Error ? err.message : t('errors.generic'));
         } finally {
             setIsImporting(false);
         }
@@ -88,10 +90,10 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
 
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-            <DialogTitle>Импорт карточек</DialogTitle>
+            <DialogTitle>{t('import.title')}</DialogTitle>
             <DialogContent>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Вставьте текст в формате: вопрос#ответ;вопрос#ответ
+                    {t('import.format')}
                 </Typography>
                 
                 <TextField
@@ -130,14 +132,14 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} disabled={isImporting}>
-                    Отмена
+                    {t('auth.cancel')}
                 </Button>
                 <Button 
                     onClick={handleImport} 
                     variant="contained"
                     disabled={isImporting || !text.trim()}
                 >
-                    {isImporting ? 'Импорт...' : 'Импорт'}
+                    {isImporting ? t('import.import') + '...' : t('import.import')}
                 </Button>
             </DialogActions>
         </Dialog>

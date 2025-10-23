@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Paper,
@@ -13,6 +14,7 @@ import {
 import { useAuthStore } from '@/shared/store/authStore';
 
 export const SignInPage = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -75,7 +77,7 @@ export const SignInPage = () => {
           
           <TextField
             fullWidth
-            label="Пароль"
+            label={t('auth.password')}
             name="password"
             type="password"
             value={formData.password}

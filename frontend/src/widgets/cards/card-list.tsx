@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { List } from '@mui/material';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
@@ -25,6 +26,7 @@ export const CardList: React.FC<CardListProps> = ({
                                                     showOnlyUnlearned = false,
                                                      // onToggleLearned
 }) => {
+  const { t } = useTranslation();
   const { updateCardApi, updateCardLearnStatus, deleteCard } = useCardsStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -82,7 +84,7 @@ export const CardList: React.FC<CardListProps> = ({
   const handleDelete = async () => {
     if (!selectedCardId) return;
     const card = cards.find(c => c.id === selectedCardId);
-    if (card && confirm(`Удалить карточку «${card.question}»?`)) {
+    if (card && confirm(`${t('cards.delete')} «${card.question}»?`)) {
       await deleteCard(selectedCardId);
     }
     handleMenuClose();

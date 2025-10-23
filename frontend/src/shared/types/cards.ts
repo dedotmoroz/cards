@@ -1,9 +1,3 @@
-export interface Folder {
-  id: string;
-  name: string;
-  userId: string;
-}
-
 export interface Card {
   id: string;
   question: string;
@@ -12,23 +6,15 @@ export interface Card {
   folderId: string;
 }
 
-export interface CreateFolderData {
-  name: string;
-}
-
 export interface CreateCardData {
-  folderId: string;
   question: string;
   answer: string;
-}
-
-export interface UpdateFolderData {
-  name: string;
+  folderId: string;
 }
 
 export interface UpdateCardData {
-  question?: string;
-  answer?: string;
+  question: string;
+  answer: string;
 }
 
 export interface UpdateCardLearnStatusData {

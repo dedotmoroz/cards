@@ -1,4 +1,5 @@
 import { Box, Typography, Button, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface CompletionScreenProps {
   onBackToFolders: () => void;
@@ -11,24 +12,25 @@ export const CompletionScreen = ({
   onContinueLearning, 
   hasUnlearnedCards 
 }: CompletionScreenProps) => {
+  const { t } = useTranslation();
   return (
     <Box textAlign="center" mt={4}>
       <Typography variant="h6" gutterBottom>
-        🎉 Вы изучили все карточки в этой папке!
+        🎉 {t('learning.allLearned')}
       </Typography>
       <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
         <Button
           variant="outlined"
           onClick={onBackToFolders}
         >
-          Вернуться к папкам
+          {t('forms.back')}
         </Button>
         {hasUnlearnedCards && onContinueLearning && (
           <Button
             variant="contained"
             onClick={onContinueLearning}
           >
-            Продолжить изучение
+            {t('forms.continue')}
           </Button>
         )}
       </Stack>

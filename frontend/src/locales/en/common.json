@@ -1,0 +1,111 @@
+{
+  "app": {
+    "title": "Remember!",
+    "tagline": "Effective flashcard learning system. Remember information faster and longer."
+  },
+  "navigation": {
+    "home": "Home",
+    "learn": "Learn",
+    "signin": "Sign In",
+    "signup": "Sign Up"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "notRegistered": "If you are not registered yet,",
+    "registerLink": "Sign Up",
+    "alreadyRegistered": "Already have an account?",
+    "loginLink": "Sign In",
+    "passwordMismatch": "Passwords do not match",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "registerDescription": "Create an account and start memorizing"
+  },
+  "buttons": {
+    "startLearning": "Start Learning",
+    "enterSystem": "Enter System",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "features": {
+    "title": "Why choose us",
+    "interactiveCards": {
+      "title": "Interactive Cards",
+      "description": "Create and study cards with questions and answers"
+    },
+    "adaptiveLearning": {
+      "title": "Adaptive Learning",
+      "description": "System remembers your results and adapts the process"
+    },
+    "fastLearning": {
+      "title": "Fast Learning",
+      "description": "Effective memorization methods for quick material mastery"
+    }
+  },
+  "cta": {
+    "title": "Ready to start remembering?",
+    "description": "Join thousands of users who have already improved their memory"
+  },
+  "cards": {
+    "title": "Cards",
+    "front": "Front",
+    "back": "Back",
+    "create": "Create Card",
+    "edit": "Edit Card",
+    "delete": "Delete Card"
+  },
+  "folders": {
+    "title": "Folders",
+    "create": "Create Folder",
+    "edit": "Edit Folder",
+    "delete": "Delete Folder"
+  },
+  "errors": {
+    "generic": "An error occurred",
+    "network": "Network error",
+    "unauthorized": "Unauthorized",
+    "notFound": "Not found"
+  },
+  "home": {
+    "title": "My Cards",
+    "logout": "Logout",
+    "welcome": "Welcome"
+  },
+  "forms": {
+    "newCard": "New Card",
+    "newFolder": "New Folder",
+    "question": "Question",
+    "answer": "Answer",
+    "folderName": "Folder Name",
+    "add": "Add",
+    "create": "Create",
+    "back": "Back",
+    "continue": "Continue"
+  },
+  "learning": {
+    "allLearned": "All cards learned 🎉",
+    "completedCycle": "You've completed all cards!",
+    "wantToContinue": "Want to continue",
+    "showAnswer": "Show Answer",
+    "next": "Next",
+    "learned": "Learned",
+    "notLearned": "Not Learned"
+  },
+  "import": {
+    "title": "Import Cards",
+    "selectFile": "Select File",
+    "import": "Import",
+    "format": "CSV Format: question,answer"
+  }
+}

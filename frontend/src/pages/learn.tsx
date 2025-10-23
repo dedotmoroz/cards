@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container, Paper, Typography, Button } from '@mui/material';
 import { Home } from '@mui/icons-material';
 
@@ -9,6 +10,7 @@ import { useCardSwipe } from '@/features/card-swipe/model/useCardSwipe';
 import { LearnProcess } from '@/widgets/learn-process';
 
 export const LearnPage = () => {
+  const { t } = useTranslation();
   const { folderId } = useParams<{ folderId: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -74,14 +76,14 @@ export const LearnPage = () => {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Typography color="error" gutterBottom>Ошибка загрузки: {learning.error}</Typography>
+          <Typography color="error" gutterBottom>{t('errors.generic')}: {learning.error}</Typography>
           <Button
             variant="contained"
             startIcon={<Home />}
             onClick={handleBackToFolders}
             sx={{ mt: 2 }}
           >
-            Вернуться к папкам
+            {t('forms.back')}
           </Button>
         </Paper>
       </Container>
@@ -94,7 +96,7 @@ export const LearnPage = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant="h6" gutterBottom>
-            В этой папке нет карточек для изучения
+            {t('learning.allLearned')}
           </Typography>
           <Button
             variant="contained"
@@ -102,7 +104,7 @@ export const LearnPage = () => {
             onClick={handleBackToFolders}
             sx={{ mt: 2 }}
           >
-            Вернуться к папкам
+            {t('forms.back')}
           </Button>
         </Paper>
       </Container>
@@ -115,14 +117,14 @@ export const LearnPage = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant="h6" gutterBottom>
-            🎉 Все карточки в этой папке выучены!
+            🎉 {t('learning.allLearned')}
           </Typography>
           <Button
             variant="contained"
             onClick={handleBackToFolders}
             sx={{ mt: 2 }}
           >
-            Вернуться к папкам
+            {t('forms.back')}
           </Button>
         </Paper>
       </Container>
@@ -135,14 +137,14 @@ export const LearnPage = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant="h6" gutterBottom>
-            Ошибка: карточка не найдена
+            {t('errors.notFound')}
           </Typography>
           <Button
             variant="contained"
             onClick={handleBackToFolders}
             sx={{ mt: 2 }}
           >
-            Вернуться к папкам
+            {t('forms.back')}
           </Button>
         </Paper>
       </Container>

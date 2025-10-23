@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Paper,
@@ -16,6 +17,7 @@ import { ArrowBack, PersonAdd } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
 
 export const SignUpPage = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -45,13 +47,13 @@ export const SignUpPage = () => {
 
     // Валидация
     if (formData.password !== formData.confirmPassword) {
-      setError('Пароли не совпадают');
+      setError(t('auth.passwordMismatch'));
       setIsLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Пароль должен содержать минимум 6 символов');
+      setError(t('auth.passwordMinLength'));
       setIsLoading(false);
       return;
     }
@@ -63,7 +65,7 @@ export const SignUpPage = () => {
         navigate('/');
       }, 100);
     } catch (error: any) {
-      setError(error.message || 'Ошибка регистрации');
+      setError(error.message || t('errors.generic'));
       setIsLoading(false);
     }
   };
@@ -79,10 +81,10 @@ export const SignUpPage = () => {
               onClick={() => navigate('/')}
               sx={{ color: 'white' }}
             >
-              Назад
+              {t('forms.back')}
             </Button>
             <Typography variant="h4" fontWeight="bold" color="white">
-              Запоминай!
+              {t('app.title')}
             </Typography>
             <Box sx={{ width: 100 }} /> {/* Spacer for centering */}
           </Box>
@@ -102,10 +104,10 @@ export const SignUpPage = () => {
             <Box textAlign="center" sx={{ mb: 4 }}>
               <PersonAdd sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
               <Typography variant={isMobile ? 'h4' : 'h3'} fontWeight="bold" gutterBottom>
-                Регистрация
+                {t('auth.register')}
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Создайте аккаунт и начните запоминать
+                {t('auth.registerDescription')}
               </Typography>
             </Box>
             
@@ -118,7 +120,7 @@ export const SignUpPage = () => {
             <Box component="form" onSubmit={handleSubmit}>
               <TextField
                 fullWidth
-                label="Имя пользователя"
+                label={t('auth.username')}
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
@@ -130,7 +132,7 @@ export const SignUpPage = () => {
               
               <TextField
                 fullWidth
-                label="Email"
+                label={t('auth.email')}
                 name="email"
                 type="email"
                 value={formData.email}
@@ -142,7 +144,7 @@ export const SignUpPage = () => {
               
               <TextField
                 fullWidth
-                label="Пароль"
+                label={t('auth.password')}
                 name="password"
                 type="password"
                 value={formData.password}
@@ -154,7 +156,7 @@ export const SignUpPage = () => {
               
               <TextField
                 fullWidth
-                label="Подтвердите пароль"
+                label={t('auth.confirmPassword')}
                 name="confirmPassword"
                 type="password"
                 value={formData.confirmPassword}
@@ -183,12 +185,12 @@ export const SignUpPage = () => {
                 }}
                 disabled={isLoading}
               >
-                {isLoading ? <CircularProgress size={24} /> : 'Зарегистрироваться'}
+                {isLoading ? <CircularProgress size={24} /> : t('auth.register')}
               </Button>
               
               <Box textAlign="center">
                 <Typography variant="body2" color="text.secondary">
-                  Уже есть аккаунт?{' '}
+                  {t('auth.alreadyRegistered')}{' '}
                   <Link 
                     to="/signin" 
                     style={{ 
@@ -197,7 +199,7 @@ export const SignUpPage = () => {
                       fontWeight: 'bold'
                     }}
                   >
-                    Войти
+                    {t('auth.loginLink')}
                   </Link>
                 </Typography>
               </Box>

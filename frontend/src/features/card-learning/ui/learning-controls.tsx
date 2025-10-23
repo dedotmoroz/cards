@@ -1,5 +1,6 @@
 import { Button, Stack } from '@mui/material';
 import { ThumbUp, ThumbDown } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface LearningControlsProps {
   onKnow: () => void;
@@ -9,6 +10,7 @@ interface LearningControlsProps {
 }
 
 export const LearningControls = ({ onKnow, onDontKnow, disabled }: LearningControlsProps) => {
+  const { t } = useTranslation();
   return (
     <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
       <Button
@@ -24,7 +26,7 @@ export const LearningControls = ({ onKnow, onDontKnow, disabled }: LearningContr
           transition: 'transform 0.2s ease'
         }}
       >
-        ← Не знаю
+        ← {t('learning.notLearned')}
       </Button>
       <Button
         variant="contained"
@@ -39,7 +41,7 @@ export const LearningControls = ({ onKnow, onDontKnow, disabled }: LearningContr
           transition: 'transform 0.2s ease'
         }}
       >
-        Знаю →
+        {t('learning.learned')} →
       </Button>
     </Stack>
   );

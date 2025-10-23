@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -18,9 +19,11 @@ import {
   Login,
   AutoAwesome
 } from '@mui/icons-material';
-import { AuthDialog } from '@/widgets/sign-up/auth-dialog.tsx';
+import { AuthDialog } from '@/shared/ui/auth-dialog';
+import { LanguageSwitcher } from '@/shared/ui/language-switcher';
 
 export const LandingPage = () => {
+  const { t } = useTranslation();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -33,18 +36,18 @@ export const LandingPage = () => {
   const features = [
     {
       icon: <School sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Интерактивные карточки',
-      description: 'Создавайте и изучайте карточки с вопросами и ответами'
+      title: t('features.interactiveCards.title'),
+      description: t('features.interactiveCards.description')
     },
     {
       icon: <Psychology sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Адаптивное обучение',
-      description: 'Система запоминает ваши результаты и адаптирует процесс'
+      title: t('features.adaptiveLearning.title'),
+      description: t('features.adaptiveLearning.description')
     },
     {
       icon: <Speed sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Быстрое изучение',
-      description: 'Эффективные методы запоминания для быстрого освоения материала'
+      title: t('features.fastLearning.title'),
+      description: t('features.fastLearning.description')
     }
   ];
 
@@ -55,22 +58,25 @@ export const LandingPage = () => {
         <Box sx={{ py: 4 }}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h4" fontWeight="bold" color="white">
-              Запоминай!
+              {t('app.title')}
             </Typography>
-            <Button
-              variant="contained"
-              startIcon={<Login />}
-              onClick={() => setAuthDialogOpen(true)}
-              sx={{
-                bgcolor: 'white',
-                color: 'primary.main',
-                '&:hover': {
-                  bgcolor: 'grey.100'
-                }
-              }}
-            >
-              Войти
-            </Button>
+            <Box display="flex" alignItems="center" gap={2}>
+              <LanguageSwitcher />
+              <Button
+                variant="contained"
+                startIcon={<Login />}
+                onClick={() => setAuthDialogOpen(true)}
+                sx={{
+                  bgcolor: 'white',
+                  color: 'primary.main',
+                  '&:hover': {
+                    bgcolor: 'grey.100'
+                  }
+                }}
+              >
+                {t('auth.login')}
+              </Button>
+            </Box>
           </Box>
         </Box>
 
@@ -83,15 +89,14 @@ export const LandingPage = () => {
             gutterBottom
             sx={{ mb: 3 }}
           >
-            Запоминай!
+            {t('app.title')}
           </Typography>
           <Typography 
             variant={isMobile ? 'h6' : 'h5'} 
             color="white" 
             sx={{ mb: 4, opacity: 0.9, maxWidth: 600, mx: 'auto' }}
           >
-            Эффективная система изучения с помощью карточек. 
-            Запоминайте информацию быстрее и надолго.
+            {t('app.tagline')}
           </Typography>
           <Button
             variant="contained"
@@ -112,7 +117,7 @@ export const LandingPage = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Начать изучение
+            {t('buttons.startLearning')}
           </Button>
         </Box>
 
@@ -126,7 +131,7 @@ export const LandingPage = () => {
             gutterBottom
             sx={{ mb: 6 }}
           >
-            Почему выбирают нас
+            {t('features.title')}
           </Typography>
           <Grid container spacing={4}>
             {features.map((feature, index) => (
@@ -171,10 +176,10 @@ export const LandingPage = () => {
             }}
           >
             <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Готовы начать запоминать?
+              {t('cta.title')}
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              Присоединяйтесь к тысячам пользователей, которые уже улучшили свою память
+              {t('cta.description')}
             </Typography>
             <Button
               variant="contained"
@@ -182,7 +187,7 @@ export const LandingPage = () => {
               onClick={() => setAuthDialogOpen(true)}
               sx={{ px: 4, py: 1.5 }}
             >
-              Войти в систему
+              {t('buttons.enterSystem')}
             </Button>
           </Paper>
         </Box>

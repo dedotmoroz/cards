@@ -1,4 +1,5 @@
 import {Box, IconButton, Paper, Typography} from "@mui/material";
+import { useTranslation } from 'react-i18next';
 import {FolderList} from "@/widgets/folders/folder-list.tsx";
 import {CreateFolderDialog} from "@/features/create-folder.tsx";
 import {useState} from "react";
@@ -7,6 +8,7 @@ import {useCreateFolder} from "@/features/create-folder/useCreateFolder.ts";
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
 export const Folders = () => {
+    const { t } = useTranslation();
     const {
         folders,
         selectedFolderId,
@@ -26,7 +28,7 @@ export const Folders = () => {
     return (
         <><Paper sx={{p: 2, height: '100%'}}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6">Папки </Typography>
+                <Typography variant="h6">{t('folders.title')} </Typography>
                 <IconButton color="primary" aria-label="create folder"
                             onClick={() => setIsCreatingFolder(true)}>
                     <CreateNewFolderIcon/>

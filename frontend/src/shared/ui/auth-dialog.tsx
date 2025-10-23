@@ -14,7 +14,7 @@ import {
   CircularProgress,
   Link
 } from '@mui/material';
-import { useAuthStore } from '@/shared/store/authStore.ts';
+import { useAuthStore } from '@/shared/store/authStore';
 
 interface AuthDialogProps {
   open: boolean;
@@ -85,7 +85,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       }}
     >
       <DialogTitle>
-        <Typography variant='h5' align='center' fontWeight='bold'>
+        <Typography variant="h5" align="center" fontWeight="bold">
           {t('auth.login')}
         </Typography>
       </DialogTitle>
@@ -142,13 +142,15 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
           {isLoading ? <CircularProgress size={24} /> : t('auth.login')}
         </Button>
       </DialogActions>
-      <Box sx={{ textAlign: 'center', mt: 2,  mb: '24px' }}>
+      <Box sx={{ textAlign: 'center', mt: 2, mb: '14px' }}>
         <Typography variant="h6" color="text.secondary">
           {t('auth.notRegistered')}{' '}
           <Link
+            component="button"
             onClick={handleRegister}
             sx={{ 
               fontSize: '1.25rem',
+              textDecoration: 'underline',
               cursor: 'pointer',
               '&:hover': {
                 textDecoration: 'underline'

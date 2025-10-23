@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography, Button, AppBar, Toolbar, Drawer, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,7 @@ import {Folders} from "@/widgets/folders";
 import {Cards} from "@/widgets/cards";
 
 export const HomePage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -62,24 +64,24 @@ export const HomePage = () => {
                         </IconButton>
                     )}
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Карточки для изучения
+                        {t('home.title')}
                     </Typography>
                     {user ? (
                         <Box display="flex" alignItems="center" gap={2}>
                             <Typography variant="body2">
-                                Привет, {user.username}!
+                                {t('home.welcome')}, {user.username}!
                             </Typography>
                             <Button color="inherit" onClick={logout}>
-                                Выйти
+                                {t('home.logout')}
                             </Button>
                         </Box>
                     ) : (
                         <Box display="flex" gap={1}>
                             <Button color="inherit" onClick={() => navigate('/signin')}>
-                                Войти
+                                {t('auth.login')}
                             </Button>
                             <Button color="inherit" onClick={() => navigate('/signup')}>
-                                Регистрация
+                                {t('auth.register')}
                             </Button>
                         </Box>
                     )}

@@ -1,8 +1,10 @@
 import { Typography, Button, Box } from '@mui/material';
 import { Home, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const NotFoundPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleGoHome = () => navigate('/');
@@ -14,7 +16,7 @@ export const NotFoundPage = () => {
             404
           </Typography>
           <Typography variant="h4" gutterBottom>
-            Страница не найдена
+            {t('errors.notFound')}
           </Typography>
         <Box sx={{ display: 'flex', mt: 4, gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Button
@@ -23,7 +25,7 @@ export const NotFoundPage = () => {
             onClick={handleGoHome}
             size="large"
           >
-            На главную
+            {t('navigation.home')}
           </Button>
           <Button
             variant="outlined"
@@ -31,7 +33,7 @@ export const NotFoundPage = () => {
             onClick={handleGoBack}
             size="large"
           >
-            Назад
+            {t('forms.back')}
           </Button>
         </Box>
       </Box>

@@ -1,6 +1,7 @@
 // src/features/create-folder/ui/create-folder-dialog.tsx
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -21,6 +22,7 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
                                                                           onClose,
                                                                           onCreate,
                                                                       }) => {
+    const { t } = useTranslation();
     const [name, setName] = useState('');
 
     const handleCreate = () => {
@@ -38,21 +40,21 @@ export const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Новая папка</DialogTitle>
+            <DialogTitle>{t('forms.newFolder')}</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
                     margin="dense"
-                    label="Название папки"
+                    label={t('forms.folderName')}
                     fullWidth
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Отмена</Button>
+                <Button onClick={handleClose}>{t('auth.cancel')}</Button>
                 <Button onClick={handleCreate} variant="contained">
-                    Создать
+                    {t('forms.create')}
                 </Button>
             </DialogActions>
         </Dialog>

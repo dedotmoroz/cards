@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCardSwipe } from "@/features/card-swipe/model/useCardSwipe";
 import { CardFlip } from "./card-flip/card-flip";
 import {LearningControls} from "@/features/card-learning/ui/learning-controls.tsx";
@@ -33,6 +34,7 @@ interface LearnProcessProps {
 }
 
 export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
+    const { t } = useTranslation();
     const swipe = useCardSwipe();
     const navigate = useNavigate();
 
@@ -190,7 +192,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
             ) : (
                 <Box textAlign="center" mt={4}>
                     <Typography variant="h6" color="text.secondary">
-                        Карточка не найдена
+                        {t('errors.notFound')}
                     </Typography>
                 </Box>
             )}

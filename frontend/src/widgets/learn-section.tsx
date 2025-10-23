@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Button, Card, CardContent, Typography, Stack } from '@mui/material';
 import { useCardsStore } from '@/shared/store/cardsStore';
 
@@ -20,6 +21,7 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
                                                               onMarkAsLearned = () => {},
                                                               onExit,
                                                           }) => {
+    const { t } = useTranslation();
     const [index, setIndex] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
     const [cycleCompleted, setCycleCompleted] = useState(false);
@@ -45,9 +47,9 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
     if (unlearnedCards.length === 0) {
         return (
             <Box textAlign="center">
-                <Typography variant="h6">Все карточки выучены 🎉</Typography>
+                <Typography variant="h6">{t('learning.allLearned')}</Typography>
                 <Button onClick={onExit} sx={{ mt: 2 }}>
-                    Назад
+                    {t('forms.back')}
                 </Button>
             </Box>
         );
@@ -56,11 +58,11 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
     if (cycleCompleted) {
         return (
             <Box textAlign="center">
-                <Typography variant="h6">Вы прошли все карточки!</Typography>
+                <Typography variant="h6">{t('learning.completedCycle')}</Typography>
                 <Stack direction="row" spacing={2} justifyContent="center">
-                    <Button onClick={onExit}>Назад</Button>
+                    <Button onClick={onExit}>{t('forms.back')}</Button>
                     <Button variant="contained" onClick={handleRestart}>
-                        Хочу продолжить
+                        {t('learning.wantToContinue')}
                     </Button>
                 </Stack>
             </Box>
@@ -72,13 +74,13 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6">Вопрос:</Typography>
+                <Typography variant="h6">{t('forms.question')}:</Typography>
                 <Typography>{current.question}</Typography>
 
                 {showAnswer && (
                     <>
                         <Typography variant="h6" sx={{ mt: 2 }}>
-                            Ответ:
+                            {t('forms.answer')}:
                         </Typography>
                         <Typography>{current.answer}</Typography>
                     </>
@@ -87,7 +89,7 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
                 <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
                     {!showAnswer && (
                         <Button variant="outlined" onClick={() => setShowAnswer(true)}>
-                            Показать ответ
+                            {t('learning.showAnswer')}
                         </Button>
                     )}
                     {showAnswer && (
@@ -100,10 +102,10 @@ export const LearnSection: React.FC<LearnSectionProps> = ({
                                 handleNext();
                             }}
                         >
-                            Выучено
+                            {t('learning.learned')}
                         </Button>
                     )}
-                    <Button onClick={onExit}>Назад</Button>
+                    <Button onClick={onExit}>{t('forms.back')}</Button>
                 </Stack>
             </CardContent>
         </Card>

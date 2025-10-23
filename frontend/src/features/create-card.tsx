@@ -1,6 +1,7 @@
 // src/features/create-card/ui/create-card-dialog.tsx
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -23,6 +24,7 @@ export const CreateCardDialog: React.FC<CreateCardDialogProps> = ({
                                                                       onClose,
                                                                       onCreate,
                                                                   }) => {
+    const { t } = useTranslation();
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
 
@@ -47,28 +49,28 @@ export const CreateCardDialog: React.FC<CreateCardDialogProps> = ({
 
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Новая карточка</DialogTitle>
+            <DialogTitle>{t('forms.newCard')}</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
                     margin="dense"
-                    label="Вопрос"
+                    label={t('forms.question')}
                     fullWidth
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                 />
                 <TextField
                     margin="dense"
-                    label="Ответ"
+                    label={t('forms.answer')}
                     fullWidth
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Отмена</Button>
+                <Button onClick={handleClose}>{t('auth.cancel')}</Button>
                 <Button onClick={handleCreate} variant="contained">
-                    Добавить
+                    {t('forms.add')}
                 </Button>
             </DialogActions>
         </Dialog>
