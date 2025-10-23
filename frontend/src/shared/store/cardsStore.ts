@@ -175,7 +175,10 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         try {
             const updated = await cardsApi.updateCard(id, updates)
             // Sync local state
-            get().updateCard(id, { question: updated.question, answer: updated.answer })
+            get().updateCard(id, { 
+                question: updated.question, 
+                answer: updated.answer 
+            })
         } catch (error) {
             console.error('Error updating card:', error)
             set({ error: 'Failed to update card' })

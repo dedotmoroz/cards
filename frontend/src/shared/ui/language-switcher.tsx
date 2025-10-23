@@ -16,7 +16,7 @@ const languages = [
 ];
 
 export const LanguageSwitcher: React.FC = () => {
-  const { i18n, t } = useTranslation();
+  const { i18n } = useTranslation();
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
     const newLanguage = event.target.value;

@@ -1,3 +1,9 @@
+export interface Folder {
+  id: string;
+  name: string;
+  userId: string;
+}
+
 export interface Card {
   id: string;
   question: string;
@@ -13,8 +19,8 @@ export interface CreateCardData {
 }
 
 export interface UpdateCardData {
-  question: string;
-  answer: string;
+  question?: string;
+  answer?: string;
 }
 
 export interface UpdateCardLearnStatusData {
