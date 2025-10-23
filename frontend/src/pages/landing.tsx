@@ -56,10 +56,7 @@ export const LandingPage = () => {
       <Container maxWidth="lg">
         {/* Header */}
         <Box sx={{ py: 4 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h4" fontWeight="bold" color="white">
-              {t('app.title')}
-            </Typography>
+          <Box display="flex" justifyContent="flex-end" alignItems="center">
             <Box display="flex" alignItems="center" gap={2}>
               <LanguageSwitcher />
               <Button
