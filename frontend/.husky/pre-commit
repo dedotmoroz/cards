@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Быстрые проверки именно по индексированным файлам
+npx lint-staged
