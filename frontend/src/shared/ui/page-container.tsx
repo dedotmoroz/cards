@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, type BoxProps } from '@mui/material';
 
 interface PageContainerProps extends BoxProps {
@@ -6,13 +6,24 @@ interface PageContainerProps extends BoxProps {
 }
 
 export const PageContainer: React.FC<PageContainerProps> = ({ children, ...props }) => {
+  useEffect(() => {
+    // Применяем стили к body при монтировании
+    const originalStyle = document.body.style.cssText;
+    document.body.style.cssText = `
+      overscroll-behavior: none;
+      overflow: hidden;
+      height: 100vh;
+    `;
+
+    // Восстанавливаем оригинальные стили при размонтировании
+    return () => {
+      document.body.style.cssText = originalStyle;
+    };
+  }, []);
+
   return (
     <Box
       sx={{
-        height: '100vh',
-        overflow: 'hidden',
-        overscrollBehavior: 'none',
-        WebkitOverflowScrolling: 'auto',
         display: 'flex',
         flexDirection: 'column',
         ...props.sx,
