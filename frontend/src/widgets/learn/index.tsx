@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCardSwipe } from "@/features/card-swipe/model/useCardSwipe";
 import { CardFlip } from "./card-flip/card-flip";
@@ -56,6 +56,33 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                 break;
         }
     };
+
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (swipe.isAnimating) return;
+
+            switch (event.code) {
+                case 'ArrowRight':
+                    event.preventDefault();
+                    learning.handleKnow();
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    learning.handleDontKnow();
+                    break;
+                case 'Space':
+                    event.preventDefault();
+                    learning.toggleAnswer();
+                    break;
+                case 'Escape':
+                    event.preventDefault();
+                    navigate('/');
+                    break;
+            }
+        };
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
+    }, [swipe.isAnimating, learning, navigate]);
 
 
     // const handleTouchEnd = () => {
