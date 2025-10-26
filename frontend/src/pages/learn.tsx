@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
-import {Container} from '@mui/material';
+import {Container } from '@mui/material';
 
 import {useCardLearning} from '@/features/card-learning/model/useCardLearning';
 import {LearnProcess} from '@/widgets/learn';
@@ -24,7 +24,7 @@ export const LearnPage = () => {
     const NoCardsState = !learning.cards.length;
     const AllCardsLearnedState = learning.showOnlyUnlearned && learning.displayCards.length === 0;
     const CardNotFoundState = !learning.isCompleted && (learning.currentIndex >= learning.displayCards.length || !learning.currentCard);
-
+    // const notCurrentCard = !learning.currentCard;
 
     if (learning.error) {
         return (
@@ -57,6 +57,15 @@ export const LearnPage = () => {
             </Container>
         );
     }
+
+    // if (notCurrentCard) {
+    //     return (
+    //         <Container maxWidth="md" sx={{mt: 4}}>
+    //             <MessageBlock message={'errors.notFound'}/>
+    //         </Container>
+    //     );
+    // }
+
 
     return (
         <Container maxWidth="md" sx={{mt: 4,}}>

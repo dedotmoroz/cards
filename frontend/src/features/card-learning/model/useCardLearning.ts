@@ -12,8 +12,11 @@ export const useCardLearning = (folderId: string | undefined) => {
   // Загружаем карточки при монтировании
   useEffect(() => {
     console.log('useCardLearning useEffect triggered:', { folderId, lastFetched: lastFetchedFolderId.current });
+
     if (folderId && folderId !== lastFetchedFolderId.current) {
+
       console.log('Fetching cards for folder:', folderId);
+
       lastFetchedFolderId.current = folderId;
       fetchCards(folderId);
     }

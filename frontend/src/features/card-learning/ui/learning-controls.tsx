@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 interface LearningControlsProps {
   onKnow: () => void;
   onDontKnow: () => void;
-  onFlip: () => void;
   disabled?: boolean;
 }
 
