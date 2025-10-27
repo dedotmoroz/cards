@@ -18,7 +18,7 @@ export const LearnPage = () => {
         if (mode === 'unlearned') {
             learning.setLearningMode(true);
         }
-    }, [searchParams, learning]);
+    }, [searchParams]);
 
 
     const NoCardsState = !learning.cards.length;

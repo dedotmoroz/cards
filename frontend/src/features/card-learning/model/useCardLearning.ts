@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useCardsStore } from '@/shared/store/cardsStore';
+import type { Card } from '@/shared/types/cards';
 
 export const useCardLearning = (folderId: string | undefined) => {
   const { cards, fetchCards, updateCardLearnStatus, isLoading, error } = useCardsStore();
@@ -7,16 +8,15 @@ export const useCardLearning = (folderId: string | undefined) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
+  const [learnedCount, setLearnedCount] = useState(0);
+  const [unlearnedCount, setUnlearnedCount] = useState(0);
+  const [unlearnedCards, setUnlearnedCards] = useState<Card[]>([]);
+  const [initialDisplayCardsCount, setInitialDisplayCardsCount] = useState(0);
   const lastFetchedFolderId = useRef<string | null>(null);
 
   // Загружаем карточки при монтировании
   useEffect(() => {
-    console.log('useCardLearning useEffect triggered:', { folderId, lastFetched: lastFetchedFolderId.current });
-
     if (folderId && folderId !== lastFetchedFolderId.current) {
-
-      console.log('Fetching cards for folder:', folderId);
-
       lastFetchedFolderId.current = folderId;
       fetchCards(folderId);
     }
@@ -28,10 +28,26 @@ export const useCardLearning = (folderId: string | undefined) => {
     setShowAnswer(false);
   }, [showOnlyUnlearned]);
 
+  // Сбрасываем счетчики при смене папки
+  useEffect(() => {
+    if (folderId && folderId !== lastFetchedFolderId.current) {
+      setLearnedCount(0);
+      setUnlearnedCount(0);
+      setUnlearnedCards([]);
+    }
+  }, [folderId]);
+
+  // Инициализируем initialDisplayCardsCount при первой загрузке карточек
+  useEffect(() => {
+    if (cards.length > 0 && initialDisplayCardsCount === 0) {
+      setInitialDisplayCardsCount(cards.length);
+    }
+  }, [cards, initialDisplayCardsCount]);
+
   // Фильтруем карточки в зависимости от режима
-  const displayCards = showOnlyUnlearned ? cards.filter(card => !card.isLearned) : cards;
+  const displayCards = showOnlyUnlearned ? unlearnedCards : cards;
   const currentCard = displayCards[currentIndex];
-  const isCompleted = currentIndex === displayCards.length;
+  const isCompleted = currentIndex >= initialDisplayCardsCount;
 
   const toggleAnswer = () => {
     setShowAnswer(!showAnswer);
@@ -40,14 +56,11 @@ export const useCardLearning = (folderId: string | undefined) => {
   const handleKnow = async () => {
     if (currentCard) {
       await updateCardLearnStatus(currentCard.id, true);
+      setLearnedCount(prev => prev + 1);
       
       if (showOnlyUnlearned) {
-        const updatedCards = cards.filter(card => !card.isLearned);
-        if (currentIndex >= updatedCards.length - 1) {
-          setCurrentIndex(updatedCards.length);
-        } else {
-          setShowAnswer(false);
-        }
+        setCurrentIndex(currentIndex + 1);
+        setShowAnswer(false);
       } else {
         if (currentIndex < displayCards.length - 1) {
           setCurrentIndex(currentIndex + 1);
@@ -63,15 +76,12 @@ export const useCardLearning = (folderId: string | undefined) => {
   const handleDontKnow = async () => {
     if (currentCard) {
       await updateCardLearnStatus(currentCard.id, false);
+      setUnlearnedCount(prev => prev + 1);
       
       if (showOnlyUnlearned) {
-        if (currentIndex < displayCards.length - 1) {
-          setCurrentIndex(currentIndex + 1);
-          setShowAnswer(false);
-        } else {
-          setCurrentIndex(displayCards.length);
-          setShowAnswer(false);
-        }
+        // Переходим к следующей карточке
+        setCurrentIndex(currentIndex + 1);
+        setShowAnswer(false);
       } else {
         if (currentIndex < displayCards.length - 1) {
           setCurrentIndex(currentIndex + 1);
@@ -91,6 +101,19 @@ export const useCardLearning = (folderId: string | undefined) => {
 
   const setLearningMode = (unlearnedOnly: boolean) => {
     setShowOnlyUnlearned(unlearnedOnly);
+    // Сбрасываем счетчики и индекс при продолжении обучения
+    setLearnedCount(0);
+    setUnlearnedCount(0);
+    setCurrentIndex(0);
+    setShowAnswer(false);
+    // Обновляем массив невыученных карточек
+    if (unlearnedOnly && cards.length > 0) {
+      const unlearned = cards.filter(card => !card.isLearned);
+      setUnlearnedCards(unlearned);
+      setInitialDisplayCardsCount(unlearned.length);
+    } else if (cards.length > 0) {
+      setInitialDisplayCardsCount(cards.length);
+    }
   };
 
   return {
@@ -104,6 +127,9 @@ export const useCardLearning = (folderId: string | undefined) => {
     isCompleted,
     isLoading,
     error,
+    learnedCount,
+    unlearnedCount,
+    initialDisplayCardsCount,
     
     // Actions
     toggleAnswer,

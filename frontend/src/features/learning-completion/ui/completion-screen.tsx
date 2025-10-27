@@ -5,12 +5,14 @@ interface CompletionScreenProps {
   onBackToFolders: () => void;
   onContinueLearning?: () => void;
   hasUnlearnedCards?: boolean;
+  unlearnedCount?: number;
 }
 
 export const CompletionScreen = ({ 
   onBackToFolders, 
   onContinueLearning, 
-  hasUnlearnedCards 
+  hasUnlearnedCards,
+  unlearnedCount = 0
 }: CompletionScreenProps) => {
   const { t } = useTranslation();
   return (
@@ -30,7 +32,7 @@ export const CompletionScreen = ({
             variant="contained"
             onClick={onContinueLearning}
           >
-            {t('forms.continue')}
+            {t('forms.continueWithCount', { count: unlearnedCount })}
           </Button>
         )}
       </Stack>

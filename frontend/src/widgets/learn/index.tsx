@@ -17,6 +17,9 @@ interface LearningHook {
   isCompleted: boolean;
   isLoading: boolean;
   error: string | null;
+  learnedCount: number;
+  unlearnedCount: number;
+  initialDisplayCardsCount: number;
   
   // Actions
   toggleAnswer: () => void;
@@ -73,7 +76,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
             {/* Navigation */}
             <LearningNavigation
                 currentIndex={learning.currentIndex}
-                totalCards={learning.displayCards.length}
+                totalCards={learning.initialDisplayCardsCount}
                 isCompleted={learning.isCompleted}
                 isFirst={learning.currentIndex === 0}
                 onPrevious={handlePrevious}
@@ -87,6 +90,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     onBackToFolders={handleBackToFolders}
                     onContinueLearning={handleContinueLearning}
                     hasUnlearnedCards={learning.cards.some(card => !card.isLearned)}
+                    unlearnedCount={learning.cards.filter(card => !card.isLearned).length}
                 />
             ) : (<>
                     <CardFlip
@@ -101,6 +105,8 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     <LearningControls
                         onKnow={learning.handleKnow}
                         onDontKnow={learning.handleDontKnow}
+                        learnedCount={learning.learnedCount || 0}
+                        unlearnedCount={learning.unlearnedCount || 0}
                     />
                 </>)
             }

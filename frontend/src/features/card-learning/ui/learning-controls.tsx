@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography, Box } from '@mui/material';
 import { ThumbUp, ThumbDown } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -6,12 +6,39 @@ interface LearningControlsProps {
   onKnow: () => void;
   onDontKnow: () => void;
   disabled?: boolean;
+  learnedCount?: number;
+  unlearnedCount?: number;
 }
 
-export const LearningControls = ({ onKnow, onDontKnow, disabled }: LearningControlsProps) => {
+export const LearningControls = ({ onKnow, onDontKnow, disabled, learnedCount = 0, unlearnedCount = 0 }: LearningControlsProps) => {
   const { t } = useTranslation();
   return (
-    <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+    <Box sx={{ mt: 3 }}>
+      {/* Счетчики */}
+        <Box sx={{display: 'flex', justifyContent: 'center', gap: 4, mb: 2}}>
+
+            <Box sx={{textAlign: 'center'}}>
+                <Typography variant="h6" color="error.main" fontWeight="bold">
+                    {unlearnedCount}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                    {t('learning.notLearned')}
+                </Typography>
+            </Box>
+
+            <Box sx={{textAlign: 'center'}}>
+                <Typography variant="h6" color="success.main" fontWeight="bold">
+                    {learnedCount}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                    {t('learning.learned')}
+                </Typography>
+            </Box>
+
+        </Box>
+      
+      {/* Кнопки */}
+      <Stack direction="row" spacing={2} justifyContent="center">
       <Button
         variant="contained"
         color="error"
@@ -42,6 +69,7 @@ export const LearningControls = ({ onKnow, onDontKnow, disabled }: LearningContr
       >
         {t('learning.learned')} →
       </Button>
-    </Stack>
+      </Stack>
+    </Box>
   );
 };
