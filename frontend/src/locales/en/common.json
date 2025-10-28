@@ -92,7 +92,8 @@
     "create": "Create",
     "back": "Back",
     "continue": "Continue",
-    "continueWithCount": "Continue Learning ({{count}} unlearned cards)"
+    "continueWithCount": "Continue Learning ({{count}} unlearned cards)",
+    "selectAll": "Select All"
   },
   "learning": {
     "allLearned": "All cards learned 🎉",

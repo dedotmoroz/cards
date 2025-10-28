@@ -1,4 +1,4 @@
-import {Box, Button, CircularProgress, Paper, Typography, IconButton, Menu, MenuItem, ToggleButton, ToggleButtonGroup, Checkbox, FormControlLabel} from "@mui/material";
+import {Box, Button, CircularProgress, Paper, Typography, IconButton, Menu, MenuItem} from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState} from "react";
@@ -72,21 +72,16 @@ export const Cards = () => {
         handleMenuClose();
     };
 
-    const handleFilterChange = (
-        _event: React.MouseEvent<HTMLElement>,
-        newFilter: 'A' | 'AB' | 'B' | null,
-    ) => {
-        if (newFilter !== null) {
-            setDisplayFilter(newFilter);
-        }
+    const handleFilterChange = (newFilter: 'A' | 'AB' | 'B') => {
+        console.log('handleFilterChange called with:', newFilter);
+        setDisplayFilter(newFilter);
     };
 
     const handleUnlearnedToggle = () => {
         setShowOnlyUnlearned(!showOnlyUnlearned);
     };
 
-    const handleSelectAllChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const isChecked = event.target.checked;
+    const handleSelectAllChange = async (isChecked: boolean) => {
         setSelectAll(isChecked);
         
         // Массово обновляем статус всех карточек
@@ -164,23 +159,6 @@ export const Cards = () => {
                         </Button>
                     </Box>
                     <Box display="flex" alignItems="center" gap={1}>
-                        <ToggleButtonGroup
-                            value={displayFilter}
-                            exclusive
-                            onChange={handleFilterChange}
-                            aria-label="display filter"
-                            size="small"
-                        >
-                            <ToggleButton value="A" aria-label="show questions only">
-                                A
-                            </ToggleButton>
-                            <ToggleButton value="AB" aria-label="show questions and answers">
-                                AB
-                            </ToggleButton>
-                            <ToggleButton value="B" aria-label="show answers only">
-                                B
-                            </ToggleButton>
-                        </ToggleButtonGroup>
                         <Button
                             variant={showOnlyUnlearned ? "contained" : "outlined"}
                             size="small"
@@ -189,17 +167,6 @@ export const Cards = () => {
                         >
                             {t('learning.learned')}
                         </Button>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={selectAll}
-                                    onChange={handleSelectAllChange}
-                                    size="small"
-                                />
-                            }
-                            label={t('forms.create')}
-                            sx={{ ml: 1 }}
-                        />
                     </Box>
                 </Box>
 
@@ -212,6 +179,9 @@ export const Cards = () => {
                         cards={cards} 
                         displayFilter={displayFilter}
                         showOnlyUnlearned={showOnlyUnlearned}
+                        onFilterChange={handleFilterChange}
+                        selectAll={selectAll}
+                        onSelectAllChange={handleSelectAllChange}
                     />
                 )}
             </Paper>

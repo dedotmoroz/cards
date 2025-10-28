@@ -92,7 +92,8 @@
     "create": "Создать",
     "back": "Назад",
     "continue": "Продолжить",
-    "continueWithCount": "Продолжить изучение ({{count}} неизученных карточек)"
+    "continueWithCount": "Продолжить изучение ({{count}} неизученных карточек)",
+    "selectAll": "Выбрать все"
   },
   "learning": {
     "allLearned": "Все карточки выучены",
