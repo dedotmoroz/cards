@@ -1,5 +1,5 @@
 import React, {forwardRef, useRef} from 'react';
-import {Box} from '@mui/material';
+import {Box, Card} from '@mui/material';
 import {CardBox} from './card-box.tsx'
 import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
 
@@ -90,15 +90,15 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
           switch (action) {
               case 'know':
                   swipe.animateSwipe('right');
+                  handleKnow();
                   setTimeout(() => {
-                      handleKnow();
                       swipe.resetCard();
                   }, 500);
                   break;
               case 'dontKnow':
                   swipe.animateSwipe('left');
+                  handleDontKnow();
                   setTimeout(() => {
-                      handleDontKnow();
                       swipe.resetCard();
                   }, 500);
                   break;
@@ -119,36 +119,66 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
           dragging.current = false;
       };
 
+      console.log('showAnswer === ', showAnswer ? question : answer)
         return (
             <Box
                 sx={{
                     position: 'relative',
+                }}
+            >
+                <Box
+                    sx={{
+                        position: 'relative',
+                        zIndex: 30,
+                        height: 400,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    ref={swipe.cardRef}
+                    onPointerDown={onPointerDown}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={onPointerUp}
+                    onPointerLeave={onPointerLeave}
+                >
+                    <Box
+                        ref={ref}
+                        sx={{
+                            position: 'relative',
+                            width: '100%',
+                            maxWidth: 500,
+                            height: 300,
+                            cursor: 'pointer',
+                        }}
+
+                    >
+                        <CardBox>
+                            {showAnswer ? question : answer}
+                        </CardBox>
+                    </Box>
+                </Box>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top:0,
+                    zIndex: 20,
                     height: 400,
+                    width: '100%',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}
-                ref={swipe.cardRef}
-                onPointerDown={onPointerDown}
-                onPointerMove={onPointerMove}
-                onPointerUp={onPointerUp}
-                onPointerLeave={onPointerLeave}
             >
-                <Box
-                    ref={ref}
+                <Card
                     sx={{
-                        position: 'relative',
-                        width: '100%',
-                        maxWidth: 500,
                         height: 300,
-                        cursor: 'pointer',
+                        width: 500,
+                        boxShadow: 0,
+                        borderRadius: '20px',
+                        backgroundColor: '#ececec',
                     }}
-
-                >
-                    <CardBox>
-                        {showAnswer ? question : answer}
-                    </CardBox>
-                </Box>
+                />
+            </Box>
             </Box>
         );
     }

@@ -16,25 +16,16 @@ export const LearningControls = ({ onKnow, onDontKnow, disabled, learnedCount = 
     <Box sx={{ mt: 3 }}>
       {/* Счетчики */}
         <Box sx={{display: 'flex', justifyContent: 'center', gap: 4, mb: 2}}>
-
             <Box sx={{textAlign: 'center'}}>
                 <Typography variant="h6" color="error.main" fontWeight="bold">
                     {unlearnedCount}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                    {t('learning.notLearned')}
-                </Typography>
             </Box>
-
             <Box sx={{textAlign: 'center'}}>
                 <Typography variant="h6" color="success.main" fontWeight="bold">
                     {learnedCount}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                    {t('learning.learned')}
-                </Typography>
             </Box>
-
         </Box>
       
       {/* Кнопки */}
