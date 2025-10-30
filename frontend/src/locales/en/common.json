@@ -61,7 +61,7 @@
     "title": "Cards",
     "front": "Front",
     "back": "Back",
-    "create": "Create Card",
+    "create": "Add Card",
     "edit": "Edit Card",
     "delete": "Delete Card"
   },
@@ -98,7 +98,7 @@
   "learning": {
     "allLearned": "All cards learned 🎉",
     "completedCycle": "You've completed all cards!",
-    "wantToContinue": "Want to continue",
+    "wantToContinue": "Continue learning",
     "showAnswer": "Show Answer",
     "next": "Next",
     "learned": "Learned",

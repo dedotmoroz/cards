@@ -40,12 +40,13 @@ export const CardItem: React.FC<CardItemProps> = ({
             }}
         >
             <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-                <Box display="flex" width="100%" gap={2}>
+                <Box display="flex" width="100%" gap={2} sx={{ flexDirection: { xs: 'column', md: 'row' } }}>
                     <Box flex={1}>
                         <Typography
                             variant="body1"
+                            color="text.primary"
                             sx={{
-                                fontWeight: 'medium',
+                                fontSize: 20,
                                 visibility: (displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id) ? 'visible' : 'hidden'
                             }}
                         >
@@ -55,8 +56,9 @@ export const CardItem: React.FC<CardItemProps> = ({
                     <Box flex={1}>
                         <Typography
                             variant="body1"
-                            color="text.secondary"
+                            color="text.primary"
                             sx={{
+                                fontSize: 20,
                                 visibility: (displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id) ? 'visible' : 'hidden'
                             }}
                         >
@@ -64,7 +66,7 @@ export const CardItem: React.FC<CardItemProps> = ({
                         </Typography>
                     </Box>
                 </Box>
-                <Box display="flex" alignItems="center" gap={1} sx={{ml: 2}}>
+                <Box display="flex" width={'80px'} alignItems="center" gap={2} sx={{ml: 2}}>
                     <Checkbox
                         edge="end"
                         checked={card.isLearned}

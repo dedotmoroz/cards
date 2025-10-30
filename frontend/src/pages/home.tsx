@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography, Button, AppBar, Toolbar, Drawer, IconButton, useMediaQuery, useTheme } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Box, Grid, Typography, Button, AppBar, Toolbar, Drawer, IconButton, useMediaQuery, useTheme, Tooltip } from '@mui/material';
+import { Menu as MenuIcon, AccountCircle, Logout } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
@@ -48,9 +48,11 @@ export const HomePage = () => {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    console.log('user.username', user);
     return (
         <>
-            <AppBar position="static">
+            <AppBar position={isMobile ? "relative" : "static"}>
                 <Toolbar>
                     {isMobile && (
                         <IconButton
@@ -63,17 +65,28 @@ export const HomePage = () => {
                             <MenuIcon />
                         </IconButton>
                     )}
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        {t('home.title')}
-                    </Typography>
+                    <Box sx={{ flexGrow: 1 }} />
                     {user ? (
                         <Box display="flex" alignItems="center" gap={2}>
-                            <Typography variant="body2">
-                                {t('home.welcome')}, {user.username}!
+                            <IconButton color="inherit" size="large">
+                                <AccountCircle />
+                            </IconButton>
+                            <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                    maxWidth: '50px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                }}
+                            >
+                                {user.username}
                             </Typography>
-                            <Button color="inherit" onClick={logout}>
-                                {t('home.logout')}
-                            </Button>
+                            <Tooltip title={t('home.logout')}>
+                                <IconButton color="inherit" onClick={logout} size="large">
+                                    <Logout />
+                                </IconButton>
+                            </Tooltip>
                         </Box>
                     ) : (
                         <Box display="flex" gap={1}>
@@ -89,7 +102,7 @@ export const HomePage = () => {
             </AppBar>
             {isMobile ? (
                 // Мобильная версия с Drawer
-                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)' }}>
+                <Box sx={{ display: 'flex', minHeight: '100vh' }}>
                     <Drawer
                         variant="temporary"
                         open={mobileOpen}

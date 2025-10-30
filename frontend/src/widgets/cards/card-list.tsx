@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { List, Box, Typography, IconButton, Checkbox } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, FilterList } from '@mui/icons-material';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
@@ -22,6 +22,7 @@ type CardListProps = {
   onFilterChange?: (filter: 'A' | 'AB' | 'B') => void;
   selectAll?: boolean;
   onSelectAllChange?: (checked: boolean) => void;
+  onToggleShowOnlyUnlearned?: () => void;
 };
 
 export const CardList: React.FC<CardListProps> = ({
@@ -31,6 +32,7 @@ export const CardList: React.FC<CardListProps> = ({
                                                     onFilterChange,
                                                     selectAll = false,
                                                     onSelectAllChange,
+                                                    onToggleShowOnlyUnlearned,
                                                      // onToggleLearned
 }) => {
   const { t } = useTranslation();
@@ -143,32 +145,40 @@ export const CardList: React.FC<CardListProps> = ({
         {/* Заголовки колонок */}
         <Box display="flex" justifyContent="space-between" alignItems="center" px={2} py={1} bgcolor="grey.50" borderBottom={1} borderColor="grey.200">
           <Box display="flex" alignItems="center" gap={1} flex={1}>
-            <Typography variant="subtitle2" fontWeight="bold">
+
+            <Typography variant="subtitle2" fontWeight="bold" fontSize={16}>
               {t('forms.question')}
             </Typography>
-            <IconButton size="small" onClick={handleQuestionToggle}>
-              {displayFilter === 'A' || displayFilter === 'AB' ? <Visibility /> : <VisibilityOff />}
-            </IconButton>
+              <IconButton size="small" onClick={handleQuestionToggle}>
+                  {displayFilter === 'A' || displayFilter === 'AB' ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
           </Box>
           <Box display="flex" alignItems="center" gap={1} flex={1}>
-            <Typography variant="subtitle2" fontWeight="bold">
+            <Typography variant="subtitle2" fontWeight="bold" fontSize={16}>
               {t('forms.answer')}
             </Typography>
-            <IconButton size="small" onClick={handleAnswerToggle}>
-              {displayFilter === 'B' || displayFilter === 'AB' ? <Visibility /> : <VisibilityOff />}
-            </IconButton>
+              <IconButton size="small" onClick={handleAnswerToggle}>
+                  {displayFilter === 'B' || displayFilter === 'AB' ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
           </Box>
-          <Box display="flex" alignItems="center" gap={1}>
+          <Box display="flex" width={'80px'} alignItems="center" gap={1}>
             <Checkbox
               checked={selectAll}
               onChange={(e) => onSelectAllChange?.(e.target.checked)}
-              size="small"
               sx={{ 
                 visibility: 'visible',
                 opacity: 1,
                 color: 'primary.main'
               }}
             />
+            <IconButton
+              size="small"
+              onClick={onToggleShowOnlyUnlearned}
+              color={showOnlyUnlearned ? 'primary' : 'default'}
+              title={showOnlyUnlearned ? t('learning.learned') : t('learning.learned')}
+            >
+              <FilterList />
+            </IconButton>
           </Box>
         </Box>
         

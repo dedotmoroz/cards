@@ -93,13 +93,12 @@ export const Cards = () => {
     return(
         <>
             <Paper sx={{p: 2, height: '100%'}}>
-                <Box display="flex" justifyContent="flex-end" alignItems="center">
-                    <Box>
+                <Box display="flex" mb={4} gap={2} justifyContent="flex-end" alignItems="center">
                         <Button
                             onClick={handleStartLearning}
-                            sx={{mr: 2}}
                             variant="contained"
                             disabled={!selectedFolderId || cards.length === 0}
+                            sx={{borderRadius: 8}}
                         >
                             {t('buttons.startLearning')}
                         </Button>
@@ -108,70 +107,65 @@ export const Cards = () => {
                             variant="contained"
                             color="secondary"
                             disabled={!selectedFolderId || cards.length === 0}
+                            sx={{borderRadius: 8}}
                         >
                             {t('learning.wantToContinue')}
                         </Button>
+                </Box>
+
+                <Box display="flex" mb={2} justifyContent="flex-start" alignItems="center">
+                    {/* Title */}
+                    <Box display="flex" alignItems="center">
+                        <Typography variant="h6">
+                            {t('cards.title')} {cards.length > 0 && `(${cards.length})`}
+                        </Typography>
+                        <IconButton
+                            onClick={handleMenuClick}
+                            size="small"
+                            sx={{ml: 1}}
+                        >
+                            <MoreHorizIcon/>
+                        </IconButton>
                     </Box>
-                </Box>
 
-                <Box display="flex" alignItems="center">
-                    <Typography variant="h6">
-                        {t('cards.title')} {cards.length > 0 && `(${cards.length})`}
-                    </Typography>
-                    <IconButton
-                        onClick={handleMenuClick}
-                        size="small"
-                        sx={{ ml: 1 }}
+                    {/* Dots menu */}
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
                     >
-                        <MoreHorizIcon />
-                    </IconButton>
-                </Box>
+                        <MenuItem onClick={handleImportClick} disabled={!selectedFolderId}>
+                            <GetAppIcon sx={{mr: 1}}/>
+                            {t('import.import')}
+                        </MenuItem>
+                    </Menu>
 
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                >
-                    <MenuItem onClick={handleImportClick} disabled={!selectedFolderId}>
-                        <GetAppIcon sx={{ mr: 1 }} />
-                        {t('import.import')}
-                    </MenuItem>
-                </Menu>
-
-                <Box display="flex" sx={{mt: 2}} justifyContent="space-between" alignItems="center">
-                    <Box>
+                    {/* Add card */}
+                    <Box ml={4}>
                         <Button
                             onClick={() => setIsCreatingCard(true)}
-                            sx={{mr: 2}}
+                            sx={{mr: 2, borderRadius: 8}}
                             variant="outlined"
                             disabled={!selectedFolderId}
-                            startIcon={<NoteAddIcon />}
+                            startIcon={<NoteAddIcon/>}
                         >
                             {t('cards.create')}
                         </Button>
                     </Box>
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <Button
-                            variant={showOnlyUnlearned ? "contained" : "outlined"}
-                            size="small"
-                            onClick={handleUnlearnedToggle}
-                            sx={{ ml: 1 }}
-                        >
-                            {t('learning.learned')}
-                        </Button>
-                    </Box>
                 </Box>
 
+                {/* Filter moved into CardList header */}
+
                 {isLoading ? (
-                    <Box mt={4} display="flex" justifyContent="center">
+                    <Box mt={4} display="flex" justifyContent="center" alignItems="center">
                         <CircularProgress/>
                     </Box>
                 ) : (
@@ -182,6 +176,7 @@ export const Cards = () => {
                         onFilterChange={handleFilterChange}
                         selectAll={selectAll}
                         onSelectAllChange={handleSelectAllChange}
+                        onToggleShowOnlyUnlearned={handleUnlearnedToggle}
                     />
                 )}
             </Paper>
