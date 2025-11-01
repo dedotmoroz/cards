@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {FolderList} from "@/widgets/folders/folder-list.tsx";
 import {CreateFolderDialog} from "@/features/create-folder.tsx";
 import {useState} from "react";
-import {useCardsStore} from "@/shared/store/cardsStore.ts";
+import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {useCreateFolder} from "@/features/create-folder/useCreateFolder.ts";
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
@@ -15,7 +15,7 @@ export const Folders = () => {
         setSelectedFolder,
         updateFolderName,
         deleteFolder
-    } = useCardsStore();
+    } = useFoldersStore();
     const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
     const { createFolder } = useCreateFolder();

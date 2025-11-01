@@ -5,6 +5,7 @@ import { Menu as MenuIcon, AccountCircle, Logout } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
+import { useFoldersStore } from '@/shared/store/foldersStore';
 import { useAuthStore } from '@/shared/store/authStore';
 import {Folders} from "@/widgets/folders";
 import {Cards} from "@/widgets/cards";
@@ -16,13 +17,13 @@ export const HomePage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const { 
+    const { fetchCards } = useCardsStore();
+    const {
         folders,
         selectedFolderId,
         setSelectedFolder,
         fetchFolders,
-        fetchCards,
-    } = useCardsStore();
+    } = useFoldersStore();
     
     const { user, logout } = useAuthStore();
 

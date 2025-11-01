@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState} from "react";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
+import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {useCreateCard} from "@/features/create-card/useCreateCard.ts";
 import {useNavigate} from "react-router-dom";
 import {CreateCardDialog} from "@/features/create-card.tsx";
@@ -25,10 +26,10 @@ export const Cards = () => {
 
     const {
         cards,
-        selectedFolderId,
         isLoading,
         updateCardLearnStatus,
     } = useCardsStore();
+    const { selectedFolderId } = useFoldersStore();
 
     const { createCard } = useCreateCard();
     const navigate = useNavigate();

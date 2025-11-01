@@ -1,7 +1,7 @@
-import { useCardsStore } from '@/shared/store/cardsStore';
+import { useFoldersStore } from '@/shared/store/foldersStore';
 
 export const useCreateFolder = () => {
-    const { createFolder, isLoading, error } = useCardsStore();
+    const { createFolder, isLoading, error } = useFoldersStore();
     
     return { 
         createFolder, 
