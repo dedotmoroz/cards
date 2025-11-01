@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Container,
@@ -23,6 +23,7 @@ export const SignInPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -39,12 +40,9 @@ export const SignInPage = () => {
 
     try {
       await login(formData.email, formData.password);
-      // Небольшая задержка для обновления состояния
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 100);
+      navigate('/', { replace: true });
     } catch (error: any) {
-      setError(error.message || 'Ошибка входа');
+      setError(error.message || t('auth.invalidCredentials'));
       setIsLoading(false);
     }
   };
@@ -53,7 +51,7 @@ export const SignInPage = () => {
     <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Paper sx={{ p: 4 }}>
         <Typography variant="h4" align="center" gutterBottom>
-          Вход
+          {t('auth.login')}
         </Typography>
         
         {error && (
@@ -65,7 +63,7 @@ export const SignInPage = () => {
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Email"
+            label={t('auth.email')}
             name="email"
             type="email"
             value={formData.email}
@@ -95,14 +93,14 @@ export const SignInPage = () => {
             sx={{ mt: 3, mb: 2 }}
             disabled={isLoading}
           >
-            {isLoading ? <CircularProgress size={24} /> : 'Войти'}
+            {isLoading ? <CircularProgress size={24} /> : t('auth.login')}
           </Button>
           
           <Box textAlign="center">
             <Typography variant="body2">
-              Нет аккаунта?{' '}
+              {t('auth.noAccount')}{' '}
               <Link to="/signup" style={{ textDecoration: 'none' }}>
-                Зарегистрироваться
+                {t('auth.registerLink')}
               </Link>
             </Typography>
           </Box>

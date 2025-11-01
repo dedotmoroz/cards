@@ -24,6 +24,8 @@
     "registerLink": "Sign Up",
     "alreadyRegistered": "Already have an account?",
     "loginLink": "Sign In",
+    "invalidCredentials": "Incorrect email or password",
+    "noAccount": "Don't have an account?",
     "passwordMismatch": "Passwords do not match",
     "passwordMinLength": "Password must be at least 6 characters",
     "registerDescription": "Create an account and start memorizing"

@@ -52,7 +52,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       onSuccess?.();
       onClose();
     } catch (error: any) {
-      setError(error.message || t('errors.generic'));
+      setError(error.message || t('auth.invalidCredentials'));
     } finally {
       setIsLoading(false);
     }

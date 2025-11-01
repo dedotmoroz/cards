@@ -24,6 +24,8 @@
     "registerLink": "Зарегистрируйтесь",
     "alreadyRegistered": "Уже есть аккаунт?",
     "loginLink": "Войти",
+    "invalidCredentials": "Неверный email или пароль",
+    "noAccount": "Нет аккаунта?",
     "passwordMismatch": "Пароли не совпадают",
     "passwordMinLength": "Пароль должен содержать минимум 6 символов",
     "registerDescription": "Создайте аккаунт и начните запоминать"

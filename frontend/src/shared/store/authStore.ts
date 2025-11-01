@@ -46,14 +46,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isLoading: false
       });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Ошибка регистрации';
+      const errorMessage = error.response?.data?.message;
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
   },
 
   login: async (email: string, password: string) => {
-    set({ isLoading: true, error: null });
+    set({ error: null });
     try {
       await authApi.login({ email, password });
       
@@ -62,12 +62,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       
       set({ 
         user, 
-        isAuthenticated: true,
-        isLoading: false
+        isAuthenticated: true
       });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Ошибка входа';
-      set({ error: errorMessage, isLoading: false });
+      const errorMessage = error.response?.data?.message;
+      set({ error: errorMessage });
       throw new Error(errorMessage);
     }
   },
@@ -133,7 +132,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isLoading: false
       });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Не удалось обновить профиль';
+      const errorMessage = error.response?.data?.message;
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
@@ -145,7 +144,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await authApi.changePassword(data);
       set({ isLoading: false });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Не удалось сменить пароль';
+      const errorMessage = error.response?.data?.message;
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
