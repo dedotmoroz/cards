@@ -69,9 +69,11 @@ export const HomePage = () => {
                     <Box sx={{ flexGrow: 1 }} />
                     {user ? (
                         <Box display="flex" alignItems="center" gap={2}>
-                            <IconButton color="inherit" size="large">
-                                <AccountCircle />
-                            </IconButton>
+                            <Tooltip title={t('profile.openProfile')}>
+                                <IconButton color="inherit" size="large" onClick={() => navigate('/profile')}>
+                                    <AccountCircle />
+                                </IconButton>
+                            </Tooltip>
                             <Typography 
                                 variant="body2" 
                                 sx={{ 

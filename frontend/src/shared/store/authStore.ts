@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { User } from '../types/auth';
+import type { ChangePasswordData, UpdateProfileData, User } from '../types/auth';
 import { authApi } from '../api/authApi';
 
 interface AuthState {
@@ -18,6 +18,8 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  updateProfile: (data: UpdateProfileData) => Promise<void>;
+  changePassword: (data: ChangePasswordData) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -106,6 +108,46 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
     } finally {
       set({ isLoading: false });
+    }
+  }
+  ,
+
+  updateProfile: async (data: UpdateProfileData) => {
+    const currentUser = get().user;
+    if (!currentUser) {
+      return;
+    }
+
+    set({ isLoading: true, error: null });
+    try {
+      const updatedUser = await authApi.updateProfile(data);
+      const mergedUser = { ...currentUser, ...updatedUser } as User;
+
+      if (typeof data.language === 'string') {
+        mergedUser.language = data.language;
+      }
+
+      set({
+        user: mergedUser,
+        isAuthenticated: true,
+        isLoading: false
+      });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Не удалось обновить профиль';
+      set({ error: errorMessage, isLoading: false });
+      throw new Error(errorMessage);
+    }
+  },
+
+  changePassword: async (data: ChangePasswordData) => {
+    set({ isLoading: true, error: null });
+    try {
+      await authApi.changePassword(data);
+      set({ isLoading: false });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Не удалось сменить пароль';
+      set({ error: errorMessage, isLoading: false });
+      throw new Error(errorMessage);
     }
   }
 }));

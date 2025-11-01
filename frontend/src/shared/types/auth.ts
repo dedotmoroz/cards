@@ -2,6 +2,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  language?: string;
 }
 
 export interface RegisterData {
@@ -17,4 +18,14 @@ export interface LoginData {
 
 export interface AuthResponse {
   user: User;
+}
+
+export interface UpdateProfileData {
+  username?: string;
+  language?: string;
+}
+
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
 }

@@ -80,7 +80,8 @@
   "home": {
     "title": "Мои карточки",
     "logout": "Выйти",
-    "welcome": "Добро пожаловать"
+    "welcome": "Добро пожаловать",
+    "profile": "Профиль"
   },
   "forms": {
     "newCard": "Новая карточка",
@@ -109,5 +110,28 @@
     "selectFile": "Выберите файл",
     "import": "Импортировать",
     "format": "CSV формат: вопрос,ответ"
+  },
+  "profile": {
+    "title": "Профиль",
+    "subtitle": "Обновите личную информацию и настройки",
+    "profileSection": "Данные аккаунта",
+    "usernameLabel": "Отображаемое имя",
+    "emailLabel": "Email",
+    "languageLabel": "Язык интерфейса",
+    "saveProfile": "Сохранить изменения",
+    "profileUpdated": "Профиль успешно обновлён",
+    "usernameRequired": "Отображаемое имя не может быть пустым",
+    "nothingToUpdate": "Нет изменений для сохранения",
+    "languageSection": "Язык интерфейса",
+    "saveLanguage": "Сохранить язык",
+    "languageUpdated": "Язык интерфейса обновлён",
+    "passwordSection": "Смена пароля",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите новый пароль",
+    "savePassword": "Сменить пароль",
+    "passwordUpdated": "Пароль успешно изменён",
+    "passwordMismatch": "Пароли не совпадают",
+    "openProfile": "Открыть профиль"
   }
 }

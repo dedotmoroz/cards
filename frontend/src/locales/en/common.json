@@ -80,7 +80,8 @@
   "home": {
     "title": "My Cards",
     "logout": "Logout",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "profile": "Profile"
   },
   "forms": {
     "newCard": "New Card",
@@ -109,5 +110,28 @@
     "selectFile": "Select File",
     "import": "Import",
     "format": "CSV Format: question,answer"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Update your personal information and preferences",
+    "profileSection": "Account Information",
+    "usernameLabel": "Display name",
+    "emailLabel": "Email",
+    "languageLabel": "Interface language",
+    "saveProfile": "Save changes",
+    "profileUpdated": "Profile updated successfully",
+    "usernameRequired": "Display name cannot be empty",
+    "nothingToUpdate": "Nothing to update",
+    "languageSection": "Interface language",
+    "saveLanguage": "Save language",
+    "languageUpdated": "Interface language updated",
+    "passwordSection": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "savePassword": "Change password",
+    "passwordUpdated": "Password updated successfully",
+    "passwordMismatch": "Passwords do not match",
+    "openProfile": "Open profile"
   }
 }

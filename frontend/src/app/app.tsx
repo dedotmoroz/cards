@@ -7,6 +7,7 @@ import { SignUpPage } from '@/pages/signup';
 import { SignInPage } from '@/pages/signin';
 import { LandingPage } from '@/pages/landing';
 import { NotFoundPage } from '@/pages/404';
+import { ProfilePage } from '@/pages/profile';
 import { useAuthStore } from '@/shared/store/authStore';
 import { PageContainer } from '@/shared/ui/page-container';
 
@@ -34,6 +35,7 @@ export default function App() {
                         <>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/learn/:folderId" element={<PageContainer><LearnPage /></PageContainer>} />
+                            <Route path="/profile" element={<ProfilePage />} />
                             <Route path="*" element={<NotFoundPage />} />
                         </>
                     ) : (
