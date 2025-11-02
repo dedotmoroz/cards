@@ -50,7 +50,6 @@ export const HomePage = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    console.log('user.username', user);
     return (
         <>
             <AppBar position={isMobile ? "relative" : "static"}>
@@ -70,21 +69,24 @@ export const HomePage = () => {
                     {user ? (
                         <Box display="flex" alignItems="center" gap={2}>
                             <Tooltip title={t('profile.openProfile')}>
-                                <IconButton color="inherit" size="large" onClick={() => navigate('/profile')}>
-                                    <AccountCircle />
-                                </IconButton>
+                                <Box display="flex" alignItems="center">
+                                    <IconButton color="inherit" size="large" onClick={() => navigate('/profile')}>
+                                        <AccountCircle/>
+                                    </IconButton>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            maxWidth: '50px',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                    >
+                                        {user.username}
+                                    </Typography>
+                                </Box>
                             </Tooltip>
-                            <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                    maxWidth: '50px',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap'
-                                }}
-                            >
-                                {user.username}
-                            </Typography>
+
                             <Tooltip title={t('home.logout')}>
                                 <IconButton color="inherit" onClick={logout} size="large">
                                     <Logout />

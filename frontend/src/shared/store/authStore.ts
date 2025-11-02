@@ -38,7 +38,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await authApi.register({ name: username, email, password });
       
       // Получаем полную информацию о пользователе
-      const user = await authApi.getMe();
+      const userData = await authApi.getMe();
+      // Маппим name из API в username для типа User
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username
+      };
       
       set({ 
         user, 
@@ -57,7 +62,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await authApi.login({ email, password });
       
       // Получаем полную информацию о пользователе
-      const user = await authApi.getMe();
+      const userData = await authApi.getMe();
+      // Маппим name из API в username для типа User
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username
+      };
       
       set({ 
         user, 
@@ -91,7 +101,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     try {
-      const user = await authApi.getMe();
+      const userData = await authApi.getMe();
+      // Маппим name из API в username для типа User
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username
+      };
       set({ 
         user, 
         isAuthenticated: true 
@@ -113,7 +128,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     set({ error: null });
     try {
-      const updatedUser = await authApi.updateProfile(data);
+      const updatedUserData = await authApi.updateProfile(data);
+      // Маппим name из API в username для типа User
+      const updatedUser: User = {
+        ...updatedUserData,
+        username: (updatedUserData as any).name || updatedUserData.username
+      };
       const mergedUser = { ...currentUser, ...updatedUser } as User;
 
       if (typeof data.language === 'string') {
