@@ -465,6 +465,7 @@ export async function buildServer() {
                     properties: {
                         email: { type: 'string', format: 'email' },
                         password: { type: 'string', minLength: 6 },
+                        name: { type: 'string' },
                     },
                 },
                 response: {
@@ -473,6 +474,7 @@ export async function buildServer() {
                         properties: {
                             id: { type: 'string', format: 'uuid' },
                             email: { type: 'string', format: 'email' },
+                            name: { type: 'string' },
                         },
                     },
                 },
@@ -481,9 +483,17 @@ export async function buildServer() {
             },
         },
         async (req, reply) => {
-            const body = z.object({ email: z.string().email(), password: z.string().min(6) }).parse(req.body);
-            const user = await userService.register(body.email, body.password);
-            return reply.code(201).send({ id: user.id, email: user.email });
+            const body = z.object({ 
+                email: z.string().email(), 
+                password: z.string().min(6),
+                name: z.string().optional(),
+            }).parse(req.body);
+            const user = await userService.register(body.email, body.password, body.name);
+            return reply.code(201).send({ 
+                id: user.id, 
+                email: user.email,
+                name: user.name,
+            });
         }
     );
 
@@ -544,6 +554,7 @@ export async function buildServer() {
                         properties: {
                             id: { type: 'string', format: 'uuid' },
                             email: { type: 'string', format: 'email' },
+                            name: { type: 'string' },
                             createdAt: { type: 'string', format: 'date-time' },
                         },
                     },
@@ -564,11 +575,58 @@ export async function buildServer() {
             if (!user) {
                 return reply.code(404).send({ error: 'User not found' });
             }
+            const userName = (user.name && user.name.trim() !== '') ? user.name.trim() : null;
             return reply.send({
                 id: user.id,
                 email: user.email,
+                name: userName,
                 createdAt: user.createdAt,
             });
+        }
+    );
+
+    fastify.patch('/auth/profile',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                security: [{ cookieAuth: [] }],
+                body: {
+                    type: 'object',
+                    required: ['name'],
+                    properties: {
+                        name: { type: 'string' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            name: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Update user profile name',
+            },
+        },
+        async (req, reply) => {
+            const userId = (req.user as any).userId;
+            const body = z.object({ 
+                name: z.string(),
+            }).parse(req.body);
+            
+            try {
+                const user = await userService.updateName(userId, body.name);
+                return reply.send({ name: user.name });
+            } catch (error) {
+                return reply.code(404).send({ error: 'User not found' });
+            }
         }
     );
 

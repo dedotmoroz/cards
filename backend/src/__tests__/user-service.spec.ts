@@ -23,6 +23,7 @@ describe('UserService', () => {
             findByEmail: jest.fn(),
             findById: jest.fn(),
             findByOAuth: jest.fn(),
+            update: jest.fn(),
         };
         userService = new UserService(userRepo);
     });
@@ -42,6 +43,28 @@ describe('UserService', () => {
         expect(userRepo.create).toHaveBeenCalledWith({
             email: 'test@example.com',
             passwordHash: 'hashed_password',
+            name: undefined,
+        });
+        expect(result).toEqual(user);
+    });
+
+    it('registers a user with name', async () => {
+        const user: User = {
+            id: '1',
+            email: 'test@example.com',
+            passwordHash: 'hashed_password',
+            name: 'Test User',
+            createdAt: new Date(),
+        };
+        userRepo.create.mockResolvedValue(user);
+
+        const result = await userService.register('test@example.com', 'plain_password', 'Test User');
+
+        expect(hash).toHaveBeenCalledWith('plain_password', 10);
+        expect(userRepo.create).toHaveBeenCalledWith({
+            email: 'test@example.com',
+            passwordHash: 'hashed_password',
+            name: 'Test User',
         });
         expect(result).toEqual(user);
     });

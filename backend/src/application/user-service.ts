@@ -15,9 +15,9 @@ export class UserService {
     }
 
 
-    async register(email: string, password: string): Promise<User> {
+    async register(email: string, password: string, name?: string): Promise<User> {
         const passwordHash = await hash(password, 10);
-        return this.userRepo.create({ email, passwordHash });
+        return this.userRepo.create({ email, passwordHash, name });
     }
 
     async login(email: string, password: string): Promise<string | null> {
@@ -32,6 +32,10 @@ export class UserService {
 
     async getById(userId: string): Promise<User | null> {
         return this.userRepo.findById(userId);
+    }
+
+    async updateName(userId: string, name: string): Promise<User> {
+        return this.userRepo.update(userId, { name });
     }
 
     async loginWithGoogle(googleIdToken: string): Promise<string> {

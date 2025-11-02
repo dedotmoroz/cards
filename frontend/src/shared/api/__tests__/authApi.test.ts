@@ -20,7 +20,7 @@ describe('authApi', () => {
     it('should register user successfully', async () => {
       // Arrange
       const registerData: RegisterData = {
-        username: 'testuser',
+        name: 'testuser',
         email: 'test@example.com',
         password: 'password123'
       }
@@ -41,7 +41,7 @@ describe('authApi', () => {
     it('should throw error on registration failure', async () => {
       // Arrange
       const registerData: RegisterData = {
-        username: 'testuser',
+        name: 'testuser',
         email: 'test@example.com',
         password: 'password123'
       }

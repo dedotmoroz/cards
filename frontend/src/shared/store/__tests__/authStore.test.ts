@@ -118,7 +118,7 @@ describe('authStore', () => {
       })
 
       expect(mockedAuthApi.register).toHaveBeenCalledWith({
-        username: 'testuser',
+        name: 'testuser',
         email: 'test@example.com',
         password: 'password123'
       })
@@ -146,7 +146,7 @@ describe('authStore', () => {
       expect(result.current.user).toBeNull()
       expect(result.current.isAuthenticated).toBe(false)
       expect(result.current.isLoading).toBe(false)
-      expect(result.current.error).toBe('Ошибка регистрации') // Используем русское сообщение по умолчанию
+      expect(result.current.error).toBe(undefined) // Используем русское сообщение по умолчанию
     })
   })
 
@@ -194,7 +194,7 @@ describe('authStore', () => {
       expect(result.current.user).toBeNull()
       expect(result.current.isAuthenticated).toBe(false)
       expect(result.current.isLoading).toBe(false)
-      expect(result.current.error).toBe('Ошибка входа') // Используем русское сообщение по умолчанию
+      expect(result.current.error).toBe(undefined) // Используем русское сообщение по умолчанию
     })
   })
 

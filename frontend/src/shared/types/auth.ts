@@ -6,7 +6,7 @@ export interface User {
 }
 
 export interface RegisterData {
-  username: string;
+  name: string;
   email: string;
   password: string;
 }
@@ -21,7 +21,7 @@ export interface AuthResponse {
 }
 
 export interface UpdateProfileData {
-  username?: string;
+  name?: string;
   language?: string;
 }
 

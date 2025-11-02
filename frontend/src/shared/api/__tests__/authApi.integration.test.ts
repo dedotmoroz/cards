@@ -49,7 +49,7 @@ describe('authApi Integration Tests', () => {
     it('should register user successfully', async () => {
       // Arrange
       const registerData: RegisterData = {
-        username: 'testuser',
+        name: 'testuser',
         email: 'test@example.com',
         password: 'password123'
       }
@@ -61,7 +61,7 @@ describe('authApi Integration Tests', () => {
     it('should handle registration error', async () => {
       // Arrange
       const registerData: RegisterData = {
-        username: 'testuser',
+        name: 'testuser',
         email: 'test@example.com',
         password: 'password123'
       }

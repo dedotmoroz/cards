@@ -33,9 +33,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setError: (error) => set({ error }),
 
   register: async (username: string, email: string, password: string) => {
-    set({ isLoading: true, error: null });
+    set({ error: null });
     try {
-      await authApi.register({ username, email, password });
+      await authApi.register({ name: username, email, password });
       
       // Получаем полную информацию о пользователе
       const user = await authApi.getMe();
@@ -43,11 +43,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ 
         user, 
         isAuthenticated: true,
-        isLoading: false
       });
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
-      set({ error: errorMessage, isLoading: false });
+      set({ error: errorMessage});
       throw new Error(errorMessage);
     }
   },
@@ -72,14 +71,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: async () => {
-    set({ isLoading: true, error: null });
+    set({ error: null });
     try {
       await authApi.logout();
     } finally {
       set({ 
         user: null, 
         isAuthenticated: false,
-        isLoading: false
       });
     }
   },
@@ -91,8 +89,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (currentState.isAuthenticated && currentState.user) {
       return;
     }
-    
-    set({ isLoading: true });
+
     try {
       const user = await authApi.getMe();
       set({ 
@@ -105,11 +102,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: null, 
         isAuthenticated: false 
       });
-    } finally {
-      set({ isLoading: false });
     }
-  }
-  ,
+  },
 
   updateProfile: async (data: UpdateProfileData) => {
     const currentUser = get().user;
@@ -117,7 +111,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return;
     }
 
-    set({ isLoading: true, error: null });
+    set({ error: null });
     try {
       const updatedUser = await authApi.updateProfile(data);
       const mergedUser = { ...currentUser, ...updatedUser } as User;
@@ -129,23 +123,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({
         user: mergedUser,
         isAuthenticated: true,
-        isLoading: false
       });
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
-      set({ error: errorMessage, isLoading: false });
+      set({ error: errorMessage});
       throw new Error(errorMessage);
     }
   },
 
   changePassword: async (data: ChangePasswordData) => {
-    set({ isLoading: true, error: null });
+    set({ error: null });
     try {
       await authApi.changePassword(data);
-      set({ isLoading: false });
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
-      set({ error: errorMessage, isLoading: false });
+      set({ error: errorMessage});
       throw new Error(errorMessage);
     }
   }

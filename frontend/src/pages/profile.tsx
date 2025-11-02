@@ -81,7 +81,7 @@ export const ProfilePage = () => {
     setProfileSuccess('');
 
     try {
-      await updateProfile({ username: trimmedName });
+      await updateProfile({ name: trimmedName });
       setProfileSuccess(t('profile.profileUpdated'));
     } catch (error: any) {
       setProfileError(error.message || t('errors.generic'));

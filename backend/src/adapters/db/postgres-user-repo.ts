@@ -12,6 +12,7 @@ export class PostgresUserRepository implements UserRepository {
             id,
             email: user.email,
             password_hash: user.passwordHash,
+            name: user.name,
         });
         return { id, ...user };
     }
@@ -81,5 +82,37 @@ export class PostgresUserRepository implements UserRepository {
             oauthProvider: row.oauth_provider ?? undefined,
             oauthId: row.oauth_id ?? undefined,
         };
+    }
+
+    async update(id: string, updates: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User> {
+        const updateData: any = {};
+        
+        if (updates.email !== undefined) {
+            updateData.email = updates.email;
+        }
+        if (updates.passwordHash !== undefined) {
+            updateData.password_hash = updates.passwordHash;
+        }
+        if (updates.name !== undefined) {
+            updateData.name = updates.name;
+        }
+        if (updates.oauthProvider !== undefined) {
+            updateData.oauth_provider = updates.oauthProvider;
+        }
+        if (updates.oauthId !== undefined) {
+            updateData.oauth_id = updates.oauthId;
+        }
+
+        await db
+            .update(users)
+            .set(updateData)
+            .where(eq(users.id, id));
+
+        const updatedUser = await this.findById(id);
+        if (!updatedUser) {
+            throw new Error(`User with id ${id} not found after update`);
+        }
+
+        return updatedUser;
     }
 }
