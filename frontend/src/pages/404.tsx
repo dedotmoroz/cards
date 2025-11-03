@@ -7,7 +7,7 @@ export const NotFoundPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleGoHome = () => navigate('/');
+  const handleGoHome = () => navigate('/learn');
   const handleGoBack = () => navigate(-1);
 
   return (

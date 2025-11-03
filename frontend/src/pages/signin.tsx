@@ -40,7 +40,7 @@ export const SignInPage = () => {
 
     try {
       await login(formData.email, formData.password);
-      navigate('/', { replace: true });
+      navigate('/learn', { replace: true });
     } catch (error: any) {
       setError(error.message || t('auth.invalidCredentials'));
       setIsLoading(false);

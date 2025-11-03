@@ -27,6 +27,11 @@ export const HomePage = () => {
     
     const { user, logout } = useAuthStore();
 
+    const logoutHandler = async () => {
+        await logout();
+        navigate('/');
+    }
+
     // Загружаем папки при монтировании компонента
     useEffect(() => {
         fetchFolders();
@@ -88,7 +93,7 @@ export const HomePage = () => {
                             </Tooltip>
 
                             <Tooltip title={t('home.logout')}>
-                                <IconButton color="inherit" onClick={logout} size="large">
+                                <IconButton color="inherit" onClick={logoutHandler} size="large">
                                     <Logout />
                                 </IconButton>
                             </Tooltip>

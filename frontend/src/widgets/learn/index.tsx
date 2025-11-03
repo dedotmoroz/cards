@@ -55,7 +55,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     break;
                 case 'Escape':
                     event.preventDefault();
-                    navigate('/');
+                    navigate('/learn');
                     break;
             }
         };
@@ -65,7 +65,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
 
 
     // Navigation handlers
-    const handleBackToFolders = () => navigate('/');
+    const handleBackToFolders = () => navigate('/learn');
     const handleContinueLearning = () => learning.setLearningMode(true);
     const handlePrevious = () => learning.navigateToCard(learning.currentIndex - 1);
     const handleNext = () => learning.navigateToCard(learning.currentIndex + 1);

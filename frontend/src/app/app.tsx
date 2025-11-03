@@ -33,7 +33,8 @@ export default function App() {
                 <Routes>
                     {isAuthenticated ? (
                         <>
-                            <Route path="/" element={<HomePage />} />
+                            <Route path="/" element={<LandingPage />} />
+                            <Route path="/learn" element={<HomePage />} />
                             <Route path="/learn/:folderId" element={<PageContainer><LearnPage /></PageContainer>} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="*" element={<NotFoundPage />} />

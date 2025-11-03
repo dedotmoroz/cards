@@ -19,18 +19,19 @@ import {
   Login,
   AutoAwesome
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { AuthDialog } from '@/shared/ui/auth-dialog';
 import { LanguageSwitcher } from '@/shared/ui/language-switcher';
 
 export const LandingPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleAuthSuccess = () => {
-    // Перенаправление произойдет автоматически через authStore
-    window.location.href = '/';
+      navigate('/learn');
   };
 
   const features = [

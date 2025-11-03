@@ -62,7 +62,7 @@ export const SignUpPage = () => {
       await register(formData.username, formData.email, formData.password);
       // Небольшая задержка для обновления состояния
       setTimeout(() => {
-        navigate('/signin');
+        navigate('/learn');
       }, 100);
     } catch (error: any) {
       setError(error.message || t('errors.generic'));

@@ -2,5 +2,5 @@ import { useNavigate } from 'react-router-dom';
 
 export const backToFolders = () => {
     const navigate = useNavigate();
-    return () => navigate('/');
+    return () => navigate('/learn');
 }
