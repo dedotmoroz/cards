@@ -56,33 +56,29 @@ export const useCardsStore = create<CardsState>((set, get) => ({
 
     // API calls
     fetchCards: async (folderId: string) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             const cards = await cardsApi.getCards(folderId)
             set({ cards })
         } catch (error) {
             console.error('Error fetching cards:', error)
             set({ error: 'Failed to fetch cards' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     createCard: async (folderId: string, question: string, answer: string) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             await cardsApi.createCard({ folderId, question, answer })
             await get().fetchCards(folderId)
         } catch (error) {
             console.error('Error creating card:', error)
             set({ error: 'Failed to create card' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     updateCardApi: async (id: string, updates: { question?: string; answer?: string }) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             const updated = await cardsApi.updateCard(id, updates)
             get().updateCard(id, {
@@ -92,34 +88,28 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         } catch (error) {
             console.error('Error updating card:', error)
             set({ error: 'Failed to update card' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     updateCardLearnStatus: async (id: string, isLearned: boolean) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             await cardsApi.updateCardLearnStatus(id, { isLearned })
             get().updateCard(id, { isLearned })
         } catch (error) {
             console.error('Error updating card learn status:', error)
             set({ error: 'Failed to update card learn status' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     deleteCard: async (id: string) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             await cardsApi.deleteCard(id)
             get().removeCard(id)
         } catch (error) {
             console.error('Error deleting card:', error)
             set({ error: 'Failed to delete card' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 }))

@@ -60,54 +60,46 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
 
     // API calls
     fetchFolders: async () => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             const folders = await foldersApi.getFolders()
             set({ folders })
         } catch (error) {
             console.error('Error fetching folders:', error)
             set({ error: 'Failed to fetch folders' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     createFolder: async (name: string) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             await foldersApi.createFolder({ name })
             await get().fetchFolders()
         } catch (error) {
             console.error('Error creating folder:', error)
             set({ error: 'Failed to create folder' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     updateFolderName: async (id: string, name: string) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             await foldersApi.updateFolder(id, { name })
             get().updateFolder(id, { name })
         } catch (error) {
             console.error('Error updating folder:', error)
             set({ error: 'Failed to update folder' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 
     deleteFolder: async (id: string) => {
-        set({ isLoading: true, error: null })
+        set({ error: null })
         try {
             await foldersApi.deleteFolder(id)
             get().removeFolder(id)
         } catch (error) {
             console.error('Error deleting folder:', error)
             set({ error: 'Failed to delete folder' })
-        } finally {
-            set({ isLoading: false })
         }
     },
 }))

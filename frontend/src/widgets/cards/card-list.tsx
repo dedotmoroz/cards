@@ -183,8 +183,9 @@ export const CardList: React.FC<CardListProps> = ({
         </Box>
         
         <List>
-          {filteredCards.length && filteredCards.map((card) => (
+          {!!filteredCards.length && filteredCards.map((card) => (
               <CardItem
+                  key={card.id}
                   card={card}
                   handleCardClick={handleCardClick}
                   displayFilter={displayFilter}
