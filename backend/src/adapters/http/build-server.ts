@@ -647,6 +647,67 @@ export async function buildServer() {
         }
     );
 
+    fastify.patch('/auth/password',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                security: [{ cookieAuth: [] }],
+                body: {
+                    type: 'object',
+                    required: ['oldPassword', 'newPassword'],
+                    properties: {
+                        oldPassword: { type: 'string' },
+                        newPassword: { type: 'string', minLength: 6 },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            status: { type: 'string' },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Change user password',
+            },
+        },
+        async (req, reply) => {
+            const userId = (req.user as any).userId;
+            const body = z.object({ 
+                oldPassword: z.string(),
+                newPassword: z.string().min(6),
+            }).parse(req.body);
+            
+            try {
+                await userService.changePassword(userId, body.oldPassword, body.newPassword);
+                return reply.send({ status: 'ok' });
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error.message === 'Invalid old password') {
+                        return reply.code(400).send({ error: 'Invalid old password' });
+                    }
+                    if (error.message === 'User not found') {
+                        return reply.code(404).send({ error: 'User not found' });
+                    }
+                }
+                return reply.code(400).send({ error: 'Failed to change password' });
+            }
+        }
+    );
+
     fastify.post('/auth/logout',
         {
             schema: {

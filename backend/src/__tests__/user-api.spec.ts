@@ -260,4 +260,101 @@ describe('User API', () => {
 
         expect(updateRes.status).toBe(400);
     });
+
+    it('меняет пароль пользователя', async () => {
+        // Регистрируем пользователя
+        const registerRes = await request(fastify.server)
+            .post('/auth/register')
+            .send({ email: testEmail, password: testPassword });
+
+        expect(registerRes.status).toBe(201);
+        
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
+        const tokenCookie = Array.isArray(setCookieHeader) 
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        const cookieValue = tokenCookie?.split(';')[0] || '';
+        
+        // Меняем пароль
+        const newPassword = 'newSecurePassword123';
+        const changePasswordRes = await request(fastify.server)
+            .patch('/auth/password')
+            .set('Cookie', cookieValue)
+            .send({ oldPassword: testPassword, newPassword });
+
+        expect(changePasswordRes.status).toBe(200);
+        expect(changePasswordRes.body.status).toBe('ok');
+        
+        // Проверяем, что старый пароль больше не работает
+        const oldLoginRes = await request(fastify.server)
+            .post('/auth/login')
+            .send({ email: testEmail, password: testPassword });
+
+        expect(oldLoginRes.status).toBe(401);
+        
+        // Проверяем, что новый пароль работает
+        const newLoginRes = await request(fastify.server)
+            .post('/auth/login')
+            .send({ email: testEmail, password: newPassword });
+
+        expect(newLoginRes.status).toBe(200);
+    });
+
+    it('не меняет пароль при неправильном старом пароле', async () => {
+        // Регистрируем пользователя
+        const registerRes = await request(fastify.server)
+            .post('/auth/register')
+            .send({ email: testEmail, password: testPassword });
+
+        expect(registerRes.status).toBe(201);
+        
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
+        const tokenCookie = Array.isArray(setCookieHeader) 
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        const cookieValue = tokenCookie?.split(';')[0] || '';
+        
+        // Пытаемся поменять пароль с неправильным старым паролем
+        const changePasswordRes = await request(fastify.server)
+            .patch('/auth/password')
+            .set('Cookie', cookieValue)
+            .send({ oldPassword: 'wrongPassword', newPassword: 'newPassword123' });
+
+        expect(changePasswordRes.status).toBe(400);
+        expect(changePasswordRes.body.error).toBe('Invalid old password');
+    });
+
+    it('не меняет пароль без токена', async () => {
+        const res = await request(fastify.server)
+            .patch('/auth/password')
+            .send({ oldPassword: testPassword, newPassword: 'newPassword123' });
+
+        expect(res.status).toBe(401);
+    });
+
+    it('не меняет пароль при слишком коротком новом пароле', async () => {
+        // Регистрируем пользователя
+        const registerRes = await request(fastify.server)
+            .post('/auth/register')
+            .send({ email: testEmail, password: testPassword });
+
+        expect(registerRes.status).toBe(201);
+        
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
+        const tokenCookie = Array.isArray(setCookieHeader) 
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        const cookieValue = tokenCookie?.split(';')[0] || '';
+        
+        // Пытаемся поменять пароль на слишком короткий
+        const changePasswordRes = await request(fastify.server)
+            .patch('/auth/password')
+            .set('Cookie', cookieValue)
+            .send({ oldPassword: testPassword, newPassword: '12345' });
+
+        expect(changePasswordRes.status).toBe(400);
+    });
 });

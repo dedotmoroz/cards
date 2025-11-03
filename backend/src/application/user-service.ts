@@ -38,6 +38,22 @@ export class UserService {
         return this.userRepo.update(userId, { name });
     }
 
+    async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<User> {
+        const user = await this.userRepo.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const isOldPasswordValid = await compare(oldPassword, user.passwordHash);
+        if (!isOldPasswordValid) {
+            throw new Error('Invalid old password');
+        }
+
+        const newPasswordHash = await hash(newPassword, 10);
+
+        return this.userRepo.update(userId, { passwordHash: newPasswordHash });
+    }
+
     async loginWithGoogle(googleIdToken: string): Promise<string> {
         // Google token verification would be done here
         // For example using Google Auth Library

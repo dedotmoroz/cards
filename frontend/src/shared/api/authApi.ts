@@ -29,7 +29,7 @@ export const authApi = {
    * Смена пароля пользователя
    */
   changePassword: async (data: ChangePasswordData): Promise<void> => {
-    await axios.post(`${API_BASE_URL}/auth/change-password`, data, {
+    await axios.patch(`${API_BASE_URL}/auth/password`, data, {
       withCredentials: true
     });
   },

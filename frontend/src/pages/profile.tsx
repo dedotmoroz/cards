@@ -128,7 +128,7 @@ export const ProfilePage = () => {
 
     try {
       await changePassword({
-        currentPassword,
+        oldPassword: currentPassword,
         newPassword
       });
 
