@@ -477,6 +477,12 @@ export async function buildServer() {
                             name: { type: 'string' },
                         },
                     },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
                 },
                 tags: ['auth'],
                 summary: 'Register new user',
@@ -489,11 +495,22 @@ export async function buildServer() {
                 name: z.string().optional(),
             }).parse(req.body);
             const user = await userService.register(body.email, body.password, body.name);
-            return reply.code(201).send({ 
-                id: user.id, 
-                email: user.email,
-                name: user.name,
-            });
+            const token = await userService.login(body.email, body.password);
+            if (!token) return reply.code(401).send({ error: 'Invalid credentials' });
+            return reply
+                .code(201)
+                .setCookie('token', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                    path: '/',
+                    maxAge: 60 * 60 * 24 * 7,
+                })
+                .send({
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                })
         }
     );
 

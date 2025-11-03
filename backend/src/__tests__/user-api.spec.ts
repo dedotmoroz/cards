@@ -34,6 +34,14 @@ describe('User API', () => {
         expect(res.body).toHaveProperty('id');
         expect(res.body.email).toBe(testEmail);
         expect(res.body.name).toBeUndefined();
+        
+        // Проверяем, что после регистрации устанавливается cookie с токеном
+        const setCookieHeader = res.headers['set-cookie'];
+        expect(setCookieHeader).toBeDefined();
+        const tokenCookie = Array.isArray(setCookieHeader) 
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        expect(tokenCookie).toBeDefined();
     });
 
     it('регистрирует пользователя с именем', async () => {
@@ -45,6 +53,14 @@ describe('User API', () => {
         expect(res.body).toHaveProperty('id');
         expect(res.body.email).toBe(testEmail);
         expect(res.body.name).toBe(testName);
+        
+        // Проверяем, что после регистрации устанавливается cookie с токеном
+        const setCookieHeader = res.headers['set-cookie'];
+        expect(setCookieHeader).toBeDefined();
+        const tokenCookie = Array.isArray(setCookieHeader) 
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        expect(tokenCookie).toBeDefined();
     });
 
     it('входит с правильным паролем', async () => {
@@ -80,19 +96,15 @@ describe('User API', () => {
     });
 
     it('возвращает текущего пользователя по токену', async () => {
-        // Регистрируем и логинимся
-        await request(fastify.server)
+        // Регистрируем - теперь токен устанавливается сразу при регистрации
+        const registerRes = await request(fastify.server)
             .post('/auth/register')
             .send({ email: testEmail, password: testPassword });
 
-        const loginRes = await request(fastify.server)
-            .post('/auth/login')
-            .send({ email: testEmail, password: testPassword });
-
-        expect(loginRes.status).toBe(200);
+        expect(registerRes.status).toBe(201);
         
-        // Извлекаем cookie из заголовка
-        const setCookieHeader = loginRes.headers['set-cookie'];
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
         expect(setCookieHeader).toBeDefined();
         
         // Находим cookie с токеном
@@ -119,19 +131,15 @@ describe('User API', () => {
     });
 
     it('возвращает текущего пользователя с именем по токену', async () => {
-        // Регистрируем с именем и логинимся
-        await request(fastify.server)
+        // Регистрируем с именем - теперь токен устанавливается сразу при регистрации
+        const registerRes = await request(fastify.server)
             .post('/auth/register')
             .send({ email: testEmail, password: testPassword, name: testName });
 
-        const loginRes = await request(fastify.server)
-            .post('/auth/login')
-            .send({ email: testEmail, password: testPassword });
-
-        expect(loginRes.status).toBe(200);
+        expect(registerRes.status).toBe(201);
         
-        // Извлекаем cookie из заголовка
-        const setCookieHeader = loginRes.headers['set-cookie'];
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
         expect(setCookieHeader).toBeDefined();
         
         // Находим cookie с токеном
@@ -164,19 +172,15 @@ describe('User API', () => {
     });
 
     it('обновляет имя пользователя', async () => {
-        // Регистрируем и логинимся
-        await request(fastify.server)
+        // Регистрируем - теперь токен устанавливается сразу при регистрации
+        const registerRes = await request(fastify.server)
             .post('/auth/register')
             .send({ email: testEmail, password: testPassword });
 
-        const loginRes = await request(fastify.server)
-            .post('/auth/login')
-            .send({ email: testEmail, password: testPassword });
-
-        expect(loginRes.status).toBe(200);
+        expect(registerRes.status).toBe(201);
         
-        // Извлекаем cookie из заголовка
-        const setCookieHeader = loginRes.headers['set-cookie'];
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
         const tokenCookie = Array.isArray(setCookieHeader) 
             ? setCookieHeader.find(cookie => cookie.startsWith('token='))
             : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
@@ -193,19 +197,15 @@ describe('User API', () => {
     });
 
     it('обновляет имя пользователя на новое значение', async () => {
-        // Регистрируем с именем и логинимся
-        await request(fastify.server)
+        // Регистрируем с именем - теперь токен устанавливается сразу при регистрации
+        const registerRes = await request(fastify.server)
             .post('/auth/register')
             .send({ email: testEmail, password: testPassword, name: 'Old Name' });
 
-        const loginRes = await request(fastify.server)
-            .post('/auth/login')
-            .send({ email: testEmail, password: testPassword });
-
-        expect(loginRes.status).toBe(200);
+        expect(registerRes.status).toBe(201);
         
-        // Извлекаем cookie из заголовка
-        const setCookieHeader = loginRes.headers['set-cookie'];
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
         const tokenCookie = Array.isArray(setCookieHeader) 
             ? setCookieHeader.find(cookie => cookie.startsWith('token='))
             : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
@@ -238,19 +238,15 @@ describe('User API', () => {
     });
 
     it('требует обязательное поле name', async () => {
-        // Регистрируем и логинимся
-        await request(fastify.server)
+        // Регистрируем - теперь токен устанавливается сразу при регистрации
+        const registerRes = await request(fastify.server)
             .post('/auth/register')
             .send({ email: testEmail, password: testPassword });
 
-        const loginRes = await request(fastify.server)
-            .post('/auth/login')
-            .send({ email: testEmail, password: testPassword });
-
-        expect(loginRes.status).toBe(200);
+        expect(registerRes.status).toBe(201);
         
-        // Извлекаем cookie из заголовка
-        const setCookieHeader = loginRes.headers['set-cookie'];
+        // Извлекаем cookie из заголовка регистрации
+        const setCookieHeader = registerRes.headers['set-cookie'];
         const tokenCookie = Array.isArray(setCookieHeader) 
             ? setCookieHeader.find(cookie => cookie.startsWith('token='))
             : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;

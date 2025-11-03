@@ -17,11 +17,13 @@ import {
   Psychology, 
   Speed, 
   Login,
+  Logout,
   AutoAwesome
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { AuthDialog } from '@/shared/ui/auth-dialog';
 import { LanguageSwitcher } from '@/shared/ui/language-switcher';
+import { useAuthStore } from '@/shared/store/authStore';
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -29,9 +31,15 @@ export const LandingPage = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { isAuthenticated, logout } = useAuthStore();
 
   const handleAuthSuccess = () => {
       navigate('/learn');
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    // После выхода остаемся на странице, но уже как неавторизованный пользователь
   };
 
   const features = [
@@ -60,20 +68,37 @@ export const LandingPage = () => {
           <Box display="flex" justifyContent="flex-end" alignItems="center">
             <Box display="flex" alignItems="center" gap={2}>
               <LanguageSwitcher />
-              <Button
-                variant="contained"
-                startIcon={<Login />}
-                onClick={() => setAuthDialogOpen(true)}
-                sx={{
-                  bgcolor: 'white',
-                  color: 'primary.main',
-                  '&:hover': {
-                    bgcolor: 'grey.100'
-                  }
-                }}
-              >
-                {t('auth.login')}
-              </Button>
+              {isAuthenticated ? (
+                <Button
+                  variant="contained"
+                  startIcon={<Logout />}
+                  onClick={handleLogout}
+                  sx={{
+                    bgcolor: 'white',
+                    color: 'primary.main',
+                    '&:hover': {
+                      bgcolor: 'grey.100'
+                    }
+                  }}
+                >
+                  {t('auth.logout')}
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  startIcon={<Login />}
+                  onClick={() => setAuthDialogOpen(true)}
+                  sx={{
+                    bgcolor: 'white',
+                    color: 'primary.main',
+                    '&:hover': {
+                      bgcolor: 'grey.100'
+                    }
+                  }}
+                >
+                  {t('auth.login')}
+                </Button>
+              )}
             </Box>
           </Box>
         </Box>
@@ -100,7 +125,7 @@ export const LandingPage = () => {
             variant="contained"
             size="large"
             startIcon={<AutoAwesome />}
-            onClick={() => setAuthDialogOpen(true)}
+            onClick={handleAuthSuccess}
             sx={{
               bgcolor: 'white',
               color: 'primary.main',
