@@ -107,18 +107,22 @@ describe('UserService', () => {
 
     it('registers user on Google login if not found', async () => {
         userRepo.findByEmail.mockResolvedValue(null);
-        userRepo.create.mockResolvedValue({
+        const createdUser = {
             id: '1',
             email: 'user@example.com',
             passwordHash: '',
             createdAt: new Date(),
-        });
+        };
+        userRepo.create.mockResolvedValue(createdUser);
 
         const result = await userService.loginWithGoogle('some_token');
 
+        // Теперь используется register
+        expect(hash).toHaveBeenCalledWith('', 10);
         expect(userRepo.create).toHaveBeenCalledWith({
             email: 'user@example.com',
-            passwordHash: '',
+            passwordHash: 'hashed_password',
+            name: '',
         });
         expect(result).toBe('mocked_jwt');
     });

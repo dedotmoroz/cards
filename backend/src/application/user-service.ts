@@ -61,7 +61,7 @@ export class UserService {
 
         let user = await this.userRepo.findByEmail(email);
         if (!user) {
-            user = await this.userRepo.create({ email, passwordHash: '' });
+            user = await this.register(email, '', '');
         }
 
         return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '7d' });

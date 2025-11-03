@@ -22,6 +22,7 @@ import { PostgresFolderRepository } from '../db/postgres-folder-repo';
 import { PostgresUserRepository } from '../db/postgres-user-repo';
 
 import { CreateCardDTO, CardDTO, UpdateCardDTO, CreateFolderDTO, FolderDTO } from './dto'
+import { defaultSetting } from '../../config/app-config';
 
 type CreateCardInput = z.infer<typeof CreateCardDTO>;
 
@@ -495,6 +496,20 @@ export async function buildServer() {
                 name: z.string().optional(),
             }).parse(req.body);
             const user = await userService.register(body.email, body.password, body.name);
+            
+            // Создаем дефолтную папку и карточки, если настроено
+            if (defaultSetting.createFolder) {
+                try {
+                    const folder = await folderService.createFolder(user.id, defaultSetting.folderName);
+                    for (const cardData of [...defaultSetting.card]) {
+                        await cardService.createCard(folder.id, cardData.question, cardData.answer);
+                    }
+                } catch (error) {
+                    // Логируем ошибку, но не прерываем регистрацию пользователя
+                    console.error('Failed to create default folder and cards:', error);
+                }
+            }
+            
             const token = await userService.login(body.email, body.password);
             if (!token) return reply.code(401).send({ error: 'Invalid credentials' });
             return reply
