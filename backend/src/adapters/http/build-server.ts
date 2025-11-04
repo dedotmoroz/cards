@@ -467,6 +467,7 @@ export async function buildServer() {
                         email: { type: 'string', format: 'email' },
                         password: { type: 'string', minLength: 6 },
                         name: { type: 'string' },
+                        language: { type: 'string' },
                     },
                 },
                 response: {
@@ -476,6 +477,7 @@ export async function buildServer() {
                             id: { type: 'string', format: 'uuid' },
                             email: { type: 'string', format: 'email' },
                             name: { type: 'string' },
+                            language: { type: 'string' },
                         },
                     },
                     401: {
@@ -494,8 +496,9 @@ export async function buildServer() {
                 email: z.string().email(), 
                 password: z.string().min(6),
                 name: z.string().optional(),
+                language: z.string().optional(),
             }).parse(req.body);
-            const user = await userService.register(body.email, body.password, body.name);
+            const user = await userService.register(body.email, body.password, body.name, body.language);
             
             // Создаем дефолтную папку и карточки, если настроено
             if (defaultSetting.createFolder) {
@@ -525,6 +528,7 @@ export async function buildServer() {
                     id: user.id,
                     email: user.email,
                     name: user.name,
+                    language: user.language,
                 })
         }
     );
@@ -588,6 +592,7 @@ export async function buildServer() {
                             email: { type: 'string', format: 'email' },
                             name: { type: 'string' },
                             createdAt: { type: 'string', format: 'date-time' },
+                            language: { type: 'string' },
                         },
                     },
                     404: {
@@ -613,6 +618,7 @@ export async function buildServer() {
                 email: user.email,
                 name: userName,
                 createdAt: user.createdAt,
+                language: user.language,
             });
         }
     );
@@ -719,6 +725,51 @@ export async function buildServer() {
                     }
                 }
                 return reply.code(400).send({ error: 'Failed to change password' });
+            }
+        }
+    );
+
+    fastify.patch('/auth/language',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                security: [{ cookieAuth: [] }],
+                body: {
+                    type: 'object',
+                    required: ['language'],
+                    properties: {
+                        language: { type: 'string' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            language: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Update user language',
+            },
+        },
+        async (req, reply) => {
+            const userId = (req.user as any).userId;
+            const body = z.object({ 
+                language: z.string(),
+            }).parse(req.body);
+            
+            try {
+                const user = await userService.updateLanguage(userId, body.language);
+                return reply.send({ language: user.language });
+            } catch (error) {
+                return reply.code(404).send({ error: 'User not found' });
             }
         }
     );

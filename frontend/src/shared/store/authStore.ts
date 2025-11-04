@@ -20,6 +20,7 @@ interface AuthState {
   checkAuth: () => Promise<void>;
   updateProfile: (data: UpdateProfileData) => Promise<void>;
   changePassword: (data: ChangePasswordData) => Promise<void>;
+  updateLanguage: (language: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -35,9 +36,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (username: string, email: string, password: string) => {
     set({ error: null });
     try {
-      await authApi.register({ name: username, email, password });
-      
-      // Получаем полную информацию о пользователе
+      const language = localStorage.getItem('i18nextLng') || undefined;
+      await authApi.register({ name: username, email, password, language });
       const userData = await authApi.getMe();
       // Маппим name из API в username для типа User
       const user: User = {
@@ -155,6 +155,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ error: null });
     try {
       await authApi.changePassword(data);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message;
+      set({ error: errorMessage});
+      throw new Error(errorMessage);
+    }
+  },
+
+  updateLanguage: async (language: string) => {
+    set({ error: null });
+    try {
+      await authApi.updateLanguage(language);
+
+      const currentUser = get().user;
+      if (currentUser) {
+        set({
+          user: { ...currentUser, language },
+          isAuthenticated: true,
+        });
+      }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
       set({ error: errorMessage});

@@ -65,5 +65,14 @@ export const authApi = {
       // Игнорируем ошибки logout, так как cookie может быть уже очищен
       console.warn('Logout error:', error);
     }
+  },
+
+  /**
+   * Обновление языка пользователя
+   */
+  updateLanguage: async (language: string): Promise<void> => {
+    await axios.patch(`${API_BASE_URL}/auth/language`, { language }, {
+      withCredentials: true
+    });
   }
 };

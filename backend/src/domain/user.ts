@@ -6,4 +6,5 @@ export type User = {
     createdAt: Date;
     oauthProvider?: string;
     oauthId?: string;
+    language?: string;
 };

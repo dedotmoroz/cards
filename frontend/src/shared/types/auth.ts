@@ -9,6 +9,7 @@ export interface RegisterData {
   name: string;
   email: string;
   password: string;
+  language?: string;
 }
 
 export interface LoginData {

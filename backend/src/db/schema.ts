@@ -42,4 +42,5 @@ export const users = pgTable('users', {
   created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   oauth_provider: text('oauth_provider'),
   oauth_id: text('oauth_id'),
+  language: text('language'),
 });

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography, Button, AppBar, Toolbar, Drawer, IconButton, useMediaQuery, useTheme, Tooltip } from '@mui/material';
-import { Menu as MenuIcon, AccountCircle, Logout } from '@mui/icons-material';
+import { Menu as MenuIcon, AccountCircle, Logout, Pets } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
@@ -32,6 +32,10 @@ export const HomePage = () => {
         navigate('/');
     }
 
+    const goToHome = () => {
+        navigate('/');
+    }
+
     // Загружаем папки при монтировании компонента
     useEffect(() => {
         fetchFolders();
@@ -59,7 +63,7 @@ export const HomePage = () => {
         <>
             <AppBar position={isMobile ? "relative" : "static"}>
                 <Toolbar>
-                    {isMobile && (
+                    {isMobile ? (
                         <IconButton
                             color="inherit"
                             aria-label="open drawer"
@@ -68,6 +72,16 @@ export const HomePage = () => {
                             sx={{ mr: 2 }}
                         >
                             <MenuIcon />
+                        </IconButton>
+                    ) : (
+                        <IconButton
+                            color="inherit"
+                            aria-label={t('navigation.home')}
+                            edge="start"
+                            onClick={goToHome}
+                            sx={{mr: 2}}
+                        >
+                            <Pets/>
                         </IconButton>
                     )}
                     <Box sx={{ flexGrow: 1 }} />
@@ -126,6 +140,15 @@ export const HomePage = () => {
                         }}
                     >
                         <Box sx={{ height: '100%', overflow: 'auto' }}>
+                            <IconButton
+                                color="inherit"
+                                aria-label={t('navigation.home')}
+                                edge="start"
+                                onClick={handleDrawerToggle}
+                                sx={{ml: 2, mt: 2}}
+                            >
+                                <Pets/>
+                            </IconButton>
                             <Folders />
                         </Box>
                     </Drawer>
