@@ -2,6 +2,7 @@ import { Typography, Button, Box } from '@mui/material';
 import { Home, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { SEO } from '@/shared/libs/useSEO';
 
 export const NotFoundPage = () => {
   const { t } = useTranslation();
@@ -11,7 +12,13 @@ export const NotFoundPage = () => {
   const handleGoBack = () => navigate(-1);
 
   return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <>
+        <SEO 
+          title={t('seo.notFound.title')}
+          description={t('seo.notFound.description')}
+          noindex={true}
+        />
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <Typography variant="h1" sx={{ fontSize: '6rem', fontWeight: 'bold', color: 'primary.main' }}>
             404
           </Typography>
@@ -37,5 +44,6 @@ export const NotFoundPage = () => {
           </Button>
         </Box>
       </Box>
+      </>
   );
 };

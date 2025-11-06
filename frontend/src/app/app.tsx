@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline, CircularProgress, Box } from '@mui/material';
+import { HelmetProvider } from 'react-helmet-async';
 import { HomePage } from '@/pages/home';
 import { LearnPage } from '@/pages/learn';
 import { SignUpPage } from '@/pages/signup';
@@ -28,9 +29,10 @@ export default function App() {
     }
 
     return (
-            <BrowserRouter>
-                <CssBaseline />
-                <Routes>
+            <HelmetProvider>
+                <BrowserRouter>
+                    <CssBaseline />
+                    <Routes>
                     {isAuthenticated ? (
                         <>
                             <Route path="/" element={<LandingPage />} />
@@ -47,7 +49,8 @@ export default function App() {
                             <Route path="*" element={<LandingPage />} />
                         </>
                     )}
-                </Routes>
-            </BrowserRouter>
+                    </Routes>
+                </BrowserRouter>
+            </HelmetProvider>
     );
 }

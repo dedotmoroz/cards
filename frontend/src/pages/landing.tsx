@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthDialog } from '@/shared/ui/auth-dialog';
 import { LanguageSwitcher } from '@/shared/ui/language-switcher';
 import { useAuthStore } from '@/shared/store/authStore';
+import { SEO } from '@/shared/libs/useSEO';
 
 export const LandingPage = () => {
   const { t, i18n } = useTranslation();
@@ -75,8 +76,13 @@ export const LandingPage = () => {
   ];
 
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-      <Container maxWidth="lg">
+    <>
+      <SEO 
+        title={t('seo.landing.title')}
+        description={t('seo.landing.description')}
+      />
+      <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+        <Container maxWidth="lg">
         {/* Header */}
         <Box sx={{ py: 4 }}>
           <Box display="flex" justifyContent="flex-end" alignItems="center">
@@ -236,6 +242,7 @@ export const LandingPage = () => {
         onClose={() => setAuthDialogOpen(false)}
         onSuccess={handleAuthSuccess}
       />
-    </Box>
+      </Box>
+    </>
   );
 };
