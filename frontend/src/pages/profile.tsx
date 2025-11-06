@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import { ArrowBack, AccountCircle } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
-import { SEO } from '@/shared/libs/useSEO';
 
 const languages = [
   { code: 'ru', label: 'Русский' },
@@ -215,12 +214,7 @@ export const ProfilePage = () => {
   // Если пользователь гость, показываем форму регистрации
   if (user.isGuest) {
     return (
-      <>
-        <SEO 
-          title={t('seo.profile.title')}
-          description={t('seo.profile.description')}
-        />
-        <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+      <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
         <Container maxWidth="sm" >
           {/* Header */}
           <Box sx={{py: 4}}>
@@ -326,18 +320,12 @@ export const ProfilePage = () => {
           </Box>
         </Container>
       </Box>
-      </>
     );
   }
 
   // Обычная форма профиля для зарегистрированных пользователей
   return (
-      <>
-        <SEO 
-          title={t('seo.profile.title')}
-          description={t('seo.profile.description')}
-        />
-        <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+      <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
           <Container maxWidth="sm" >
               {/* Header */}
               <Box sx={{py: 4}}>
@@ -483,8 +471,7 @@ export const ProfilePage = () => {
                   </Paper>
               </Box>
           </Container>
-        </Box>
-      </>
+      </Box>
   );
 };
 

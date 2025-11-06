@@ -1,34 +1,7 @@
 {
   "app": {
-    "title": "KotCat",
+    "title": "Remember!",
     "tagline": "Effective flashcard learning system. Remember information faster and longer."
-  },
-  "seo": {
-    "keywords": "flashcards, learning, memory, education, study, flash cards",
-    "landing": {
-      "title": "Home",
-      "description": "Effective flashcard learning system. Remember information faster and longer."
-    },
-    "learn": {
-      "title": "Learn",
-      "description": "Study flashcards and memorize information effectively"
-    },
-    "profile": {
-      "title": "Profile",
-      "description": "Manage your profile and account settings"
-    },
-    "signin": {
-      "title": "Sign In",
-      "description": "Sign in to your account to access flashcards"
-    },
-    "signup": {
-      "title": "Sign Up",
-      "description": "Create an account and start studying flashcards"
-    },
-    "notFound": {
-      "title": "Page Not Found",
-      "description": "The requested page does not exist"
-    }
   },
   "navigation": {
     "home": "Home",

@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import { ArrowBack, PersonAdd } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
-import { SEO } from '@/shared/libs/useSEO';
 
 export const SignUpPage = () => {
   const { t } = useTranslation();
@@ -72,13 +71,7 @@ export const SignUpPage = () => {
   };
 
   return (
-    <>
-      <SEO 
-        title={t('seo.signup.title')}
-        description={t('seo.signup.description')}
-        noindex={true}
-      />
-      <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
       <Container maxWidth="sm">
         {/* Header */}
         <Box sx={{ py: 4 }}>
@@ -215,6 +208,5 @@ export const SignUpPage = () => {
         </Box>
       </Container>
     </Box>
-    </>
   );
 };

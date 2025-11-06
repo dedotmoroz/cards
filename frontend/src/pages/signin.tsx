@@ -12,7 +12,6 @@ import {
   CircularProgress
 } from '@mui/material';
 import { useAuthStore } from '@/shared/store/authStore';
-import { SEO } from '@/shared/libs/useSEO';
 
 export const SignInPage = () => {
   const { t } = useTranslation();
@@ -49,13 +48,7 @@ export const SignInPage = () => {
   };
 
   return (
-    <>
-      <SEO 
-        title={t('seo.signin.title')}
-        description={t('seo.signin.description')}
-        noindex={true}
-      />
-      <Container maxWidth="sm" sx={{ mt: 8 }}>
+    <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Paper sx={{ p: 4 }}>
         <Typography variant="h4" align="center" gutterBottom>
           {t('auth.login')}
@@ -114,6 +107,5 @@ export const SignInPage = () => {
         </Box>
       </Paper>
     </Container>
-    </>
   );
 };

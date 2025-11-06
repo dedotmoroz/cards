@@ -9,7 +9,6 @@ import { useFoldersStore } from '@/shared/store/foldersStore';
 import { useAuthStore } from '@/shared/store/authStore';
 import {Folders} from "@/widgets/folders";
 import {Cards} from "@/widgets/cards";
-import { SEO } from '@/shared/libs/useSEO';
 
 export const HomePage = () => {
     const { t } = useTranslation();
@@ -62,10 +61,6 @@ export const HomePage = () => {
 
     return (
         <>
-            <SEO 
-                title={t('seo.learn.title')}
-                description={t('seo.learn.description')}
-            />
             <AppBar position={isMobile ? "relative" : "static"}>
                 <Toolbar>
                     {isMobile ? (
