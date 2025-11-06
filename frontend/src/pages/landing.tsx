@@ -26,15 +26,29 @@ import { LanguageSwitcher } from '@/shared/ui/language-switcher';
 import { useAuthStore } from '@/shared/store/authStore';
 
 export const LandingPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout, createGuest } = useAuthStore();
 
   const handleAuthSuccess = () => {
       navigate('/learn');
+  };
+
+  const handleStartLearning = async () => {
+    if (isAuthenticated) {
+      navigate('/learn');
+    } else {
+      try {
+        const language = i18n.language || 'ru';
+        await createGuest(language);
+        navigate('/learn');
+      } catch (error) {
+        console.error('Failed to create guest:', error);
+      }
+    }
   };
 
   const handleLogout = async () => {
@@ -84,20 +98,20 @@ export const LandingPage = () => {
                   {t('auth.logout')}
                 </Button>
               ) : (
-                <Button
-                  variant="contained"
-                  startIcon={<Login />}
-                  onClick={() => setAuthDialogOpen(true)}
-                  sx={{
-                    bgcolor: 'white',
-                    color: 'primary.main',
-                    '&:hover': {
-                      bgcolor: 'grey.100'
-                    }
-                  }}
-                >
-                  {t('auth.login')}
-                </Button>
+              <Button
+                variant="contained"
+                startIcon={<Login />}
+                onClick={() => setAuthDialogOpen(true)}
+                sx={{
+                  bgcolor: 'white',
+                  color: 'primary.main',
+                  '&:hover': {
+                    bgcolor: 'grey.100'
+                  }
+                }}
+              >
+                {t('auth.login')}
+              </Button>
               )}
             </Box>
           </Box>
@@ -125,7 +139,7 @@ export const LandingPage = () => {
             variant="contained"
             size="large"
             startIcon={<AutoAwesome />}
-            onClick={handleAuthSuccess}
+            onClick={handleStartLearning}
             sx={{
               bgcolor: 'white',
               color: 'primary.main',
@@ -140,7 +154,7 @@ export const LandingPage = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            {t('buttons.startLearning')}
+            {isAuthenticated ? t('buttons.startLearning') : t('buttons.tryIt')}
           </Button>
         </Box>
 

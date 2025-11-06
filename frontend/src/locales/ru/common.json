@@ -32,6 +32,7 @@
   },
   "buttons": {
     "startLearning": "Начать изучение",
+    "tryIt": "Попробовать",
     "enterSystem": "Войти в систему",
     "create": "Создать",
     "edit": "Редактировать",
@@ -134,6 +135,11 @@
     "savePassword": "Сменить пароль",
     "passwordUpdated": "Пароль успешно изменён",
     "passwordMismatch": "Пароли не совпадают",
-    "openProfile": "Открыть профиль"
+    "openProfile": "Открыть профиль",
+    "registerGuestTitle": "Зарегистрируйте постоянный профиль",
+    "registerGuestSubtitle": "Заполните данные для создания постоянного аккаунта",
+    "registerGuestButton": "Зарегистрироваться",
+    "registerGuestSuccess": "Профиль успешно зарегистрирован",
+    "passwordLabel": "Пароль"
   }
 }

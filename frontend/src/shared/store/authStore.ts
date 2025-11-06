@@ -21,6 +21,8 @@ interface AuthState {
   updateProfile: (data: UpdateProfileData) => Promise<void>;
   changePassword: (data: ChangePasswordData) => Promise<void>;
   updateLanguage: (language: string) => Promise<void>;
+  createGuest: (language: string) => Promise<void>;
+  registerGuest: (email: string, password: string, name: string, language: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -174,6 +176,59 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           isAuthenticated: true,
         });
       }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message;
+      set({ error: errorMessage});
+      throw new Error(errorMessage);
+    }
+  },
+
+  createGuest: async (language: string) => {
+    set({ error: null });
+    try {
+      const userData = await authApi.createGuest({ language });
+      // Маппим name из API в username для типа User
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username
+      };
+      
+      set({ 
+        user, 
+        isAuthenticated: true
+      });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message;
+      set({ error: errorMessage});
+      throw new Error(errorMessage);
+    }
+  },
+
+  registerGuest: async (email: string, password: string, name: string, language: string) => {
+    const currentUser = get().user;
+    if (!currentUser || !currentUser.id) {
+      throw new Error('User not found');
+    }
+
+    set({ error: null });
+    try {
+      const userData = await authApi.registerGuest(currentUser.id, {
+        email,
+        password,
+        name,
+        language
+      });
+      // Маппим name из API в username для типа User
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username,
+        isGuest: false // После регистрации пользователь больше не гость
+      };
+      
+      set({ 
+        user, 
+        isAuthenticated: true
+      });
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
       set({ error: errorMessage});

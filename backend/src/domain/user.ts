@@ -7,4 +7,5 @@ export type User = {
     oauthProvider?: string;
     oauthId?: string;
     language?: string;
+    isGuest?: boolean;
 };

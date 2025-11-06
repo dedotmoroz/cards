@@ -43,4 +43,5 @@ export const users = pgTable('users', {
   oauth_provider: text('oauth_provider'),
   oauth_id: text('oauth_id'),
   language: text('language'),
+  is_guest: boolean('is_guest'),
 });

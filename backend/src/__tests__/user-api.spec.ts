@@ -128,6 +128,10 @@ describe('User API', () => {
         expect(meRes.body).toHaveProperty('name'); // Проверяем, что поле name всегда присутствует
         // Когда пользователь без имени, name может быть null или пустой строкой (в зависимости от БД)
         expect(meRes.body.name === null || meRes.body.name === '').toBe(true);
+        // language может быть undefined, но поле должно присутствовать в ответе
+        expect('language' in meRes.body).toBe(true);
+        expect(meRes.body).toHaveProperty('isGuest');
+        expect(meRes.body.isGuest).toBe(false); // При регистрации isGuest должен быть false
     });
 
     it('возвращает текущего пользователя с именем по токену', async () => {
@@ -162,6 +166,10 @@ describe('User API', () => {
         expect(meRes.body.email).toBe(testEmail);
         expect(meRes.body.name).toBe(testName);
         expect(meRes.body).toHaveProperty('createdAt');
+        // language может быть undefined, но поле должно присутствовать в ответе
+        expect('language' in meRes.body).toBe(true);
+        expect(meRes.body).toHaveProperty('isGuest');
+        expect(meRes.body.isGuest).toBe(false);
     });
 
     it('не возвращает текущего пользователя без токена', async () => {
@@ -356,5 +364,238 @@ describe('User API', () => {
             .send({ oldPassword: testPassword, newPassword: '12345' });
 
         expect(changePasswordRes.status).toBe(400);
+    });
+
+    it('регистрирует гостя', async () => {
+        const res = await request(fastify.server)
+            .post('/auth/guests')
+            .send({ language: 'en' });
+
+        expect(res.status).toBe(201);
+        expect(res.body).toHaveProperty('id');
+        expect(res.body.email).toMatch(/^[a-f0-9-]+@kotcat\.com$/);
+        expect(res.body.name).toBe('guest');
+        expect(res.body.language).toBe('en');
+        expect(res.body.isGuest).toBe(true);
+        
+        // Проверяем, что после регистрации устанавливается cookie с токеном
+        const setCookieHeader = res.headers['set-cookie'];
+        expect(setCookieHeader).toBeDefined();
+        const tokenCookie = Array.isArray(setCookieHeader) 
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        expect(tokenCookie).toBeDefined();
+    });
+
+    it('регистрирует гостя без языка', async () => {
+        const res = await request(fastify.server)
+            .post('/auth/guests')
+            .send({});
+
+        expect(res.status).toBe(201);
+        expect(res.body).toHaveProperty('id');
+        expect(res.body.email).toMatch(/^[a-f0-9-]+@kotcat\.com$/);
+        expect(res.body.name).toBe('guest');
+        expect(res.body.isGuest).toBe(true);
+    });
+
+    it('возвращает гостя через /auth/me', async () => {
+        const registerRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({ language: 'ru' });
+
+        expect(registerRes.status).toBe(201);
+        
+        const setCookieHeader = registerRes.headers['set-cookie'];
+        const tokenCookie = Array.isArray(setCookieHeader) 
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        const cookieValue = tokenCookie?.split(';')[0] || '';
+        
+        const meRes = await request(fastify.server)
+            .get('/auth/me')
+            .set('Cookie', cookieValue);
+
+        expect(meRes.status).toBe(200);
+        expect(meRes.body).toHaveProperty('id');
+        expect(meRes.body.email).toMatch(/^[a-f0-9-]+@kotcat\.com$/);
+        expect(meRes.body.name).toBe('guest');
+        expect(meRes.body.language).toBe('ru');
+        expect(meRes.body.isGuest).toBe(true);
+    });
+
+    it('конвертирует гостя в обычного пользователя', async () => {
+        // Создаем гостя
+        const guestRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({ language: 'en' });
+
+        expect(guestRes.status).toBe(201);
+        const guestId = guestRes.body.id;
+
+        // Конвертируем гостя в обычного пользователя
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${guestId}`)
+            .send({
+                email: testEmail,
+                password: testPassword,
+                name: testName,
+                language: 'ru',
+            });
+
+        expect(convertRes.status).toBe(200);
+        expect(convertRes.body.email).toBe(testEmail);
+        expect(convertRes.body.name).toBe(testName);
+        expect(convertRes.body.language).toBe('ru');
+        expect(convertRes.body.isGuest).toBe(false);
+
+        // Проверяем, что теперь можно войти с новыми данными
+        const loginRes = await request(fastify.server)
+            .post('/auth/login')
+            .send({ email: testEmail, password: testPassword });
+
+        expect(loginRes.status).toBe(200);
+    });
+
+    it('конвертирует гостя без name и language', async () => {
+        // Создаем гостя
+        const guestRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({});
+
+        expect(guestRes.status).toBe(201);
+        const guestId = guestRes.body.id;
+
+        // Конвертируем гостя в обычного пользователя без name и language
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${guestId}`)
+            .send({
+                email: `test-${Date.now()}@example.com`,
+                password: testPassword,
+            });
+
+        expect(convertRes.status).toBe(200);
+        expect(convertRes.body.email).toBeDefined();
+        expect(convertRes.body.isGuest).toBe(false);
+    });
+
+    it('не конвертирует несуществующего пользователя', async () => {
+        const fakeId = '00000000-0000-0000-0000-000000000000';
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${fakeId}`)
+            .send({
+                email: testEmail,
+                password: testPassword,
+            });
+
+        expect(convertRes.status).toBe(404);
+        expect(convertRes.body.error).toBe('User not found');
+    });
+
+    it('не конвертирует обычного пользователя (не гостя)', async () => {
+        // Создаем обычного пользователя
+        const registerRes = await request(fastify.server)
+            .post('/auth/register')
+            .send({ email: testEmail, password: testPassword });
+
+        expect(registerRes.status).toBe(201);
+        const userId = registerRes.body.id;
+
+        // Пытаемся конвертировать обычного пользователя
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${userId}`)
+            .send({
+                email: `another-${Date.now()}@example.com`,
+                password: 'newPassword123',
+            });
+
+        expect(convertRes.status).toBe(400);
+        expect(convertRes.body.error).toBe('User is not a guest');
+    });
+
+    it('не конвертирует гостя с занятым email', async () => {
+        // Создаем обычного пользователя
+        const registerRes = await request(fastify.server)
+            .post('/auth/register')
+            .send({ email: testEmail, password: testPassword });
+
+        expect(registerRes.status).toBe(201);
+
+        // Создаем гостя
+        const guestRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({});
+
+        expect(guestRes.status).toBe(201);
+        const guestId = guestRes.body.id;
+
+        // Пытаемся конвертировать гостя с занятым email
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${guestId}`)
+            .send({
+                email: testEmail,
+                password: testPassword,
+            });
+
+        expect(convertRes.status).toBe(409);
+        expect(convertRes.body.error).toBe('Email already exists');
+    });
+
+    it('не конвертирует гостя с коротким паролем', async () => {
+        // Создаем гостя
+        const guestRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({});
+
+        expect(guestRes.status).toBe(201);
+        const guestId = guestRes.body.id;
+
+        // Пытаемся конвертировать с коротким паролем
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${guestId}`)
+            .send({
+                email: `test-${Date.now()}@example.com`,
+                password: '12345', // слишком короткий
+            });
+
+        expect(convertRes.status).toBe(400);
+    });
+
+    it('не конвертирует гостя без email', async () => {
+        // Создаем гостя
+        const guestRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({});
+
+        expect(guestRes.status).toBe(201);
+        const guestId = guestRes.body.id;
+
+        // Пытаемся конвертировать без email
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${guestId}`)
+            .send({
+                password: testPassword,
+            });
+
+        expect(convertRes.status).toBe(400);
+    });
+
+    it('не конвертирует гостя без password', async () => {
+        // Создаем гостя
+        const guestRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({});
+
+        expect(guestRes.status).toBe(201);
+        const guestId = guestRes.body.id;
+
+        // Пытаемся конвертировать без password
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${guestId}`)
+            .send({
+                email: `test-${Date.now()}@example.com`,
+            });
+
+        expect(convertRes.status).toBe(400);
     });
 });

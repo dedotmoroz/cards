@@ -15,9 +15,9 @@ export class UserService {
     }
 
 
-    async register(email: string, password: string, name?: string, language?: string): Promise<User> {
+    async register(email: string, password: string, name?: string, language?: string, isGuest?: boolean): Promise<User> {
         const passwordHash = await hash(password, 10);
-        return this.userRepo.create({ email, passwordHash, name, language });
+        return this.userRepo.create({ email, passwordHash, name, language, isGuest });
     }
 
     async login(email: string, password: string): Promise<string | null> {
@@ -58,6 +58,41 @@ export class UserService {
         return this.userRepo.update(userId, { language });
     }
 
+    async updateEmail(userId: string, email: string): Promise<User> {
+        // Проверяем, не занят ли email другим пользователем
+        const existingUser = await this.userRepo.findByEmail(email);
+        if (existingUser && existingUser.id !== userId) {
+            throw new Error('Email already exists');
+        }
+        return this.userRepo.update(userId, { email });
+    }
+
+    async convertGuestToUser(userId: string, email: string, password: string, name?: string, language?: string): Promise<User> {
+        const user = await this.userRepo.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        if (!user.isGuest) {
+            throw new Error('User is not a guest');
+        }
+
+        // Проверяем, не занят ли email другим пользователем
+        const existingUser = await this.userRepo.findByEmail(email);
+        if (existingUser && existingUser.id !== userId) {
+            throw new Error('Email already exists');
+        }
+
+        const passwordHash = await hash(password, 10);
+        
+        return this.userRepo.update(userId, {
+            email,
+            passwordHash,
+            name,
+            language,
+            isGuest: false,
+        });
+    }
+
     async loginWithGoogle(googleIdToken: string): Promise<string> {
         // Google token verification would be done here
         // For example using Google Auth Library
@@ -65,7 +100,7 @@ export class UserService {
 
         let user = await this.userRepo.findByEmail(email);
         if (!user) {
-            user = await this.register(email, '', '');
+            user = await this.register(email, '', '', undefined, false);
         }
 
         return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '7d' });

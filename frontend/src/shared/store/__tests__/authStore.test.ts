@@ -281,4 +281,207 @@ describe('authStore', () => {
       expect(result.current.isLoading).toBe(false)
     })
   })
+
+  describe('createGuest', () => {
+    it('should create guest user successfully', async () => {
+      const { result } = renderHook(() => useAuthStore())
+      const mockGuestUser: User = {
+        id: 'guest-123',
+        username: 'Guest',
+        email: 'guest@example.com',
+        language: 'ru',
+        isGuest: true
+      }
+
+      mockedAuthApi.createGuest.mockResolvedValueOnce(mockGuestUser)
+
+      await act(async () => {
+        await result.current.createGuest('ru')
+      })
+
+      expect(mockedAuthApi.createGuest).toHaveBeenCalledWith({ language: 'ru' })
+      expect(result.current.user).toEqual(mockGuestUser)
+      expect(result.current.isAuthenticated).toBe(true)
+      expect(result.current.error).toBeNull()
+    })
+
+    it('should handle guest creation error', async () => {
+      const { result } = renderHook(() => useAuthStore())
+      const errorMessage = 'Failed to create guest'
+      const error = {
+        response: {
+          data: {
+            message: errorMessage
+          }
+        }
+      }
+
+      mockedAuthApi.createGuest.mockRejectedValueOnce(error)
+
+      await act(async () => {
+        try {
+          await result.current.createGuest('ru')
+        } catch (e) {
+          // Ожидаем ошибку
+        }
+      })
+
+      expect(result.current.user).toBeNull()
+      expect(result.current.isAuthenticated).toBe(false)
+      expect(result.current.error).toBe(errorMessage)
+    })
+
+    it('should map name to username correctly', async () => {
+      const { result } = renderHook(() => useAuthStore())
+      const mockGuestUser = {
+        id: 'guest-123',
+        name: 'Guest User',
+        email: 'guest@example.com',
+        language: 'en',
+        isGuest: true
+      }
+
+      mockedAuthApi.createGuest.mockResolvedValueOnce(mockGuestUser as any)
+
+      await act(async () => {
+        await result.current.createGuest('en')
+      })
+
+      expect(result.current.user?.username).toBe('Guest User')
+      expect(result.current.user?.isGuest).toBe(true)
+    })
+  })
+
+  describe('registerGuest', () => {
+    it('should register guest user successfully', async () => {
+      const { result } = renderHook(() => useAuthStore())
+      
+      // Сначала устанавливаем гостя
+      const mockGuestUser: User = {
+        id: 'guest-123',
+        username: 'Guest',
+        email: 'guest@example.com',
+        language: 'ru',
+        isGuest: true
+      }
+
+      act(() => {
+        result.current.setUser(mockGuestUser)
+      })
+
+      const mockRegisteredUser: User = {
+        id: 'guest-123',
+        username: 'Test User',
+        email: 'user@example.com',
+        language: 'ru',
+        isGuest: false
+      }
+
+      mockedAuthApi.registerGuest.mockResolvedValueOnce(mockRegisteredUser)
+
+      await act(async () => {
+        await result.current.registerGuest('user@example.com', 'password123', 'Test User', 'ru')
+      })
+
+      expect(mockedAuthApi.registerGuest).toHaveBeenCalledWith('guest-123', {
+        email: 'user@example.com',
+        password: 'password123',
+        name: 'Test User',
+        language: 'ru'
+      })
+      expect(result.current.user?.isGuest).toBe(false)
+      expect(result.current.user?.email).toBe('user@example.com')
+      expect(result.current.user?.username).toBe('Test User')
+      expect(result.current.isAuthenticated).toBe(true)
+      expect(result.current.error).toBeNull()
+    })
+
+    it('should throw error when user not found', async () => {
+      const { result } = renderHook(() => useAuthStore())
+
+      await act(async () => {
+        try {
+          await result.current.registerGuest('user@example.com', 'password123', 'Test User', 'ru')
+        } catch (e) {
+          // Ожидаем ошибку
+        }
+      })
+
+      expect(mockedAuthApi.registerGuest).not.toHaveBeenCalled()
+      expect(result.current.user).toBeNull()
+    })
+
+    it('should handle registration error', async () => {
+      const { result } = renderHook(() => useAuthStore())
+      
+      // Сначала устанавливаем гостя
+      const mockGuestUser: User = {
+        id: 'guest-123',
+        username: 'Guest',
+        email: 'guest@example.com',
+        language: 'ru',
+        isGuest: true
+      }
+
+      act(() => {
+        result.current.setUser(mockGuestUser)
+      })
+
+      const errorMessage = 'Registration failed'
+      const error = {
+        response: {
+          data: {
+            message: errorMessage
+          }
+        }
+      }
+
+      mockedAuthApi.registerGuest.mockRejectedValueOnce(error)
+
+      await act(async () => {
+        try {
+          await result.current.registerGuest('user@example.com', 'password123', 'Test User', 'ru')
+        } catch (e) {
+          // Ожидаем ошибку
+        }
+      })
+
+      expect(result.current.error).toBe(errorMessage)
+      expect(result.current.user?.isGuest).toBe(true) // Остается гостем при ошибке
+    })
+
+    it('should map name to username correctly', async () => {
+      const { result } = renderHook(() => useAuthStore())
+      
+      // Сначала устанавливаем гостя
+      const mockGuestUser: User = {
+        id: 'guest-123',
+        username: 'Guest',
+        email: 'guest@example.com',
+        language: 'ru',
+        isGuest: true
+      }
+
+      act(() => {
+        result.current.setUser(mockGuestUser)
+      })
+
+      const mockRegisteredUser = {
+        id: 'guest-123',
+        name: 'Registered User',
+        email: 'user@example.com',
+        language: 'en',
+        isGuest: false
+      }
+
+      mockedAuthApi.registerGuest.mockResolvedValueOnce(mockRegisteredUser as any)
+
+      await act(async () => {
+        await result.current.registerGuest('user@example.com', 'password123', 'Registered User', 'en')
+      })
+
+      expect(result.current.user?.username).toBe('Registered User')
+      expect(result.current.user?.isGuest).toBe(false)
+    })
+  })
 })

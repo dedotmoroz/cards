@@ -14,6 +14,7 @@ export class PostgresUserRepository implements UserRepository {
             password_hash: user.passwordHash,
             name: user.name,
             language: user.language,
+            is_guest: user.isGuest,
         });
         return { id, ...user };
     }
@@ -37,6 +38,7 @@ export class PostgresUserRepository implements UserRepository {
             oauthProvider: row.oauth_provider || undefined,
             oauthId: row.oauth_id ?? undefined,
             language: row.language ?? undefined,
+            isGuest: row.is_guest ?? undefined,
         };
     }
 
@@ -59,6 +61,7 @@ export class PostgresUserRepository implements UserRepository {
             oauthProvider: row.oauth_provider ?? undefined,
             oauthId: row.oauth_id ?? undefined,
             language: row.language ?? undefined,
+            isGuest: row.is_guest ?? undefined,
         };
     }
 
@@ -85,6 +88,7 @@ export class PostgresUserRepository implements UserRepository {
             oauthProvider: row.oauth_provider ?? undefined,
             oauthId: row.oauth_id ?? undefined,
             language: row.language ?? undefined,
+            isGuest: row.is_guest ?? undefined,
         };
     }
 
@@ -108,6 +112,9 @@ export class PostgresUserRepository implements UserRepository {
         }
         if (updates.language !== undefined) {
             updateData.language = updates.language;
+        }
+        if (updates.isGuest !== undefined) {
+            updateData.is_guest = updates.isGuest;
         }
 
         await db

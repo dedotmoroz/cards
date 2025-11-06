@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import axios from 'axios'
 import { authApi } from '../authApi'
-import type { User, RegisterData, LoginData } from '../../types/auth'
+import type { User, RegisterData, LoginData, GuestData, RegisterGuestData } from '../../types/auth'
 
 // Мокаем axios
 vi.mock('axios')
@@ -151,6 +151,96 @@ describe('authApi', () => {
       
       // Cleanup
       consoleSpy.mockRestore()
+    })
+  })
+
+  describe('createGuest', () => {
+    it('should create guest user successfully', async () => {
+      // Arrange
+      const guestData: GuestData = {
+        language: 'ru'
+      }
+      const mockGuestUser: User = {
+        id: 'guest-123',
+        username: 'Guest',
+        email: 'guest@example.com',
+        language: 'ru',
+        isGuest: true
+      }
+
+      mockedAxios.post.mockResolvedValueOnce({ data: mockGuestUser })
+
+      // Act
+      const result = await authApi.createGuest(guestData)
+
+      // Assert
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        'http://localhost:3000/auth/guests',
+        guestData,
+        { withCredentials: true }
+      )
+      expect(result).toEqual(mockGuestUser)
+    })
+
+    it('should throw error on guest creation failure', async () => {
+      // Arrange
+      const guestData: GuestData = {
+        language: 'ru'
+      }
+      const errorMessage = 'Failed to create guest'
+      mockedAxios.post.mockRejectedValueOnce(new Error(errorMessage))
+
+      // Act & Assert
+      await expect(authApi.createGuest(guestData)).rejects.toThrow(errorMessage)
+    })
+  })
+
+  describe('registerGuest', () => {
+    it('should register guest user successfully', async () => {
+      // Arrange
+      const guestId = 'guest-123'
+      const registerGuestData: RegisterGuestData = {
+        email: 'user@example.com',
+        password: 'password123',
+        name: 'Test User',
+        language: 'ru'
+      }
+      const mockRegisteredUser: User = {
+        id: guestId,
+        username: 'Test User',
+        email: 'user@example.com',
+        language: 'ru',
+        isGuest: false
+      }
+
+      mockedAxios.patch.mockResolvedValueOnce({ data: mockRegisteredUser })
+
+      // Act
+      const result = await authApi.registerGuest(guestId, registerGuestData)
+
+      // Assert
+      expect(mockedAxios.patch).toHaveBeenCalledWith(
+        `http://localhost:3000/auth/guests/${guestId}`,
+        registerGuestData,
+        { withCredentials: true }
+      )
+      expect(result).toEqual(mockRegisteredUser)
+    })
+
+    it('should throw error on guest registration failure', async () => {
+      // Arrange
+      const guestId = 'guest-123'
+      const registerGuestData: RegisterGuestData = {
+        email: 'user@example.com',
+        password: 'password123',
+        name: 'Test User',
+        language: 'ru'
+      }
+      const errorMessage = 'Registration failed'
+      mockedAxios.patch.mockRejectedValueOnce(new Error(errorMessage))
+
+      // Act & Assert
+      await expect(authApi.registerGuest(guestId, registerGuestData)).rejects.toThrow(errorMessage)
     })
   })
 

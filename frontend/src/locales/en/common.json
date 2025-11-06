@@ -32,6 +32,7 @@
   },
   "buttons": {
     "startLearning": "Start Learning",
+    "tryIt": "Try It",
     "enterSystem": "Enter System",
     "create": "Create",
     "edit": "Edit",
@@ -134,6 +135,11 @@
     "savePassword": "Change password",
     "passwordUpdated": "Password updated successfully",
     "passwordMismatch": "Passwords do not match",
-    "openProfile": "Open profile"
+    "openProfile": "Open profile",
+    "registerGuestTitle": "Register Permanent Profile",
+    "registerGuestSubtitle": "Fill in the details to create a permanent account",
+    "registerGuestButton": "Register",
+    "registerGuestSuccess": "Profile successfully registered",
+    "passwordLabel": "Password"
   }
 }

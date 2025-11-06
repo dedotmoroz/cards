@@ -44,6 +44,8 @@ describe('UserService', () => {
             email: 'test@example.com',
             passwordHash: 'hashed_password',
             name: undefined,
+            language: undefined,
+            isGuest: undefined,
         });
         expect(result).toEqual(user);
     });
@@ -65,6 +67,8 @@ describe('UserService', () => {
             email: 'test@example.com',
             passwordHash: 'hashed_password',
             name: 'Test User',
+            language: undefined,
+            isGuest: undefined,
         });
         expect(result).toEqual(user);
     });
@@ -123,7 +127,205 @@ describe('UserService', () => {
             email: 'user@example.com',
             passwordHash: 'hashed_password',
             name: '',
+            language: undefined,
+            isGuest: false,
         });
         expect(result).toBe('mocked_jwt');
+    });
+
+    it('updates user email', async () => {
+        const user: User = {
+            id: '1',
+            email: 'old@example.com',
+            passwordHash: 'hashed_password',
+            createdAt: new Date(),
+        };
+        const updatedUser: User = {
+            ...user,
+            email: 'new@example.com',
+        };
+        userRepo.findByEmail.mockResolvedValue(null);
+        userRepo.update.mockResolvedValue(updatedUser);
+
+        const result = await userService.updateEmail('1', 'new@example.com');
+
+        expect(userRepo.findByEmail).toHaveBeenCalledWith('new@example.com');
+        expect(userRepo.update).toHaveBeenCalledWith('1', { email: 'new@example.com' });
+        expect(result).toEqual(updatedUser);
+    });
+
+    it('throws error when updating email that already exists', async () => {
+        const existingUser: User = {
+            id: '2',
+            email: 'existing@example.com',
+            passwordHash: 'hashed_password',
+            createdAt: new Date(),
+        };
+        userRepo.findByEmail.mockResolvedValue(existingUser);
+
+        await expect(userService.updateEmail('1', 'existing@example.com')).rejects.toThrow('Email already exists');
+        expect(userRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('allows updating email to same email for same user', async () => {
+        const user: User = {
+            id: '1',
+            email: 'test@example.com',
+            passwordHash: 'hashed_password',
+            createdAt: new Date(),
+        };
+        userRepo.findByEmail.mockResolvedValue(user);
+        userRepo.update.mockResolvedValue(user);
+
+        const result = await userService.updateEmail('1', 'test@example.com');
+
+        expect(userRepo.findByEmail).toHaveBeenCalledWith('test@example.com');
+        expect(userRepo.update).toHaveBeenCalledWith('1', { email: 'test@example.com' });
+        expect(result).toEqual(user);
+    });
+
+    it('updates user language', async () => {
+        const user: User = {
+            id: '1',
+            email: 'test@example.com',
+            passwordHash: 'hashed_password',
+            language: 'en',
+            createdAt: new Date(),
+        };
+        userRepo.update.mockResolvedValue(user);
+
+        const result = await userService.updateLanguage('1', 'en');
+
+        expect(userRepo.update).toHaveBeenCalledWith('1', { language: 'en' });
+        expect(result).toEqual(user);
+    });
+
+    it('converts guest to regular user', async () => {
+        const guestUser: User = {
+            id: '1',
+            email: 'guest-1@kotcat.com',
+            passwordHash: 'old_hash',
+            name: 'guest',
+            isGuest: true,
+            createdAt: new Date(),
+        };
+        const convertedUser: User = {
+            id: '1',
+            email: 'new@example.com',
+            passwordHash: 'hashed_password',
+            name: 'John Doe',
+            language: 'en',
+            isGuest: false,
+            createdAt: guestUser.createdAt,
+        };
+        userRepo.findById.mockResolvedValue(guestUser);
+        userRepo.findByEmail.mockResolvedValue(null);
+        userRepo.update.mockResolvedValue(convertedUser);
+
+        const result = await userService.convertGuestToUser(
+            '1',
+            'new@example.com',
+            'newPassword123',
+            'John Doe',
+            'en'
+        );
+
+        expect(userRepo.findById).toHaveBeenCalledWith('1');
+        expect(userRepo.findByEmail).toHaveBeenCalledWith('new@example.com');
+        expect(hash).toHaveBeenCalledWith('newPassword123', 10);
+        expect(userRepo.update).toHaveBeenCalledWith('1', {
+            email: 'new@example.com',
+            passwordHash: 'hashed_password',
+            name: 'John Doe',
+            language: 'en',
+            isGuest: false,
+        });
+        expect(result).toEqual(convertedUser);
+    });
+
+    it('throws error when converting non-guest user', async () => {
+        const regularUser: User = {
+            id: '1',
+            email: 'user@example.com',
+            passwordHash: 'hashed_password',
+            isGuest: false,
+            createdAt: new Date(),
+        };
+        userRepo.findById.mockResolvedValue(regularUser);
+
+        await expect(
+            userService.convertGuestToUser('1', 'new@example.com', 'password123')
+        ).rejects.toThrow('User is not a guest');
+        expect(userRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('throws error when converting guest but user not found', async () => {
+        userRepo.findById.mockResolvedValue(null);
+
+        await expect(
+            userService.convertGuestToUser('1', 'new@example.com', 'password123')
+        ).rejects.toThrow('User not found');
+        expect(userRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('throws error when email already exists for guest conversion', async () => {
+        const guestUser: User = {
+            id: '1',
+            email: 'guest-1@kotcat.com',
+            passwordHash: 'old_hash',
+            isGuest: true,
+            createdAt: new Date(),
+        };
+        const existingUser: User = {
+            id: '2',
+            email: 'existing@example.com',
+            passwordHash: 'hashed_password',
+            createdAt: new Date(),
+        };
+        userRepo.findById.mockResolvedValue(guestUser);
+        userRepo.findByEmail.mockResolvedValue(existingUser);
+
+        await expect(
+            userService.convertGuestToUser('1', 'existing@example.com', 'password123')
+        ).rejects.toThrow('Email already exists');
+        expect(userRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('converts guest to user without name and language', async () => {
+        const guestUser: User = {
+            id: '1',
+            email: 'guest-1@kotcat.com',
+            passwordHash: 'old_hash',
+            name: 'guest',
+            isGuest: true,
+            createdAt: new Date(),
+        };
+        const convertedUser: User = {
+            id: '1',
+            email: 'new@example.com',
+            passwordHash: 'hashed_password',
+            name: undefined,
+            language: undefined,
+            isGuest: false,
+            createdAt: guestUser.createdAt,
+        };
+        userRepo.findById.mockResolvedValue(guestUser);
+        userRepo.findByEmail.mockResolvedValue(null);
+        userRepo.update.mockResolvedValue(convertedUser);
+
+        const result = await userService.convertGuestToUser(
+            '1',
+            'new@example.com',
+            'newPassword123'
+        );
+
+        expect(userRepo.update).toHaveBeenCalledWith('1', {
+            email: 'new@example.com',
+            passwordHash: 'hashed_password',
+            name: undefined,
+            language: undefined,
+            isGuest: false,
+        });
+        expect(result).toEqual(convertedUser);
     });
 });

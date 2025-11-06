@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { RegisterData, LoginData, User, UpdateProfileData, ChangePasswordData } from '../types/auth';
+import type { RegisterData, LoginData, User, UpdateProfileData, ChangePasswordData, GuestData, RegisterGuestData } from '../types/auth';
 import { API_BASE_URL } from '../config/api';
 
 // Настраиваем axios для работы с httpOnly cookies
@@ -74,5 +74,25 @@ export const authApi = {
     await axios.patch(`${API_BASE_URL}/auth/language`, { language }, {
       withCredentials: true
     });
+  },
+
+  /**
+   * Создание гостевого пользователя
+   */
+  createGuest: async (data: GuestData): Promise<User> => {
+    const response = await axios.post(`${API_BASE_URL}/auth/guests`, data, {
+      withCredentials: true
+    });
+    return response.data;
+  },
+
+  /**
+   * Регистрация гостевого пользователя в постоянный профиль
+   */
+  registerGuest: async (guestId: string, data: RegisterGuestData): Promise<User> => {
+    const response = await axios.patch(`${API_BASE_URL}/auth/guests/${guestId}`, data, {
+      withCredentials: true
+    });
+    return response.data;
   }
 };

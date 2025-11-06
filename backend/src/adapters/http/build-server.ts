@@ -23,6 +23,7 @@ import { PostgresUserRepository } from '../db/postgres-user-repo';
 
 import { CreateCardDTO, CardDTO, UpdateCardDTO, CreateFolderDTO, FolderDTO } from './dto'
 import { defaultSetting } from '../../config/app-config';
+import { randomUUID, randomBytes } from 'crypto';
 
 type CreateCardInput = z.infer<typeof CreateCardDTO>;
 
@@ -498,7 +499,7 @@ export async function buildServer() {
                 name: z.string().optional(),
                 language: z.string().optional(),
             }).parse(req.body);
-            const user = await userService.register(body.email, body.password, body.name, body.language);
+            const user = await userService.register(body.email, body.password, body.name, body.language, false);
             
             // Создаем дефолтную папку и карточки, если настроено
             if (defaultSetting.createFolder) {
@@ -529,6 +530,103 @@ export async function buildServer() {
                     email: user.email,
                     name: user.name,
                     language: user.language,
+                })
+        }
+    );
+
+    fastify.post('/auth/guests',
+        {
+            schema: {
+                body: {
+                    type: 'object',
+                    properties: {
+                        language: { type: 'string' },
+                    },
+                },
+                response: {
+                    201: {
+                        type: 'object',
+                        properties: {
+                            id: { type: 'string', format: 'uuid' },
+                            email: { type: 'string', format: 'email' },
+                            name: { type: 'string' },
+                            language: { type: 'string' },
+                            isGuest: { type: 'boolean' },
+                        },
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                    409: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Register guest user',
+            },
+        },
+        async (req, reply) => {
+            const body = z.object({ 
+                language: z.string().optional(),
+            }).parse(req.body);
+            
+            // Генерируем случайный пароль (16 байт в base64)
+            const password = randomBytes(16).toString('base64');
+            const name = 'guest';
+            
+            // Сначала создаем пользователя с временным email
+            // Репозиторий сам генерирует UUID для id
+            const tempEmail = `temp-${randomUUID()}@kotcat.com`;
+            let user = await userService.register(tempEmail, password, name, body.language, true);
+            
+            // Обновляем email на id@kotcat.com
+            const guestEmail = `${user.id}@kotcat.com`;
+            try {
+                user = await userService.updateEmail(user.id, guestEmail);
+            } catch (error) {
+                // Если email уже занят (крайне маловероятно для UUID), возвращаем ошибку
+                if (error instanceof Error && error.message === 'Email already exists') {
+                    return reply.code(409).send({ error: 'Email already exists' });
+                }
+                throw error;
+            }
+            
+            // Создаем дефолтную папку и карточки, если настроено
+            if (defaultSetting.createFolder) {
+                try {
+                    const folder = await folderService.createFolder(user.id, defaultSetting.folderName);
+                    for (const cardData of [...defaultSetting.card]) {
+                        await cardService.createCard(folder.id, cardData.question, cardData.answer);
+                    }
+                } catch (error) {
+                    // Логируем ошибку, но не прерываем регистрацию пользователя
+                    console.error('Failed to create default folder and cards:', error);
+                }
+            }
+            
+            const token = await userService.login(user.email, password);
+            if (!token) return reply.code(401).send({ error: 'Invalid credentials' });
+            return reply
+                .code(201)
+                .setCookie('token', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                    path: '/',
+                    maxAge: 60 * 60 * 24 * 7,
+                })
+                .send({
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    language: user.language,
+                    isGuest: user.isGuest,
                 })
         }
     );
@@ -593,6 +691,7 @@ export async function buildServer() {
                             name: { type: 'string' },
                             createdAt: { type: 'string', format: 'date-time' },
                             language: { type: 'string' },
+                            isGuest: { type: 'boolean' },
                         },
                     },
                     404: {
@@ -618,7 +717,8 @@ export async function buildServer() {
                 email: user.email,
                 name: userName,
                 createdAt: user.createdAt,
-                language: user.language,
+                language: user.language ?? null,
+                isGuest: user.isGuest ?? false,
             });
         }
     );
@@ -770,6 +870,100 @@ export async function buildServer() {
                 return reply.send({ language: user.language });
             } catch (error) {
                 return reply.code(404).send({ error: 'User not found' });
+            }
+        }
+    );
+
+    fastify.patch('/auth/guests/:id',
+        {
+            schema: {
+                params: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'string', format: 'uuid' },
+                    },
+                    required: ['id'],
+                },
+                body: {
+                    type: 'object',
+                    required: ['email', 'password'],
+                    properties: {
+                        email: { type: 'string', format: 'email' },
+                        password: { type: 'string', minLength: 6 },
+                        name: { type: 'string' },
+                        language: { type: 'string' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            email: { type: 'string', format: 'email' },
+                            name: { type: 'string' },
+                            language: { type: 'string' },
+                            isGuest: { type: 'boolean' },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                    409: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Convert guest user to regular user',
+            },
+        },
+        async (req, reply) => {
+            const { id } = req.params as { id: string };
+            const body = z.object({ 
+                email: z.string().email(),
+                password: z.string().min(6),
+                name: z.string().optional(),
+                language: z.string().optional(),
+            }).parse(req.body);
+            
+            try {
+                const user = await userService.convertGuestToUser(
+                    id,
+                    body.email,
+                    body.password,
+                    body.name,
+                    body.language
+                );
+                
+                return reply.send({
+                    email: user.email,
+                    name: user.name,
+                    language: user.language,
+                    isGuest: user.isGuest,
+                });
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error.message === 'User not found') {
+                        return reply.code(404).send({ error: 'User not found' });
+                    }
+                    if (error.message === 'User is not a guest') {
+                        return reply.code(400).send({ error: 'User is not a guest' });
+                    }
+                    if (error.message === 'Email already exists') {
+                        return reply.code(409).send({ error: 'Email already exists' });
+                    }
+                }
+                return reply.code(400).send({ error: 'Failed to convert guest to user' });
             }
         }
     );

@@ -3,6 +3,7 @@ export interface User {
   username: string;
   email: string;
   language?: string;
+  isGuest?: boolean;
 }
 
 export interface RegisterData {
@@ -29,4 +30,15 @@ export interface UpdateProfileData {
 export interface ChangePasswordData {
   oldPassword: string;
   newPassword: string;
+}
+
+export interface GuestData {
+  language: string;
+}
+
+export interface RegisterGuestData {
+  email: string;
+  password: string;
+  name: string;
+  language: string;
 }

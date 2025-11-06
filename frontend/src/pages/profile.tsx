@@ -27,11 +27,21 @@ const languages = [
 
 export const ProfilePage = () => {
   const { t, i18n } = useTranslation();
-  const { user, updateProfile, changePassword, updateLanguage } = useAuthStore();
+  const { user, updateProfile, changePassword, updateLanguage, registerGuest } = useAuthStore();
   const navigate = useNavigate();
 
   const initialUsername = useMemo(() => user?.username ?? '', [user?.username]);
   const initialLanguage = useMemo(() => user?.language ?? i18n.language ?? 'ru', [user?.language, i18n.language]);
+
+  // Для гостевой регистрации
+  const [guestName, setGuestName] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
+  const [guestPassword, setGuestPassword] = useState('');
+  const [guestConfirmPassword, setGuestConfirmPassword] = useState('');
+  const [guestLanguage, setGuestLanguage] = useState(initialLanguage);
+  const [guestSuccess, setGuestSuccess] = useState('');
+  const [guestError, setGuestError] = useState('');
+  const [guestLoading, setGuestLoading] = useState(false);
 
   const [username, setUsername] = useState(initialUsername);
   const [language, setLanguage] = useState(initialLanguage);
@@ -60,6 +70,12 @@ export const ProfilePage = () => {
   useEffect(() => {
     setLanguage(initialLanguage);
   }, [initialLanguage]);
+
+  useEffect(() => {
+    if (user?.isGuest) {
+      setGuestLanguage(user.language || i18n.language || 'ru');
+    }
+  }, [user?.isGuest, user?.language, i18n.language]);
 
   const handleProfileSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -147,10 +163,167 @@ export const ProfilePage = () => {
     }
   };
 
+  const handleGuestRegister = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setGuestSuccess('');
+    setGuestError('');
+
+    if (!guestName.trim()) {
+      setGuestError(t('profile.usernameRequired'));
+      return;
+    }
+
+    if (!guestEmail.trim()) {
+      setGuestError(t('auth.email') + ' ' + t('auth.required', 'required'));
+      return;
+    }
+
+    if (guestPassword !== guestConfirmPassword) {
+      setGuestError(t('profile.passwordMismatch'));
+      return;
+    }
+
+    if (guestPassword.length < 6) {
+      setGuestError(t('auth.passwordMinLength'));
+      return;
+    }
+
+    setGuestLoading(true);
+
+    try {
+      await registerGuest(guestEmail, guestPassword, guestName, guestLanguage);
+      await i18n.changeLanguage(guestLanguage);
+      setGuestSuccess(t('profile.registerGuestSuccess'));
+      
+      // Очищаем форму
+      setGuestName('');
+      setGuestEmail('');
+      setGuestPassword('');
+      setGuestConfirmPassword('');
+    } catch (error: any) {
+      setGuestError(error.message || t('errors.generic'));
+    } finally {
+      setGuestLoading(false);
+    }
+  };
+
   if (!user) {
     return null;
   }
 
+  // Если пользователь гость, показываем форму регистрации
+  if (user.isGuest) {
+    return (
+      <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+        <Container maxWidth="sm" >
+          {/* Header */}
+          <Box sx={{py: 4}}>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Button
+                startIcon={<ArrowBack/>}
+                onClick={() => navigate(-1)}
+                sx={{color: 'white'}}
+              >
+                {t('forms.back')}
+              </Button>
+            </Box>
+          </Box>
+
+          <Box sx={{ py: 4 }}>
+            <Paper
+              sx={{
+                p: 4,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 3,
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              <Box textAlign="center" sx={{ mb: 4 }}>
+                <AccountCircle sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+                <Typography variant={isMobile ? 'h4' : 'h3'} fontWeight="bold" gutterBottom>
+                  {t('profile.registerGuestTitle')}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  {t('profile.registerGuestSubtitle')}
+                </Typography>
+              </Box>
+
+              <Box component="form" onSubmit={handleGuestRegister}>
+                <Stack spacing={2}>
+                  {guestSuccess && <Alert severity="success">{guestSuccess}</Alert>}
+                  {guestError && <Alert severity="error">{guestError}</Alert>}
+
+                  <TextField
+                    label={t('profile.usernameLabel')}
+                    value={guestName}
+                    onChange={(event) => setGuestName(event.target.value)}
+                    fullWidth
+                    required
+                  />
+
+                  <TextField
+                    label={t('profile.emailLabel')}
+                    type="email"
+                    value={guestEmail}
+                    onChange={(event) => setGuestEmail(event.target.value)}
+                    fullWidth
+                    required
+                  />
+
+                  <TextField
+                    label={t('profile.passwordLabel')}
+                    type="password"
+                    value={guestPassword}
+                    onChange={(event) => setGuestPassword(event.target.value)}
+                    fullWidth
+                    required
+                  />
+
+                  <TextField
+                    label={t('profile.confirmPassword')}
+                    type="password"
+                    value={guestConfirmPassword}
+                    onChange={(event) => setGuestConfirmPassword(event.target.value)}
+                    fullWidth
+                    required
+                  />
+
+                  <FormControl fullWidth>
+                    <InputLabel id="guest-language-label">{t('profile.languageLabel')}</InputLabel>
+                    <Select
+                      labelId="guest-language-label"
+                      label={t('profile.languageLabel')}
+                      value={guestLanguage}
+                      onChange={(event) => {
+                        const newLanguage = event.target.value as string;
+                        setGuestLanguage(newLanguage);
+                        i18n.changeLanguage(newLanguage);
+                      }}
+                    >
+                      {languages.map((lang) => (
+                        <MenuItem key={lang.code} value={lang.code}>
+                          {lang.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <Box display="flex" justifyContent="flex-end" mt={2}>
+                    <Button type="submit" variant="contained" disabled={guestLoading}>
+                      {t('profile.registerGuestButton')}
+                    </Button>
+                  </Box>
+                </Stack>
+              </Box>
+            </Paper>
+          </Box>
+        </Container>
+      </Box>
+    );
+  }
+
+  // Обычная форма профиля для зарегистрированных пользователей
   return (
       <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
           <Container maxWidth="sm" >

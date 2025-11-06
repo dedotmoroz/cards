@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
 import { authApi } from '../authApi'
-import type { User, RegisterData, LoginData } from '../../types/auth'
+import type { User, RegisterData, LoginData, GuestData, RegisterGuestData } from '../../types/auth'
 
 // Создаем mock сервер
 const server = setupServer(
@@ -29,6 +29,30 @@ const server = setupServer(
   // Mock для выхода
   http.post('http://localhost:3000/auth/logout', () => {
     return HttpResponse.json({}, { status: 200 })
+  }),
+
+  // Mock для создания гостя
+  http.post('http://localhost:3000/auth/guests', () => {
+    const mockGuestUser: User = {
+      id: 'guest-123',
+      username: 'Guest',
+      email: 'guest@example.com',
+      language: 'ru',
+      isGuest: true
+    }
+    return HttpResponse.json(mockGuestUser, { status: 201 })
+  }),
+
+  // Mock для регистрации гостя
+  http.patch('http://localhost:3000/auth/guests/:id', () => {
+    const mockRegisteredUser: User = {
+      id: 'guest-123',
+      username: 'Test User',
+      email: 'user@example.com',
+      language: 'ru',
+      isGuest: false
+    }
+    return HttpResponse.json(mockRegisteredUser, { status: 200 })
   })
 )
 
@@ -163,6 +187,96 @@ describe('authApi Integration Tests', () => {
 
       // Act - не должно выбрасывать ошибку
       await expect(authApi.logout()).resolves.not.toThrow()
+    })
+  })
+
+  describe('createGuest', () => {
+    it('should create guest user successfully', async () => {
+      // Arrange
+      const guestData: GuestData = {
+        language: 'ru'
+      }
+
+      // Act
+      const user = await authApi.createGuest(guestData)
+
+      // Assert
+      expect(user).toEqual({
+        id: 'guest-123',
+        username: 'Guest',
+        email: 'guest@example.com',
+        language: 'ru',
+        isGuest: true
+      })
+    })
+
+    it('should handle guest creation error', async () => {
+      // Arrange
+      const guestData: GuestData = {
+        language: 'ru'
+      }
+
+      // Переопределяем handler для возврата ошибки
+      server.use(
+        http.post('http://localhost:3000/auth/guests', () => {
+          return HttpResponse.json(
+            { message: 'Failed to create guest' },
+            { status: 400 }
+          )
+        })
+      )
+
+      // Act & Assert
+      await expect(authApi.createGuest(guestData)).rejects.toThrow()
+    })
+  })
+
+  describe('registerGuest', () => {
+    it('should register guest user successfully', async () => {
+      // Arrange
+      const guestId = 'guest-123'
+      const registerGuestData: RegisterGuestData = {
+        email: 'user@example.com',
+        password: 'password123',
+        name: 'Test User',
+        language: 'ru'
+      }
+
+      // Act
+      const user = await authApi.registerGuest(guestId, registerGuestData)
+
+      // Assert
+      expect(user).toEqual({
+        id: 'guest-123',
+        username: 'Test User',
+        email: 'user@example.com',
+        language: 'ru',
+        isGuest: false
+      })
+    })
+
+    it('should handle guest registration error', async () => {
+      // Arrange
+      const guestId = 'guest-123'
+      const registerGuestData: RegisterGuestData = {
+        email: 'user@example.com',
+        password: 'password123',
+        name: 'Test User',
+        language: 'ru'
+      }
+
+      // Переопределяем handler для возврата ошибки
+      server.use(
+        http.patch('http://localhost:3000/auth/guests/:id', () => {
+          return HttpResponse.json(
+            { message: 'Registration failed' },
+            { status: 400 }
+          )
+        })
+      )
+
+      // Act & Assert
+      await expect(authApi.registerGuest(guestId, registerGuestData)).rejects.toThrow()
     })
   })
 })
