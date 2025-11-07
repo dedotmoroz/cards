@@ -128,7 +128,7 @@
   },
   "learning": {
     "allLearned": "Все карточки выучены",
-    "completedCycle": "Вы прошли все карточки!",
+    "completedCycle": "Карточки закончились",
     "wantToContinue": "Продолжить обучение",
     "showAnswer": "Показать ответ",
     "next": "Далее",

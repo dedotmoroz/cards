@@ -127,8 +127,8 @@
     "selectAll": "Select All"
   },
   "learning": {
-    "allLearned": "All cards learned 🎉",
-    "completedCycle": "You've completed all cards!",
+    "allLearned": "All cards learned",
+    "completedCycle": "There are no cards left",
     "wantToContinue": "Continue learning",
     "showAnswer": "Show Answer",
     "next": "Next",

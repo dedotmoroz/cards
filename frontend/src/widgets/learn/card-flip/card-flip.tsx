@@ -119,7 +119,6 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
           dragging.current = false;
       };
 
-      console.log('showAnswer === ', showAnswer ? question : answer)
         return (
             <Box
                 sx={{

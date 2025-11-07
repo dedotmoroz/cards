@@ -90,6 +90,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     onBackToFolders={handleBackToFolders}
                     onContinueLearning={handleContinueLearning}
                     hasUnlearnedCards={learning.cards.some(card => !card.isLearned)}
+                    learnedCount={learning.cards.filter(card => card.isLearned).length}
                     unlearnedCount={learning.cards.filter(card => !card.isLearned).length}
                 />
             ) : (<>
