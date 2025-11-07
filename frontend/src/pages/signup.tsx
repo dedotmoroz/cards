@@ -15,9 +15,10 @@ import {
 } from '@mui/material';
 import { ArrowBack, PersonAdd } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
+import { useSEO } from '@/shared/hooks/useSEO';
 
 export const SignUpPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -69,6 +70,14 @@ export const SignUpPage = () => {
       setIsLoading(false);
     }
   };
+
+  useSEO({
+    title: t('seo.signup.title'),
+    description: t('seo.signup.description'),
+    keywords: t('seo.keywords'),
+    lang: i18n.language,
+    noindex: true
+  });
 
   return (
     <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>

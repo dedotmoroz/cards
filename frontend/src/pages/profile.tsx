@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { ArrowBack, AccountCircle } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
+import { useSEO } from '@/shared/hooks/useSEO';
 
 const languages = [
   { code: 'ru', label: 'Русский' },
@@ -29,6 +30,13 @@ export const ProfilePage = () => {
   const { t, i18n } = useTranslation();
   const { user, updateProfile, changePassword, updateLanguage, registerGuest } = useAuthStore();
   const navigate = useNavigate();
+
+  useSEO({
+    title: t('seo.profile.title'),
+    description: t('seo.profile.description'),
+    keywords: t('seo.keywords'),
+    lang: i18n.language
+  });
 
   const initialUsername = useMemo(() => user?.username ?? '', [user?.username]);
   const initialLanguage = useMemo(() => user?.language ?? i18n.language ?? 'ru', [user?.language, i18n.language]);

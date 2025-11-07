@@ -12,9 +12,10 @@ import {
   CircularProgress
 } from '@mui/material';
 import { useAuthStore } from '@/shared/store/authStore';
+import { useSEO } from '@/shared/hooks/useSEO';
 
 export const SignInPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -46,6 +47,14 @@ export const SignInPage = () => {
       setIsLoading(false);
     }
   };
+
+  useSEO({
+    title: t('seo.signin.title'),
+    description: t('seo.signin.description'),
+    keywords: t('seo.keywords'),
+    lang: i18n.language,
+    noindex: true
+  });
 
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>

@@ -9,9 +9,10 @@ import { useFoldersStore } from '@/shared/store/foldersStore';
 import { useAuthStore } from '@/shared/store/authStore';
 import {Folders} from "@/widgets/folders";
 import {Cards} from "@/widgets/cards";
+import { useSEO } from '@/shared/hooks/useSEO';
 
 export const HomePage = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -58,6 +59,13 @@ export const HomePage = () => {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    useSEO({
+        title: t('seo.learn.title'),
+        description: t('seo.learn.description'),
+        keywords: t('seo.keywords'),
+        lang: i18n.language
+    });
 
     return (
         <>

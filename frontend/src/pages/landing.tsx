@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthDialog } from '@/shared/ui/auth-dialog';
 import { LanguageSwitcher } from '@/shared/ui/language-switcher';
 import { useAuthStore } from '@/shared/store/authStore';
+import { useSEO } from '@/shared/hooks/useSEO';
 
 export const LandingPage = () => {
   const { t, i18n } = useTranslation();
@@ -32,6 +33,13 @@ export const LandingPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { isAuthenticated, logout, createGuest } = useAuthStore();
+
+  useSEO({
+    title: t('seo.landing.title'),
+    description: t('seo.landing.description'),
+    keywords: t('seo.keywords'),
+    lang: i18n.language
+  });
 
   const handleAuthSuccess = () => {
       navigate('/learn');
