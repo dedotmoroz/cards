@@ -1,0 +1,29 @@
+{
+  "name": "ai-service",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tsx watch index.ts",
+    "worker": "tsx watch src/workers/generateWorker.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "start:worker": "node dist/workers/generateWorker.js",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@fastify/swagger": "^9.4.2",
+    "@fastify/swagger-ui": "^5.2.3",
+    "bullmq": "^5.63.0",
+    "dotenv": "^17.2.3",
+    "fastify": "^5.0.0",
+    "ioredis": "^5.8.2",
+    "openai": "^6.8.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/ioredis": "^4.28.10",
+    "@types/node": "^22.19.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.6.3",
+    "vitest": "^1.6.0"
+  }
+}
