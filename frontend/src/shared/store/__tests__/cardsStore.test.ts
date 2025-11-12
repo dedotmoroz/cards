@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
-import { useCardsStore } from '../cardsStore'
+import { useCardsStore, __cardsStoreInternals } from '../cardsStore'
 import { cardsApi } from '../../api/cardsApi'
 import type { Card } from '../../types/cards'
 
@@ -20,13 +20,17 @@ describe('cardsStore', () => {
     useCardsStore.setState({
       cards: [],
       isLoading: false,
-      error: null
+      error: null,
+      generationStatuses: {}
     })
     vi.clearAllMocks()
+    __cardsStoreInternals.resetGenerationTimers()
   })
 
   afterEach(() => {
     vi.restoreAllMocks()
+    vi.useRealTimers()
+    __cardsStoreInternals.resetGenerationTimers()
   })
 
   it('should have correct initial state', () => {
@@ -35,6 +39,7 @@ describe('cardsStore', () => {
     expect(result.current.cards).toEqual([])
     expect(result.current.isLoading).toBe(false)
     expect(result.current.error).toBeNull()
+    expect(result.current.generationStatuses).toEqual({})
   })
 
   it('should manage card collection locally', () => {
@@ -57,6 +62,7 @@ describe('cardsStore', () => {
     })
 
     expect(result.current.cards).toHaveLength(0)
+    expect(result.current.generationStatuses).toEqual({})
   })
 
   it('should fetch cards successfully', async () => {
@@ -72,6 +78,7 @@ describe('cardsStore', () => {
     expect(result.current.cards).toEqual([mockCard])
     expect(result.current.isLoading).toBe(false)
     expect(result.current.error).toBeNull()
+    expect(result.current.generationStatuses).toEqual({})
   })
 
   it('should handle fetch cards error', async () => {
@@ -86,6 +93,7 @@ describe('cardsStore', () => {
     expect(result.current.cards).toEqual([])
     expect(result.current.isLoading).toBe(false)
     expect(result.current.error).toBe('Failed to fetch cards')
+    expect(result.current.generationStatuses).toEqual({})
   })
 
   it('should create card and refresh list', async () => {
@@ -143,6 +151,111 @@ describe('cardsStore', () => {
 
     expect(mockedCardsApi.deleteCard).toHaveBeenCalledWith('card-1')
     expect(result.current.cards).toHaveLength(0)
+    expect(result.current.generationStatuses).toEqual({})
+  })
+
+  it('should handle generateCardSentences with immediate completion', async () => {
+    const generatedCard: Card = {
+      ...mockCard,
+      questionSentences: 'Sentence 1',
+      answerSentences: 'Translation 1'
+    }
+
+    mockedCardsApi.generateCardSentences.mockResolvedValueOnce({ jobId: 'job-123' })
+    mockedCardsApi.getCardGenerationStatus.mockResolvedValueOnce({
+      status: 'completed',
+      progress: 100,
+      card: generatedCard
+    })
+
+    useCardsStore.setState({
+      cards: [mockCard],
+      isLoading: false,
+      error: null,
+      generationStatuses: {}
+    })
+
+    const { result } = renderHook(() => useCardsStore())
+
+    await act(async () => {
+      await result.current.generateCardSentences('card-1')
+    })
+
+    expect(mockedCardsApi.generateCardSentences).toHaveBeenCalledWith('card-1', {})
+    expect(mockedCardsApi.getCardGenerationStatus).toHaveBeenCalledWith('card-1', { jobId: 'job-123' })
+    expect(result.current.cards[0]).toEqual(generatedCard)
+    expect(result.current.generationStatuses['card-1']).toEqual({ status: 'completed', progress: 100 })
+  })
+
+  it('should poll until generation completes', async () => {
+    vi.useFakeTimers()
+
+    mockedCardsApi.generateCardSentences.mockResolvedValueOnce({ jobId: 'job-123' })
+    mockedCardsApi.getCardGenerationStatus
+      .mockResolvedValueOnce({
+        status: 'waiting',
+        progress: 10
+      } as any)
+      .mockResolvedValueOnce({
+        status: 'completed',
+        progress: 100,
+        card: {
+          ...mockCard,
+          questionSentences: 'Generated',
+          answerSentences: 'Перевод'
+        }
+      } as any)
+
+    useCardsStore.setState({
+      cards: [mockCard],
+      isLoading: false,
+      error: null,
+      generationStatuses: {}
+    })
+
+    const { result } = renderHook(() => useCardsStore())
+
+    await act(async () => {
+      await result.current.generateCardSentences('card-1')
+    })
+
+    expect(result.current.generationStatuses['card-1']).toEqual({ status: 'polling', progress: 10 })
+
+    await act(async () => {
+      vi.advanceTimersByTime(2000)
+      await Promise.resolve()
+    })
+
+    expect(result.current.generationStatuses['card-1']).toEqual({ status: 'completed', progress: 100 })
+    expect(result.current.cards[0].questionSentences).toBe('Generated')
+  })
+
+  it('should handle generation failure', async () => {
+    mockedCardsApi.generateCardSentences.mockResolvedValueOnce({ jobId: 'job-123' })
+    mockedCardsApi.getCardGenerationStatus.mockResolvedValueOnce({
+      status: 'failed',
+      progress: 40,
+      error: 'Some error'
+    })
+
+    useCardsStore.setState({
+      cards: [mockCard],
+      isLoading: false,
+      error: null,
+      generationStatuses: {}
+    })
+
+    const { result } = renderHook(() => useCardsStore())
+
+    await act(async () => {
+      await result.current.generateCardSentences('card-1')
+    })
+
+    expect(result.current.generationStatuses['card-1']).toEqual({
+      status: 'failed',
+      progress: 40,
+      error: 'Some error'
+    })
   })
 })
 

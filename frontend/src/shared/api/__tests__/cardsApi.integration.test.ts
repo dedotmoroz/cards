@@ -68,6 +68,44 @@ const server = setupServer(
   // Mock для удаления карточки
   http.delete('http://localhost:3000/cards/:id', () => {
     return HttpResponse.json({}, { status: 200 })
+  }),
+
+  // Mock для запуска генерации
+  http.post('http://localhost:3000/cards/:id/generate', () => {
+    return HttpResponse.json({ jobId: 'job-123' }, { status: 202 })
+  }),
+
+  // Mock для статуса генерации
+  http.get('http://localhost:3000/cards/:id/generate-status', ({ request }) => {
+    const url = new URL(request.url)
+    const jobId = url.searchParams.get('jobId')
+
+    if (jobId === 'job-123') {
+      return HttpResponse.json(
+        {
+          status: 'completed',
+          progress: 100,
+          card: {
+            id: 'card-123',
+            question: 'Updated question?',
+            answer: 'Updated answer',
+            questionSentences: 'Generated sentence',
+            answerSentences: 'Переведенное предложение',
+            isLearned: false,
+            folderId: 'folder-123'
+          }
+        },
+        { status: 200 }
+      )
+    }
+
+    return HttpResponse.json(
+      {
+        status: 'waiting',
+        progress: 0
+      },
+      { status: 200 }
+    )
   })
 )
 
@@ -273,6 +311,28 @@ describe('cardsApi Integration Tests', () => {
 
       // Act & Assert
       await expect(cardsApi.deleteCard('card-123')).rejects.toThrow()
+    })
+  })
+
+  describe('generateCardSentences', () => {
+    it('should return job id', async () => {
+      const result = await cardsApi.generateCardSentences('card-123', { count: 1 })
+
+      expect(result).toEqual({ jobId: 'job-123' })
+    })
+  })
+
+  describe('getCardGenerationStatus', () => {
+    it('should return completed status with card data', async () => {
+      const result = await cardsApi.getCardGenerationStatus('card-123', { jobId: 'job-123' })
+
+      expect(result.status).toBe('completed')
+      expect(result.progress).toBe(100)
+      expect(result.card).toMatchObject({
+        id: 'card-123',
+        question: 'Updated question?',
+        answer: 'Updated answer'
+      })
     })
   })
 })

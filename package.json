@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "start:backend": "npm run dev --prefix backend",
-    "start:frontend": "npm run dev --prefix frontend"
+    "start:frontend": "npm run dev --prefix frontend",
+    "start:ai": "npm run dev --prefix ai-service",
+    "start:worker": "npm run worker --prefix ai-service"
   }
 }

@@ -224,6 +224,56 @@ describe('cardsApi', () => {
     })
   })
 
+  describe('generateCardSentences', () => {
+    it('should request generation and return job id', async () => {
+      const cardId = 'card-1'
+      const payload = { count: 2 }
+      const response = { jobId: 'job-123' }
+
+      mockedAxios.post.mockResolvedValueOnce({ data: response })
+
+      const result = await cardsApi.generateCardSentences(cardId, payload)
+
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        `http://localhost:3000/cards/${cardId}/generate`,
+        payload
+      )
+      expect(result).toEqual(response)
+    })
+
+    it('should pass empty object when options are omitted', async () => {
+      const cardId = 'card-1'
+      const response = { jobId: 'job-123' }
+
+      mockedAxios.post.mockResolvedValueOnce({ data: response })
+
+      await cardsApi.generateCardSentences(cardId)
+
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        `http://localhost:3000/cards/${cardId}/generate`,
+        {}
+      )
+    })
+  })
+
+  describe('getCardGenerationStatus', () => {
+    it('should return generation status', async () => {
+      const cardId = 'card-1'
+      const params = { jobId: 'job-123' }
+      const response = { status: 'completed', progress: 100 }
+
+      mockedAxios.get.mockResolvedValueOnce({ data: response })
+
+      const result = await cardsApi.getCardGenerationStatus(cardId, params)
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `http://localhost:3000/cards/${cardId}/generate-status`,
+        { params }
+      )
+      expect(result).toEqual(response)
+    })
+  })
+
   describe('axios configuration', () => {
     it('should set withCredentials to true', () => {
       // Assert

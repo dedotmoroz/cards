@@ -4,6 +4,10 @@ import { CardRepository } from '../ports/card-repository';
 export class CardService {
   constructor(private readonly cardRepo: CardRepository) {}
 
+  async getById(id: string): Promise<Card | null> {
+    return this.cardRepo.findById(id);
+  }
+
   async createCard(
     folderId: string,
     question: string,

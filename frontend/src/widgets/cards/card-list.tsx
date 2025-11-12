@@ -30,7 +30,7 @@ export const CardList: React.FC<CardListProps> = ({
                                                      // onToggleLearned
 }) => {
   const { t } = useTranslation();
-  const { updateCardApi, updateCardLearnStatus, deleteCard } = useCardsStore();
+  const { updateCardApi, updateCardLearnStatus, deleteCard, generateCardSentences, generationStatuses } = useCardsStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [renameOpen, setRenameOpen] = useState(false);
@@ -186,6 +186,8 @@ export const CardList: React.FC<CardListProps> = ({
                   expandedCardId={expandedCardId}
                   updateCardLearnStatus={updateCardLearnStatus}
                   handleMenuOpen={handleMenuOpen}
+                  onReload={generateCardSentences}
+                  generationStatus={generationStatuses[card.id]}
               />
           ))}
           <MenuCard

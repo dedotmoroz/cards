@@ -1,6 +1,8 @@
-import { Box, Checkbox, IconButton, ListItem, Typography } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, IconButton, ListItem, Typography } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ReplayIcon from "@mui/icons-material/Replay";
 import type { Card } from "@/shared/types/cards";
+import type { CardGenerationState } from "@/shared/store/cardsStore";
 
 interface CardItemProps {
     card: Card;
@@ -9,6 +11,8 @@ interface CardItemProps {
     expandedCardId: string | null;
     updateCardLearnStatus: (cardId: string, isLearned: boolean) => void;
     handleMenuOpen: (event: React.MouseEvent<HTMLElement>, cardId: string) => void;
+    onReload?: (cardId: string) => void;
+    generationStatus?: CardGenerationState;
 }
 
 export const CardItem: React.FC<CardItemProps> = ({
@@ -18,7 +22,13 @@ export const CardItem: React.FC<CardItemProps> = ({
                              expandedCardId,
                              updateCardLearnStatus,
                              handleMenuOpen,
+                             onReload,
+                             generationStatus,
                          }) => {
+
+    const state = generationStatus ?? { status: 'idle', progress: 0 };
+    const isGenerating = state.status === 'pending' || state.status === 'polling';
+    const hasError = state.status === 'failed' && state.error;
 
     return (
         <ListItem
@@ -46,6 +56,15 @@ export const CardItem: React.FC<CardItemProps> = ({
                         >
                             {card.question}
                         </Typography>
+                        {card.questionSentences && (
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mt: 1, whiteSpace: 'pre-wrap' }}
+                            >
+                                {card.questionSentences}
+                            </Typography>
+                        )}
                     </Box>
                     <Box flex={1}>
                         <Typography
@@ -58,7 +77,43 @@ export const CardItem: React.FC<CardItemProps> = ({
                         >
                             {card.answer}
                         </Typography>
+                        {card.answerSentences && (
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mt: 1, whiteSpace: 'pre-wrap' }}
+                            >
+                                {card.answerSentences}
+                            </Typography>
+                        )}
                     </Box>
+                    <Button
+                        variant="text"
+                        size="small"
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            onReload?.(card.id);
+                        }}
+                        disabled={isGenerating}
+                        sx={{
+                            minWidth: 0,
+                            padding: 0.5,
+                            alignSelf: 'flex-start',
+                            color: 'text.secondary'
+                        }}
+                    >
+                        {isGenerating
+                            ? (<CircularProgress size={16} />)
+                            : (<ReplayIcon fontSize="small" />)
+                        }
+                    </Button>
+
+                    {hasError && (
+                        <Typography variant="caption" color="error.main" mt={1}>
+                            {state.error}
+                        </Typography>
+                    )}
+
                 </Box>
                 <Box display="flex" width={'80px'} alignItems="center" gap={2} sx={{ml: 2}}>
                     <Checkbox

@@ -32,3 +32,21 @@ export interface UpdateCardData {
 export interface UpdateCardLearnStatusData {
   isLearned: boolean;
 }
+
+export interface CardGenerationRequest {
+  lang?: string;
+  level?: string;
+  count?: number;
+  target?: string;
+}
+
+export interface CardGenerationTriggerResponse {
+  jobId: string;
+}
+
+export interface CardGenerationStatusResponse {
+  status: 'waiting' | 'active' | 'completed' | 'failed' | 'delayed' | 'paused';
+  progress?: number;
+  card?: Card;
+  error?: string;
+}
