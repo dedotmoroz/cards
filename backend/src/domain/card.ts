@@ -19,8 +19,18 @@ export class Card {
     public repetitions: number = 0,
     public easeFactor: number = 2.5,
     public lastRating: number | null = null,
-    public averageRating: number = 0
+    public averageRating: number = 0,
+    public questionSentences: string | null = null,
+    public answerSentences: string | null = null
   ) {}
+
+  setQuestionSentences(sentences: string | null): void {
+    this.questionSentences = sentences ?? null;
+  }
+
+  setAnswerSentences(sentences: string | null): void {
+    this.answerSentences = sentences ?? null;
+  }
 
   markAsLearned(): void {
     this.isLearned = true;
@@ -65,7 +75,13 @@ export class Card {
       question: this.question,
       answer: this.answer,
       isLearned: this.isLearned,
-      createdAt: this.createdAt
+      createdAt: this.createdAt,
+      ...(this.questionSentences != null
+        ? { questionSentences: this.questionSentences }
+        : {}),
+      ...(this.answerSentences != null
+        ? { answerSentences: this.answerSentences }
+        : {})
     };
   }
 }

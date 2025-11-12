@@ -22,7 +22,7 @@ interface CardsState {
     // API calls
     fetchCards: (folderId: string) => Promise<void>
     createCard: (folderId: string, question: string, answer: string) => Promise<void>
-    updateCardApi: (id: string, updates: { question?: string; answer?: string }) => Promise<void>
+    updateCardApi: (id: string, updates: { question?: string; answer?: string; questionSentences?: string | null; answerSentences?: string | null }) => Promise<void>
     updateCardLearnStatus: (id: string, isLearned: boolean) => Promise<void>
     deleteCard: (id: string) => Promise<void>
 }
@@ -77,13 +77,15 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         }
     },
 
-    updateCardApi: async (id: string, updates: { question?: string; answer?: string }) => {
+    updateCardApi: async (id: string, updates: { question?: string; answer?: string; questionSentences?: string | null; answerSentences?: string | null }) => {
         set({ error: null })
         try {
             const updated = await cardsApi.updateCard(id, updates)
             get().updateCard(id, {
                 question: updated.question,
-                answer: updated.answer
+                answer: updated.answer,
+                questionSentences: updated.questionSentences,
+                answerSentences: updated.answerSentences
             })
         } catch (error) {
             console.error('Error updating card:', error)

@@ -121,8 +121,14 @@ export async function buildServer() {
             req: FastifyRequest<{ Body: CreateCardInput }>,
             reply: FastifyReply
         ) => {
-        const { folderId, question, answer } = req.body;
-        const card = await cardService.createCard(folderId, question, answer);
+        const { folderId, question, answer, questionSentences, answerSentences } = req.body;
+        const card = await cardService.createCard(
+            folderId,
+            question,
+            answer,
+            questionSentences,
+            answerSentences
+        );
         return reply.code(201).send(card.toPublicDTO());
     });
 

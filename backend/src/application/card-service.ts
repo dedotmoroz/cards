@@ -4,18 +4,58 @@ import { CardRepository } from '../ports/card-repository';
 export class CardService {
   constructor(private readonly cardRepo: CardRepository) {}
 
-  async createCard(folderId: string, question: string, answer: string): Promise<Card> {
+  async createCard(
+    folderId: string,
+    question: string,
+    answer: string,
+    questionSentences?: string | null,
+    answerSentences?: string | null
+  ): Promise<Card> {
     const id = crypto.randomUUID();
-    const card = new Card(id, folderId, question, answer);
+    const card = new Card(
+      id,
+      folderId,
+      question,
+      answer,
+      false,
+      new Date(),
+      null,
+      null,
+      null,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2.5,
+      null,
+      0,
+      questionSentences ?? null,
+      answerSentences ?? null
+    );
     await this.cardRepo.save(card);
     return card;
   }
 
-  async updateCard(id: string, updates: { question?: string; answer?: string }): Promise<Card | null> {
+  async updateCard(
+    id: string,
+    updates: {
+      question?: string;
+      answer?: string;
+      questionSentences?: string | null;
+      answerSentences?: string | null;
+    }
+  ): Promise<Card | null> {
     const card = await this.cardRepo.findById(id);
     if (!card) return null;
     if (updates.question !== undefined) card.question = updates.question;
     if (updates.answer !== undefined) card.answer = updates.answer;
+    if (updates.questionSentences !== undefined) {
+      card.setQuestionSentences(updates.questionSentences);
+    }
+    if (updates.answerSentences !== undefined) {
+      card.setAnswerSentences(updates.answerSentences);
+    }
     await this.cardRepo.save(card);
     return card;
   }

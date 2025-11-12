@@ -14,6 +14,8 @@ export class PostgresCardRepository implements CardRepository {
             await db.update(cards).set({
                 question: card.question,
                 answer: card.answer,
+                questionSentences: card.questionSentences,
+                answerSentences: card.answerSentences,
                 folderId: card.folderId,
                 isLearned: card.isLearned,
                 // Интервальное повторение
@@ -36,6 +38,8 @@ export class PostgresCardRepository implements CardRepository {
                 id: card.id,
                 question: card.question,
                 answer: card.answer,
+                questionSentences: card.questionSentences,
+                answerSentences: card.answerSentences,
                 folderId: card.folderId,
                 isLearned: card.isLearned,
                 createdAt: card.createdAt,

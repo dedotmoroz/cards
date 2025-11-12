@@ -4,6 +4,8 @@ export const CreateCardDTO = z.object({
   folderId: z.string().uuid(),
   question: z.string().min(1),
   answer: z.string().min(1),
+  questionSentences: z.string().optional(),
+  answerSentences: z.string().optional(),
 }).describe('CreateCardDTO');
 
 export const CardDTO = z.object({
@@ -11,6 +13,8 @@ export const CardDTO = z.object({
   folderId: z.string().uuid(),
   question: z.string(),
   answer: z.string(),
+  questionSentences: z.string().optional(),
+  answerSentences: z.string().optional(),
   isLearned: z.boolean(),
   createdAt: z.date(),
 }).describe('CardDTO');
@@ -18,6 +22,8 @@ export const CardDTO = z.object({
 export const UpdateCardDTO = z.object({
   question: z.string().min(1).optional(),
   answer: z.string().min(1).optional(),
+  questionSentences: z.string().nullable().optional(),
+  answerSentences: z.string().nullable().optional(),
 }).describe('UpdateCardDTO');
 
 export const MarkAsLearnedDTO = z.object({}).describe('MarkAsLearnedDTO'); // пустая схема

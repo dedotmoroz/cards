@@ -119,6 +119,8 @@ describe('cardsApi', () => {
         id: 'card-123',
         question: 'Updated question?',
         answer: 'Updated answer',
+        questionSentences: 'Updated question sentences',
+        answerSentences: 'Updated answer sentences',
         isLearned: false,
         folderId: 'folder-123'
       }

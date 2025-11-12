@@ -5,6 +5,8 @@ export const cards = pgTable('cards', {
   folderId: uuid('folder_id').notNull(),
   question: text('question').notNull(),
   answer: text('answer').notNull(),
+  questionSentences: text('question_sentences'),
+  answerSentences: text('answer_sentences'),
   isLearned: boolean('is_learned').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   

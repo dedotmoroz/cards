@@ -6,13 +6,7 @@ import { useCardsStore } from '@/shared/store/cardsStore.ts';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
-
-type Card = {
-  id: string;
-  question: string;
-  answer: string;
-  isLearned: boolean;
-};
+import type { Card } from "@/shared/types/cards";
 
 type CardListProps = {
   cards: Card[];

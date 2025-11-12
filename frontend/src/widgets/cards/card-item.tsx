@@ -1,12 +1,6 @@
-import {Box, Checkbox, IconButton, ListItem, Typography} from "@mui/material";
+import { Box, Checkbox, IconButton, ListItem, Typography } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-
-type Card = {
-    id: string;
-    question: string;
-    answer: string;
-    isLearned: boolean;
-};
+import type { Card } from "@/shared/types/cards";
 
 interface CardItemProps {
     card: Card;

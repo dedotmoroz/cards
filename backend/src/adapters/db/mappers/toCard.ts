@@ -5,6 +5,8 @@ type CardRow = {
     folderId: string;
     question: string;
     answer: string;
+    questionSentences: string | null;
+    answerSentences: string | null;
     isLearned: boolean;
     createdAt: Date;
     // Интервальное повторение
@@ -44,6 +46,8 @@ export function toCard(row: CardRow): Card {
         row.repetitions,
         row.easeFactor,
         row.lastRating,
-        row.averageRating
+        row.averageRating,
+        row.questionSentences,
+        row.answerSentences
     );
 }

@@ -28,14 +28,43 @@ describe('CardService', () => {
         expect(repo.save).toHaveBeenCalledWith(card);
     });
 
+    it('создает карточку с предложениями', async () => {
+        const card = await service.createCard('folder1', 'Q', 'A', 'Q sentences', 'A sentences');
+
+        expect(card.questionSentences).toBe('Q sentences');
+        expect(card.answerSentences).toBe('A sentences');
+        expect(repo.save).toHaveBeenCalledWith(card);
+    });
+
     it('обновляет карточку', async () => {
         const card = new Card('id123', 'folder1', 'Old Q', 'Old A', false, new Date());
         repo.findById.mockResolvedValue(card);
 
-        const updated = await service.updateCard('id123', { question: 'New Q', answer: 'New A' });
+        const updated = await service.updateCard('id123', {
+            question: 'New Q',
+            answer: 'New A',
+            questionSentences: 'New QS',
+            answerSentences: 'New AS'
+        });
 
         expect(updated?.question).toBe('New Q');
         expect(updated?.answer).toBe('New A');
+        expect(updated?.questionSentences).toBe('New QS');
+        expect(updated?.answerSentences).toBe('New AS');
+        expect(repo.save).toHaveBeenCalledWith(card);
+    });
+
+    it('очищает предложения карточки', async () => {
+        const card = new Card('id123', 'folder1', 'Q', 'A', false, new Date(), null, null, null, 0, 0, 0, 0, 0, 2.5, null, 0, 'QS', 'AS');
+        repo.findById.mockResolvedValue(card);
+
+        const updated = await service.updateCard('id123', {
+            questionSentences: null,
+            answerSentences: null
+        });
+
+        expect(updated?.questionSentences).toBeNull();
+        expect(updated?.answerSentences).toBeNull();
         expect(repo.save).toHaveBeenCalledWith(card);
     });
 
@@ -141,5 +170,21 @@ describe('CardService', () => {
         });
         expect(publicDTO).not.toHaveProperty('lastShownAt');
         expect(publicDTO).not.toHaveProperty('reviewCount');
+    });
+
+    it('возвращает публичные поля с предложениями при их наличии', () => {
+        const card = new Card('1', 'folder1', 'Q', 'A', false, new Date(), null, null, null, 0, 0, 0, 0, 0, 2.5, null, 0, 'QS', 'AS');
+        const publicDTO = card.toPublicDTO();
+
+        expect(publicDTO).toEqual({
+            id: '1',
+            folderId: 'folder1',
+            question: 'Q',
+            answer: 'A',
+            questionSentences: 'QS',
+            answerSentences: 'AS',
+            isLearned: false,
+            createdAt: card.createdAt
+        });
     });
 });
