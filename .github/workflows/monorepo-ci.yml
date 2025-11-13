@@ -14,6 +14,7 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      ai: ${{ steps.filter.outputs.ai }}
       telegram: ${{ steps.filter.outputs.telegram }}
       android: ${{ steps.filter.outputs.android }}
     steps:
@@ -28,6 +29,9 @@ jobs:
             frontend:
               - 'frontend/**'
               - 'Dockerfile.frontend'
+            ai:
+              - 'ai-service/**'
+              - 'Dockerfile.ai-service'
             telegram:
               - 'telegram/**'
             android:
@@ -91,6 +95,36 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  build-ai:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.ai == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/cards-ai
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.ai-service
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   deploy-backend:
     needs: [detect-changes, build-backend]
     if: always() && needs.detect-changes.outputs.backend == 'true' && (needs.build-backend.result == 'success' || needs.build-backend.result == 'skipped')
@@ -125,4 +159,26 @@ jobs:
             cd /srv/selltime.org
             docker compose pull web
             docker compose up -d web
+            docker image prune -f
+
+  deploy-ai:
+    needs: [ detect-changes, build-ai ]
+    if: |
+      always() &&
+      needs.detect-changes.outputs.ai == 'true' &&
+      (needs.build-ai.result == 'success' || needs.build-ai.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy AI service to VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /srv/selltime.org
+            docker compose pull ai
+            docker compose up -d ai
             docker image prune -f

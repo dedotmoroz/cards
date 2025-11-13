@@ -2,7 +2,7 @@ import "dotenv/config";
 import Fastify from "fastify";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-import registerApi from "./src/routes/api";
+import registerApi from "./routes/api";
 
 const PORT = Number(process.env.PORT ?? 4000);
 

@@ -1,0 +1,32 @@
+# Dockerfile.ai-service
+
+# 1) билд
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+# только package*.json сначала – для кэша
+COPY ai-service/package*.json ./
+RUN npm ci
+
+# теперь весь код
+COPY ai-service ./
+
+# билд TS -> dist
+RUN npm run build
+
+# 2) рантайм
+FROM node:20-alpine AS runtime
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+# тащим node_modules и собранный dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+
+# порт, на котором слушает сервис
+ENV PORT=4000
+EXPOSE 4000
+
+CMD ["node", "dist/index.js"]
