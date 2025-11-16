@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useLayoutEffect, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Container } from '@mui/material';
 
@@ -13,8 +13,11 @@ export const LearnPage = () => {
     const { t, i18n } = useTranslation();
     const { folderId } = useParams<{ folderId: string }>();
     const [searchParams] = useSearchParams();
-    const learning = useCardLearning(folderId);
     const { folders } = useFoldersStore();
+    
+    // Получаем initialSide из URL сразу, до создания хука
+    const initialSideFromUrl = (searchParams.get('initialSide') || 'question') as 'question' | 'answer';
+    const learning = useCardLearning(folderId, initialSideFromUrl);
 
     const folderName = useMemo(() => {
         if (!folderId) {
@@ -36,12 +39,30 @@ export const LearnPage = () => {
         lang: i18n.language
     });
 
+    // Инициализируем режим и начальную сторону из URL параметров
+    // Используем ref для отслеживания, был ли уже установлен режим
+    const modeInitializedRef = useRef(false);
     useEffect(() => {
         const mode = searchParams.get('mode');
-        if (mode === 'unlearned') {
-            learning.setLearningMode(true);
+        const initialSide = searchParams.get('initialSide') || 'question';
+        
+        // Устанавливаем начальную сторону
+        learning.setInitialSide(initialSide as 'question' | 'answer');
+        
+        // Устанавливаем режим только один раз при монтировании или изменении searchParams
+        if (!modeInitializedRef.current || mode) {
+            if (mode === 'unlearned') {
+                setTimeout(() => {
+                    learning.setLearningMode(true);
+                }, 150);
+            } else if (mode === 'phrases') {
+                setTimeout(() => {
+                    learning.setPhrasesMode(true);
+                }, 150);
+            }
+            modeInitializedRef.current = true;
         }
-    }, [searchParams]);
+    }, [searchParams]); // Убрали learning из зависимостей
 
 
     const NoCardsState = !learning.cards.length;

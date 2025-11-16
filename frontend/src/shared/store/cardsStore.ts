@@ -53,6 +53,7 @@ interface CardsState {
     updateCardLearnStatus: (id: string, isLearned: boolean) => Promise<void>
     deleteCard: (id: string) => Promise<void>
     generateCardSentences: (id: string, options?: CardGenerationRequest) => Promise<void>
+    generateAllCardsSentences: (options?: CardGenerationRequest) => Promise<void>
 }
 
 
@@ -275,5 +276,13 @@ export const useCardsStore = create<CardsState>((set, get) => ({
                 },
             }))
         }
+    },
+
+    generateAllCardsSentences: async (options?: CardGenerationRequest) => {
+        const { cards } = get()
+        // Запускаем генерацию для всех карточек параллельно
+        await Promise.allSettled(
+            cards.map(card => get().generateCardSentences(card.id, options))
+        )
     },
 }))

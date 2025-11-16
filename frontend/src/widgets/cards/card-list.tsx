@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List, Box, Typography, IconButton, Checkbox } from '@mui/material';
+import { List, Box, Typography, IconButton, Checkbox, Button, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff, FilterList } from '@mui/icons-material';
+import ReplayIcon from '@mui/icons-material/Replay';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
@@ -30,7 +31,7 @@ export const CardList: React.FC<CardListProps> = ({
                                                      // onToggleLearned
 }) => {
   const { t } = useTranslation();
-  const { updateCardApi, updateCardLearnStatus, deleteCard, generateCardSentences, generationStatuses } = useCardsStore();
+  const { updateCardApi, updateCardLearnStatus, deleteCard, generateCardSentences, generateAllCardsSentences, generationStatuses } = useCardsStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [renameOpen, setRenameOpen] = useState(false);
@@ -134,6 +135,14 @@ export const CardList: React.FC<CardListProps> = ({
     }
   };
 
+  const handleGenerateAll = async () => {
+    await generateAllCardsSentences();
+  };
+
+  const isAnyGenerating = Object.values(generationStatuses).some(
+    status => status.status === 'pending' || status.status === 'polling'
+  );
+
   return (
       <>
         {/* Заголовки колонок */}
@@ -156,6 +165,22 @@ export const CardList: React.FC<CardListProps> = ({
               </IconButton>
           </Box>
           <Box display="flex" width={'80px'} alignItems="center" gap={1}>
+            <Button
+              variant="text"
+              size="small"
+              onClick={handleGenerateAll}
+              disabled={isAnyGenerating || filteredCards.length === 0}
+              sx={{
+                minWidth: 0,
+                padding: 0.5,
+                color: 'text.secondary'
+              }}
+            >
+              {isAnyGenerating
+                ? (<CircularProgress size={16} />)
+                : (<ReplayIcon fontSize="small" />)
+              }
+            </Button>
             <Checkbox
               checked={selectAll}
               onChange={(e) => onSelectAllChange?.(e.target.checked)}

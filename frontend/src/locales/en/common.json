@@ -59,6 +59,7 @@
   },
   "buttons": {
     "startLearning": "Start Learning",
+    "learnPhrases": "Learn Phrases",
     "tryIt": "Try It",
     "enterSystem": "Enter System",
     "create": "Create",
@@ -131,6 +132,8 @@
     "completedCycle": "There are no cards left",
     "wantToContinue": "Continue learning",
     "showAnswer": "Show Answer",
+    "showQuestion": "Show question",
+    "initialSide": "Initial side",
     "next": "Next",
     "learned": "Learned",
     "notLearned": "Not Learned"

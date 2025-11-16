@@ -14,6 +14,7 @@ interface LearningHook {
   currentIndex: number;
   showAnswer: boolean;
   showOnlyUnlearned: boolean;
+  phrasesMode: boolean;
   isCompleted: boolean;
   isLoading: boolean;
   error: string | null;
@@ -27,6 +28,8 @@ interface LearningHook {
   handleDontKnow: () => Promise<void>;
   navigateToCard: (index: number) => void;
   setLearningMode: (unlearnedOnly: boolean) => void;
+  setPhrasesMode: (enabled: boolean) => void;
+  setInitialSide: (side: 'question' | 'answer') => void;
 }
 
 interface LearnProcessProps {
@@ -95,8 +98,8 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                 />
             ) : (<>
                     <CardFlip
-                        question={currentCard?.question}
-                        answer={currentCard?.answer}
+                        question={learning.phrasesMode ? currentCard?.questionSentences : currentCard?.question}
+                        answer={learning.phrasesMode ? currentCard?.answerSentences : currentCard?.answer}
                         showAnswer={showAnswer}
                         toggleAnswer={toggleAnswer}
                         handleKnow={handleKnow}

@@ -1,4 +1,4 @@
-import {Box, Button, CircularProgress, Paper, Typography, IconButton, Menu, MenuItem} from "@mui/material";
+import {Box, Button, CircularProgress, Paper, Typography, IconButton, Menu, MenuItem, Select, FormControl, InputLabel} from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState} from "react";
@@ -22,7 +22,18 @@ export const Cards = () => {
     const [displayFilter, setDisplayFilter] = useState<'A' | 'AB' | 'B'>('AB');
     const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
+    // Сохраняем выбор пользователя в localStorage
+    const [initialSide, setInitialSide] = useState<'question' | 'answer'>(() => {
+        const saved = localStorage.getItem('cardInitialSide');
+        return (saved === 'answer' || saved === 'question') ? saved : 'question';
+    });
     const { importCards } = useImportCards();
+
+    // Сохраняем выбор в localStorage при изменении
+    const handleInitialSideChange = (side: 'question' | 'answer') => {
+        setInitialSide(side);
+        localStorage.setItem('cardInitialSide', side);
+    };
 
     const {
         cards,
@@ -43,13 +54,19 @@ export const Cards = () => {
 
     const handleStartLearning = () => {
         if (selectedFolderId) {
-            navigate(`/learn/${selectedFolderId}`);
+            navigate(`/learn/${selectedFolderId}?initialSide=${initialSide}`);
         }
     };
 
     const handleStartLearningUnlearned = () => {
         if (selectedFolderId) {
-            navigate(`/learn/${selectedFolderId}?mode=unlearned`);
+            navigate(`/learn/${selectedFolderId}?mode=unlearned&initialSide=${initialSide}`);
+        }
+    };
+
+    const handleStartLearningPhrases = () => {
+        if (selectedFolderId) {
+            navigate(`/learn/${selectedFolderId}?mode=phrases&initialSide=${initialSide}`);
         }
     };
 
@@ -95,6 +112,18 @@ export const Cards = () => {
         <>
             <Paper sx={{p: 2, height: '100%'}}>
                 <Box display="flex" mb={4} gap={2} justifyContent="flex-end" alignItems="center">
+                        <FormControl size="small" sx={{ minWidth: 180 }}>
+                            <InputLabel>{t('learning.initialSide')}</InputLabel>
+                            <Select
+                                value={initialSide}
+                                label={t('learning.initialSide')}
+                                onChange={(e) => handleInitialSideChange(e.target.value as 'question' | 'answer')}
+                                sx={{borderRadius: 2}}
+                            >
+                                <MenuItem value="question">{t('learning.showQuestion')}</MenuItem>
+                                <MenuItem value="answer">{t('learning.showAnswer')}</MenuItem>
+                            </Select>
+                        </FormControl>
                         <Button
                             onClick={handleStartLearning}
                             variant="contained"
@@ -102,6 +131,14 @@ export const Cards = () => {
                             sx={{borderRadius: 8}}
                         >
                             {t('buttons.startLearning')}
+                        </Button>
+                        <Button
+                            onClick={handleStartLearningPhrases}
+                            variant="contained"
+                            disabled={!selectedFolderId || cards.length === 0 || !cards.some(card => card.questionSentences && card.answerSentences)}
+                            sx={{borderRadius: 8}}
+                        >
+                            {t('buttons.learnPhrases')}
                         </Button>
                         <Button
                             onClick={handleStartLearningUnlearned}

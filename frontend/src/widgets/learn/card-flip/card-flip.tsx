@@ -152,6 +152,12 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
 
                     >
                         <CardBox>
+                            {/* 
+                              ЛОГИКА: showAnswer ? question : answer
+                              - showAnswer = true → показывается question
+                              - showAnswer = false → показывается answer
+                              Если initialSide = 'answer', то showAnswer должно быть false
+                            */}
                             {showAnswer ? question : answer}
                         </CardBox>
                     </Box>

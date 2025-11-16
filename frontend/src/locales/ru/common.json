@@ -59,6 +59,7 @@
   },
   "buttons": {
     "startLearning": "Начать изучение",
+    "learnPhrases": "Учить фразы",
     "tryIt": "Попробовать",
     "enterSystem": "Войти в систему",
     "create": "Создать",
@@ -131,6 +132,8 @@
     "completedCycle": "Карточки закончились",
     "wantToContinue": "Продолжить обучение",
     "showAnswer": "Показать ответ",
+    "showQuestion": "Показывать вопрос",
+    "initialSide": "Начальная сторона",
     "next": "Далее",
     "learned": "Выучено",
     "notLearned": "Не выучено"
