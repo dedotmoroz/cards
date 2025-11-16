@@ -49,6 +49,7 @@ IMPORTANT CONSTRAINTS:
 - Each sentence MUST clearly be about the topic: "${topic}".
 
 Additionally, provide translations to Russian.
+В translation сделай переведи на русский язык!
 Return JSON with shape:
 {
   "sentences": [
