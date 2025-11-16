@@ -34,6 +34,8 @@ export async function generateSentences(
         translationLang = "ru",
     } = input;
 
+// Additionally, provide translations to ${translationLang}.
+
     const topic = getRandomTopic(input.level as any);
     const system = `You are a helpful assistant that writes natural ${lang} example sentences at ${level} level.`;
     const user = `
@@ -46,7 +48,7 @@ Count: ${count}
 IMPORTANT CONSTRAINTS:
 - Each sentence MUST clearly be about the topic: "${topic}".
 
-Additionally, provide translations to ${translationLang}.
+Additionally, provide translations to Russian.
 Return JSON with shape:
 {
   "sentences": [
