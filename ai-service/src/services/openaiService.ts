@@ -1,5 +1,6 @@
 // src/services/openaiService.ts
 import OpenAI from "openai";
+import { getRandomTopic } from "./randomTopic";
 
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY!, // 🔑 возьми ключ из .env
@@ -33,12 +34,18 @@ export async function generateSentences(
         translationLang = "ru",
     } = input;
 
+    const topic = getRandomTopic(input.level as any);
     const system = `You are a helpful assistant that writes natural ${lang} example sentences at ${level} level.`;
     const user = `
 Target word: "${target}"
 Language: ${lang}
 Level: ${level}
+Topic: ${topic}
 Count: ${count}
+
+IMPORTANT CONSTRAINTS:
+- Each sentence MUST clearly be about the topic: "${topic}".
+
 Additionally, provide translations to ${translationLang}.
 Return JSON with shape:
 {
@@ -48,6 +55,8 @@ Return JSON with shape:
 }
 Keep sentences diverse and natural; each must use the target word.
 `;
+
+    console.log('user === ', user);
 
     const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
