@@ -34,6 +34,7 @@ const CardGenerateRequestDTO = z
         level: z.string().optional(),
         count: z.number().int().positive().max(20).optional(),
         target: z.string().optional(),
+        sample: z.string().optional(),
     })
     .describe('CardGenerateRequestDTO');
 type CardGenerateRequestInput = z.infer<typeof CardGenerateRequestDTO>;
@@ -376,12 +377,13 @@ export async function buildServer() {
                 return reply.code(404).send({ message: 'Card not found' });
             }
 
-            const { lang, level, count, target } = req.body ?? {};
+            const { lang, level, count, target, sample } = req.body ?? {};
             const userId = (req.user as any).userId;
             const user = await userService.getById(userId);
 
             const payload = {
                 target: target ?? card.question,
+                translationSample: sample ?? card.answer,
                 lang: lang ?? 'en',
                 count: count ?? 1,
                 level: level ?? 'B1',
@@ -389,7 +391,6 @@ export async function buildServer() {
                 userId,
                 traceId: randomUUID(),
             };
-
             const { jobId } = await requestGeneration(payload);
             return reply.code(202).send({ jobId });
         },

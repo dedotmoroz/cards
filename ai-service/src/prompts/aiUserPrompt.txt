@@ -1,0 +1,34 @@
+TARGET_WORD: "{TARGET_WORD}"
+translationSample (optional meaning hint): "{TRANSLATION_SAMPLE}"
+USER_INTERFACE_LANGUAGE: "{USER_INTERFACE_LANGUAGE}"
+CEFR_LEVEL: {CEFR_LEVEL}
+NUMBER_OF_SENTENCES: {COUNT}
+TOPIC: "{TOPIC}"
+
+Instructions:
+
+1) Meaning of TARGET_WORD:
+   - If translationSample is provided and non-empty, treat it as the meaning of TARGET_WORD.
+   - Ensure every sentence reflects the meaning implied by translationSample.
+   - Do not change the form of TARGET_WORD; use it exactly as given.
+
+2) Languages:
+   - Automatically detect the language of TARGET_WORD → use this for the example sentences.
+   - Automatically detect the language of translationSample → use this for translations.
+   - If translationSample is empty:
+       • Use USER_INTERFACE_LANGUAGE as the translation language.
+       • Translation must be a paraphrase or simple explanation.
+
+3) Sentence rules:
+   - Each sentence must naturally include TARGET_WORD.
+   - Sentences must match CEFR_LEVEL.
+   - Sentences must relate to the TOPIC: "{TOPIC}".
+   - Sentences must be diverse and natural.
+
+4) Output ONLY JSON with structure:
+
+{
+  "sentences": [
+    { "text": "...", "translation": "..." }
+  ]
+}

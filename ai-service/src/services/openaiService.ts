@@ -1,73 +1,65 @@
 // src/services/openaiService.ts
+
+import fs from "fs";
+import path from "path";
 import OpenAI from "openai";
 import { getRandomTopic } from "./randomTopic";
+import type { Level } from "./topics";
 
 const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY!, // 🔑 возьми ключ из .env
+    apiKey: process.env.OPENAI_API_KEY!,
 });
 
-// Тип входных данных (совпадает с GenerateJobInput)
+// читаем файлы один раз при загрузке модуля
+const systemPrompt = fs.readFileSync(
+    path.join(__dirname, "../prompts/aiSystemPrompt.txt"),
+    "utf8"
+);
+
+const userTemplate = fs.readFileSync(
+    path.join(__dirname, "../prompts/aiUserPrompt.txt"),
+    "utf8"
+);
+
+// утилита для подстановки значений в текстовый шаблон
+function fillTemplate(template: string, values: Record<string, string>) {
+    return template.replace(/\{([A-Z_]+)\}/g, (_, key) => values[key] || "");
+}
+
 export interface GenerateJobInput {
     target: string;
+    translationSample?: string;
     lang: string;
     count: number;
     level?: string;
     translationLang?: string;
-    userId?: string;
-    traceId?: string;
 }
 
-// Тип результата (совпадает с GenerateJobResult)
-export interface GenerateJobResult {
-    sentences: Array<{ text: string; translation: string }>;
-}
-
-// Функция генерации предложений через OpenAI
-export async function generateSentences(
-    input: GenerateJobInput
-): Promise<GenerateJobResult> {
+export async function generateSentences(input: GenerateJobInput) {
     const {
         target,
+        translationSample = "",
         lang = "en",
         count = 3,
         level = "B2",
-        translationLang = "ru",
     } = input;
 
-// Additionally, provide translations to ${translationLang}.
+    const topic = getRandomTopic(level as Level);
 
-    const topic = getRandomTopic(input.level as any);
-    const system = `You are a helpful assistant that writes natural ${lang} example sentences at ${level} level.`;
-    const user = `
-Target word: "${target}"
-Language: ${lang}
-Level: ${level}
-Topic: ${topic}
-Count: ${count}
-
-IMPORTANT CONSTRAINTS:
-- Each sentence MUST clearly be about the topic: "${topic}".
-
-Additionally, provide translations to Russian.
-В translation сделай переведи на русский язык!
-Return JSON with shape:
-{
-  "sentences": [
-    { "text": "...", "translation": "..." }
-  ]
-}
-Keep sentences diverse and natural; each must use the target word.
-`;
-
-    console.log('user === ', user);
-
-    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+    const userPrompt = fillTemplate(userTemplate, {
+        TARGET_WORD: target,
+        TARGET_LANGUAGE: lang,
+        CEFR_LEVEL: level,
+        COUNT: String(count),
+        TOPIC: topic,
+        TRANSLATION_SAMPLE: translationSample || "",
+    });
 
     const res = await client.chat.completions.create({
-        model,
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
         messages: [
-            { role: "system", content: system },
-            { role: "user", content: user },
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
         ],
         temperature: 0.7,
     });
@@ -79,7 +71,7 @@ Keep sentences diverse and natural; each must use the target word.
         const jsonStart = text.indexOf("{");
         const jsonStr = jsonStart >= 0 ? text.slice(jsonStart) : text;
         console.log('jsonStr === ', jsonStr);
-        return JSON.parse(jsonStr) as GenerateJobResult;
+        return JSON.parse(jsonStr);
     } catch {
         // fallback: если GPT вернул текст без JSON
         return { sentences: [{ text, translation: "" }] };

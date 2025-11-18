@@ -35,6 +35,7 @@ export type GenerateRequestPayload = {
   count: number;
   level?: string;
   translationLang?: string;
+  translationSample?: string;
   userId?: string;
   traceId?: string;
 };

@@ -18,6 +18,7 @@ const GenerateBodySchema = z.object({
     count: z.number().int().positive().max(20),
     level: z.string().optional(),
     translationLang: z.string().optional(),
+    translationSample: z.string().optional(),
     userId: z.string().optional(),
     traceId: z.string().optional(),
 });
@@ -39,6 +40,10 @@ const GenerateBodyJsonSchema = {
         translationLang: {
             type: "string",
             description: "Язык перевода предложений (ISO код)",
+        },
+        translationSample: {
+            type: "string",
+            description: "Пример перевода для контекста генерации",
         },
         userId: { type: "string", description: "Идентификатор пользователя, инициировавшего генерацию" },
         traceId: { type: "string", description: "Трейс-ID для корреляции запросов" },

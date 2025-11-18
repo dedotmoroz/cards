@@ -7,6 +7,7 @@ export type GenerateJobInput = {
     count: number;
     level?: string;
     translationLang?: string;
+    translationSample?: string;
     userId?: string;
     traceId?: string;
 };
