@@ -179,6 +179,6 @@ jobs:
           script: |
             set -euo pipefail
             cd /srv/selltime.org
-            docker compose pull ai
-            docker compose up -d ai
+            docker compose pull ai ai-worker
+            docker compose up -d --force-recreate ai ai-worker
             docker image prune -f

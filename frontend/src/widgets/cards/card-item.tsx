@@ -3,6 +3,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ReplayIcon from "@mui/icons-material/Replay";
 import type { Card } from "@/shared/types/cards";
 import type { CardGenerationState } from "@/shared/store/cardsStore";
+import styled from './style.module.css'
 
 interface CardItemProps {
     card: Card;
@@ -35,13 +36,7 @@ export const CardItem: React.FC<CardItemProps> = ({
             key={card.id}
             divider
             onClick={() => handleCardClick(card.id)}
-            sx={{
-                '&:hover': {
-                    backgroundColor: 'action.hover',
-                    cursor: 'pointer'
-                },
-                transition: 'background-color 0.2s ease-in-out'
-            }}
+            className={styled.listItem}
         >
             <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
                 <Box display="flex" width="100%" gap={2} sx={{ flexDirection: { xs: 'column', md: 'row' } }}>

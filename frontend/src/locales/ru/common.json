@@ -58,7 +58,7 @@
     "registerDescription": "Создайте аккаунт и начните запоминать"
   },
   "buttons": {
-    "startLearning": "Начать изучение",
+    "startLearning": "Учить слова",
     "learnPhrases": "Учить фразы",
     "tryIt": "Попробовать",
     "enterSystem": "Войти в систему",
@@ -117,8 +117,8 @@
   "forms": {
     "newCard": "Новая карточка",
     "newFolder": "Новая папка",
-    "question": "Вопрос",
-    "answer": "Ответ",
+    "question": "Сторона A",
+    "answer": "Сторона B",
     "folderName": "Название папки",
     "add": "Добавить",
     "create": "Создать",

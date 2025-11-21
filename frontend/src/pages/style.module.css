@@ -1,0 +1,4 @@
+.desktopLayout {
+    height: calc(100vh - 64px);
+    padding: 80px 10px 10px;
+}

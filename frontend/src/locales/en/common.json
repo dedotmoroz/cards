@@ -58,7 +58,7 @@
     "registerDescription": "Create an account and start memorizing"
   },
   "buttons": {
-    "startLearning": "Start Learning",
+    "startLearning": "Learn words",
     "learnPhrases": "Learn Phrases",
     "tryIt": "Try It",
     "enterSystem": "Enter System",
@@ -117,8 +117,8 @@
   "forms": {
     "newCard": "New Card",
     "newFolder": "New Folder",
-    "question": "Question",
-    "answer": "Answer",
+    "question": "Side A",
+    "answer": "Side B",
     "folderName": "Folder Name",
     "add": "Add",
     "create": "Create",

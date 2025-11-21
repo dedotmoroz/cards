@@ -8,6 +8,7 @@ import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
 import type { Card } from "@/shared/types/cards";
+import styles from './style.module.css'
 
 type CardListProps = {
   cards: Card[];
@@ -144,9 +145,9 @@ export const CardList: React.FC<CardListProps> = ({
   );
 
   return (
-      <>
+      <Box className={styles.tableWrapper}>
         {/* Заголовки колонок */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" px={2} py={1} bgcolor="grey.50" borderBottom={1} borderColor="grey.200">
+        <Box className={styles.cardsHeader}>
           <Box display="flex" alignItems="center" gap={1} flex={1}>
 
             <Typography variant="subtitle2" fontWeight="bold" fontSize={16}>
@@ -231,6 +232,6 @@ export const CardList: React.FC<CardListProps> = ({
             setRenameAnswer={setRenameAnswer}
             handleRenameSave={handleRenameSave}
         />
-      </>
+      </Box>
   );
 };

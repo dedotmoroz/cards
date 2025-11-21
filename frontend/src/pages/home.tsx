@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography, Button, AppBar, Toolbar, Drawer, IconButton, useMediaQuery, useTheme, Tooltip } from '@mui/material';
-import { Menu as MenuIcon, AccountCircle, Logout, Pets } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Grid, Drawer, IconButton, useMediaQuery, useTheme} from '@mui/material';
+import { Pets } from '@mui/icons-material';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
 import { useFoldersStore } from '@/shared/store/foldersStore';
-import { useAuthStore } from '@/shared/store/authStore';
 import {Folders} from "@/widgets/folders";
 import {Cards} from "@/widgets/cards";
 import { useSEO } from '@/shared/hooks/useSEO';
+import { HeaderToolbar } from '@/shared/ui/header';
+
+import styles from './style.module.css'
 
 export const HomePage = () => {
     const { t, i18n } = useTranslation();
-    const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -25,17 +25,7 @@ export const HomePage = () => {
         setSelectedFolder,
         fetchFolders,
     } = useFoldersStore();
-    
-    const { user, logout } = useAuthStore();
 
-    const logoutHandler = async () => {
-        await logout();
-        navigate('/');
-    }
-
-    const goToHome = () => {
-        navigate('/');
-    }
 
     // Загружаем папки при монтировании компонента
     useEffect(() => {
@@ -69,71 +59,24 @@ export const HomePage = () => {
 
     return (
         <>
-            <AppBar position={isMobile ? "relative" : "static"}>
-                <Toolbar>
-                    {isMobile ? (
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            edge="start"
-                            onClick={handleDrawerToggle}
-                            sx={{ mr: 2 }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    ) : (
-                        <IconButton
-                            color="inherit"
-                            aria-label={t('navigation.home')}
-                            edge="start"
-                            onClick={goToHome}
-                            sx={{mr: 2}}
-                        >
-                            <Pets/>
-                        </IconButton>
-                    )}
-                    <Box sx={{ flexGrow: 1 }} />
-                    {user ? (
-                        <Box display="flex" alignItems="center" gap={2}>
-                            <Tooltip title={t('profile.openProfile')}>
-                                <Box display="flex" alignItems="center">
-                                    <IconButton color="inherit" size="large" onClick={() => navigate('/profile')}>
-                                        <AccountCircle/>
-                                    </IconButton>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            maxWidth: '50px',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap'
-                                        }}
-                                    >
-                                        {user.username}
-                                    </Typography>
-                                </Box>
-                            </Tooltip>
-
-                            <Tooltip title={t('home.logout')}>
-                                <IconButton color="inherit" onClick={logoutHandler} size="large">
-                                    <Logout />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
-                    ) : (
-                        <Box display="flex" gap={1}>
-                            <Button color="inherit" onClick={() => navigate('/signin')}>
-                                {t('auth.login')}
-                            </Button>
-                            <Button color="inherit" onClick={() => navigate('/signup')}>
-                                {t('auth.register')}
-                            </Button>
-                        </Box>
-                    )}
-                </Toolbar>
-            </AppBar>
-            {isMobile ? (
-                // Мобильная версия с Drawer
+            <HeaderToolbar />
+            {!isMobile ?
+                (
+                    /**
+                     * Оригинальная desktop версия с Grid
+                     */
+                    <Grid container spacing={1} className={styles.desktopLayout}>
+                        <Grid size={3}>
+                            <Folders />
+                        </Grid>
+                        <Grid size={9}>
+                            <Cards />
+                        </Grid>
+                    </Grid>
+                ) : (
+                /**
+                 * Мобильная версия с Drawer
+                 */
                 <Box sx={{ display: 'flex', minHeight: '100vh' }}>
                     <Drawer
                         variant="temporary"
@@ -173,16 +116,6 @@ export const HomePage = () => {
                         <Cards />
                     </Box>
                 </Box>
-            ) : (
-                // Оригинальная desktop версия с Grid
-                <Grid container spacing={2} sx={{ height: 'calc(100vh - 64px)', p: 2 }}>
-                    <Grid size={3}>
-                        <Folders />
-                    </Grid>
-                    <Grid size={9}>
-                        <Cards />
-                    </Grid>
-                </Grid>
             )}
         </>
         );
