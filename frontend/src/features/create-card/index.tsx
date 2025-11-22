@@ -1,10 +1,9 @@
-import {Button} from "@mui/material";
 import {useState} from "react";
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import {useTranslation} from "react-i18next";
 import {CreateCardDialog} from "@/features/create-card.tsx";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {useCreateCard} from "@/features/create-card/useCreateCard.ts";
+import {StyledAddButton, StyledPlusIcon} from "./styled-components";
 
 export const CreateCardButton = () => {
     const { t } = useTranslation();
@@ -21,15 +20,13 @@ export const CreateCardButton = () => {
 
     return (
         <>
-            <Button
+            <StyledAddButton
                 onClick={() => setIsCreatingCard(true)}
-                sx={{mr: 2, borderRadius: 8}}
-                variant="outlined"
                 disabled={!selectedFolderId}
-                startIcon={<NoteAddIcon/>}
+                startIcon={<StyledPlusIcon/>}
             >
                 {t('cards.create')}
-            </Button>
+            </StyledAddButton>
 
             {selectedFolderId && (
                 <CreateCardDialog

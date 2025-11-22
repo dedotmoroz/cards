@@ -59,6 +59,7 @@
   },
   "buttons": {
     "startLearning": "Учить слова",
+    "learnWords": "Учить слова",
     "learnPhrases": "Учить фразы",
     "tryIt": "Попробовать",
     "enterSystem": "Войти в систему",

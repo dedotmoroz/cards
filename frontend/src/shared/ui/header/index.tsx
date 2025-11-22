@@ -120,7 +120,7 @@ export const HeaderToolbar = () => {
                         disabled={!selectedFolderId || cards.length === 0}
                         sx={{borderRadius: 8}}
                     >
-                        {t('buttons.startLearning')}
+                        {t('buttons.learnWords')}
                     </Button>
                     <Button
                         onClick={handleStartLearningPhrases}

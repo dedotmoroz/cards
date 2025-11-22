@@ -59,6 +59,7 @@
   },
   "buttons": {
     "startLearning": "Learn words",
+    "learnWords": "Learn words",
     "learnPhrases": "Learn Phrases",
     "tryIt": "Try It",
     "enterSystem": "Enter System",
