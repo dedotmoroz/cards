@@ -1,17 +1,8 @@
-import {
-    Box,
-    AppBar,
-    Toolbar,
-    IconButton,
-    useMediaQuery,
-    useTheme
-} from '@mui/material';
-import { Menu as MenuIcon, Pets } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+import {type ReactNode, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
-import {type ReactNode} from "react";
+import {Box, AppBar, Toolbar, useMediaQuery, useTheme} from '@mui/material';
 import {UserProfile} from "@/widgets/user-profile";
+import {Logo, MobileMenuIcon} from "@/shared/ui";
 
 interface HeaderToolbarProps {
     learnWordsButton: ReactNode;
@@ -20,12 +11,14 @@ interface HeaderToolbarProps {
     selectSide: ReactNode;
 }
 
-export const HeaderToolbar = ({ learnWordsButton, learnPhrasesButton, learnWordsMoreButton, selectSide }: HeaderToolbarProps) => {
-    const { t } = useTranslation();
+export const HeaderToolbar = ({
+                                  learnWordsButton,
+                                  learnPhrasesButton,
+                                  // learnWordsMoreButton,
+                                  selectSide }: HeaderToolbarProps) => {
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
 
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -37,41 +30,21 @@ export const HeaderToolbar = ({ learnWordsButton, learnPhrasesButton, learnWords
         setMobileOpen(!mobileOpen);
     };
 
-
     return (
         <AppBar position={isMobile ? "fixed" : "fixed"}>
             <Toolbar>
                 {isMobile ? (
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                    <MobileMenuIcon handle={handleDrawerToggle} />
                 ) : (
-                    <IconButton
-                        color="inherit"
-                        aria-label={t('navigation.home')}
-                        edge="start"
-                        onClick={goToHome}
-                        sx={{mr: 2}}
-                    >
-                        <Pets/>
-                    </IconButton>
+                    <Logo handle={goToHome}  />
                 )}
                 <Box sx={{ flexGrow: 1 }} />
-
-
                 <Box display="flex" mb={4} gap={2} justifyContent="flex-end" alignItems="center">
                     {selectSide}
                     {learnWordsButton}
                     {learnPhrasesButton}
-                    {learnWordsMoreButton}
+                    {/*{learnWordsMoreButton}*/}
                 </Box>
-
                 <UserProfile />
             </Toolbar>
         </AppBar>

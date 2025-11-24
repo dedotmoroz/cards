@@ -1,9 +1,9 @@
-import { Button } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useFoldersStore } from '@/shared/store/foldersStore';
 import { useCardsStore } from '@/shared/store/cardsStore';
-import { useState } from 'react';
+import { StyledButton, StyledWordIcon } from './styled-components'
 
 export const LearnWordsButton = () => {
     const { t } = useTranslation();
@@ -23,14 +23,14 @@ export const LearnWordsButton = () => {
     };
 
     return (
-        <Button
+        <StyledButton
             onClick={handleStartLearning}
             variant="contained"
             disabled={!selectedFolderId || cards.length === 0}
-            sx={{ borderRadius: 8 }}
+            startIcon={<StyledWordIcon />}
         >
             {t('buttons.learnWords')}
-        </Button>
+        </StyledButton>
     );
 };
 

@@ -3,7 +3,7 @@ import {useTranslation} from "react-i18next";
 import {CreateCardDialog} from "@/features/create-card.tsx";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {useCreateCard} from "@/features/create-card/useCreateCard.ts";
-import {StyledAddButton, StyledPlusIcon} from "./styled-components";
+import {StyledButton, StyledPlusIcon} from "./styled-components";
 
 export const CreateCardButton = () => {
     const { t } = useTranslation();
@@ -20,14 +20,13 @@ export const CreateCardButton = () => {
 
     return (
         <>
-            <StyledAddButton
+            <StyledButton
                 onClick={() => setIsCreatingCard(true)}
                 disabled={!selectedFolderId}
                 startIcon={<StyledPlusIcon/>}
             >
                 {t('cards.create')}
-            </StyledAddButton>
-
+            </StyledButton>
             {selectedFolderId && (
                 <CreateCardDialog
                     open={isCreatingCard}
