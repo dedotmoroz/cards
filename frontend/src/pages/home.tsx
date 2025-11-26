@@ -63,11 +63,11 @@ export const HomePage = () => {
 
     return (
         <>
-            <HeaderToolbar 
+            <HeaderToolbar
+                selectSide={<SelectSide />}
                 learnWordsButton={<LearnWordsButton />}
                 learnPhrasesButton={<LearnPhrasesButton />}
                 learnWordsMoreButton={<LearnWordsMoreButton />}
-                selectSide={<SelectSide />}
             />
             {!isMobile ?
                 (

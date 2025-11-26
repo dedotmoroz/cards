@@ -1,6 +1,6 @@
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import {StyledSelect, StyledMenuItem} from "./styled-components.tsx";
 
 export const SelectSide = () => {
     const { t } = useTranslation();
@@ -16,18 +16,16 @@ export const SelectSide = () => {
     };
 
     return (
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-            <InputLabel>{t('learning.initialSide')}</InputLabel>
-            <Select
+            <StyledSelect
+                variant={'standard'}
+                displayEmpty
                 value={initialSide}
                 label={t('learning.initialSide')}
                 onChange={(e) => handleInitialSideChange(e.target.value as 'question' | 'answer')}
-                sx={{ borderRadius: 2 }}
             >
-                <MenuItem value="question">{t('learning.showQuestion')}</MenuItem>
-                <MenuItem value="answer">{t('learning.showAnswer')}</MenuItem>
-            </Select>
-        </FormControl>
+                <StyledMenuItem value="question">{t('learning.showQuestion')}</StyledMenuItem>
+                <StyledMenuItem value="answer">{t('learning.showAnswer')}</StyledMenuItem>
+            </StyledSelect>
     );
 };
 

@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {Box, AppBar, Toolbar, useMediaQuery, useTheme} from '@mui/material';
 import {UserProfile} from "@/widgets/user-profile";
 import {Logo, MobileMenuIcon} from "@/shared/ui";
+import { StyledNavigationBox } from './styled-components.ts'
 
 interface HeaderToolbarProps {
     learnWordsButton: ReactNode;
@@ -39,12 +40,12 @@ export const HeaderToolbar = ({
                     <Logo handle={goToHome}  />
                 )}
                 <Box sx={{ flexGrow: 1 }} />
-                <Box display="flex" mb={4} gap={2} justifyContent="flex-end" alignItems="center">
+                <StyledNavigationBox>
                     {selectSide}
                     {learnWordsButton}
                     {learnPhrasesButton}
                     {/*{learnWordsMoreButton}*/}
-                </Box>
+                </StyledNavigationBox>
                 <UserProfile />
             </Toolbar>
         </AppBar>

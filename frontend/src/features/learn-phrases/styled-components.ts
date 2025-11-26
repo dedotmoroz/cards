@@ -13,7 +13,6 @@ export const StyledButton = styled(Button)`
     color: #8200DB;
     text-transform: none;
     gap: 8px;
-    margin-right: 16px;
     font-family: inherit;
     font-size: 14px;
     line-height: 20px;
