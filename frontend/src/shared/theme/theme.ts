@@ -18,7 +18,7 @@ export const theme = createTheme({
         MuiAppBar: {
             styleOverrides: {
                 root: {
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)', // полупрозрачный фон
+                    background: 'linear-gradient(135deg, rgba(238, 242, 255, 0.4) 0%, rgba(250, 245, 255, 0.4) 50%, rgba(253, 242, 248, 0.4) 100%)', // полупрозрачный градиент
                     backdropFilter: 'blur(20px)',                // стеклянный эффект
                     boxShadow: 'none',                           // убираем тень
                     borderBottom: '1px solid rgba(255, 255, 255, 0.3)', // тонкая стеклянная граница
