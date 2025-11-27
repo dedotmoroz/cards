@@ -14,7 +14,7 @@ import { LearnPhrasesButton } from '@/features/learn-phrases';
 import { LearnWordsMoreButton } from '@/features/learn-words-more';
 import { SelectSide } from '@/features/select-side';
 
-import styles from './style.module.css'
+import { StyledGrid } from './styled-components.ts'
 
 export const HomePage = () => {
     const { t, i18n } = useTranslation();
@@ -74,14 +74,14 @@ export const HomePage = () => {
                     /**
                      * Оригинальная desktop версия с Grid
                      */
-                    <Grid container spacing={1} className={styles.desktopLayout}>
+                    <StyledGrid container spacing={1}>
                         <Grid size={3}>
                             <Folders />
                         </Grid>
                         <Grid size={9}>
                             <Cards />
                         </Grid>
-                    </Grid>
+                    </StyledGrid>
                 ) : (
                 /**
                  * Мобильная версия с Drawer
