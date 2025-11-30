@@ -1,26 +1,13 @@
-import {
-    List,
-    ListItemButton,
-    ListItemText,
-    IconButton,
-    Box,
-    Menu,
-    MenuItem,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField,
-    Button,
-    ListItemIcon
-} from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import React, { useState } from 'react';
+import {List, ListItemText,} from '@mui/material';
+import MoreVerticalIcon from '@mui/icons-material/MoreHoriz';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
-import React, { useState } from 'react';
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { MenuUI } from '@/shared/ui/menu-ui';
+import { RenameFolderMenuItem } from '@/features/rename-folder';
+import { DeleteFolderMenuItem } from '@/features/delete-folder';
+
+import { StyledListItemButton, StyledIconButton, StyledMenuBox } from "./styled-components.ts"
 
 export interface Folder {
     id: string;
@@ -36,12 +23,8 @@ interface FolderListProps {
 }
 
 export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }: FolderListProps) => {
-    const { t } = useTranslation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
-    const [renameOpen, setRenameOpen] = useState(false);
-    const [renameName, setRenameName] = useState('');
-    const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, folderId: string) => {
         event.stopPropagation();
@@ -54,71 +37,34 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
         setSelectedFolderId(null);
     };
 
-    const handleRename = () => {
-        if (selectedFolderId) {
-            const folder = folders.find(f => f.id === selectedFolderId);
-            if (folder) {
-                setEditingFolderId(selectedFolderId);
-                setRenameName(folder.name);
-                setRenameOpen(true);
-            }
-        }
-        handleMenuClose();
-    };
-
-    const handleRenameCancel = () => {
-        setRenameOpen(false);
-        setEditingFolderId(null);
-    };
-
-    const handleRenameSave = () => {
-        if (!editingFolderId || !onRename) return;
-        const name = renameName.trim();
-        if (!name) {
-            setRenameOpen(false);
-            setEditingFolderId(null);
-            return;
-        }
-        onRename(editingFolderId, name);
-        setRenameOpen(false);
-        setEditingFolderId(null);
-    };
-
-    const handleDelete = () => {
-        if (selectedFolderId && onDelete) {
-            const folder = folders.find(f => f.id === selectedFolderId);
-            if (folder && confirm(`${t('folders.delete')} "${folder.name}"?`)) {
-                onDelete(selectedFolderId);
-            }
-        }
-        handleMenuClose();
-    };
-
     return (
         <>
             <List>
                 {folders.map((folder) => (
-                    <ListItemButton
+                    <StyledListItemButton
+                        disableRipple
                         key={folder.id}
                         selected={selectedId === folder.id}
                         onClick={() => onSelect(folder.id)}
                     >
-                        <Box display="flex" alignItems="center" width="100%" justifyContent="space-between">
-                            {selectedId === folder.id ? <FolderOpenOutlinedIcon sx={{mr: 1}}/> : <FolderOutlinedIcon sx={{mr: 1}}/>}
+                        <StyledMenuBox>
+                            {selectedId === folder.id
+                                ? <FolderOpenOutlinedIcon sx={{mr: 1}}/>
+                                : <FolderOutlinedIcon sx={{mr: 1}}/>}
                             <ListItemText primary={folder.name} />
-                            <IconButton
+                            <StyledIconButton
                                 edge="end"
                                 size="small"
                                 onClick={(e) => handleMenuOpen(e, folder.id)}
                             >
-                                <MoreHorizIcon />
-                            </IconButton>
-                        </Box>
-                    </ListItemButton>
+                                <MoreVerticalIcon />
+                            </StyledIconButton>
+                        </StyledMenuBox>
+                    </StyledListItemButton>
                 ))}
             </List>
 
-            <Menu
+            <MenuUI
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
@@ -131,41 +77,31 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
                     horizontal: 'right',
                 }}
             >
-                <MenuItem onClick={handleRename}>
-                    <ListItemIcon>
-                        <DriveFileRenameOutlineIcon/>
-                    </ListItemIcon>
-                    <ListItemText>
-                        {t('buttons.edit')}
-                    </ListItemText>
-                </MenuItem>
-                <MenuItem onClick={handleDelete}>
-                    <ListItemIcon>
-                        <DeleteIcon/>
-                    </ListItemIcon>
-                    <ListItemText>
-                        {t('buttons.delete')}
-                    </ListItemText>
-                </MenuItem>
-            </Menu>
-
-            <Dialog open={renameOpen} onClose={handleRenameCancel} fullWidth>
-                <DialogTitle>{t('folders.edit')}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label={t('forms.folderName')}
-                        fullWidth
-                        value={renameName}
-                        onChange={(e) => setRenameName(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleRenameCancel}>{t('auth.cancel')}</Button>
-                    <Button onClick={handleRenameSave} variant="contained">{t('buttons.save')}</Button>
-                </DialogActions>
-            </Dialog>
+                {selectedFolderId && (() => {
+                    const folder = folders.find(f => f.id === selectedFolderId);
+                    if (!folder) return null;
+                    return (
+                        <>
+                            {onRename && (
+                                <RenameFolderMenuItem
+                                    folderId={folder.id}
+                                    folderName={folder.name}
+                                    onRename={onRename}
+                                    onMenuClose={handleMenuClose}
+                                />
+                            )}
+                            {onDelete && (
+                                <DeleteFolderMenuItem
+                                    folderId={folder.id}
+                                    folderName={folder.name}
+                                    onDelete={onDelete}
+                                    onMenuClose={handleMenuClose}
+                                />
+                            )}
+                        </>
+                    );
+                })()}
+            </MenuUI>
         </>
     );
 };

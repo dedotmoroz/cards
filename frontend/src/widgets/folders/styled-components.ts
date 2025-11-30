@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, ListItemButton, IconButton } from "@mui/material";
 
 export const StyledWrappedBox = styled(Box)`
     padding: 20px;
@@ -13,3 +13,20 @@ export const StyledCaptionBox = styled(Box)`
     margin-bottom: 12px;
 `
 export const StyledTypography = styled(Typography)``
+
+export const StyledListItemButton = styled(ListItemButton)`
+ border-radius: 8px;
+`
+
+export const StyledIconButton = styled(IconButton)`
+    &:hover {
+        background-color: white;
+    }
+`
+
+export const StyledMenuBox = styled(Box)`
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    width:100%;
+`
