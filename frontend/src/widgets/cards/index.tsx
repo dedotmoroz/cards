@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState} from "react";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
+import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import { CreateCardButton } from "@/features/create-card/index.tsx";
 import {CardsMenu} from "@/entities/cards";
-
-import styled from './style.module.css'
+import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox } from './styled-components.ts'
 
 export const Cards = () => {
     const { t } = useTranslation();
@@ -18,6 +18,13 @@ export const Cards = () => {
         cards,
         updateCardLearnStatus,
     } = useCardsStore();
+    
+    const {
+        folders,
+        selectedFolderId,
+    } = useFoldersStore();
+    
+    const selectedFolder = folders.find(f => f.id === selectedFolderId);
 
     const handleFilterChange = (newFilter: 'A' | 'AB' | 'B') => {
         console.log('handleFilterChange called with:', newFilter);
@@ -38,21 +45,30 @@ export const Cards = () => {
     };
 
     return (
-        <Box className={styled.cardsWrapper}>
-            <Box className={styled.cardsInfoBlock}>
-                <Box display="flex" alignItems="center">
-                    {/* Title */}
-                    <Typography variant="h6">
-                        {t('cards.title')} {cards.length > 0 && `(${cards.length})`}
-                    </Typography>
-                    {/* Menu */}
-                    <CardsMenu/>
-                </Box>
+        <StyledWrapperBox>
+            <StyledTopBox>
+                <StyleLeftBox>
+                    <Box>
+                        <StyledHeaderBox>
+                            <Typography variant="h5" fontWeight="bold">
+                                {selectedFolder 
+                                    ? selectedFolder.name.charAt(0).toUpperCase() + selectedFolder.name.slice(1)
+                                    : t('cards.title')}
+                            </Typography>
+                            <CardsMenu/>
+                        </StyledHeaderBox>
+                        {cards.length > 0 && (
+                            <Typography variant="body1" color="text.secondary">
+                                {cards.length} {t('cards.title').toLowerCase()}
+                            </Typography>
+                        )}
+                    </Box>
+                </StyleLeftBox>
                 <Box ml={4}>
                     {/* Add card */}
                     <CreateCardButton/>
                 </Box>
-            </Box>
+            </StyledTopBox>
             <CardList
                 cards={cards}
                 displayFilter={displayFilter}
@@ -62,6 +78,6 @@ export const Cards = () => {
                 onSelectAllChange={handleSelectAllChange}
                 onToggleShowOnlyUnlearned={handleUnlearnedToggle}
             />
-        </Box>
+        </StyledWrapperBox>
     )
 }

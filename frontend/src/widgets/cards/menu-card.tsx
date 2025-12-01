@@ -1,7 +1,8 @@
-import {ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
+import {ListItemIcon, ListItemText, MenuItem} from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { MenuUI } from '@/shared/ui/menu-ui';
 
 interface MenuCardProps {
     handleMenuClose: () => void;
@@ -18,7 +19,7 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                          }) => {
     const { t } = useTranslation();
     return (
-        <Menu
+        <MenuUI
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
@@ -41,6 +42,6 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                     {t('buttons.delete')}
                 </ListItemText>
             </MenuItem>
-        </Menu>
+        </MenuUI>
     )
 }

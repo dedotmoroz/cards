@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List, Box, Typography, IconButton, Checkbox, Button, CircularProgress } from '@mui/material';
+import { List, Box, Typography, IconButton, Button, CircularProgress } from '@mui/material';
+import { CheckboxUI } from '@/shared/ui/checkbox-ui';
 import { Visibility, VisibilityOff, FilterList } from '@mui/icons-material';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
@@ -182,14 +183,9 @@ export const CardList: React.FC<CardListProps> = ({
                 : (<ReplayIcon fontSize="small" />)
               }
             </Button>
-            <Checkbox
+            <CheckboxUI
               checked={selectAll}
               onChange={(e) => onSelectAllChange?.(e.target.checked)}
-              sx={{ 
-                visibility: 'visible',
-                opacity: 1,
-                color: 'primary.main'
-              }}
             />
             <IconButton
               size="small"

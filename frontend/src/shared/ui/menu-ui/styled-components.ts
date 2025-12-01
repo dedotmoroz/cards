@@ -12,8 +12,9 @@ export const StyledMenu = styled(Menu)`
     }
     
     & .MuiMenuItem-root {
-        border-radius: 8px;
+        border-radius: 4px;
         margin: 4px 8px;
+        padding: 6px 16px 6px 8px;
     }
 `;
 

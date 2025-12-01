@@ -1,10 +1,12 @@
-import {IconButton, Menu, MenuItem} from "@mui/material";
+import {MenuItem} from "@mui/material";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { useTranslation } from 'react-i18next';
 import {useState} from "react";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {ImportCardsButton} from "@/features/import-cards";
+import { MenuUI } from '@/shared/ui/menu-ui';
+import { StyledIconButton } from './styled-components.ts'
 
 export const CardsMenu = () => {
     const { t } = useTranslation();
@@ -28,16 +30,16 @@ export const CardsMenu = () => {
 
     return (
         <>
-            <IconButton
+            <StyledIconButton
                 onClick={handleMenuClick}
                 size="small"
                 sx={{ml: 1}}
             >
                 <MoreHorizIcon/>
-            </IconButton>
+            </StyledIconButton>
 
             {/* Dots menu */}
-            <Menu
+            <MenuUI
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
@@ -54,7 +56,7 @@ export const CardsMenu = () => {
                     <GetAppIcon sx={{mr: 1}}/>
                     {t('import.import')}
                 </MenuItem>
-            </Menu>
+            </MenuUI>
             <ImportCardsButton isImportingCards={isImportingCards} setIsImportingCards={setIsImportingCards}/>
         </>
     )
