@@ -181,4 +181,4 @@ jobs:
             cd /srv/selltime.org
             docker compose pull ai ai-worker
             docker compose up -d --force-recreate ai ai-worker
-            docker image prune -f
+            docker system prune -af
