@@ -15,6 +15,11 @@ COPY ai-service ./
 # билд TS -> dist
 RUN npm run build
 
+### ---------- COPY PROMPTS INTO DIST (ВАЖНО!) ----------
+# tsc НЕ копирует .txt → вручную переносим ai-service/src/prompts → /app/dist/prompts
+RUN mkdir -p dist/prompts && cp -r src/prompts/* dist/prompts/
+### ------------------------------------------------------
+
 # 2) рантайм
 FROM node:20-alpine AS runtime
 
