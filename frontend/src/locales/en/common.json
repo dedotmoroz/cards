@@ -95,7 +95,9 @@
     "back": "Back",
     "create": "Add Card",
     "edit": "Edit Card",
-    "delete": "Delete Card"
+    "delete": "Delete Card",
+    "showAll": "Show All",
+    "showUnlearned": "Show Unlearned"
   },
   "folders": {
     "title": "Folders",
