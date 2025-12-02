@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List, Box, Typography, IconButton, Button, CircularProgress } from '@mui/material';
+import { List, Box, IconButton } from '@mui/material';
 import { CheckboxUI } from '@/shared/ui/checkbox-ui';
-import { VisibilityOffOutlined, FilterList, VisibilityOutlined } from '@mui/icons-material';
-import ReplayIcon from '@mui/icons-material/Replay';
+import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
+import { ToggleShowOnlyUnlearned } from '@/features/toggle-show-only-unlearned';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
+import { GenerateAllAiSentencesButton } from '@/features/generate-all-ai-sentences';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
 import type { Card } from "@/shared/types/cards";
-import { StyledCardBoxHeader, StyledBoxWrapper, StyledBoxSideA } from './styled-components.ts';
+import { StyledCardBoxHeader, StyledBoxWrapper, StyledBoxSideA, StyledColumnHeader } from './styled-components.ts';
 
 type CardListProps = {
   cards: Card[];
@@ -150,40 +151,27 @@ export const CardList: React.FC<CardListProps> = ({
         {/* Заголовки колонок */}
         <StyledCardBoxHeader>
           <StyledBoxSideA>
-
-            <Typography variant="subtitle2" fontWeight="bold" fontSize={16}>
-              {t('forms.question')}
-            </Typography>
+            <Box display="flex" alignItems="center" gap={1}>
+              <StyledColumnHeader variant="subtitle2">
+                {t('forms.question')}
+              </StyledColumnHeader>
               <IconButton size="small" onClick={handleQuestionToggle}>
                   {displayFilter === 'A' || displayFilter === 'AB'
                       ? <VisibilityOutlined style={{fontSize: '20px'}} />
                       : <VisibilityOffOutlined style={{fontSize: '20px'}} />
                   }
               </IconButton>
-
-              <Button
-                  variant="text"
-                  size="small"
-                  onClick={handleGenerateAll}
-                  disabled={isAnyGenerating || filteredCards.length === 0}
-                  sx={{
-                      minWidth: 0,
-                      padding: 0.5,
-                      color: 'text.secondary',
-                      justifySelf: 'flex-end',
-                      alignSelf: 'flex-end',
-                  }}
-              >
-                  {isAnyGenerating
-                      ? (<CircularProgress size={16} />)
-                      : (<ReplayIcon fontSize="small" />)
-                  }
-              </Button>
+            </Box>
+            <GenerateAllAiSentencesButton
+                onGenerate={handleGenerateAll}
+                isGenerating={isAnyGenerating}
+                disabled={filteredCards.length === 0}
+            />
           </StyledBoxSideA>
           <Box display="flex" alignItems="center" gap={1} flex={1}>
-            <Typography variant="subtitle2" fontWeight="bold" fontSize={16}>
+            <StyledColumnHeader variant="subtitle2">
               {t('forms.answer')}
-            </Typography>
+            </StyledColumnHeader>
               <IconButton size="small" onClick={handleAnswerToggle}>
                   {displayFilter === 'B' || displayFilter === 'AB'
                       ? <VisibilityOutlined style={{fontSize: '20px'}} />
@@ -196,14 +184,12 @@ export const CardList: React.FC<CardListProps> = ({
               checked={selectAll}
               onChange={(e) => onSelectAllChange?.(e.target.checked)}
             />
-            <IconButton
-              size="small"
-              onClick={onToggleShowOnlyUnlearned}
-              color={showOnlyUnlearned ? 'primary' : 'default'}
-              title={showOnlyUnlearned ? t('learning.learned') : t('learning.learned')}
-            >
-              <FilterList />
-            </IconButton>
+            {onToggleShowOnlyUnlearned && (
+              <ToggleShowOnlyUnlearned
+                showOnlyUnlearned={showOnlyUnlearned}
+                onToggle={onToggleShowOnlyUnlearned}
+              />
+            )}
           </Box>
         </StyledCardBoxHeader>
         

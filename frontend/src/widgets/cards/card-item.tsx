@@ -1,10 +1,19 @@
-import { Box, IconButton, ListItem, Typography, Skeleton } from "@mui/material";
-import { CheckboxUI } from '@/shared/ui/checkbox-ui';
+import { Box, IconButton, Typography, Skeleton } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import type { Card } from "@/shared/types/cards";
 import type { CardGenerationState } from "@/shared/store/cardsStore";
 import { GenerateAiSentencesButton } from '@/features/generate-ai-sentences';
-import styled from './style.module.css'
+import { ToggleCardLearned } from '@/features/toggle-card-learned';
+import {
+    StyledListItem,
+    StyledCardContainer,
+    StyledCardContent,
+    StyledCardColumn,
+    StyledCardActions,
+    StyledSentencesContainer,
+    StyledCardText,
+    StyledCardSentencesText
+} from './styled-components.ts';
 
 interface CardItemProps {
     card: Card;
@@ -33,26 +42,22 @@ export const CardItem: React.FC<CardItemProps> = ({
     const hasError = state.status === 'failed' && state.error;
 
     return (
-        <ListItem
+        <StyledListItem
             key={card.id}
             divider
             onClick={() => handleCardClick(card.id)}
-            className={styled.listItem}
         >
-            <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-                <Box display="flex" width="100%" gap={2} sx={{ flexDirection: { xs: 'column', md: 'row' } }}>
-                    <Box flex={1}>
-                        <Typography
+            <StyledCardContainer>
+                <StyledCardContent>
+                    <StyledCardColumn>
+                        <StyledCardText
                             variant="body1"
                             color="text.primary"
-                            sx={{
-                                fontSize: 20,
-                                visibility: (displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id) ? 'visible' : 'hidden'
-                            }}
+                            $isVisible={displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id}
                         >
                             {card.question}
-                        </Typography>
-                        <Box display="flex" alignItems="center" gap={1}>
+                        </StyledCardText>
+                        <StyledSentencesContainer>
 
                             {isGenerating ? (
                                 <Box flex={1} sx={{ mt: 1 }}>
@@ -61,13 +66,12 @@ export const CardItem: React.FC<CardItemProps> = ({
                                 </Box>
                             ) : (
                                 card.questionSentences && (
-                                    <Typography
+                                    <StyledCardSentencesText
                                         variant="body2"
                                         color="text.secondary"
-                                        sx={{ mt: 1, whiteSpace: 'pre-wrap' }}
                                     >
                                         {card.questionSentences}
-                                    </Typography>
+                                    </StyledCardSentencesText>
                                 )
                             )}
                             {onReload && (
@@ -77,19 +81,16 @@ export const CardItem: React.FC<CardItemProps> = ({
                                     onGenerate={onReload}
                                 />
                             )}
-                        </Box>
-                    </Box>
-                    <Box flex={1}>
-                        <Typography
+                        </StyledSentencesContainer>
+                    </StyledCardColumn>
+                    <StyledCardColumn>
+                        <StyledCardText
                             variant="body1"
                             color="text.primary"
-                            sx={{
-                                fontSize: 20,
-                                visibility: (displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id) ? 'visible' : 'hidden'
-                            }}
+                            $isVisible={displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id}
                         >
                             {card.answer}
-                        </Typography>
+                        </StyledCardText>
                         {isGenerating ? (
                             <Box sx={{ mt: 1 }}>
                                 <Skeleton variant="text" width="100%" height={20} />
@@ -97,33 +98,32 @@ export const CardItem: React.FC<CardItemProps> = ({
                             </Box>
                         ) : (
                             card.answerSentences && (
-                                <Typography
+                                <StyledCardSentencesText
                                     variant="body2"
                                     color="text.secondary"
-                                    sx={{ mt: 1, whiteSpace: 'pre-wrap' }}
                                 >
                                     {card.answerSentences}
-                                </Typography>
+                                </StyledCardSentencesText>
                             )
                         )}
-                    </Box>
+                    </StyledCardColumn>
                     {hasError && (
                         <Typography variant="caption" color="error.main" mt={1}>
                             {state.error}
                         </Typography>
                     )}
-                </Box>
-                <Box display="flex" width={'80px'} alignItems="center" gap={2} sx={{ml: 2}}>
-                    <CheckboxUI
-                        edge="end"
-                        checked={card.isLearned}
-                        onChange={(e) => updateCardLearnStatus(card.id, e.target.checked)}
+                </StyledCardContent>
+                <StyledCardActions>
+                    <ToggleCardLearned
+                        cardId={card.id}
+                        isLearned={card.isLearned}
+                        onToggle={updateCardLearnStatus}
                     />
                     <IconButton size="small" onClick={(e) => handleMenuOpen(e, card.id)}>
                         <MoreHorizIcon/>
                     </IconButton>
-                </Box>
-            </Box>
-        </ListItem>
+                </StyledCardActions>
+            </StyledCardContainer>
+        </StyledListItem>
     )
 }

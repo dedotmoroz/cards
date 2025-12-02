@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, ListItem, Typography } from "@mui/material";
 
 export const StyledGrid = styled(Grid)`
     height: calc(100vh - 64px);
@@ -28,6 +28,7 @@ export const StyledHeaderBox = styled(Box)`
 
 export const StyledCardBoxHeader = styled(Box)`
     display: flex;
+    gap: 16px;
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(90deg, rgba(224, 231, 255, 0.60) 0%, rgba(243, 232, 255, 0.60) 50%, rgba(252, 231, 243, 0.60) 100%);
@@ -54,5 +55,71 @@ export const StyledBoxSideA = styled(Box)`
     width: 100%;
     align-items: center; 
     gap: 10px; 
-    flex: 10px
+    flex: 10px;
+    justify-content: space-between;
 `
+
+export const StyledListItem = styled(ListItem)`
+    transition: background-color 0.2s ease-in-out;
+    margin: 0;
+    padding: 10px;
+`;
+
+export const StyledCardContainer = styled(Box)`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+`;
+
+export const StyledCardContent = styled(Box)`
+    display: flex;
+    width: 100%;
+    gap: ${({ theme }) => theme.spacing(2)};
+    
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+    }
+    
+    ${({ theme }) => theme.breakpoints.up('md')} {
+        flex-direction: row;
+    }
+`;
+
+export const StyledCardColumn = styled(Box)`
+    flex: 1;
+`;
+
+export const StyledCardActions = styled(Box)`
+    display: flex;
+    width: 80px;
+    align-items: center;
+    gap: ${({ theme }) => theme.spacing(2)};
+    margin-left: ${({ theme }) => theme.spacing(2)};
+`;
+
+export const StyledSentencesContainer = styled(Box)`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: ${({ theme }) => theme.spacing(1)};
+`;
+
+interface StyledCardTextProps {
+    $isVisible: boolean;
+}
+
+export const StyledCardText = styled(Typography)<StyledCardTextProps>`
+    font-size: 20px;
+    visibility: ${({ $isVisible }) => $isVisible ? 'visible' : 'hidden'};
+`;
+
+export const StyledCardSentencesText = styled(Typography)`
+    margin-top: ${({ theme }) => theme.spacing(1)};
+    white-space: pre-wrap;
+`;
+
+export const StyledColumnHeader = styled(Typography)`
+    font-weight: bold;
+    font-size: 16px;
+`;
