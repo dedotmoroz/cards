@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { List, Box, Typography, IconButton, Button, CircularProgress } from '@mui/material';
 import { CheckboxUI } from '@/shared/ui/checkbox-ui';
-import { Visibility, VisibilityOff, FilterList } from '@mui/icons-material';
+import { VisibilityOffOutlined, FilterList, VisibilityOutlined } from '@mui/icons-material';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
 import type { Card } from "@/shared/types/cards";
-import styles from './style.module.css'
+import { StyledCardBoxHeader, StyledBoxWrapper, StyledBoxSideA } from './styled-components.ts';
 
 type CardListProps = {
   cards: Card[];
@@ -146,43 +146,52 @@ export const CardList: React.FC<CardListProps> = ({
   );
 
   return (
-      <Box className={styles.tableWrapper}>
+      <StyledBoxWrapper>
         {/* Заголовки колонок */}
-        <Box className={styles.cardsHeader}>
-          <Box display="flex" alignItems="center" gap={1} flex={1}>
+        <StyledCardBoxHeader>
+          <StyledBoxSideA>
 
             <Typography variant="subtitle2" fontWeight="bold" fontSize={16}>
               {t('forms.question')}
             </Typography>
               <IconButton size="small" onClick={handleQuestionToggle}>
-                  {displayFilter === 'A' || displayFilter === 'AB' ? <Visibility /> : <VisibilityOff />}
+                  {displayFilter === 'A' || displayFilter === 'AB'
+                      ? <VisibilityOutlined style={{fontSize: '20px'}} />
+                      : <VisibilityOffOutlined style={{fontSize: '20px'}} />
+                  }
               </IconButton>
-          </Box>
+
+              <Button
+                  variant="text"
+                  size="small"
+                  onClick={handleGenerateAll}
+                  disabled={isAnyGenerating || filteredCards.length === 0}
+                  sx={{
+                      minWidth: 0,
+                      padding: 0.5,
+                      color: 'text.secondary',
+                      justifySelf: 'flex-end',
+                      alignSelf: 'flex-end',
+                  }}
+              >
+                  {isAnyGenerating
+                      ? (<CircularProgress size={16} />)
+                      : (<ReplayIcon fontSize="small" />)
+                  }
+              </Button>
+          </StyledBoxSideA>
           <Box display="flex" alignItems="center" gap={1} flex={1}>
             <Typography variant="subtitle2" fontWeight="bold" fontSize={16}>
               {t('forms.answer')}
             </Typography>
               <IconButton size="small" onClick={handleAnswerToggle}>
-                  {displayFilter === 'B' || displayFilter === 'AB' ? <Visibility /> : <VisibilityOff />}
+                  {displayFilter === 'B' || displayFilter === 'AB'
+                      ? <VisibilityOutlined style={{fontSize: '20px'}} />
+                      : <VisibilityOffOutlined style={{fontSize: '20px'}} />
+                  }
               </IconButton>
           </Box>
           <Box display="flex" width={'80px'} alignItems="center" gap={1}>
-            <Button
-              variant="text"
-              size="small"
-              onClick={handleGenerateAll}
-              disabled={isAnyGenerating || filteredCards.length === 0}
-              sx={{
-                minWidth: 0,
-                padding: 0.5,
-                color: 'text.secondary'
-              }}
-            >
-              {isAnyGenerating
-                ? (<CircularProgress size={16} />)
-                : (<ReplayIcon fontSize="small" />)
-              }
-            </Button>
             <CheckboxUI
               checked={selectAll}
               onChange={(e) => onSelectAllChange?.(e.target.checked)}
@@ -196,7 +205,7 @@ export const CardList: React.FC<CardListProps> = ({
               <FilterList />
             </IconButton>
           </Box>
-        </Box>
+        </StyledCardBoxHeader>
         
         <List>
           {!!filteredCards.length && filteredCards.map((card) => (
@@ -228,6 +237,6 @@ export const CardList: React.FC<CardListProps> = ({
             setRenameAnswer={setRenameAnswer}
             handleRenameSave={handleRenameSave}
         />
-      </Box>
+      </StyledBoxWrapper>
   );
 };
