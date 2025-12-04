@@ -1,9 +1,10 @@
-import { Box, IconButton, Typography, Skeleton } from "@mui/material";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Box, Typography } from "@mui/material";
 import type { Card } from "@/shared/types/cards";
 import type { CardGenerationState } from "@/shared/store/cardsStore";
 import { GenerateAiSentencesButton } from '@/features/generate-ai-sentences';
 import { ToggleCardLearned } from '@/features/toggle-card-learned';
+import { CardMenuButton } from '@/features/card-menu-button';
+import { CardSkeleton } from "@/entities/cards";
 import {
     StyledListItem,
     StyledCardContainer,
@@ -44,26 +45,30 @@ export const CardItem: React.FC<CardItemProps> = ({
     return (
         <StyledListItem
             key={card.id}
-            divider
             onClick={() => handleCardClick(card.id)}
         >
             <StyledCardContainer>
                 <StyledCardContent>
                     <StyledCardColumn>
-                        <StyledCardText
-                            variant="body1"
-                            color="text.primary"
-                            $isVisible={displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id}
-                        >
-                            {card.question}
-                        </StyledCardText>
+                        <Box display="flex" alignItems="center" justifyContent="space-between" gap={1}>
+                            <StyledCardText
+                                variant="body1"
+                                color="text.primary"
+                                $isVisible={displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id}
+                            >
+                                {card.question}
+                            </StyledCardText>
+                            {onReload && (
+                                <GenerateAiSentencesButton
+                                    cardId={card.id}
+                                    generationStatus={generationStatus}
+                                    onGenerate={onReload}
+                                />
+                            )}
+                        </Box>
                         <StyledSentencesContainer>
-
                             {isGenerating ? (
-                                <Box flex={1} sx={{ mt: 1 }}>
-                                    <Skeleton variant="text" width="100%" height={20} />
-                                    <Skeleton variant="text" width="80%" height={20} />
-                                </Box>
+                                <CardSkeleton />
                             ) : (
                                 card.questionSentences && (
                                     <StyledCardSentencesText
@@ -73,13 +78,6 @@ export const CardItem: React.FC<CardItemProps> = ({
                                         {card.questionSentences}
                                     </StyledCardSentencesText>
                                 )
-                            )}
-                            {onReload && (
-                                <GenerateAiSentencesButton
-                                    cardId={card.id}
-                                    generationStatus={generationStatus}
-                                    onGenerate={onReload}
-                                />
                             )}
                         </StyledSentencesContainer>
                     </StyledCardColumn>
@@ -92,10 +90,7 @@ export const CardItem: React.FC<CardItemProps> = ({
                             {card.answer}
                         </StyledCardText>
                         {isGenerating ? (
-                            <Box sx={{ mt: 1 }}>
-                                <Skeleton variant="text" width="100%" height={20} />
-                                <Skeleton variant="text" width="80%" height={20} />
-                            </Box>
+                            <CardSkeleton />
                         ) : (
                             card.answerSentences && (
                                 <StyledCardSentencesText
@@ -119,9 +114,10 @@ export const CardItem: React.FC<CardItemProps> = ({
                         isLearned={card.isLearned}
                         onToggle={updateCardLearnStatus}
                     />
-                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, card.id)}>
-                        <MoreHorizIcon/>
-                    </IconButton>
+                    <CardMenuButton
+                        cardId={card.id}
+                        onMenuOpen={handleMenuOpen}
+                    />
                 </StyledCardActions>
             </StyledCardContainer>
         </StyledListItem>

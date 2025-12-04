@@ -28,11 +28,12 @@ export const StyledHeaderBox = styled(Box)`
 
 export const StyledCardBoxHeader = styled(Box)`
     display: flex;
-    gap: 16px;
+    box-sizing: border-box;
+    // gap: 16px;
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(90deg, rgba(224, 231, 255, 0.60) 0%, rgba(243, 232, 255, 0.60) 50%, rgba(252, 231, 243, 0.60) 100%);
-    padding: 10px 20px;
+    padding: 10px 19px;
     border: 1px solid rgba(255, 255, 255, 0.90);
     border-bottom: none;
 
@@ -54,15 +55,23 @@ export const StyledBoxSideA = styled(Box)`
     display: flex;
     width: 100%;
     align-items: center; 
-    gap: 10px; 
-    flex: 10px;
+    gap: 10px;
     justify-content: space-between;
+`
+
+export const StyledBoxSideB = styled(Box)`
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
 `
 
 export const StyledListItem = styled(ListItem)`
     transition: background-color 0.2s ease-in-out;
     margin: 0;
-    padding: 10px;
+    padding: 10px 20px;
+    border-bottom: 2px solid rgba(227, 231, 237, 0.74);
+    //border-bottom: 1px solid #d2d6dc;
 `;
 
 export const StyledCardContainer = styled(Box)`
@@ -86,6 +95,12 @@ export const StyledCardContent = styled(Box)`
     }
 `;
 
+export const StyledCardHeaderContent = styled(Box)`
+    display: flex;
+    width: 100%;
+    gap: ${({ theme }) => theme.spacing(2)};
+`
+
 export const StyledCardColumn = styled(Box)`
     flex: 1;
 `;
@@ -94,8 +109,16 @@ export const StyledCardActions = styled(Box)`
     display: flex;
     width: 80px;
     align-items: center;
-    gap: ${({ theme }) => theme.spacing(2)};
-    margin-left: ${({ theme }) => theme.spacing(2)};
+    justify-content: flex-end;
+    gap: 5px;
+`;
+
+export const StyledHeaderCardActions = styled(Box)`
+    display: flex;
+    width: 80px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
 `;
 
 export const StyledSentencesContainer = styled(Box)`

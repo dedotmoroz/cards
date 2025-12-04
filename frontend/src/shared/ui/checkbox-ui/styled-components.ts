@@ -12,7 +12,6 @@ export const StyledCheckbox = styled(Checkbox)`
         font-size: 16px;
         width: 20px;
         height: 20px;
-        clip-path: inset(0 round 4px);
     }
     
     &.Mui-checked {

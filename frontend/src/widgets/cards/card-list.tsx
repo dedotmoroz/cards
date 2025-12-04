@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { List, Box, IconButton } from '@mui/material';
-import { CheckboxUI } from '@/shared/ui/checkbox-ui';
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { ToggleShowOnlyUnlearned } from '@/features/toggle-show-only-unlearned';
+import { SelectAllCards } from '@/features/select-all-cards';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
 import { GenerateAllAiSentencesButton } from '@/features/generate-all-ai-sentences';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
 import type { Card } from "@/shared/types/cards";
-import { StyledCardBoxHeader, StyledBoxWrapper, StyledBoxSideA, StyledColumnHeader } from './styled-components.ts';
+import {
+    StyledCardBoxHeader,
+    StyledBoxWrapper,
+    StyledBoxSideA,
+    StyledBoxSideB,
+    StyledColumnHeader,
+    StyledHeaderCardActions,
+    StyledCardHeaderContent,
+} from './styled-components.ts';
 
 type CardListProps = {
   cards: Card[];
@@ -150,47 +158,51 @@ export const CardList: React.FC<CardListProps> = ({
       <StyledBoxWrapper>
         {/* Заголовки колонок */}
         <StyledCardBoxHeader>
-          <StyledBoxSideA>
-            <Box display="flex" alignItems="center" gap={1}>
-              <StyledColumnHeader variant="subtitle2">
-                {t('forms.question')}
-              </StyledColumnHeader>
-              <IconButton size="small" onClick={handleQuestionToggle}>
-                  {displayFilter === 'A' || displayFilter === 'AB'
-                      ? <VisibilityOutlined style={{fontSize: '20px'}} />
-                      : <VisibilityOffOutlined style={{fontSize: '20px'}} />
-                  }
-              </IconButton>
-            </Box>
-            <GenerateAllAiSentencesButton
-                onGenerate={handleGenerateAll}
-                isGenerating={isAnyGenerating}
-                disabled={filteredCards.length === 0}
-            />
-          </StyledBoxSideA>
-          <Box display="flex" alignItems="center" gap={1} flex={1}>
-            <StyledColumnHeader variant="subtitle2">
-              {t('forms.answer')}
-            </StyledColumnHeader>
-              <IconButton size="small" onClick={handleAnswerToggle}>
-                  {displayFilter === 'B' || displayFilter === 'AB'
-                      ? <VisibilityOutlined style={{fontSize: '20px'}} />
-                      : <VisibilityOffOutlined style={{fontSize: '20px'}} />
-                  }
-              </IconButton>
-          </Box>
-          <Box display="flex" width={'80px'} alignItems="center" gap={1}>
-            <CheckboxUI
-              checked={selectAll}
-              onChange={(e) => onSelectAllChange?.(e.target.checked)}
-            />
-            {onToggleShowOnlyUnlearned && (
-              <ToggleShowOnlyUnlearned
-                showOnlyUnlearned={showOnlyUnlearned}
-                onToggle={onToggleShowOnlyUnlearned}
-              />
-            )}
-          </Box>
+            <StyledCardHeaderContent>
+                <StyledBoxSideA>
+                    <Box display="flex" alignItems="center" gap={1}>
+                        <StyledColumnHeader variant="subtitle2">
+                            {t('forms.question')}
+                        </StyledColumnHeader>
+                        <IconButton size="small" onClick={handleQuestionToggle}>
+                            {displayFilter === 'A' || displayFilter === 'AB'
+                                ? <VisibilityOutlined style={{fontSize: '20px'}}/>
+                                : <VisibilityOffOutlined style={{fontSize: '20px'}}/>
+                            }
+                        </IconButton>
+                    </Box>
+                    <GenerateAllAiSentencesButton
+                        onGenerate={handleGenerateAll}
+                        isGenerating={isAnyGenerating}
+                        disabled={filteredCards.length === 0}
+                    />
+                </StyledBoxSideA>
+                <StyledBoxSideB>
+                    <StyledColumnHeader variant="subtitle2">
+                        {t('forms.answer')}
+                    </StyledColumnHeader>
+                    <IconButton size="small" onClick={handleAnswerToggle}>
+                        {displayFilter === 'B' || displayFilter === 'AB'
+                            ? <VisibilityOutlined style={{fontSize: '20px'}}/>
+                            : <VisibilityOffOutlined style={{fontSize: '20px'}}/>
+                        }
+                    </IconButton>
+                </StyledBoxSideB>
+            </StyledCardHeaderContent>
+            <StyledHeaderCardActions>
+                {onSelectAllChange && (
+                    <SelectAllCards
+                        checked={selectAll}
+                        onChange={onSelectAllChange}
+                    />
+                )}
+                {onToggleShowOnlyUnlearned && (
+                    <ToggleShowOnlyUnlearned
+                        showOnlyUnlearned={showOnlyUnlearned}
+                        onToggle={onToggleShowOnlyUnlearned}
+                    />
+                )}
+            </StyledHeaderCardActions>
         </StyledCardBoxHeader>
         
         <List>
