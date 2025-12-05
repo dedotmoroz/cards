@@ -1,5 +1,25 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+  interface Palette {
+    button?: {
+      bg: string;
+      hover: string;
+      disabled: string;
+      text: string;
+    };
+  }
+
+  interface PaletteOptions {
+    button?: {
+      bg: string;
+      hover: string;
+      disabled: string;
+      text: string;
+    };
+  }
+}
+
 export const theme = createTheme({
   palette: {
     background: {
@@ -11,6 +31,12 @@ export const theme = createTheme({
     },
     secondary: {
       main: '#dc004e',
+    },
+    button: {
+      bg: 'rgba(17, 24, 39, 0.8)',
+      hover: 'rgba(17, 24, 39, 0.9)',
+      disabled: '#030213',
+      text: '#ffffff',
     },
   },
 

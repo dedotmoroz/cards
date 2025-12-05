@@ -1,6 +1,8 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import { TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { DialogUI } from '@/shared/ui/dialog-ui';
+import { ButtonUI } from '@/shared/ui/button-ui';
 
 interface RenameFolderDialogProps {
     open: boolean;
@@ -30,9 +32,12 @@ export const RenameFolderDialog = ({ open, folderName, onClose, onSave }: Rename
     };
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth>
-            <DialogTitle>{t('folders.edit')}</DialogTitle>
-            <DialogContent>
+        <DialogUI
+            open={open}
+            onClose={onClose}
+            title={t('folders.edit')}
+            fullWidth
+            content={
                 <TextField
                     autoFocus
                     margin="dense"
@@ -41,12 +46,16 @@ export const RenameFolderDialog = ({ open, folderName, onClose, onSave }: Rename
                     value={renameName}
                     onChange={(e) => setRenameName(e.target.value)}
                 />
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose}>{t('auth.cancel')}</Button>
-                <Button onClick={handleSave} variant="contained">{t('buttons.save')}</Button>
-            </DialogActions>
-        </Dialog>
+            }
+            actions={
+                <>
+                    <ButtonUI onClick={onClose}>{t('auth.cancel')}</ButtonUI>
+                    <ButtonUI onClick={handleSave} variant="contained">
+                        {t('buttons.save')}
+                    </ButtonUI>
+                </>
+            }
+        />
     );
 };
 

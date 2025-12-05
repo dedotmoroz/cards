@@ -17,7 +17,9 @@ export const Folders = () => {
     return (
         <StyledWrappedBox>
             <StyledCaptionBox>
-                <StyledTypography variant="h6">{t('folders.title')} </StyledTypography>
+                <StyledTypography variant="h6">
+                    {t('folders.title')}
+                </StyledTypography>
                 <CreateFolder/>
             </StyledCaptionBox>
             <FolderList

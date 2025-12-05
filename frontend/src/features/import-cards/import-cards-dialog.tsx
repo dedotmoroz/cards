@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     TextField,
-    Button,
     Typography,
     Box,
     Alert
 } from '@mui/material';
+import { DialogUI } from '@/shared/ui/dialog-ui';
+import { ButtonUI } from '@/shared/ui/button-ui';
 
 interface ImportCardsDialogProps {
     open: boolean;
@@ -89,59 +86,67 @@ export const ImportCardsDialog: React.FC<ImportCardsDialogProps> = ({
     };
 
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-            <DialogTitle>{t('import.title')}</DialogTitle>
-            <DialogContent>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {t('import.format')}
-                </Typography>
-                
-                <TextField
-                    multiline
-                    rows={8}
-                    fullWidth
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="downside#Отрицательный момент в том, что;profound#глубокий, основательный;be in charge of something#быть ответственным за что-то"
-                    variant="outlined"
-                />
-                
-                {error && (
-                    <Alert severity="error" sx={{ mt: 2 }}>
-                        {error}
-                    </Alert>
-                )}
-                
-                <Box sx={{ mt: 2 }}>
-                    <Typography variant="caption" color="text.secondary">
-                        Пример формата:
+        <DialogUI
+            open={open}
+            onClose={handleClose}
+            title={t('import.title')}
+            maxWidth="md"
+            fullWidth
+            content={
+                <>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {t('import.format')}
                     </Typography>
-                    <Box component="pre" sx={{ 
-                        mt: 1, 
-                        p: 1, 
-                        bgcolor: 'grey.100', 
-                        borderRadius: 1,
-                        fontSize: '0.75rem',
-                        fontFamily: 'monospace'
-                    }}>
-                        downside#Отрицательный момент в том, что{'\n'}
-                        profound#глубокий, основательный{'\n'}
-                        be in charge of something#быть ответственным за что-то
+                    
+                    <TextField
+                        multiline
+                        rows={8}
+                        fullWidth
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="downside#Отрицательный момент в том, что;profound#глубокий, основательный;be in charge of something#быть ответственным за что-то"
+                        variant="outlined"
+                    />
+                    
+                    {error && (
+                        <Alert severity="error" sx={{ mt: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
+                    
+                    <Box sx={{ mt: 2 }}>
+                        <Typography variant="caption" color="text.secondary">
+                            Пример формата:
+                        </Typography>
+                        <Box component="pre" sx={{ 
+                            mt: 1, 
+                            p: 1, 
+                            bgcolor: 'grey.100', 
+                            borderRadius: 1,
+                            fontSize: '0.75rem',
+                            fontFamily: 'monospace'
+                        }}>
+                            downside#Отрицательный момент в том, что{'\n'}
+                            profound#глубокий, основательный{'\n'}
+                            be in charge of something#быть ответственным за что-то
+                        </Box>
                     </Box>
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} disabled={isImporting}>
-                    {t('auth.cancel')}
-                </Button>
-                <Button 
-                    onClick={handleImport} 
-                    variant="contained"
-                    disabled={isImporting || !text.trim()}
-                >
-                    {isImporting ? t('import.import') + '...' : t('import.import')}
-                </Button>
-            </DialogActions>
-        </Dialog>
+                </>
+            }
+            actions={
+                <>
+                    <ButtonUI onClick={handleClose} disabled={isImporting}>
+                        {t('auth.cancel')}
+                    </ButtonUI>
+                    <ButtonUI 
+                        onClick={handleImport} 
+                        variant="contained"
+                        disabled={isImporting || !text.trim()}
+                    >
+                        {isImporting ? t('import.import') + '...' : t('import.import')}
+                    </ButtonUI>
+                </>
+            }
+        />
     );
 };
