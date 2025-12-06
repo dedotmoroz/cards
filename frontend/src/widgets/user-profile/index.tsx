@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Box, Typography, Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Typography, Button, MenuItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
 import { Logout, Person, AccountCircle } from '@mui/icons-material';
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/shared/store/authStore';
 import { StyledUserCard, StyledAvatar } from './styled-components';
+import { MenuUI } from '@/shared/ui/menu-ui';
 
 export const UserProfile = () => {
     const { t } = useTranslation();
@@ -13,6 +14,8 @@ export const UserProfile = () => {
     const { user, logout } = useAuthStore();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -37,15 +40,15 @@ export const UserProfile = () => {
         return (
             <>
                 <StyledUserCard onClick={handleClick}>
-                    <Typography
+                    { !isMobile && <Typography
                         variant="body2"
                         sx={{ color: '#000' }}
                     >
                         {user.username}
-                    </Typography>
+                    </Typography>}
                     <StyledAvatar><AccountCircle fontSize={'large'} /></StyledAvatar>
                 </StyledUserCard>
-                <Menu
+                <MenuUI
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleClose}
@@ -70,7 +73,7 @@ export const UserProfile = () => {
                         </ListItemIcon>
                         <ListItemText>{t('auth.logout')}</ListItemText>
                     </MenuItem>
-                </Menu>
+                </MenuUI>
             </>
         );
     }

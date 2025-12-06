@@ -6,14 +6,14 @@ export const StyledUserCard = styled(Box)`
     transition: background-color 0.2s;
 
     display: flex;
-    height: 48px;
+    //height: 48px;
     padding: 9px 17px;
     justify-content: center;
     align-items: center;
     gap: 12px;
     
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.40);
+    // border: 1px solid rgba(255, 255, 255, 0.40);
     background: rgba(255, 255, 255, 0.50);
     
     margin-left: 18px;

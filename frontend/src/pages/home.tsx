@@ -14,7 +14,7 @@ import { LearnPhrasesButton } from '@/features/learn-phrases';
 import { LearnWordsMoreButton } from '@/features/learn-words-more';
 import { SelectSide } from '@/features/select-side';
 
-import { StyledGrid } from './styled-components.ts'
+import { StyledGrid, StyledMobileVersionBox } from './styled-components.ts'
 
 export const HomePage = () => {
     const { t, i18n } = useTranslation();
@@ -86,7 +86,7 @@ export const HomePage = () => {
                 /**
                  * Мобильная версия с Drawer
                  */
-                <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+                <StyledMobileVersionBox>
                     <Drawer
                         variant="temporary"
                         open={mobileOpen}
@@ -124,7 +124,7 @@ export const HomePage = () => {
                     >
                         <Cards />
                     </Box>
-                </Box>
+                </StyledMobileVersionBox>
             )}
         </>
         );

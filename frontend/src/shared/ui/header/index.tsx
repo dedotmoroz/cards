@@ -16,7 +16,8 @@ export const HeaderToolbar = ({
                                   learnWordsButton,
                                   learnPhrasesButton,
                                   // learnWordsMoreButton,
-                                  selectSide }: HeaderToolbarProps) => {
+                                  selectSide
+                              }: HeaderToolbarProps) => {
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));

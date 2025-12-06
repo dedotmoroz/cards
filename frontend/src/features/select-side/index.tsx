@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { useMediaQuery, useTheme } from '@mui/material';
 import {StyledSelect, StyledMenuItem} from "./styled-components.tsx";
 
 export const SelectSide = () => {
     const { t } = useTranslation();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const [initialSide, setInitialSide] = useState<'question' | 'answer'>(() => {
         const saved = localStorage.getItem('cardInitialSide');
@@ -23,8 +26,12 @@ export const SelectSide = () => {
                 label={t('learning.initialSide')}
                 onChange={(e) => handleInitialSideChange(e.target.value as 'question' | 'answer')}
             >
-                <StyledMenuItem value="question">{t('learning.showQuestion')}</StyledMenuItem>
-                <StyledMenuItem value="answer">{t('learning.showAnswer')}</StyledMenuItem>
+                <StyledMenuItem value="question">
+                    {isMobile ? 'A' : t('learning.showQuestion')}
+                </StyledMenuItem>
+                <StyledMenuItem value="answer">
+                    {isMobile ? 'B' : t('learning.showAnswer')}
+                </StyledMenuItem>
             </StyledSelect>
     );
 };
