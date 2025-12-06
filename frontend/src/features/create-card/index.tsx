@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {useTranslation} from "react-i18next";
+import {useMediaQuery, useTheme} from "@mui/material";
 import {CreateCardDialog} from "@/features/create-card.tsx";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {useCreateCard} from "@/features/create-card/useCreateCard.ts";
@@ -7,6 +8,8 @@ import {StyledButton, StyledPlusIcon} from "./styled-components";
 
 export const CreateCardButton = () => {
     const { t } = useTranslation();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [isCreatingCard, setIsCreatingCard] = useState(false);
     const { selectedFolderId } = useFoldersStore();
     const { createCard } = useCreateCard();
@@ -25,7 +28,9 @@ export const CreateCardButton = () => {
                 disabled={!selectedFolderId}
                 startIcon={<StyledPlusIcon/>}
             >
-                {t('cards.create')}
+                <span style={{ display: isMobile ? 'none' : 'inline' }}>
+                    {t('cards.create')}
+                </span>
             </StyledButton>
             {selectedFolderId && (
                 <CreateCardDialog

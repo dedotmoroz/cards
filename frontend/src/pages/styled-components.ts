@@ -11,3 +11,10 @@ export const StyledMobileVersionBox = styled(Box)`
     min-height: 100vh;
     padding: 50px 0 10px 0;
 `
+
+export const StyledCardsBox = styled(Box)`
+             flex-grow: 1;
+             padding: 10px;
+             width: 100%;
+             overflow: auto;
+`

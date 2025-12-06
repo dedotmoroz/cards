@@ -14,7 +14,7 @@ import { LearnPhrasesButton } from '@/features/learn-phrases';
 import { LearnWordsMoreButton } from '@/features/learn-words-more';
 import { SelectSide } from '@/features/select-side';
 
-import { StyledGrid, StyledMobileVersionBox } from './styled-components.ts'
+import { StyledGrid, StyledMobileVersionBox, StyledCardsBox } from './styled-components.ts'
 
 export const HomePage = () => {
     const { t, i18n } = useTranslation();
@@ -68,6 +68,7 @@ export const HomePage = () => {
                 learnWordsButton={<LearnWordsButton />}
                 learnPhrasesButton={<LearnPhrasesButton />}
                 learnWordsMoreButton={<LearnWordsMoreButton />}
+                onDrawerToggle={handleDrawerToggle}
             />
             {!isMobile ?
                 (
@@ -113,17 +114,9 @@ export const HomePage = () => {
                         </Box>
                     </Drawer>
 
-                    <Box
-                        component="main"
-                        sx={{
-                            flexGrow: 1,
-                            p: 1,
-                            width: '100%',
-                            overflow: 'auto',
-                        }}
-                    >
+                    <StyledCardsBox>
                         <Cards />
-                    </Box>
+                    </StyledCardsBox>
                 </StyledMobileVersionBox>
             )}
         </>

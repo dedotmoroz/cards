@@ -6,7 +6,6 @@ export const StyledUserCard = styled(Box)`
     transition: background-color 0.2s;
 
     display: flex;
-    //height: 48px;
     padding: 9px 17px;
     justify-content: center;
     align-items: center;
