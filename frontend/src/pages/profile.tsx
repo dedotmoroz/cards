@@ -17,9 +17,10 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
-import { ArrowBack, AccountCircle } from '@mui/icons-material';
+import { ArrowBack, AccountCircle, ContentCopy } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
+import { authApi } from '@/shared/api/authApi';
 
 const languages = [
   { code: 'ru', label: 'Русский' },
@@ -67,6 +68,10 @@ export const ProfilePage = () => {
   const [languageSuccess, setLanguageSuccess] = useState('');
   const [languageError, setLanguageError] = useState('');
   const [languageLoading, setLanguageLoading] = useState(false);
+
+  const [token, setToken] = useState('');
+  const [tokenLoading, setTokenLoading] = useState(false);
+  const [tokenError, setTokenError] = useState('');
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -475,6 +480,60 @@ export const ProfilePage = () => {
                               </Button>
                           </Box>
                       </Stack>
+                  </Box>
+
+                  {/* Блок получения токена */}
+                  <Box mt={3}>
+                      <Typography variant="h6" gutterBottom>
+                          {t('profile.getToken')}
+                      </Typography>
+                      <TextField
+                          label={t('profile.token')}
+                          multiline
+                          rows={4}
+                          value={token}
+                          fullWidth
+                          disabled
+                          sx={{ mt: 2 }}
+                      />
+                      {tokenError && (
+                          <Alert severity="error" sx={{ mt: 2 }}>
+                              {tokenError}
+                          </Alert>
+                      )}
+                      <Box display="flex" gap={2} mt={2}>
+                          <Button
+                              variant="contained"
+                              onClick={async () => {
+                                  if (!user?.id) return;
+                                  setTokenLoading(true);
+                                  setTokenError('');
+                                  try {
+                                      const newToken = await authApi.getToken(user.id);
+                                      setToken(newToken);
+                                  } catch (error: any) {
+                                      setTokenError(error.response?.data?.error || t('profile.tokenError'));
+                                  } finally {
+                                      setTokenLoading(false);
+                                  }
+                              }}
+                              disabled={tokenLoading || !user || user.isGuest}
+                          >
+                              {tokenLoading ? t('profile.creatingToken') : t('profile.createToken')}
+                          </Button>
+                          <Button
+                              variant="outlined"
+                              startIcon={<ContentCopy />}
+                              onClick={() => {
+                                  if (token) {
+                                      navigator.clipboard.writeText(token);
+                                  }
+                              }}
+                              disabled={!token}
+                          >
+                              {t('profile.copyToken')}
+                          </Button>
+                      </Box>
                   </Box>
                   </Paper>
               </Box>

@@ -10,6 +10,7 @@ import fastifySwaggerUI from '@fastify/swagger-ui';
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import jwt from '@fastify/jwt';
+import jsonwebtoken from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 import cookie from '@fastify/cookie';
 dotenv.config();
@@ -63,18 +64,6 @@ export async function buildServer() {
     });
 
     // ✅ Декоратор для получения текущего пользователя
-    // fastify.decorate(
-    //     'authenticate',
-    //     async function (request: any, reply: any) {
-    //         try {
-    //             // await request.jwtVerify();
-    //             await request.jwtVerify({ token: request.cookies.token });
-    //         } catch (err) {
-    //             reply.code(401).send({ message: 'Unauthorized' });
-    //         }
-    //     }
-    // );
-
     fastify.decorate(
         'authenticate',
         async function (request: any, reply: any) {
@@ -1314,17 +1303,16 @@ export async function buildServer() {
     );
 
     /**
-     * Получить JWT-токен по логину/паролю (для расширения и внешних клиентов)
+     * Получить JWT-токен по ID клиента и авторизационной куке
      */
     fastify.post('/auth/token',
         {
             schema: {
                 body: {
                     type: 'object',
-                    required: ['email', 'password'],
+                    required: ['clientId'],
                     properties: {
-                        email: { type: 'string', format: 'email' },
-                        password: { type: 'string' },
+                        clientId: { type: 'string', format: 'uuid' },
                     },
                 },
                 response: {
@@ -1342,24 +1330,46 @@ export async function buildServer() {
                     },
                 },
                 tags: ['auth'],
-                summary: 'Issue JWT token for API clients (no cookies)',
+                summary: 'Issue JWT token by client ID and auth cookie',
             },
         },
         async (req, reply) => {
             const body = z
                 .object({
-                    email: z.string().email(),
-                    password: z.string(),
+                    clientId: z.string().uuid(),
                 })
                 .parse(req.body);
 
-            const token = await userService.login(body.email, body.password);
-            if (!token) {
-                return reply.code(401).send({ error: 'Invalid credentials' });
+            // Проверяем наличие куки с токеном
+            const cookieToken = req.cookies?.token;
+            if (!cookieToken) {
+                return reply.code(401).send({ error: 'No auth cookie provided' });
             }
 
-            // ВАЖНО: без setCookie — просто отдаем токен
-            return reply.send({ token });
+            try {
+                // Верифицируем токен из куки напрямую
+                const decoded = jsonwebtoken.verify(cookieToken, process.env.JWT_SECRET!) as { userId: string };
+                const userIdFromToken = decoded.userId;
+
+                // Проверяем, что userId из токена совпадает с clientId
+                if (userIdFromToken !== body.clientId) {
+                    return reply.code(401).send({ error: 'Client ID does not match token' });
+                }
+
+                // Проверяем, что пользователь существует
+                const user = await userService.getById(body.clientId);
+                if (!user) {
+                    return reply.code(401).send({ error: 'User not found' });
+                }
+
+                // Генерируем новый токен
+                const token = jsonwebtoken.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '7d' });
+
+                // ВАЖНО: без setCookie — просто отдаем токен
+                return reply.send({ token });
+            } catch (err) {
+                return reply.code(401).send({ error: 'Invalid auth cookie' });
+            }
         }
     );
 

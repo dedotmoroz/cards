@@ -173,6 +173,12 @@
     "registerGuestSubtitle": "Fill in the details to create a permanent account",
     "registerGuestButton": "Register",
     "registerGuestSuccess": "Profile successfully registered",
-    "passwordLabel": "Password"
+    "passwordLabel": "Password",
+    "getToken": "Get Token",
+    "token": "Token",
+    "createToken": "Create Token",
+    "creatingToken": "Creating token...",
+    "copyToken": "Copy",
+    "tokenError": "Error getting token"
   }
 }

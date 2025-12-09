@@ -94,5 +94,15 @@ export const authApi = {
       withCredentials: true
     });
     return response.data;
+  },
+
+  /**
+   * Получение JWT токена по clientId и авторизационной куке
+   */
+  getToken: async (clientId: string): Promise<string> => {
+    const response = await axios.post(`${API_BASE_URL}/auth/token`, { clientId }, {
+      withCredentials: true
+    });
+    return response.data.token;
   }
 };

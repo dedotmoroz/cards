@@ -173,6 +173,12 @@
     "registerGuestSubtitle": "Заполните данные для создания постоянного аккаунта",
     "registerGuestButton": "Зарегистрироваться",
     "registerGuestSuccess": "Профиль успешно зарегистрирован",
-    "passwordLabel": "Пароль"
+    "passwordLabel": "Пароль",
+    "getToken": "Получить токен",
+    "token": "Токен",
+    "createToken": "Создать токен",
+    "creatingToken": "Создание токена...",
+    "copyToken": "Скопировать",
+    "tokenError": "Ошибка при получении токена"
   }
 }
