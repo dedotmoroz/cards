@@ -63,24 +63,81 @@ export async function buildServer() {
     });
 
     // ✅ Декоратор для получения текущего пользователя
+    // fastify.decorate(
+    //     'authenticate',
+    //     async function (request: any, reply: any) {
+    //         try {
+    //             // await request.jwtVerify();
+    //             await request.jwtVerify({ token: request.cookies.token });
+    //         } catch (err) {
+    //             reply.code(401).send({ message: 'Unauthorized' });
+    //         }
+    //     }
+    // );
+
     fastify.decorate(
         'authenticate',
         async function (request: any, reply: any) {
             try {
-                // await request.jwtVerify();
-                await request.jwtVerify({ token: request.cookies.token });
+                let token: string | undefined;
+
+                const authHeader = request.headers['authorization'] as string | undefined;
+                if (authHeader && authHeader.startsWith('Bearer ')) {
+                    token = authHeader.slice(7);
+                } else if (request.cookies?.token) {
+                    token = request.cookies.token;
+                }
+
+                if (!token) {
+                    throw new Error('No token provided');
+                }
+
+                await request.jwtVerify({ token });
             } catch (err) {
+                request.log.error({ err }, 'Auth failed');
                 reply.code(401).send({ message: 'Unauthorized' });
             }
         }
     );
 
     // ✅ Регистрируем CORS
+    // await fastify.register(cors, {
+    //     origin: 'http://localhost:5173',
+    //     credentials: true,
+    //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    // });
+
     await fastify.register(cors, {
-        origin: 'http://localhost:5173',
-        credentials: true,
+        origin: (origin, cb) => {
+            // запросы без Origin (curl, прямой запрос) — разрешаем
+            if (!origin) {
+                return cb(null, true);
+            }
+
+            const allowedOrigins = [
+                'http://localhost:5173', // твой фронт
+                // сюда же потом добавишь прод, если будет
+                // 'https://cards.yourdomain.com',
+            ];
+
+            // разрешаем фронт
+            if (allowedOrigins.includes(origin)) {
+                return cb(null, true);
+            }
+
+            // разрешаем расширения Chrome
+            if (origin.startsWith('chrome-extension://')) {
+                return cb(null, true);
+            }
+
+            // всё остальное — мимо
+            return cb(new Error('Not allowed by CORS'), false);
+        },
+        credentials: true, // ВАЖНО: куки продолжают работать для SPA
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     });
+
 
     // ✅ Подключаем Swagger
     await fastify.register(fastifySwagger, {
@@ -150,6 +207,82 @@ export async function buildServer() {
         );
         return reply.code(201).send(card.toPublicDTO());
     });
+
+    /**
+     * Создать Карточку из браузерного расширения
+     */
+    fastify.post('/ext/cards',
+        {
+            preHandler: [fastify.authenticate], // тот же JWT, но из Authorization
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['word', 'folderId'],
+                    properties: {
+                        word: { type: 'string' },
+                        folderId: { type: 'string', format: 'uuid' },
+                        sourceUrl: { type: 'string' },
+                        sentence: { type: 'string' },
+                    },
+                },
+                response: {
+                    201: {
+                        type: 'object',
+                        properties: {
+                            id: { type: 'string', format: 'uuid' },
+                            word: { type: 'string' },
+                            folderId: { type: 'string', format: 'uuid' },
+                        },
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['extension'],
+                summary: 'Add word from browser extension',
+            },
+            // Можно при желании задать отдельный CORS именно для этой ручки
+            // preHandler: [fastify.cors({ origin: true }), fastify.authenticate],
+        },
+        async (
+            req: FastifyRequest<{
+                Body: {
+                    word: string;
+                    folderId: string;
+                    sourceUrl?: string;
+                    sentence?: string;
+                };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const { word, folderId, sourceUrl, sentence } = req.body;
+            const userId = (req.user as any).userId;
+
+            // тут можно делать любые доп.проверки, например что folder принадлежит userId
+
+            const question = word;
+            const answer = ''; // расширение пока не знает перевода
+            const questionSentences = sentence ? sentence : undefined;
+            const answerSentences = undefined;
+
+            const card = await cardService.createCard(
+                folderId,
+                question,
+                answer,
+                questionSentences,
+                answerSentences
+            );
+
+            return reply.code(201).send({
+                id: card.id,
+                word,
+                folderId,
+            });
+        }
+    );
 
     /**
      * Отметить Карточку как изученную
@@ -1177,6 +1310,56 @@ export async function buildServer() {
                 }
                 return reply.code(400).send({ error: 'Failed to convert guest to user' });
             }
+        }
+    );
+
+    /**
+     * Получить JWT-токен по логину/паролю (для расширения и внешних клиентов)
+     */
+    fastify.post('/auth/token',
+        {
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['email', 'password'],
+                    properties: {
+                        email: { type: 'string', format: 'email' },
+                        password: { type: 'string' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            token: { type: 'string' },
+                        },
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Issue JWT token for API clients (no cookies)',
+            },
+        },
+        async (req, reply) => {
+            const body = z
+                .object({
+                    email: z.string().email(),
+                    password: z.string(),
+                })
+                .parse(req.body);
+
+            const token = await userService.login(body.email, body.password);
+            if (!token) {
+                return reply.code(401).send({ error: 'Invalid credentials' });
+            }
+
+            // ВАЖНО: без setCookie — просто отдаем токен
+            return reply.send({ token });
         }
     );
 
