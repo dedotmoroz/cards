@@ -90,42 +90,41 @@ export async function buildServer() {
     );
 
     // ✅ Регистрируем CORS
-    await fastify.register(cors, {
-        origin: 'http://localhost:5173',
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    });
-
     // await fastify.register(cors, {
-    //     origin: (origin, cb) => {
-    //         // запросы без Origin (curl, прямой запрос) — разрешаем
-    //         if (!origin) {
-    //             return cb(null, true);
-    //         }
-    //
-    //         const allowedOrigins = [
-    //             'http://localhost:5173', // твой фронт
-    //             // сюда же потом добавишь прод, если будет
-    //             // 'https://cards.yourdomain.com',
-    //         ];
-    //
-    //         // разрешаем фронт
-    //         if (allowedOrigins.includes(origin)) {
-    //             return cb(null, true);
-    //         }
-    //
-    //         // разрешаем расширения Chrome
-    //         if (origin.startsWith('chrome-extension://')) {
-    //             return cb(null, true);
-    //         }
-    //
-    //         // всё остальное — мимо
-    //         return cb(new Error('Not allowed by CORS'), false);
-    //     },
-    //     credentials: true, // ВАЖНО: куки продолжают работать для SPA
+    //     origin: 'http://localhost:5173',
+    //     credentials: true,
     //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    //     allowedHeaders: ['Content-Type', 'Authorization'],
     // });
+
+    await fastify.register(cors, {
+        origin: (origin, cb) => {
+            // запросы без Origin (curl, прямой запрос) — разрешаем
+            if (!origin) {
+                return cb(null, true);
+            }
+
+            const allowedOrigins = [
+                'http://localhost:5173',
+                'https://kotcat.com',
+            ];
+
+            // разрешаем фронт
+            if (allowedOrigins.includes(origin)) {
+                return cb(null, true);
+            }
+
+            // разрешаем расширения Chrome
+            if (origin.startsWith('chrome-extension://')) {
+                return cb(null, true);
+            }
+
+            // всё остальное — мимо
+            return cb(new Error('Not allowed by CORS'), false);
+        },
+        credentials: true, // ВАЖНО: куки продолжают работать для SPA
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    });
 
 
     // ✅ Подключаем Swagger
