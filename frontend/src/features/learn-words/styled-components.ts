@@ -4,7 +4,7 @@ import { WordIcon } from "@/shared/icons";
 
 export const StyledButton = styled(Button)`
     display: flex;
-    padding: 8px 12px;
+    padding: 12px 12px;
     justify-content: center;
     align-items: center;
     border: 1px solid rgba(255, 255, 255, 0.60);

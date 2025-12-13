@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Toolbar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 export const StyledNavigationBox = styled(Box)`
@@ -7,4 +7,6 @@ export const StyledNavigationBox = styled(Box)`
     justify-content: flex-start;
     align-items: center;
     gap: 16px;
+`
+export const StyledToolbar = styled(Toolbar)`
 `

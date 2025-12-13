@@ -1,9 +1,9 @@
 import {type ReactNode } from "react";
 import {useNavigate} from "react-router-dom";
-import {Box, AppBar, Toolbar, useMediaQuery, useTheme} from '@mui/material';
+import {Box, AppBar, useMediaQuery, useTheme} from '@mui/material';
 import {UserProfile} from "@/widgets/user-profile";
 import {Logo, MobileMenuIcon} from "@/shared/ui";
-import { StyledNavigationBox } from './styled-components.ts'
+import { StyledNavigationBox, StyledToolbar } from './styled-components.ts'
 
 interface HeaderToolbarProps {
     learnWordsButton: ReactNode;
@@ -30,7 +30,7 @@ export const HeaderToolbar = ({
 
     return (
         <AppBar position={isMobile ? "fixed" : "fixed"}>
-            <Toolbar>
+            <StyledToolbar>
                 {isMobile ? (
                     <MobileMenuIcon handle={onDrawerToggle || (() => {})} />
                 ) : (
@@ -44,7 +44,7 @@ export const HeaderToolbar = ({
                     {/*{learnWordsMoreButton}*/}
                 </StyledNavigationBox>
                 <UserProfile />
-            </Toolbar>
+            </StyledToolbar>
         </AppBar>
     )
 }

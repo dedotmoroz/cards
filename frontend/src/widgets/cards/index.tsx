@@ -64,7 +64,7 @@ export const Cards = () => {
                         )}
                     </Box>
                 </StyleLeftBox>
-                <Box ml={4}>
+                <Box>
                     {/* Add card */}
                     <CreateCardButton/>
                 </Box>

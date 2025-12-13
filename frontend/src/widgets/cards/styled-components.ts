@@ -22,6 +22,7 @@ export const StyledTopBox = styled(Box)`
 export const StyleLeftBox = styled(Box)`
     display: flex;
     align-items: flex-start;
+    padding-left: 20px;
 `
 
 export const StyledHeaderBox = styled(Box)`

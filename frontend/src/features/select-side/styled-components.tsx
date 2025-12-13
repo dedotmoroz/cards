@@ -5,7 +5,7 @@ import React from "react";
 
 const BaseStyledSelect = styled(Select)`
     display: flex;
-    height: 36px;
+    height: 42px;
     padding: 0 12px;
     justify-content: space-between;
     align-items: center;
