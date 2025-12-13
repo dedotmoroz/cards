@@ -13,7 +13,8 @@ import {
     StyledCardActions,
     StyledSentencesContainer,
     StyledCardText,
-    StyledCardSentencesText
+    StyledCardSentencesText,
+    StyledMargin,
 } from './styled-components.ts';
 
 interface CardItemProps {
@@ -37,7 +38,7 @@ export const CardItem: React.FC<CardItemProps> = ({
                              onReload,
                              generationStatus,
                          }) => {
-
+    
     const state = generationStatus ?? { status: 'idle', progress: 0 };
     const isGenerating = state.status === 'pending' || state.status === 'polling';
     const hasError = state.status === 'failed' && state.error;
@@ -58,13 +59,6 @@ export const CardItem: React.FC<CardItemProps> = ({
                             >
                                 {card.question}
                             </StyledCardText>
-                            {onReload && (
-                                <GenerateAiSentencesButton
-                                    cardId={card.id}
-                                    generationStatus={generationStatus}
-                                    onGenerate={onReload}
-                                />
-                            )}
                         </Box>
                         <StyledSentencesContainer>
                             {isGenerating ? (
@@ -109,6 +103,15 @@ export const CardItem: React.FC<CardItemProps> = ({
                     )}
                 </StyledCardContent>
                 <StyledCardActions>
+                    {onReload && (
+                        <StyledMargin>
+                            <GenerateAiSentencesButton
+                                cardId={card.id}
+                                generationStatus={generationStatus}
+                                onGenerate={onReload}
+                            />
+                        </StyledMargin>
+                    )}
                     <ToggleCardLearned
                         cardId={card.id}
                         isLearned={card.isLearned}

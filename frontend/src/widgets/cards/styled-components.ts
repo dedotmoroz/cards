@@ -6,8 +6,12 @@ export const StyledGrid = styled(Grid)`
     padding: 80px 10px 10px;
 `
 export const StyledWrapperBox = styled(Box)`
-    padding: 20px;
+    padding: 20px 20px;
     height: 100%;
+    
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+        padding: 20px 0;
+    }
 `
 export const StyledTopBox = styled(Box)`
     display: flex;
@@ -57,6 +61,11 @@ export const StyledBoxSideA = styled(Box)`
     align-items: center; 
     gap: 10px;
     justify-content: space-between;
+    
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 `
 
 export const StyledBoxSideB = styled(Box)`
@@ -64,6 +73,22 @@ export const StyledBoxSideB = styled(Box)`
     width: 100%;
     align-items: center;
     gap: 10px;
+    
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+`
+
+export const StyledHeaderWithButton = styled(Box)`
+    display: flex;
+    align-items: center;
+    gap: ${({ theme }) => theme.spacing(1)};
+    
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 `
 
 export const StyledListItem = styled(ListItem)`
@@ -107,18 +132,32 @@ export const StyledCardColumn = styled(Box)`
 
 export const StyledCardActions = styled(Box)`
     display: flex;
-    width: 80px;
+    width: 110px;
     align-items: center;
     justify-content: flex-end;
     gap: 5px;
+    
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+    }
 `;
 
 export const StyledHeaderCardActions = styled(Box)`
     display: flex;
-    width: 80px;
+    width: 110px;
     align-items: center;
     justify-content: flex-end;
     gap: 5px;
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+    }
 `;
 
 export const StyledSentencesContainer = styled(Box)`
@@ -146,3 +185,12 @@ export const StyledColumnHeader = styled(Typography)`
     font-weight: bold;
     font-size: 16px;
 `;
+
+export const StyledMargin = styled(Box)`
+    margin: 0 0 0 12px;
+`
+export const StyledMarginMobile = styled(Box)`
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        margin: 0 0 0 12px;
+    }
+`

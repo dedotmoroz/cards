@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List, Box, IconButton } from '@mui/material';
+import { List, IconButton } from '@mui/material';
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { ToggleShowOnlyUnlearned } from '@/features/toggle-show-only-unlearned';
 import { SelectAllCards } from '@/features/select-all-cards';
@@ -18,6 +18,9 @@ import {
     StyledColumnHeader,
     StyledHeaderCardActions,
     StyledCardHeaderContent,
+    StyledHeaderWithButton,
+    StyledMargin,
+    StyledMarginMobile,
 } from './styled-components.ts';
 
 type CardListProps = {
@@ -160,7 +163,7 @@ export const CardList: React.FC<CardListProps> = ({
         <StyledCardBoxHeader>
             <StyledCardHeaderContent>
                 <StyledBoxSideA>
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <StyledHeaderWithButton>
                         <StyledColumnHeader variant="subtitle2">
                             {t('forms.question')}
                         </StyledColumnHeader>
@@ -170,37 +173,45 @@ export const CardList: React.FC<CardListProps> = ({
                                 : <VisibilityOffOutlined style={{fontSize: '20px'}}/>
                             }
                         </IconButton>
-                    </Box>
+                    </StyledHeaderWithButton>
+                </StyledBoxSideA>
+                <StyledBoxSideB>
+                    <StyledHeaderWithButton>
+                        <StyledColumnHeader variant="subtitle2">
+                            {t('forms.answer')}
+                        </StyledColumnHeader>
+                        <IconButton size="small" onClick={handleAnswerToggle}>
+                            {displayFilter === 'B' || displayFilter === 'AB'
+                                ? <VisibilityOutlined style={{fontSize: '20px'}}/>
+                                : <VisibilityOffOutlined style={{fontSize: '20px'}}/>
+                            }
+                        </IconButton>
+                    </StyledHeaderWithButton>
+                </StyledBoxSideB>
+            </StyledCardHeaderContent>
+            <StyledHeaderCardActions>
+                <StyledMargin>
                     <GenerateAllAiSentencesButton
                         onGenerate={handleGenerateAll}
                         isGenerating={isAnyGenerating}
                         disabled={filteredCards.length === 0}
                     />
-                </StyledBoxSideA>
-                <StyledBoxSideB>
-                    <StyledColumnHeader variant="subtitle2">
-                        {t('forms.answer')}
-                    </StyledColumnHeader>
-                    <IconButton size="small" onClick={handleAnswerToggle}>
-                        {displayFilter === 'B' || displayFilter === 'AB'
-                            ? <VisibilityOutlined style={{fontSize: '20px'}}/>
-                            : <VisibilityOffOutlined style={{fontSize: '20px'}}/>
-                        }
-                    </IconButton>
-                </StyledBoxSideB>
-            </StyledCardHeaderContent>
-            <StyledHeaderCardActions>
+                </StyledMargin>
                 {onSelectAllChange && (
-                    <SelectAllCards
-                        checked={selectAll}
-                        onChange={onSelectAllChange}
-                    />
+                    <StyledMarginMobile>
+                        <SelectAllCards
+                            checked={selectAll}
+                            onChange={onSelectAllChange}
+                        />
+                    </StyledMarginMobile>
                 )}
                 {onToggleShowOnlyUnlearned && (
-                    <ToggleShowOnlyUnlearned
-                        showOnlyUnlearned={showOnlyUnlearned}
-                        onToggle={onToggleShowOnlyUnlearned}
-                    />
+                    <StyledMarginMobile>
+                        <ToggleShowOnlyUnlearned
+                            showOnlyUnlearned={showOnlyUnlearned}
+                            onToggle={onToggleShowOnlyUnlearned}
+                        />
+                    </StyledMarginMobile>
                 )}
             </StyledHeaderCardActions>
         </StyledCardBoxHeader>
