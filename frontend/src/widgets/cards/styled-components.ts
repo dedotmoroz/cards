@@ -6,7 +6,7 @@ export const StyledGrid = styled(Grid)`
     padding: 80px 10px 10px;
 `
 export const StyledWrapperBox = styled(Box)`
-    padding: 20px 20px;
+    padding: 20px 16px;
     height: 100%;
     
     ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -193,5 +193,11 @@ export const StyledMargin = styled(Box)`
 export const StyledMarginMobile = styled(Box)`
     ${({ theme }) => theme.breakpoints.down('md')} {
         margin: 0 0 0 12px;
+    }
+`
+
+export const StyledCreateCardBox = styled(Box)`
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+        padding-right: 8px;
     }
 `

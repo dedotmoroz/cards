@@ -6,7 +6,7 @@ import {useCardsStore} from "@/shared/store/cardsStore.ts";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import { CreateCardButton } from "@/features/create-card/index.tsx";
 import {CardsMenu} from "@/entities/cards";
-import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox } from './styled-components.ts'
+import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox, StyledCreateCardBox } from './styled-components.ts'
 
 export const Cards = () => {
     const { t } = useTranslation();
@@ -64,10 +64,10 @@ export const Cards = () => {
                         )}
                     </Box>
                 </StyleLeftBox>
-                <Box>
+                <StyledCreateCardBox>
                     {/* Add card */}
                     <CreateCardButton/>
-                </Box>
+                </StyledCreateCardBox>
             </StyledTopBox>
             <CardList
                 cards={cards}

@@ -11,7 +11,6 @@ export const Logo = ({ handle }: LogoProps) => {
         <StyledLogoPlace>
             <StyledLogoButton
                 variant="contained"
-                color="inherit"
                 aria-label={t('navigation.home')}
                 onClick={handle}
             >

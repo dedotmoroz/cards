@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Drawer, IconButton, useMediaQuery, useTheme} from '@mui/material';
-import { Pets } from '@mui/icons-material';
+import { Box, Grid, Drawer, useMediaQuery, useTheme} from '@mui/material';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
 import { useFoldersStore } from '@/shared/store/foldersStore';
@@ -14,7 +13,8 @@ import { LearnPhrasesButton } from '@/features/learn-phrases';
 import { LearnWordsMoreButton } from '@/features/learn-words-more';
 import { SelectSide } from '@/features/select-side';
 
-import { StyledGrid, StyledMobileVersionBox, StyledCardsBox } from './styled-components.ts'
+import { StyledGrid, StyledMobileVersionBox, StyledCardsBox, StyledLogoPlace } from './styled-components.ts'
+import {Logo} from "@/shared/ui";
 
 export const HomePage = () => {
     const { t, i18n } = useTranslation();
@@ -101,19 +101,12 @@ export const HomePage = () => {
                         }}
                     >
                         <Box sx={{ height: '100%', overflow: 'auto' }}>
-                            <IconButton
-                                color="inherit"
-                                aria-label={t('navigation.home')}
-                                edge="start"
-                                onClick={handleDrawerToggle}
-                                sx={{ml: 2, mt: 2}}
-                            >
-                                <Pets/>
-                            </IconButton>
+                            <StyledLogoPlace>
+                                <Logo handle={handleDrawerToggle}  />
+                            </StyledLogoPlace>
                             <Folders />
                         </Box>
                     </Drawer>
-
                     <StyledCardsBox>
                         <Cards />
                     </StyledCardsBox>

@@ -13,8 +13,13 @@ export const StyledMobileVersionBox = styled(Box)`
 `
 
 export const StyledCardsBox = styled(Box)`
-             flex-grow: 1;
-             padding: 10px;
-             width: 100%;
-             overflow: auto;
+    flex-grow: 1;
+    padding: 10px;
+    width: 100%;
+    overflow: auto;
+`
+
+export const StyledLogoPlace = styled(Box)`
+    margin-left: 20px;
+    margin-top: 20px;
 `
