@@ -13,7 +13,7 @@ export const MobileMenuIcon = ({ handle }: MobileMenuIconProps) => {
                 onClick={handle}
                 aria-label="open drawer"
             >
-                <MenuIcon style={{color: '#000'}} />
+                <MenuIcon />
             </StyledMenuButton>
     )
 }
