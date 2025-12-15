@@ -145,7 +145,18 @@
     "title": "Import Cards",
     "selectFile": "Select File",
     "import": "Import",
-    "format": "CSV Format: question,answer"
+    "importing": "Importing...",
+    "format": "CSV Format: question,answer",
+    "textImport": "Text Import",
+    "excelImport": "Excel Import",
+    "excelDescription": "Select Excel file with 'Side A' and 'Side B' columns",
+    "excelFormat": "Only .xlsx and .xls files are supported",
+    "fileSelected": "File selected"
+  },
+  "export": {
+    "export": "Export to Excel",
+    "exporting": "Exporting...",
+    "error": "Export error"
   },
   "profile": {
     "title": "Profile",

@@ -145,7 +145,18 @@
     "title": "Импорт карточек",
     "selectFile": "Выберите файл",
     "import": "Импортировать",
-    "format": "CSV формат: вопрос,ответ"
+    "importing": "Импорт...",
+    "format": "CSV формат: вопрос,ответ",
+    "textImport": "Текстовый импорт",
+    "excelImport": "Импорт из Excel",
+    "excelDescription": "Выберите Excel файл с колонками 'Сторона A' и 'Сторона B'",
+    "excelFormat": "Поддерживаются только файлы .xlsx и .xls",
+    "fileSelected": "Выбран файл"
+  },
+  "export": {
+    "export": "Экспорт в Excel",
+    "exporting": "Экспорт...",
+    "error": "Ошибка при экспорте"
   },
   "profile": {
     "title": "Профиль",

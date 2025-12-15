@@ -7,6 +7,8 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
+import multipart from '@fastify/multipart';
+import ExcelJS from 'exceljs';
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import jwt from '@fastify/jwt';
@@ -53,6 +55,9 @@ export async function buildServer() {
 
     // ✅ Регистрируем cookie для http only
     await fastify.register(cookie);
+
+    // ✅ Регистрируем multipart для загрузки файлов
+    await fastify.register(multipart);
 
     // ✅ JWT setup
     fastify.register(jwt, {
@@ -448,6 +453,72 @@ export async function buildServer() {
       async (req: FastifyRequest<{ Params: { folderId: string } }>, reply: FastifyReply) => {
         const cards = await cardService.getAll(req.params.folderId);
         return reply.send(cards.map(card => card.toPublicDTO()));
+      }
+    );
+
+    /**
+     * Экспорт карточек папки в Excel
+     */
+    fastify.get('/cards/folder/:folderId/export',
+      {
+        preHandler: [fastify.authenticate],
+        schema: {
+          params: {
+            type: 'object',
+            properties: {
+              folderId: { type: 'string', format: 'uuid' },
+            },
+            required: ['folderId'],
+          },
+          tags: ['cards'],
+          summary: 'Export cards from folder to Excel',
+        },
+      },
+      async (req: FastifyRequest<{ Params: { folderId: string } }>, reply: FastifyReply) => {
+        const { folderId } = req.params;
+        
+        // Получаем карточки
+        const cards = await cardService.getAll(folderId);
+        
+        // Получаем название папки
+        const folder = await folderRepo.findById(folderId);
+        const folderName = folder?.name || 'cards';
+        
+        // Создаем Excel файл
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Cards');
+        
+        // Настраиваем колонки
+        worksheet.columns = [
+          { header: 'Сторона A', key: 'question', width: 50 },
+          { header: 'Сторона B', key: 'answer', width: 50 },
+        ];
+        
+        // Стили для заголовков
+        worksheet.getRow(1).font = { bold: true };
+        worksheet.getRow(1).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE0E0E0' },
+        };
+        
+        // Добавляем данные
+        cards.forEach(card => {
+          worksheet.addRow({
+            question: card.question,
+            answer: card.answer,
+          });
+        });
+        
+        // Генерируем буфер
+        const buffer = await workbook.xlsx.writeBuffer();
+        
+        // Устанавливаем заголовки для скачивания файла
+        const fileName = `${folderName}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        reply.header('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+        
+        return reply.send(buffer);
       }
     );
 

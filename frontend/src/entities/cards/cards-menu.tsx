@@ -1,18 +1,21 @@
 import {MenuItem} from "@mui/material";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import GetAppIcon from '@mui/icons-material/GetApp';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { useTranslation } from 'react-i18next';
 import {useState} from "react";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {ImportCardsButton} from "@/features/import-cards";
 import { MenuUI } from '@/shared/ui/menu-ui';
-import { StyledIconButton } from './styled-components.ts'
+import { StyledIconButton } from './styled-components.ts';
+import { cardsApi } from '@/shared/api/cardsApi';
 
 export const CardsMenu = () => {
     const { t } = useTranslation();
     const { selectedFolderId } = useFoldersStore();
 
     const [isImportingCards, setIsImportingCards] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -26,6 +29,22 @@ export const CardsMenu = () => {
     const handleImportClick = () => {
         setIsImportingCards(true);
         handleMenuClose();
+    };
+
+    const handleExportClick = async () => {
+        if (!selectedFolderId) return;
+        
+        setIsExporting(true);
+        handleMenuClose();
+        
+        try {
+            await cardsApi.exportCardsToExcel(selectedFolderId);
+        } catch (error) {
+            console.error('Export error:', error);
+            // Можно добавить уведомление об ошибке
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     return (
@@ -55,6 +74,10 @@ export const CardsMenu = () => {
                 <MenuItem onClick={handleImportClick} disabled={!selectedFolderId}>
                     <GetAppIcon sx={{mr: 1}}/>
                     {t('import.import')}
+                </MenuItem>
+                <MenuItem onClick={handleExportClick} disabled={!selectedFolderId || isExporting}>
+                    <FileDownloadIcon sx={{mr: 1}}/>
+                    {isExporting ? t('export.exporting') : t('export.export')}
                 </MenuItem>
             </MenuUI>
             <ImportCardsButton isImportingCards={isImportingCards} setIsImportingCards={setIsImportingCards}/>

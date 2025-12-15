@@ -76,4 +76,34 @@ export const cardsApi = {
     });
     return response.data;
   },
+
+  /**
+   * Экспорт карточек папки в Excel
+   */
+  exportCardsToExcel: async (folderId: string): Promise<void> => {
+    const response = await axios.get(`${API_BASE_URL}/cards/folder/${folderId}/export`, {
+      responseType: 'blob',
+    });
+    
+    // Создаем ссылку для скачивания
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // Получаем имя файла из заголовка Content-Disposition
+    const contentDisposition = response.headers['content-disposition'];
+    let fileName = `cards_${folderId}.xlsx`;
+    if (contentDisposition) {
+      const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      if (fileNameMatch && fileNameMatch[1]) {
+        fileName = decodeURIComponent(fileNameMatch[1].replace(/['"]/g, ''));
+      }
+    }
+    
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
 };
