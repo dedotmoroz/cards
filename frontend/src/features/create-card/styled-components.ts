@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { PlusIcon } from "@/shared/icons";
+import NoteAdd from '@mui/icons-material/NoteAddOutlined';
+
 
 export const StyledButton = styled(Button)`
     display: flex;
@@ -34,7 +35,7 @@ export const StyledButton = styled(Button)`
     }
 `;
 
-export const StyledPlusIcon = styled(PlusIcon)`
+export const StyledPlusIcon = styled(NoteAdd)`
     margin: 0;
 `;
 

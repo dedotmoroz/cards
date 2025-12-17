@@ -1,6 +1,7 @@
 import {MenuItem} from "@mui/material";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import GetAppIcon from '@mui/icons-material/GetApp';
+import DriveFolderUpload from '@mui/icons-material/DriveFolderUpload';
+
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { useTranslation } from 'react-i18next';
 import {useState} from "react";
@@ -72,7 +73,7 @@ export const CardsMenu = () => {
                 }}
             >
                 <MenuItem onClick={handleImportClick} disabled={!selectedFolderId}>
-                    <GetAppIcon sx={{mr: 1}}/>
+                    <DriveFolderUpload sx={{mr: 1}}/>
                     {t('import.import')}
                 </MenuItem>
                 <MenuItem onClick={handleExportClick} disabled={!selectedFolderId || isExporting}>
