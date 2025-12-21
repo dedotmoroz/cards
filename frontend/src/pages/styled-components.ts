@@ -23,3 +23,10 @@ export const StyledLogoPlace = styled(Box)`
     margin-left: 20px;
     margin-top: 20px;
 `
+
+export const StyledLandingContainer = styled(Box)`
+    min-height: 100vh;
+    background: linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 50%, #FDF2F8 100%);
+    position: relative;
+
+`

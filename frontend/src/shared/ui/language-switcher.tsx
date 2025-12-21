@@ -8,7 +8,7 @@ import {
   Typography
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
-import { Language } from '@mui/icons-material';
+// import { Language } from '@mui/icons-material';
 
 const languages = [
   { code: 'ru', name: 'Русский', flag: '🇷🇺' },
@@ -25,7 +25,7 @@ export const LanguageSwitcher: React.FC = () => {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Language sx={{ color: 'white' }} />
+      {/*<Language sx={{ color: 'white' }} />*/}
       <FormControl size="small" sx={{ minWidth: 120 }}>
         <Select
           value={i18n.language}

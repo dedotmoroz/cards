@@ -1,38 +1,27 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
-  Typography,
-  Button,
   Container,
-  Paper,
-  Grid,
-  Card,
-  CardContent,
-  useTheme,
-  useMediaQuery
 } from '@mui/material';
-import { 
-  School, 
-  Psychology, 
-  Speed, 
-  Login,
-  Logout,
-  AutoAwesome
-} from '@mui/icons-material';
+
 import { useNavigate } from 'react-router-dom';
-import { AuthDialog } from '@/shared/ui/auth-dialog';
-import { LanguageSwitcher } from '@/shared/ui/language-switcher';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
+
+import { FeaturesBox} from "@/widgets/landing/features-box.tsx";
+import { WhiteBlock } from "@/widgets/landing/white-block.tsx"
+import {RedBox} from "@/widgets/landing/red-box.tsx";
+import { ExampleCard } from "@/widgets/landing/example-card"
+import {Headline} from "@/widgets/landing/headline.tsx";
+import {UserBlock} from "@/widgets/landing/user-block.tsx";
+
+import { StyledLandingContainer } from './styled-components.ts'
+
 
 export const LandingPage = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const [authDialogOpen, setAuthDialogOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { isAuthenticated, logout, createGuest } = useAuthStore();
+  const { isAuthenticated, createGuest } = useAuthStore();
 
   useSEO({
     title: t('seo.landing.title'),
@@ -40,10 +29,6 @@ export const LandingPage = () => {
     keywords: t('seo.keywords'),
     lang: i18n.language
   });
-
-  const handleAuthSuccess = () => {
-      navigate('/learn');
-  };
 
   const handleStartLearning = async () => {
     if (isAuthenticated) {
@@ -59,191 +44,53 @@ export const LandingPage = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await logout();
-    // После выхода остаемся на странице, но уже как неавторизованный пользователь
-  };
-
-  const features = [
-    {
-      icon: <School sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: t('features.interactiveCards.title'),
-      description: t('features.interactiveCards.description')
-    },
-    {
-      icon: <Psychology sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: t('features.adaptiveLearning.title'),
-      description: t('features.adaptiveLearning.description')
-    },
-    {
-      icon: <Speed sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: t('features.fastLearning.title'),
-      description: t('features.fastLearning.description')
-    }
-  ];
-
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-      <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ py: 4 }}>
-          <Box display="flex" justifyContent="flex-end" alignItems="center">
-            <Box display="flex" alignItems="center" gap={2}>
-              <LanguageSwitcher />
-              {isAuthenticated ? (
-                <Button
-                  variant="contained"
-                  startIcon={<Logout />}
-                  onClick={handleLogout}
-                  sx={{
-                    bgcolor: 'white',
-                    color: 'primary.main',
-                    '&:hover': {
-                      bgcolor: 'grey.100'
-                    }
-                  }}
-                >
-                  {t('auth.logout')}
-                </Button>
-              ) : (
-              <Button
-                variant="contained"
-                startIcon={<Login />}
-                onClick={() => setAuthDialogOpen(true)}
-                sx={{
-                  bgcolor: 'white',
-                  color: 'primary.main',
-                  '&:hover': {
-                    bgcolor: 'grey.100'
-                  }
-                }}
-              >
-                {t('auth.login')}
-              </Button>
-              )}
-            </Box>
-          </Box>
-        </Box>
+      <>
+          <UserBlock/>
+          <StyledLandingContainer>
+              {/* First Screen - Main Content with Example Card */}
+              <Container maxWidth="lg" sx={{py: 8}}>
+                  <Box
+                      sx={{
+                          display: 'grid',
+                          gridTemplateColumns: {xs: '1fr', md: '1fr 1fr'},
+                          gap: 4,
+                          alignItems: 'top',
+                      }}
+                  >
+                      <Box>
+                          <Headline handleStartLearning={handleStartLearning}/>
+                      </Box>
+                      <Box>
+                          <ExampleCard/>
+                      </Box>
+                  </Box>
+              </Container>
 
-        {/* Hero Section */}
-        <Box sx={{ py: 8, textAlign: 'center' }}>
-          <Typography 
-            variant={isMobile ? 'h3' : 'h2'} 
-            fontWeight="bold" 
-            color="white" 
-            gutterBottom
-            sx={{ mb: 3 }}
-          >
-            {t('app.title')}
-          </Typography>
-          <Typography 
-            variant={isMobile ? 'h6' : 'h5'} 
-            color="white" 
-            sx={{ mb: 4, opacity: 0.9, maxWidth: 600, mx: 'auto' }}
-          >
-            {t('app.tagline')}
-          </Typography>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<AutoAwesome />}
-            onClick={handleStartLearning}
-            sx={{
-              bgcolor: 'white',
-              color: 'primary.main',
-              px: 4,
-              py: 1.5,
-              fontSize: '1.1rem',
-              '&:hover': {
-                bgcolor: 'grey.100',
-                transform: 'translateY(-2px)',
-                boxShadow: 4
-              },
-              transition: 'all 0.3s ease'
-            }}
-          >
-            {isAuthenticated ? t('buttons.startLearning') : t('buttons.tryIt')}
-          </Button>
-        </Box>
+              {/* Context Info Card Section */}
+              <Container maxWidth="lg" sx={{py: 8}}>
+                  <WhiteBlock/>
+              </Container>
 
-        {/* Features Section */}
-        <Box sx={{ py: 8 }}>
-          <Typography 
-            variant="h4" 
-            textAlign="center" 
-            color="white" 
-            fontWeight="bold" 
-            gutterBottom
-            sx={{ mb: 6 }}
-          >
-            {t('features.title')}
-          </Typography>
-          <Grid container spacing={4}>
-            {features.map((feature, index) => (
-              <Grid size={{ xs: 12, md: 4 }} key={index}>
-                <Card 
-                  sx={{ 
-                    height: '100%',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    },
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  <CardContent sx={{ textAlign: 'center', p: 3 }}>
-                    <Box sx={{ mb: 2 }}>
-                      {feature.icon}
-                    </Box>
-                    <Typography variant="h6" color="white" fontWeight="bold" gutterBottom>
-                      {feature.title}
-                    </Typography>
-                    <Typography variant="body1" color="white" sx={{ opacity: 0.9 }}>
-                      {feature.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+              {/* Features Grid Section */}
+              <Container maxWidth="lg" sx={{py: 8}} id="features-section">
+                  <Box
+                      sx={{
+                          display: 'grid',
+                          gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'},
+                          gap: 4,
+                      }}
+                  >
+                      <FeaturesBox/>
+                  </Box>
+              </Container>
 
-        {/* CTA Section */}
-        <Box sx={{ py: 8, textAlign: 'center' }}>
-          <Paper 
-            sx={{ 
-              p: 4, 
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-              {t('cta.title')}
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              {t('cta.description')}
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setAuthDialogOpen(true)}
-              sx={{ px: 4, py: 1.5 }}
-            >
-              {t('buttons.enterSystem')}
-            </Button>
-          </Paper>
-        </Box>
-      </Container>
+              {/* Main Hero Section - Gradient Card */}
+              <Container maxWidth="lg" sx={{py: 8}}>
+                  <RedBox handleStartLearning={handleStartLearning}/>
+              </Container>
 
-      {/* Auth Dialog */}
-      <AuthDialog
-        open={authDialogOpen}
-        onClose={() => setAuthDialogOpen(false)}
-        onSuccess={handleAuthSuccess}
-      />
-    </Box>
+          </StyledLandingContainer>
+      </>
   );
 };
