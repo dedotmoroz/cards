@@ -10,19 +10,21 @@ import {
     StyledWhiteText,
     StyledTypographyCrossed,
     StyledTypographyStressed,
+    StyledWhiteCardContainer,
 } from './styled-components.ts'
 
 export const WhiteBlock = () => {
     const { t } = useTranslation();
 
     return (
-            <StyledWhiteCard>
+        <StyledWhiteCard>
                 <StyledLampIcon>
-                    <Lightbulb sx={{ color: 'white' }} />
+                    <Lightbulb sx={{color: 'white'}}/>
                 </StyledLampIcon>
                 <StyledWhiteHeader>
                     {t('landing.context.title')}
                 </StyledWhiteHeader>
+            <StyledWhiteCardContainer>
                 <StyledTypographyCrossed>
                     {t('landing.context.subtitle1')}
                 </StyledTypographyCrossed>
@@ -32,6 +34,7 @@ export const WhiteBlock = () => {
                 <StyledWhiteText>
                     {t('landing.context.description')}
                 </StyledWhiteText>
-            </StyledWhiteCard>
+            </StyledWhiteCardContainer>
+        </StyledWhiteCard>
     )
 }

@@ -21,15 +21,15 @@ export const FeaturesBox = () => {
         },
         {
             title: t('landing.features.chrome.title'),
-            text: `${t('landing.features.chrome.subtitle')}\n\n${t('landing.features.chrome.description')}\n\n${t('landing.features.chrome.item1')}\n${t('landing.features.chrome.item2')}\n${t('landing.features.chrome.item3')}\n\n${t('landing.features.chrome.accent')}`,
+            text: `${t('landing.features.chrome.subtitle')}\n${t('landing.features.chrome.description')}\n\n${t('landing.features.chrome.item1')}\n${t('landing.features.chrome.item2')}\n${t('landing.features.chrome.item3')}\n\n${t('landing.features.chrome.accent')}`,
         },
         {
             title: t('landing.features.importExport.title'),
-            text: `${t('landing.features.importExport.subtitle')}\n\n${t('landing.features.importExport.description')}\n\n${t('landing.features.importExport.item1')}\n${t('landing.features.importExport.item2')}\n${t('landing.features.importExport.item3')}\n\n${t('landing.features.importExport.accent')}`,
+            text: `${t('landing.features.importExport.subtitle')} ${t('landing.features.importExport.description')}\n\n${t('landing.features.importExport.item1')}\n${t('landing.features.importExport.item2')}\n${t('landing.features.importExport.item3')}\n\n${t('landing.features.importExport.accent')}`,
         },
         {
             title: t('landing.features.adaptive.title'),
-            text: `${t('landing.features.adaptive.subtitle')}\n\n${t('landing.features.adaptive.description')}\n\n${t('landing.features.adaptive.item1')}\n${t('landing.features.adaptive.item2')}\n${t('landing.features.adaptive.item3')}\n\n${t('landing.features.adaptive.accent')}`,
+            text: `${t('landing.features.adaptive.subtitle')}\n${t('landing.features.adaptive.description')}\n\n${t('landing.features.adaptive.item1')}\n${t('landing.features.adaptive.item2')}\n${t('landing.features.adaptive.item3')}\n\n${t('landing.features.adaptive.accent')}`,
         },
     ];
 

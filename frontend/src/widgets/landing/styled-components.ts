@@ -39,6 +39,7 @@ export const StyledDescription = styled(Box)`
     font-weight: 400;
     line-height: 28px; /* 155.556% */
     letter-spacing: -0.439px;
+    white-space: pre-line;
 `
 
 export const StyledWhiteCard = styled(Card)`
@@ -65,6 +66,12 @@ export const StyledGradientCard = styled(Card)(({ theme }) => ({
         padding: theme.spacing(4, 3),
     },
 }));
+
+export const StyledRedContainer = styled(Box)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
 
 export const StyledWhiteButton = styled(Button)`
     // height: 40px;
@@ -290,6 +297,7 @@ export const StyledRedHeader = styled(Box)`
 
 export const StyledRedDescription = styled(Box)`
     color: rgba(255, 255, 255, 0.90);
+    max-width: 550px;
     text-align: center;
     font-size: 20px;
     font-style: normal;
@@ -299,6 +307,19 @@ export const StyledRedDescription = styled(Box)`
     margin-top: 32px;
     margin-bottom: 32px;
 `
+
+export const StyledWhiteCardContainer = styled(Box)`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 750px;
+`
+
+export const StyledRedContent = styled(Box)`
+    display: flex;
+    justify-content: center;
+`
+
 export const StyledChip = styled(Chip)`
     display: flex;
     width: 291.617px;
@@ -337,13 +358,13 @@ export const StyledFirstScreenTitle = styled(Box)`
 
 export const StyledFirstScreenDescription = styled(Box)`
     color: #4A5565;
-    font-size: 20px;
+    font-size: 22px;
     font-style: normal;
     font-weight: 400;
-    line-height: 32.5px; /* 162.5% */
+    line-height: 36px;
     letter-spacing: -0.449px;
     margin-top: 32px;
-    margin-bottom: 32px;
+    margin-bottom: 60px;
 `
 
 export const StyledInButton = styled(Button)`

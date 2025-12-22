@@ -1,8 +1,4 @@
 import {
-    Box,
-} from '@mui/material';
-
-import {
     ArrowForward,
 } from '@mui/icons-material';
 
@@ -12,7 +8,9 @@ import {
     StyledGradientCard,
     StyledWhiteButton,
     StyledRedHeader,
-    StyledRedDescription
+    StyledRedDescription,
+    StyledRedContent,
+    StyledRedContainer,
 } from './styled-components.ts'
 
 interface RedBoxProps {
@@ -24,14 +22,14 @@ export const RedBox = ({ handleStartLearning }: RedBoxProps) => {
 
     return (
         <StyledGradientCard>
-            <Box>
+            <StyledRedContainer>
                 <StyledRedHeader>
                     {t('landing.hero.title')}
                 </StyledRedHeader>
                 <StyledRedDescription>
                     {t('landing.hero.description')}
                 </StyledRedDescription>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <StyledRedContent>
                     <StyledWhiteButton
                         onClick={handleStartLearning}
                         endIcon={<ArrowForward />}
@@ -39,8 +37,8 @@ export const RedBox = ({ handleStartLearning }: RedBoxProps) => {
                     >
                         {t('landing.hero.button')}
                     </StyledWhiteButton>
-                </Box>
-            </Box>
+                </StyledRedContent>
+            </StyledRedContainer>
         </StyledGradientCard>
     )
 }

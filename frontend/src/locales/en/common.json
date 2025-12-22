@@ -26,37 +26,37 @@
     "features": {
       "contextAI": {
         "title": "Context + AI",
-        "subtitle": "Learn words in sentences — automatically",
-        "item1": "Create example sentences with AI",
-        "item2": "See the word in different contexts",
-        "item3": "Better understand nuances of meaning and usage",
+        "subtitle": "Learn words in sentences — automatically.",
+        "item1": "— Create example sentences with AI",
+        "item2": "— See the word in different contexts",
+        "item3": "— Better understand nuances of meaning and usage",
         "accent": "A card is not just a translation, but a complete semantic block."
       },
       "chrome": {
         "title": "Chrome Extension",
-        "subtitle": "Add words directly from websites",
+        "subtitle": "Add words directly from websites.",
         "description": "Reading articles, documentation, or news? With the Chrome extension you can:",
-        "item1": "Highlight a word or phrase on the page",
-        "item2": "Add it to your dictionary in one click",
-        "item3": "Save source and context",
+        "item1": "— Highlight a word or phrase on the page",
+        "item2": "— Add it to your dictionary in one click",
+        "item3": "— Save source and context",
         "accent": "No copying to notes and \"for later\"."
       },
       "importExport": {
         "title": "Import / Export",
-        "subtitle": "Full control over your dictionary",
+        "subtitle": "Full control over your dictionary.",
         "description": "You are not tied to the platform.",
-        "item1": "Import words from Excel",
-        "item2": "Export dictionary for backup",
-        "item3": "Convenient to work with large lists",
+        "item1": "— Import words from Excel",
+        "item2": "— Export dictionary for backup",
+        "item3": "— Convenient to work with large lists",
         "accent": "Suitable for both personal learning and systematic work with a dictionary."
       },
       "adaptive": {
         "title": "Adaptability",
-        "subtitle": "Convenient on any screen",
+        "subtitle": "Convenient on any screen.",
         "description": "Service is adapted for:",
-        "item1": "Mobile devices",
-        "item2": "Laptops",
-        "item3": "Large monitors",
+        "item1": "— Mobile devices",
+        "item2": "— Laptops",
+        "item3": "— Large monitors",
         "accent": "The interface is simple, light, and uncluttered — nothing distracts from learning."
       }
     }
