@@ -328,7 +328,6 @@ export const StyledChip = styled(Chip)`
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    margin-bottom: 32px;
 
     border-radius: 16777200px;
     border: 1px solid rgba(255, 255, 255, 0.40);
@@ -347,25 +346,36 @@ export const StyledFS = styled(Box)`
     -webkit-text-fill-color: transparent;
 `
 
-export const StyledFirstScreenTitle = styled(Box)`
-    color: #101828;
-    font-size: 60px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 60px; /* 100% */
-    letter-spacing: 0.264px;
-`
+export const StyledFirstScreenTitle = styled(Box)(({ theme }) => ({
+    color: '#101828',
+    fontSize: '60px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '60px',
+    letterSpacing: '0.264px',
+    marginTop: '32px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '40px',
+        lineHeight: '48px',
+        marginTop: '20px',
+    },
+}));
 
-export const StyledFirstScreenDescription = styled(Box)`
-    color: #4A5565;
-    font-size: 22px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 36px;
-    letter-spacing: -0.449px;
-    margin-top: 32px;
-    margin-bottom: 60px;
-`
+export const StyledFirstScreenDescription = styled(Box)(({ theme }) => ({
+    color: '#4A5565',
+    fontSize: '22px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '36px',
+    letterSpacing: '-0.449px',
+    marginTop: '32px',
+    marginBottom: '60px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '20px',
+        lineHeight: '30px',
+        marginTop: '20px',
+    },
+}));
 
 export const StyledInButton = styled(Button)`
     display: flex;
