@@ -55,26 +55,27 @@ export const HomePage = () => {
         fetchFolders();
     }, []); // Убираем fetchFolders из зависимостей
 
-    // Синхронизируем URL с выбранной папкой
+    // Синхронизируем store с URL (folderId - источник истины)
     useEffect(() => {
         if (folderId && folderId !== selectedFolderId) {
-            // Если в URL есть folderId, устанавливаем его как выбранную папку
+            // Если в URL есть folderId и он отличается от выбранной папки, обновляем store
             setSelectedFolder(folderId);
-        } else if (!folderId && folders.length > 0 && selectedFolderId) {
-            // Если в URL нет folderId, но есть выбранная папка, обновляем URL
-            navigate(`/learn/${selectedFolderId}`, { replace: true });
-        } else if (!folderId && folders.length > 0 && !selectedFolderId) {
-            // Если в URL нет folderId и нет выбранной папки, редиректим на первую папку
-            navigate(`/learn/${folders[0].id}`, { replace: true });
+        } else if (!folderId && folders.length > 0) {
+            // Если в URL нет folderId, но есть папки, редиректим на первую или выбранную
+            if (selectedFolderId) {
+                navigate(`/learn/${selectedFolderId}`, { replace: true });
+            } else {
+                navigate(`/learn/${folders[0].id}`, { replace: true });
+            }
         }
     }, [folderId, folders, selectedFolderId, setSelectedFolder, navigate]);
 
-    // Загружаем карточки при изменении выбранной папки
+    // Загружаем карточки на основе folderId из URL (единственный источник истины)
     useEffect(() => {
-        if (selectedFolderId) {
-            fetchCards(selectedFolderId);
+        if (folderId) {
+            fetchCards(folderId);
         }
-    }, [selectedFolderId]); // Убираем fetchCards из зависимостей
+    }, [folderId, fetchCards]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
