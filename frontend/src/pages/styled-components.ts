@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Container } from "@mui/material";
 
 export const StyledGrid = styled(Grid)`
     height: calc(100vh - 64px);
@@ -26,7 +26,13 @@ export const StyledLogoPlace = styled(Box)`
 
 export const StyledLandingContainer = styled(Box)`
     min-height: 100vh;
+    padding-bottom: 40px;
     background: linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 50%, #FDF2F8 100%);
     position: relative;
-
 `
+export const StyledHeadlineContainer = styled(Container)(({ theme }) => ({
+    paddingTop: '80px',
+    [theme.breakpoints.down('md')]: {
+        paddingTop: '40px',
+    },
+}));

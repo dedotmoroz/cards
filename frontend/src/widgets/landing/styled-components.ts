@@ -42,17 +42,19 @@ export const StyledDescription = styled(Box)`
     white-space: pre-line;
 `
 
-export const StyledWhiteCard = styled(Card)`
-    display: flex;
-    padding: 65px 65px 65px 65px;
-    flex-direction: column;
-    align-items: center;
-
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.40);
-    background: rgba(255, 255, 255, 0.40);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-`
+export const StyledWhiteCard = styled(Card)(({ theme }) => ({
+    display: 'flex',
+    padding: '65px',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderRadius: '24px',
+    border: '1px solid rgba(255, 255, 255, 0.40)',
+    background: 'rgba(255, 255, 255, 0.40)',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    [theme.breakpoints.down('md')]: {
+        padding: '40px',
+    },
+}));
 
 export const StyledGradientCard = styled(Card)(({ theme }) => ({
     background: 'linear-gradient(135deg, #4F39F6 0%, #9810FA 50%, #E60076 100%)',
@@ -238,17 +240,21 @@ export const StyledBookIcon = styled(Box)`
     background: linear-gradient(135deg, #615FFF 0%, #9810FA 100%);
 `
 
-export const StyledWhiteHeader = styled(Box)`
-    color: #101828;
-    text-align: center;
-    font-size: 48px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 48px; /* 100% */
-    letter-spacing: 0.35px;
-    margin-top: 16px;
-    margin-bottom: 24px;
-`
+export const StyledWhiteHeader = styled(Box)(({ theme }) => ({
+    color: '#101828',
+    textAlign: 'center',
+    fontSize: '48px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '48px',
+    letterSpacing: '0.35px',
+    marginTop: '16px',
+    marginBottom: '24px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '30px',
+        lineHeight: '38px',
+    },
+}));
 
 export const StyledWhiteText = styled(Box)`
     color: #4A5565;
@@ -285,15 +291,21 @@ export const StyledTypographyStressed = styled(Box)`
     -webkit-text-fill-color: transparent;
 `
 
-export const StyledRedHeader = styled(Box)`
-    color: #FFF;
-    text-align: center;
-    font-size: 48px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 48px; /* 100% */
-    letter-spacing: 0.352px;
-`
+export const StyledRedHeader = styled(Box)(({ theme }) => ({
+    color: '#FFF',
+    textAlign: 'center',
+    fontSize: '48px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '48px',
+    letterSpacing: '0.352px',
+    marginBottom: '32px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '30px',
+        lineHeight: '40px',
+        marginBottom: '16px',
+    },
+}));
 
 export const StyledRedDescription = styled(Box)`
     color: rgba(255, 255, 255, 0.90);
@@ -304,7 +316,6 @@ export const StyledRedDescription = styled(Box)`
     font-weight: 400;
     line-height: 28px; /* 140% */
     letter-spacing: -0.449px;
-    margin-top: 32px;
     margin-bottom: 32px;
 `
 
@@ -374,55 +385,48 @@ export const StyledFirstScreenDescription = styled(Box)(({ theme }) => ({
         fontSize: '20px',
         lineHeight: '30px',
         marginTop: '20px',
+        marginBottom: '40px',
     },
 }));
 
-export const StyledInButton = styled(Button)`
-    display: flex;
-    // height: 40px;
-    padding: 16px 24px 16px 24px;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 16px;
-    color: #FFF;
+export const StyledInButton = styled(Button)(({ theme }) => ({
+    padding: '16px 24px',
+    color: '#FFF',
+    textAlign: 'center',
+    textTransform: 'none',
+    fontSize: '16px',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    lineHeight: '20px',
+    borderRadius: '8px',
+    background: 'linear-gradient(90deg, #4F39F6 0%, #9810FA 100%)',
+    boxShadow: '0 20px 25px -5px rgba(97, 95, 255, 0.30), 0 8px 10px -6px rgba(97, 95, 255, 0.30)',
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+    },
+}));
 
-    text-align: center;
-    text-transform: none;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 20px; /* 142.857% */
-    // letter-spacing: -0.15px;
-
-    border-radius: 8px;
-    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
-    box-shadow: 0 20px 25px -5px rgba(97, 95, 255, 0.30), 0 8px 10px -6px rgba(97, 95, 255, 0.30);
-`
-
-export const StyledShowButton = styled(Button)`
-    display: flex;
-    // height: 40px;
-    padding: 16px 24px 16px 24px;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 16px;
-    color: #6A0DAD;
-
-    text-align: center;
-    text-transform: none;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 20px; /* 142.857% */
-    // letter-spacing: -0.15px;
-
-    border-radius: 8px;
-    border-color: #6A0DAD;
-
-    &:hover {
-       border-color: #5A0B9D;
-       background-color: rgba(106, 13, 173, 0.05);
-    }
-    
-`
+export const StyledShowButton = styled(Button)(({ theme }) => ({
+    display: 'flex',
+    padding: '16px 24px',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    gap: '16px',
+    color: '#6A0DAD',
+    textAlign: 'center',
+    textTransform: 'none',
+    fontSize: '16px',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    lineHeight: '20px',
+    borderRadius: '8px',
+    borderColor: '#6A0DAD',
+    '&:hover': {
+        borderColor: '#5A0B9D',
+        backgroundColor: 'rgba(106, 13, 173, 0.05)',
+    },
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+    },
+}));
 

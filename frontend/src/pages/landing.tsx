@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import {
   Box,
-  Container,
 } from '@mui/material';
 
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +14,10 @@ import { ExampleCard } from "@/widgets/landing/example-card"
 import {Headline} from "@/widgets/landing/headline.tsx";
 import {UserBlock} from "@/widgets/landing/user-block.tsx";
 
-import { StyledLandingContainer } from './styled-components.ts'
+import {
+    StyledLandingContainer,
+    StyledHeadlineContainer,
+} from './styled-components.ts'
 
 
 export const LandingPage = () => {
@@ -49,7 +51,7 @@ export const LandingPage = () => {
           <UserBlock/>
           <StyledLandingContainer>
               {/* First Screen - Main Content with Example Card */}
-              <Container maxWidth="lg" sx={{py: 8}}>
+              <StyledHeadlineContainer maxWidth="lg">
                   <Box
                       sx={{
                           display: 'grid',
@@ -65,15 +67,15 @@ export const LandingPage = () => {
                           <ExampleCard/>
                       </Box>
                   </Box>
-              </Container>
+              </StyledHeadlineContainer>
 
               {/* Context Info Card Section */}
-              <Container maxWidth="lg" sx={{py: 8}}>
+              <StyledHeadlineContainer maxWidth="lg">
                   <WhiteBlock/>
-              </Container>
+              </StyledHeadlineContainer>
 
               {/* Features Grid Section */}
-              <Container maxWidth="lg" sx={{py: 8}} id="features-section">
+              <StyledHeadlineContainer maxWidth="lg" id="features-section">
                   <Box
                       sx={{
                           display: 'grid',
@@ -83,12 +85,12 @@ export const LandingPage = () => {
                   >
                       <FeaturesBox/>
                   </Box>
-              </Container>
+              </StyledHeadlineContainer>
 
               {/* Main Hero Section - Gradient Card */}
-              <Container maxWidth="lg" sx={{py: 8}}>
+              <StyledHeadlineContainer maxWidth="lg">
                   <RedBox handleStartLearning={handleStartLearning}/>
-              </Container>
+              </StyledHeadlineContainer>
 
           </StyledLandingContainer>
       </>
