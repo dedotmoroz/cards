@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Grid, Drawer, useMediaQuery, useTheme} from '@mui/material';
@@ -33,6 +33,22 @@ export const HomePage = () => {
         fetchFolders,
     } = useFoldersStore();
 
+    // Получаем название папки для title
+    const folderName = useMemo(() => {
+        const currentFolderId = folderId || selectedFolderId;
+        if (!currentFolderId) {
+            return null;
+        }
+        const folder = folders.find((item) => item.id === currentFolderId);
+        return folder?.name ?? null;
+    }, [folderId, selectedFolderId, folders]);
+
+    // Формируем title страницы
+    const pageTitle = useMemo(() => {
+        const baseTitle = 'KotCat';
+        return folderName ? `${baseTitle} - ${folderName}` : baseTitle;
+    }, [folderName]);
+
 
     // Загружаем папки при монтировании компонента
     useEffect(() => {
@@ -65,7 +81,7 @@ export const HomePage = () => {
     };
 
     useSEO({
-        title: t('seo.learn.title'),
+        title: pageTitle,
         description: t('seo.learn.description'),
         keywords: t('seo.keywords'),
         lang: i18n.language
