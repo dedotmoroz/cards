@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Grid, Drawer, useMediaQuery, useTheme} from '@mui/material';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
@@ -21,6 +22,8 @@ export const HomePage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { folderId } = useParams<{ folderId?: string }>();
+    const navigate = useNavigate();
 
     const { fetchCards } = useCardsStore();
     const {
@@ -36,19 +39,26 @@ export const HomePage = () => {
         fetchFolders();
     }, []); // Убираем fetchFolders из зависимостей
 
+    // Синхронизируем URL с выбранной папкой
+    useEffect(() => {
+        if (folderId && folderId !== selectedFolderId) {
+            // Если в URL есть folderId, устанавливаем его как выбранную папку
+            setSelectedFolder(folderId);
+        } else if (!folderId && folders.length > 0 && selectedFolderId) {
+            // Если в URL нет folderId, но есть выбранная папка, обновляем URL
+            navigate(`/learn/${selectedFolderId}`, { replace: true });
+        } else if (!folderId && folders.length > 0 && !selectedFolderId) {
+            // Если в URL нет folderId и нет выбранной папки, редиректим на первую папку
+            navigate(`/learn/${folders[0].id}`, { replace: true });
+        }
+    }, [folderId, folders, selectedFolderId, setSelectedFolder, navigate]);
+
     // Загружаем карточки при изменении выбранной папки
     useEffect(() => {
         if (selectedFolderId) {
             fetchCards(selectedFolderId);
         }
     }, [selectedFolderId]); // Убираем fetchCards из зависимостей
-
-    // Автоматически выбираем первую папку
-    useEffect(() => {
-        if (folders.length > 0 && !selectedFolderId) {
-            setSelectedFolder(folders[0].id);
-        }
-    }, [folders, selectedFolderId]); // Убираем setSelectedFolder из зависимостей
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);

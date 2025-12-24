@@ -21,7 +21,7 @@ export const LearnWordsButton = () => {
 
     const handleStartLearning = () => {
         if (selectedFolderId) {
-            navigate(`/learn/${selectedFolderId}?initialSide=${initialSide}`);
+            navigate(`/learn/${selectedFolderId}/study?initialSide=${initialSide}`);
         }
     };
 

@@ -18,7 +18,7 @@ export const LearnWordsMoreButton = () => {
 
     const handleStartLearningUnlearned = () => {
         if (selectedFolderId) {
-            navigate(`/learn/${selectedFolderId}?mode=unlearned&initialSide=${initialSide}`);
+            navigate(`/learn/${selectedFolderId}/study?mode=unlearned&initialSide=${initialSide}`);
         }
     };
 

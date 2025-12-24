@@ -21,7 +21,7 @@ export const LearnPhrasesButton = () => {
 
     const handleStartLearningPhrases = () => {
         if (selectedFolderId) {
-            navigate(`/learn/${selectedFolderId}?mode=phrases&initialSide=${initialSide}`);
+            navigate(`/learn/${selectedFolderId}/study?mode=phrases&initialSide=${initialSide}`);
         }
     };
 

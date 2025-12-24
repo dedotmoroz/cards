@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {List, ListItemText,} from '@mui/material';
 import MoreVerticalIcon from '@mui/icons-material/MoreHoriz';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -25,6 +26,7 @@ interface FolderListProps {
 export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }: FolderListProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, folderId: string) => {
         event.stopPropagation();
@@ -37,6 +39,11 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
         setSelectedFolderId(null);
     };
 
+    const handleFolderClick = (folderId: string) => {
+        onSelect(folderId);
+        navigate(`/learn/${folderId}`);
+    };
+
     return (
         <>
             <List>
@@ -45,7 +52,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
                         disableRipple
                         key={folder.id}
                         selected={selectedId === folder.id}
-                        onClick={() => onSelect(folder.id)}
+                        onClick={() => handleFolderClick(folder.id)}
                     >
                         <StyledMenuBox>
                             {selectedId === folder.id

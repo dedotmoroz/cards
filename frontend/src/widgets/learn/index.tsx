@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react';
+import { useParams } from 'react-router-dom';
 import { CardFlip } from "./card-flip/card-flip";
 import {LearningControls} from "@/features/card-learning/ui/learning-controls.tsx";
 import {LearningNavigation} from "@/features/card-learning/ui/learning-navigation.tsx";
 import {CompletionScreen} from "@/features/learning-completion/ui/completion-screen.tsx";
 import {useNavigate} from "react-router-dom";
+import { useFoldersStore } from '@/shared/store/foldersStore';
 import type { Card } from "@/shared/types/cards";
 
 interface LearningHook {
@@ -38,8 +40,13 @@ interface LearnProcessProps {
 
 export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
     const navigate = useNavigate();
+    const { folderId } = useParams<{ folderId: string }>();
+    const { selectedFolderId } = useFoldersStore();
 
     const { showAnswer, currentCard, toggleAnswer, handleKnow, handleDontKnow } = learning;
+
+    // Используем folderId из URL, если он есть, иначе используем selectedFolderId из store
+    const currentFolderId = folderId || selectedFolderId;
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -58,17 +65,27 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     break;
                 case 'Escape':
                     event.preventDefault();
-                    navigate('/learn');
+                    if (currentFolderId) {
+                        navigate(`/learn/${currentFolderId}`);
+                    } else {
+                        navigate('/learn');
+                    }
                     break;
             }
         };
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [learning, navigate]);
+    }, [learning, navigate, currentFolderId]);
 
 
     // Navigation handlers
-    const handleBackToFolders = () => navigate('/learn');
+    const handleBackToFolders = () => {
+        if (currentFolderId) {
+            navigate(`/learn/${currentFolderId}`);
+        } else {
+            navigate('/learn');
+        }
+    };
     const handleContinueLearning = () => learning.setLearningMode(true);
     const handlePrevious = () => learning.navigateToCard(learning.currentIndex - 1);
     const handleNext = () => learning.navigateToCard(learning.currentIndex + 1);
