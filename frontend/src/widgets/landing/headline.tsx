@@ -15,6 +15,7 @@ import {
 } from './styled-components.ts'
 
 import {useTranslation} from "react-i18next";
+import { useAuthStore } from '@/shared/store/authStore';
 
 interface HeadlineProps {
   handleStartLearning: () => void;
@@ -22,6 +23,10 @@ interface HeadlineProps {
 
 export const Headline = ({ handleStartLearning }: HeadlineProps) => {
     const { t } = useTranslation();
+    const { user } = useAuthStore();
+    
+    // Проверяем, является ли пользователь зарегистрированным (не гостем)
+    const isRegistered = user && !user.isGuest;
 
     return (
         <>
@@ -41,17 +46,19 @@ export const Headline = ({ handleStartLearning }: HeadlineProps) => {
                     endIcon={<ArrowForward />}
                     onClick={handleStartLearning}
                 >
-                    {t('landing.firstScreen.button1')}
+                    {isRegistered ? t('learning.wantToContinue') : t('landing.firstScreen.button1')}
                 </StyledInButton>
-                <StyledShowButton
-                    variant="outlined"
-                    onClick={() => {
-                        const featuresSection = document.getElementById('features-section');
-                        featuresSection?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                >
-                    {t('landing.firstScreen.button2')}
-                </StyledShowButton>
+                {!isRegistered && (
+                    <StyledShowButton
+                        variant="outlined"
+                        onClick={() => {
+                            const featuresSection = document.getElementById('features-section');
+                            featuresSection?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                    >
+                        {t('landing.firstScreen.button2')}
+                    </StyledShowButton>
+                )}
             </Box>
         </>
     )

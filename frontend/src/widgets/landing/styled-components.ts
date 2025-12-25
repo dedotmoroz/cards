@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
 import {Box, Button, Card, Chip} from "@mui/material";
+import kotcatImg from '@/shared/images/kotcat.png';
 
 export const StyledBox = styled(Box)`
     display: flex;
@@ -428,5 +429,15 @@ export const StyledShowButton = styled(Button)(({ theme }) => ({
     [theme.breakpoints.down('md')]: {
         width: '100%',
     },
+}));
+
+export const StyledImagesBox = styled(Box)(() => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    backgroundImage: `url(${kotcatImg})`,
+    backgroundSize: 'contain',
+    backgroundPosition: 'right center',
+    backgroundRepeat: 'no-repeat',
 }));
 

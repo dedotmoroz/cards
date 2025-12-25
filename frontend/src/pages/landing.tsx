@@ -18,6 +18,7 @@ import {
     StyledLandingContainer,
     StyledHeadlineContainer,
 } from './styled-components.ts'
+import { StyledImagesBox } from '@/widgets/landing/styled-components.ts'
 
 
 export const LandingPage = () => {
@@ -63,9 +64,9 @@ export const LandingPage = () => {
                       <Box>
                           <Headline handleStartLearning={handleStartLearning}/>
                       </Box>
-                      <Box>
+                      <StyledImagesBox>
                           <ExampleCard/>
-                      </Box>
+                      </StyledImagesBox>
                   </Box>
               </StyledHeadlineContainer>
 
