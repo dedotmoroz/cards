@@ -94,6 +94,11 @@ export const HomePage = () => {
         lang: i18n.language
     });
 
+    const goToHome = () => {
+        navigate('/');
+    }
+
+
     return (
         <>
             <HeaderToolbar
@@ -135,7 +140,10 @@ export const HomePage = () => {
                     >
                         <Box sx={{ height: '100%', overflow: 'auto' }}>
                             <StyledLogoPlace>
-                                <Logo handle={handleDrawerToggle}  />
+                                <Logo
+                                    handle={handleDrawerToggle}
+                                    handleGoMain={goToHome}
+                                />
                             </StyledLogoPlace>
                             <Folders />
                         </Box>

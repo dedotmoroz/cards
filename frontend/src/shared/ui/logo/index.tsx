@@ -3,9 +3,10 @@ import {StyledLogoPlace, StyledWordIcon, StyledLogoText, StyledLogoButton,} from
 
 interface LogoProps {
     handle?: () => void;
+    handleGoMain?: () => void;
 }
 
-export const Logo = ({ handle }: LogoProps) => {
+export const Logo = ({ handle, handleGoMain }: LogoProps) => {
     const { t } = useTranslation();
     return (
         <StyledLogoPlace>
@@ -16,7 +17,9 @@ export const Logo = ({ handle }: LogoProps) => {
             >
                 <StyledWordIcon />
             </StyledLogoButton>
-            <StyledLogoText>
+            <StyledLogoText
+                onClick={handleGoMain}
+            >
                 kotCat
             </StyledLogoText>
         </StyledLogoPlace>
