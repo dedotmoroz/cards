@@ -439,5 +439,6 @@ export const StyledImagesBox = styled(Box)(() => ({
     backgroundSize: 'contain',
     backgroundPosition: 'right center',
     backgroundRepeat: 'no-repeat',
+    minHeight: '400px',
 }));
 
