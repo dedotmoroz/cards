@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {List, ListItemText,} from '@mui/material';
 import MoreVerticalIcon from '@mui/icons-material/MoreHoriz';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -7,6 +7,7 @@ import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import { MenuUI } from '@/shared/ui/menu-ui';
 import { RenameFolderMenuItem } from '@/features/rename-folder';
 import { DeleteFolderMenuItem } from '@/features/delete-folder';
+import { useAuthStore } from '@/shared/store/authStore';
 
 import { StyledListItemButton, StyledIconButton, StyledMenuBox } from "./styled-components.ts"
 
@@ -27,6 +28,9 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { userId } = useParams<{ userId?: string }>();
+    const { user } = useAuthStore();
+    const currentUserId = userId || user?.id;
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, folderId: string) => {
         event.stopPropagation();
@@ -41,7 +45,11 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
 
     const handleFolderClick = (folderId: string) => {
         onSelect(folderId);
-        navigate(`/learn/${folderId}`);
+        if (currentUserId) {
+            navigate(`/learn/${currentUserId}/${folderId}`);
+        } else {
+            navigate(`/learn/${folderId}`);
+        }
     };
 
     return (

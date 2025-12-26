@@ -40,7 +40,7 @@ interface LearnProcessProps {
 
 export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
     const navigate = useNavigate();
-    const { folderId } = useParams<{ folderId: string }>();
+    const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
     const { selectedFolderId } = useFoldersStore();
 
     const { showAnswer, currentCard, toggleAnswer, handleKnow, handleDontKnow } = learning;
@@ -65,7 +65,9 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     break;
                 case 'Escape':
                     event.preventDefault();
-                    if (currentFolderId) {
+                    if (userId && currentFolderId) {
+                        navigate(`/learn/${userId}/${currentFolderId}`);
+                    } else if (currentFolderId) {
                         navigate(`/learn/${currentFolderId}`);
                     } else {
                         navigate('/learn');
@@ -75,12 +77,14 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
         };
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [learning, navigate, currentFolderId]);
+    }, [learning, navigate, userId, currentFolderId, toggleAnswer]);
 
 
     // Navigation handlers
     const handleBackToFolders = () => {
-        if (currentFolderId) {
+        if (userId && currentFolderId) {
+            navigate(`/learn/${userId}/${currentFolderId}`);
+        } else if (currentFolderId) {
             navigate(`/learn/${currentFolderId}`);
         } else {
             navigate('/learn');

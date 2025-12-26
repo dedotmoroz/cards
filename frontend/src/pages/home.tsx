@@ -5,6 +5,7 @@ import { Box, Grid, Drawer, useMediaQuery, useTheme} from '@mui/material';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
 import { useFoldersStore } from '@/shared/store/foldersStore';
+import { useAuthStore } from '@/shared/store/authStore';
 import {Folders} from "@/widgets/folders";
 import {Cards} from "@/widgets/cards";
 import { useSEO } from '@/shared/hooks/useSEO';
@@ -22,8 +23,10 @@ export const HomePage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
-    const { folderId } = useParams<{ folderId?: string }>();
+    const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
     const navigate = useNavigate();
+    const { user } = useAuthStore();
+    const currentUserId = user?.id;
 
     const { fetchCards } = useCardsStore();
     const {
@@ -55,27 +58,30 @@ export const HomePage = () => {
         fetchFolders();
     }, []); // Убираем fetchFolders из зависимостей
 
-    // Синхронизируем store с URL (folderId - источник истины)
+    // Синхронизируем store с URL (userId и folderId - источники истины)
     useEffect(() => {
-        if (folderId && folderId !== selectedFolderId) {
-            // Если в URL есть folderId и он отличается от выбранной папки, обновляем store
-            setSelectedFolder(folderId);
-        } else if (!folderId && folders.length > 0) {
-            // Если в URL нет folderId, но есть папки, редиректим на первую или выбранную
-            if (selectedFolderId) {
-                navigate(`/learn/${selectedFolderId}`, { replace: true });
-            } else {
-                navigate(`/learn/${folders[0].id}`, { replace: true });
+        if (userId && folderId) {
+            // Если в URL есть userId и folderId, устанавливаем folderId как выбранную папку
+            if (folderId !== selectedFolderId) {
+                setSelectedFolder(folderId);
             }
-        }
-    }, [folderId, folders, selectedFolderId, setSelectedFolder, navigate]);
-
-    // Загружаем карточки на основе folderId из URL (единственный источник истины)
-    useEffect(() => {
-        if (folderId) {
+            // Загружаем карточки для этой папки
             fetchCards(folderId);
+        } else if (userId && !folderId && folders.length > 0) {
+            // Если в URL есть userId, но нет folderId, редиректим на первую папку
+            navigate(`/learn/${userId}/${folders[0].id}`, { replace: true });
+        } else if (!userId && currentUserId && folders.length > 0) {
+            // Если в URL нет userId, но есть текущий пользователь, добавляем userId в URL
+            if (selectedFolderId) {
+                navigate(`/learn/${currentUserId}/${selectedFolderId}`, { replace: true });
+            } else {
+                navigate(`/learn/${currentUserId}/${folders[0].id}`, { replace: true });
+            }
+        } else if (!userId && !currentUserId && folders.length > 0) {
+            // Если нет ни userId, ни текущего пользователя, редиректим на /learn
+            navigate('/learn', { replace: true });
         }
-    }, [folderId, fetchCards]);
+    }, [userId, folderId, folders, selectedFolderId, setSelectedFolder, navigate, fetchCards, currentUserId]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);

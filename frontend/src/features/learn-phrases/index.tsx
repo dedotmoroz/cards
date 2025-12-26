@@ -1,18 +1,22 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useFoldersStore } from '@/shared/store/foldersStore';
 import { useCardsStore } from '@/shared/store/cardsStore';
+import { useAuthStore } from '@/shared/store/authStore';
 import { StyledButton, StyledPhrasesIcon } from './styled-components'
 
 export const LearnPhrasesButton = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { userId } = useParams<{ userId?: string }>();
     const { selectedFolderId } = useFoldersStore();
     const { cards } = useCardsStore();
+    const { user } = useAuthStore();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const currentUserId = userId || user?.id;
 
     const [initialSide] = useState<'question' | 'answer'>(() => {
         const saved = localStorage.getItem('cardInitialSide');
@@ -21,7 +25,11 @@ export const LearnPhrasesButton = () => {
 
     const handleStartLearningPhrases = () => {
         if (selectedFolderId) {
-            navigate(`/learn/${selectedFolderId}/study?mode=phrases&initialSide=${initialSide}`);
+            if (currentUserId) {
+                navigate(`/learn/${currentUserId}/${selectedFolderId}/study?mode=phrases&initialSide=${initialSide}`);
+            } else {
+                navigate(`/learn/${selectedFolderId}/study?mode=phrases&initialSide=${initialSide}`);
+            }
         }
     };
 

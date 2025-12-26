@@ -35,8 +35,9 @@ export default function App() {
                         <>
                             <Route path="/" element={<LandingPage />} />
                             <Route path="/learn" element={<HomePage />} />
-                            <Route path="/learn/:folderId" element={<HomePage />} />
-                            <Route path="/learn/:folderId/study" element={<PageContainer><LearnPage /></PageContainer>} />
+                            <Route path="/learn/:userId" element={<HomePage />} />
+                            <Route path="/learn/:userId/:folderId" element={<HomePage />} />
+                            <Route path="/learn/:userId/:folderId/study" element={<PageContainer><LearnPage /></PageContainer>} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="*" element={<NotFoundPage />} />
                         </>
