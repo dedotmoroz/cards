@@ -1,0 +1,253 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat 有效的卡片学习系统。更快、更持久地记住信息。"
+  },
+  "landing": {
+    "appName": "词汇卡片",
+    "firstScreen": {
+      "tag": "语言学习的新方法",
+      "title": "在上下文中记忆单词，而不是通过列表",
+      "description": "帮助您理解而不仅仅是记忆的语言学习卡片。使用AI创建示例，直接从浏览器保存单词，并以自己的节奏学习它们。",
+      "button1": "开始学习",
+      "button2": "工作原理"
+    },
+    "hero": {
+      "title": "开始有意识地记忆单词",
+      "description": "从真实内容中添加单词，在上下文中学习它们，并在真正需要时回到它们。",
+      "button": "开始学习"
+    },
+    "context": {
+      "title": "为什么上下文比记忆更重要",
+      "subtitle1": "单个单词很快被遗忘。",
+      "subtitle2": "句子中的单词 — 会保留。",
+      "description": "我们创建了一个服务，您可以像在现实生活中使用单词一样学习：在句子、情况和生动的上下文中。这减少了对记忆的负担，使学习变得自然。"
+    },
+    "features": {
+      "contextAI": {
+        "title": "上下文 + AI",
+        "subtitle": "在句子中学习单词 — 自动。",
+        "item1": "— 使用AI创建示例句子",
+        "item2": "— 在不同上下文中查看单词",
+        "item3": "— 更好地理解含义和用法的细微差别",
+        "accent": "卡片不仅仅是翻译，而是一个完整的语义块。"
+      },
+      "chrome": {
+        "title": "Chrome扩展",
+        "subtitle": "直接从网站添加单词。",
+        "description": "阅读文章、文档或新闻？使用Chrome扩展，您可以：",
+        "item1": "— 突出显示页面上的单词或短语",
+        "item2": "— 一键将其添加到您的词典",
+        "item3": "— 保存来源和上下文",
+        "accent": "无需复制到笔记和\"稍后\"。"
+      },
+      "importExport": {
+        "title": "导入 / 导出",
+        "subtitle": "完全控制您的词典。",
+        "description": "您不绑定到平台。",
+        "item1": "— 从Excel导入单词",
+        "item2": "— 导出词典进行备份",
+        "item3": "— 方便处理大列表",
+        "accent": "适合个人学习和系统地使用词典。"
+      },
+      "adaptive": {
+        "title": "适应性",
+        "subtitle": "在任何屏幕上都很方便。",
+        "description": "该服务适用于：",
+        "item1": "— 移动设备",
+        "item2": "— 笔记本电脑",
+        "item3": "— 大显示器",
+        "accent": "界面简单、轻量且整洁 — 没有任何东西会分散学习的注意力。"
+      }
+    }
+  },
+  "seo": {
+    "keywords": "卡片, 学习, 记忆, 教育, 研究, 闪卡",
+    "landing": {
+      "title": "KotCat",
+      "description": "有效的卡片学习系统。更快、更持久地记住信息。"
+    },
+    "learn": {
+      "title": "KotCat 学习",
+      "description": "学习卡片并有效记忆信息"
+    },
+    "profile": {
+      "title": "KotCat 个人资料",
+      "description": "管理您的个人资料和账户设置"
+    },
+    "signin": {
+      "title": "KotCat 登录",
+      "description": "登录您的账户以访问卡片"
+    },
+    "signup": {
+      "title": "KotCat 注册",
+      "description": "创建账户并开始学习卡片"
+    },
+    "notFound": {
+      "title": "KotCat 页面未找到",
+      "description": "请求的页面不存在"
+    }
+  },
+  "navigation": {
+    "home": "首页",
+    "learn": "学习",
+    "signin": "登录",
+    "signup": "注册"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出",
+    "email": "电子邮件",
+    "username": "用户名",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "cancel": "取消",
+    "submit": "提交",
+    "loading": "加载中...",
+    "notRegistered": "如果您还没有注册，",
+    "registerLink": "注册",
+    "alreadyRegistered": "已有账户？",
+    "loginLink": "登录",
+    "invalidCredentials": "电子邮件或密码不正确",
+    "noAccount": "没有账户？",
+    "passwordMismatch": "密码不匹配",
+    "passwordMinLength": "密码必须至少6个字符",
+    "registerDescription": "创建账户并开始记忆"
+  },
+  "buttons": {
+    "startLearning": "学习单词",
+    "learnWords": "学习单词",
+    "learnPhrases": "学习短语",
+    "tryIt": "试试",
+    "enterSystem": "进入系统",
+    "create": "创建",
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "close": "关闭"
+  },
+  "features": {
+    "title": "为什么选择我们",
+    "interactiveCards": {
+      "title": "交互式卡片",
+      "description": "创建和学习带有问题和答案的卡片"
+    },
+    "adaptiveLearning": {
+      "title": "适应性学习",
+      "description": "系统记住您的结果并调整过程"
+    },
+    "fastLearning": {
+      "title": "快速学习",
+      "description": "快速掌握材料的有效记忆方法"
+    }
+  },
+  "cta": {
+    "title": "准备好开始记忆了吗？",
+    "description": "加入数千名已经改善记忆的用户"
+  },
+  "cards": {
+    "title": "卡片",
+    "front": "正面",
+    "back": "背面",
+    "create": "添加卡片",
+    "edit": "编辑卡片",
+    "delete": "删除卡片",
+    "showAll": "显示全部",
+    "showUnlearned": "显示未学习的"
+  },
+  "folders": {
+    "title": "文件夹",
+    "create": "创建文件夹",
+    "edit": "编辑文件夹",
+    "delete": "删除文件夹"
+  },
+  "errors": {
+    "generic": "发生错误",
+    "network": "网络错误",
+    "unauthorized": "未授权",
+    "notFound": "未找到"
+  },
+  "home": {
+    "title": "我的卡片",
+    "logout": "退出",
+    "welcome": "欢迎",
+    "profile": "个人资料"
+  },
+  "forms": {
+    "newCard": "新卡片",
+    "newFolder": "新文件夹",
+    "question": "A面",
+    "answer": "B面",
+    "folderName": "文件夹名称",
+    "add": "添加",
+    "create": "创建",
+    "back": "返回",
+    "continue": "继续",
+    "continueWithCount": "继续学习（{{count}} 张未学习的卡片）",
+    "selectAll": "全选"
+  },
+  "learning": {
+    "allLearned": "所有卡片已学习",
+    "completedCycle": "没有剩余的卡片",
+    "wantToContinue": "继续学习",
+    "showAnswer": "B面",
+    "showQuestion": "A面",
+    "initialSide": "初始面",
+    "next": "下一个",
+    "learned": "已学习",
+    "notLearned": "未学习"
+  },
+  "import": {
+    "title": "导入卡片",
+    "selectFile": "选择文件",
+    "import": "导入",
+    "importing": "导入中...",
+    "format": "CSV格式：问题，答案",
+    "textImport": "文本导入",
+    "excelImport": "Excel导入",
+    "excelDescription": "选择包含'A面'和'B面'列的Excel文件",
+    "excelFormat": "仅支持.xlsx和.xls文件",
+    "fileSelected": "已选择文件"
+  },
+  "export": {
+    "export": "导出到Excel",
+    "exporting": "导出中...",
+    "error": "导出错误"
+  },
+  "profile": {
+    "title": "个人资料",
+    "subtitle": "更新您的个人信息和偏好",
+    "profileSection": "账户信息",
+    "usernameLabel": "显示名称",
+    "emailLabel": "电子邮件",
+    "languageLabel": "界面语言",
+    "saveProfile": "保存更改",
+    "profileUpdated": "个人资料更新成功",
+    "usernameRequired": "显示名称不能为空",
+    "nothingToUpdate": "无需更新",
+    "languageSection": "界面语言",
+    "saveLanguage": "保存语言",
+    "languageUpdated": "界面语言已更新",
+    "passwordSection": "更改密码",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认新密码",
+    "savePassword": "更改密码",
+    "passwordUpdated": "密码更改成功",
+    "passwordMismatch": "密码不匹配",
+    "openProfile": "打开个人资料",
+    "registerGuestTitle": "注册永久个人资料",
+    "registerGuestSubtitle": "填写详细信息以创建永久账户",
+    "registerGuestButton": "注册",
+    "registerGuestSuccess": "个人资料注册成功",
+    "passwordLabel": "密码",
+    "getToken": "获取令牌",
+    "token": "令牌",
+    "createToken": "创建令牌",
+    "creatingToken": "创建令牌中...",
+    "copyToken": "复制",
+    "tokenError": "获取令牌错误"
+  }
+}

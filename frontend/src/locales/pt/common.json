@@ -1,0 +1,253 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat Sistema eficaz de aprendizagem com cartões. Memorize informações mais rapidamente e por mais tempo."
+  },
+  "landing": {
+    "appName": "Cartões de vocabulário",
+    "firstScreen": {
+      "tag": "Uma nova abordagem para aprender idiomas",
+      "title": "Memorize palavras no contexto, não por listas",
+      "description": "Cartões para aprender idiomas que ajudam você a entender, não apenas memorizar. Crie exemplos com IA, salve palavras diretamente do seu navegador e aprenda-as no seu próprio ritmo.",
+      "button1": "Começar a aprender",
+      "button2": "Como funciona"
+    },
+    "hero": {
+      "title": "Comece a memorizar palavras conscientemente",
+      "description": "Adicione palavras de conteúdo real, aprenda-as no contexto e volte a elas quando for realmente necessário.",
+      "button": "Começar a aprender"
+    },
+    "context": {
+      "title": "Por que o contexto é mais importante do que memorizar",
+      "subtitle1": "Palavras individuais são rapidamente esquecidas.",
+      "subtitle2": "Palavras em frases — permanecem.",
+      "description": "Criamos um serviço onde você aprende palavras como elas são usadas na vida real: em frases, situações e contexto vivo. Isso reduz a carga na memória e torna o aprendizado natural."
+    },
+    "features": {
+      "contextAI": {
+        "title": "Contexto + IA",
+        "subtitle": "Aprenda palavras em frases — automaticamente.",
+        "item1": "— Crie frases de exemplo com IA",
+        "item2": "— Veja a palavra em diferentes contextos",
+        "item3": "— Entenda melhor os nuances de significado e uso",
+        "accent": "Um cartão não é apenas uma tradução, mas um bloco semântico completo."
+      },
+      "chrome": {
+        "title": "Extensão Chrome",
+        "subtitle": "Adicione palavras diretamente de sites.",
+        "description": "Lendo artigos, documentação ou notícias? Com a extensão Chrome você pode:",
+        "item1": "— Destacar uma palavra ou frase na página",
+        "item2": "— Adicioná-la ao seu dicionário com um clique",
+        "item3": "— Salvar fonte e contexto",
+        "accent": "Sem copiar para anotações e \"para depois\"."
+      },
+      "importExport": {
+        "title": "Importar / Exportar",
+        "subtitle": "Controle total sobre seu dicionário.",
+        "description": "Você não está preso à plataforma.",
+        "item1": "— Importe palavras do Excel",
+        "item2": "— Exporte dicionário para backup",
+        "item3": "— Conveniente para trabalhar com listas grandes",
+        "accent": "Adequado tanto para aprendizado pessoal quanto para trabalho sistemático com um dicionário."
+      },
+      "adaptive": {
+        "title": "Adaptabilidade",
+        "subtitle": "Confortável em qualquer tela.",
+        "description": "O serviço é adaptado para:",
+        "item1": "— Dispositivos móveis",
+        "item2": "— Laptops",
+        "item3": "— Monitores grandes",
+        "accent": "A interface é simples, leve e desordenada — nada distrai do aprendizado."
+      }
+    }
+  },
+  "seo": {
+    "keywords": "cartões, aprendizagem, memória, educação, estudo, flash cards",
+    "landing": {
+      "title": "KotCat",
+      "description": "Sistema eficaz de aprendizagem com cartões. Memorize informações mais rapidamente e por mais tempo."
+    },
+    "learn": {
+      "title": "KotCat Aprender",
+      "description": "Estude cartões e memorize informações eficazmente"
+    },
+    "profile": {
+      "title": "KotCat Perfil",
+      "description": "Gerencie seu perfil e configurações de conta"
+    },
+    "signin": {
+      "title": "KotCat Entrar",
+      "description": "Entre na sua conta para acessar os cartões"
+    },
+    "signup": {
+      "title": "KotCat Cadastrar",
+      "description": "Crie uma conta e comece a estudar cartões"
+    },
+    "notFound": {
+      "title": "KotCat Página não encontrada",
+      "description": "A página solicitada não existe"
+    }
+  },
+  "navigation": {
+    "home": "Início",
+    "learn": "Aprender",
+    "signin": "Entrar",
+    "signup": "Cadastrar"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "logout": "Sair",
+    "email": "E-mail",
+    "username": "Nome de usuário",
+    "password": "Senha",
+    "confirmPassword": "Confirmar senha",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "loading": "Carregando...",
+    "notRegistered": "Se você ainda não está cadastrado,",
+    "registerLink": "Cadastre-se",
+    "alreadyRegistered": "Já tem uma conta?",
+    "loginLink": "Entrar",
+    "invalidCredentials": "E-mail ou senha incorretos",
+    "noAccount": "Não tem uma conta?",
+    "passwordMismatch": "As senhas não coincidem",
+    "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
+    "registerDescription": "Crie uma conta e comece a memorizar"
+  },
+  "buttons": {
+    "startLearning": "Aprender palavras",
+    "learnWords": "Aprender palavras",
+    "learnPhrases": "Aprender frases",
+    "tryIt": "Experimentar",
+    "enterSystem": "Entrar no sistema",
+    "create": "Criar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "close": "Fechar"
+  },
+  "features": {
+    "title": "Por que nos escolher",
+    "interactiveCards": {
+      "title": "Cartões interativos",
+      "description": "Crie e estude cartões com perguntas e respostas"
+    },
+    "adaptiveLearning": {
+      "title": "Aprendizagem adaptativa",
+      "description": "O sistema lembra seus resultados e adapta o processo"
+    },
+    "fastLearning": {
+      "title": "Aprendizagem rápida",
+      "description": "Métodos eficazes de memorização para domínio rápido do material"
+    }
+  },
+  "cta": {
+    "title": "Pronto para começar a memorizar?",
+    "description": "Junte-se a milhares de usuários que já melhoraram sua memória"
+  },
+  "cards": {
+    "title": "Cartões",
+    "front": "Frente",
+    "back": "Verso",
+    "create": "Adicionar cartão",
+    "edit": "Editar cartão",
+    "delete": "Excluir cartão",
+    "showAll": "Mostrar todos",
+    "showUnlearned": "Mostrar não aprendidos"
+  },
+  "folders": {
+    "title": "Pastas",
+    "create": "Criar pasta",
+    "edit": "Editar pasta",
+    "delete": "Excluir pasta"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro",
+    "network": "Erro de rede",
+    "unauthorized": "Não autorizado",
+    "notFound": "Não encontrado"
+  },
+  "home": {
+    "title": "Meus cartões",
+    "logout": "Sair",
+    "welcome": "Bem-vindo",
+    "profile": "Perfil"
+  },
+  "forms": {
+    "newCard": "Novo cartão",
+    "newFolder": "Nova pasta",
+    "question": "Lado A",
+    "answer": "Lado B",
+    "folderName": "Nome da pasta",
+    "add": "Adicionar",
+    "create": "Criar",
+    "back": "Voltar",
+    "continue": "Continuar",
+    "continueWithCount": "Continuar aprendendo ({{count}} cartões não aprendidos)",
+    "selectAll": "Selecionar tudo"
+  },
+  "learning": {
+    "allLearned": "Todos os cartões aprendidos",
+    "completedCycle": "Não restam cartões",
+    "wantToContinue": "Continuar aprendendo",
+    "showAnswer": "Lado B",
+    "showQuestion": "Lado A",
+    "initialSide": "Lado inicial",
+    "next": "Próximo",
+    "learned": "Aprendido",
+    "notLearned": "Não aprendido"
+  },
+  "import": {
+    "title": "Importar cartões",
+    "selectFile": "Selecionar arquivo",
+    "import": "Importar",
+    "importing": "Importando...",
+    "format": "Formato CSV: pergunta, resposta",
+    "textImport": "Importar texto",
+    "excelImport": "Importar Excel",
+    "excelDescription": "Selecione arquivo Excel com colunas 'Lado A' e 'Lado B'",
+    "excelFormat": "Apenas arquivos .xlsx e .xls são suportados",
+    "fileSelected": "Arquivo selecionado"
+  },
+  "export": {
+    "export": "Exportar para Excel",
+    "exporting": "Exportando...",
+    "error": "Erro de exportação"
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Atualize suas informações pessoais e preferências",
+    "profileSection": "Informações da conta",
+    "usernameLabel": "Nome de exibição",
+    "emailLabel": "E-mail",
+    "languageLabel": "Idioma da interface",
+    "saveProfile": "Salvar alterações",
+    "profileUpdated": "Perfil atualizado com sucesso",
+    "usernameRequired": "O nome de exibição não pode estar vazio",
+    "nothingToUpdate": "Nada para atualizar",
+    "languageSection": "Idioma da interface",
+    "saveLanguage": "Salvar idioma",
+    "languageUpdated": "Idioma da interface atualizado",
+    "passwordSection": "Alterar senha",
+    "currentPassword": "Senha atual",
+    "newPassword": "Nova senha",
+    "confirmPassword": "Confirmar nova senha",
+    "savePassword": "Alterar senha",
+    "passwordUpdated": "Senha alterada com sucesso",
+    "passwordMismatch": "As senhas não coincidem",
+    "openProfile": "Abrir perfil",
+    "registerGuestTitle": "Registrar perfil permanente",
+    "registerGuestSubtitle": "Preencha os detalhes para criar uma conta permanente",
+    "registerGuestButton": "Cadastrar",
+    "registerGuestSuccess": "Perfil registrado com sucesso",
+    "passwordLabel": "Senha",
+    "getToken": "Obter token",
+    "token": "Token",
+    "createToken": "Criar token",
+    "creatingToken": "Criando token...",
+    "copyToken": "Copiar",
+    "tokenError": "Erro ao obter token"
+  }
+}

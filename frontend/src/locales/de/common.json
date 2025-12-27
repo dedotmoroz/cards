@@ -1,0 +1,253 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat Effektives Lernkartensystem. Merken Sie sich Informationen schneller und länger."
+  },
+  "landing": {
+    "appName": "Vokabelkarten",
+    "firstScreen": {
+      "tag": "Ein neuer Ansatz zum Sprachenlernen",
+      "title": "Wörter im Kontext lernen, nicht aus Listen",
+      "description": "Sprachlernkarten, die Ihnen helfen zu verstehen, nicht nur auswendig zu lernen. Erstellen Sie Beispiele mit KI, speichern Sie Wörter direkt aus dem Browser und lernen Sie sie in Ihrem eigenen Tempo.",
+      "button1": "Lernen beginnen",
+      "button2": "So funktioniert's"
+    },
+    "hero": {
+      "title": "Beginnen Sie, Wörter bewusst zu lernen",
+      "description": "Fügen Sie Wörter aus echten Inhalten hinzu, lernen Sie sie im Kontext und kehren Sie zu ihnen zurück, wenn es wirklich notwendig ist.",
+      "button": "Lernen beginnen"
+    },
+    "context": {
+      "title": "Warum Kontext wichtiger ist als Auswendiglernen",
+      "subtitle1": "Einzelne Wörter werden schnell vergessen.",
+      "subtitle2": "Wörter in Sätzen bleiben erhalten.",
+      "description": "Wir haben einen Service geschaffen, in dem Sie Wörter so lernen, wie sie im echten Leben verwendet werden: in Sätzen, Situationen und lebendigem Kontext. Dies reduziert die Belastung des Gedächtnisses und macht das Lernen natürlich."
+    },
+    "features": {
+      "contextAI": {
+        "title": "Kontext + KI",
+        "subtitle": "Wörter in Sätzen lernen — automatisch.",
+        "item1": "— Beispielsätze mit KI erstellen",
+        "item2": "— Das Wort in verschiedenen Kontexten sehen",
+        "item3": "— Nuancen von Bedeutung und Verwendung besser verstehen",
+        "accent": "Eine Karte ist nicht nur eine Übersetzung, sondern ein vollständiger semantischer Block."
+      },
+      "chrome": {
+        "title": "Chrome-Erweiterung",
+        "subtitle": "Wörter direkt von Websites hinzufügen.",
+        "description": "Lesen Sie Artikel, Dokumentation oder Nachrichten? Mit der Chrome-Erweiterung können Sie:",
+        "item1": "— Ein Wort oder eine Phrase auf der Seite hervorheben",
+        "item2": "— Es mit einem Klick zu Ihrem Wörterbuch hinzufügen",
+        "item3": "— Quelle und Kontext speichern",
+        "accent": "Kein Kopieren in Notizen und \"für später\"."
+      },
+      "importExport": {
+        "title": "Import / Export",
+        "subtitle": "Volle Kontrolle über Ihr Wörterbuch.",
+        "description": "Sie sind nicht an die Plattform gebunden.",
+        "item1": "— Wörter aus Excel importieren",
+        "item2": "— Wörterbuch für Backup exportieren",
+        "item3": "— Bequem mit großen Listen arbeiten",
+        "accent": "Geeignet sowohl für persönliches Lernen als auch für systematische Arbeit mit einem Wörterbuch."
+      },
+      "adaptive": {
+        "title": "Anpassungsfähigkeit",
+        "subtitle": "Bequem auf jedem Bildschirm.",
+        "description": "Der Service ist angepasst für:",
+        "item1": "— Mobile Geräte",
+        "item2": "— Laptops",
+        "item3": "— Große Monitore",
+        "accent": "Die Oberfläche ist einfach, leicht und übersichtlich — nichts lenkt vom Lernen ab."
+      }
+    }
+  },
+  "seo": {
+    "keywords": "Lernkarten, Lernen, Gedächtnis, Bildung, Studium, Karteikarten",
+    "landing": {
+      "title": "KotCat",
+      "description": "Effektives Lernkartensystem. Merken Sie sich Informationen schneller und länger."
+    },
+    "learn": {
+      "title": "KotCat Lernen",
+      "description": "Studieren Sie Lernkarten und merken Sie sich Informationen effektiv"
+    },
+    "profile": {
+      "title": "KotCat Profil",
+      "description": "Verwalten Sie Ihr Profil und Kontoeinstellungen"
+    },
+    "signin": {
+      "title": "KotCat Anmelden",
+      "description": "Melden Sie sich in Ihrem Konto an, um auf Lernkarten zuzugreifen"
+    },
+    "signup": {
+      "title": "KotCat Registrieren",
+      "description": "Erstellen Sie ein Konto und beginnen Sie, Lernkarten zu studieren"
+    },
+    "notFound": {
+      "title": "KotCat Seite nicht gefunden",
+      "description": "Die angeforderte Seite existiert nicht"
+    }
+  },
+  "navigation": {
+    "home": "Startseite",
+    "learn": "Lernen",
+    "signin": "Anmelden",
+    "signup": "Registrieren"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "email": "E-Mail",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "cancel": "Abbrechen",
+    "submit": "Absenden",
+    "loading": "Laden...",
+    "notRegistered": "Wenn Sie noch nicht registriert sind,",
+    "registerLink": "Registrieren",
+    "alreadyRegistered": "Haben Sie bereits ein Konto?",
+    "loginLink": "Anmelden",
+    "invalidCredentials": "Falsche E-Mail oder Passwort",
+    "noAccount": "Haben Sie kein Konto?",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "passwordMinLength": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "registerDescription": "Erstellen Sie ein Konto und beginnen Sie zu lernen"
+  },
+  "buttons": {
+    "startLearning": "Wörter lernen",
+    "learnWords": "Wörter lernen",
+    "learnPhrases": "Phrasen lernen",
+    "tryIt": "Ausprobieren",
+    "enterSystem": "System betreten",
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "close": "Schließen"
+  },
+  "features": {
+    "title": "Warum uns wählen",
+    "interactiveCards": {
+      "title": "Interaktive Karten",
+      "description": "Erstellen und studieren Sie Karten mit Fragen und Antworten"
+    },
+    "adaptiveLearning": {
+      "title": "Adaptives Lernen",
+      "description": "Das System merkt sich Ihre Ergebnisse und passt den Prozess an"
+    },
+    "fastLearning": {
+      "title": "Schnelles Lernen",
+      "description": "Effektive Merkmethoden für schnelle Materialbeherrschung"
+    }
+  },
+  "cta": {
+    "title": "Bereit zum Lernen?",
+    "description": "Schließen Sie sich Tausenden von Benutzern an, die ihr Gedächtnis bereits verbessert haben"
+  },
+  "cards": {
+    "title": "Karten",
+    "front": "Vorderseite",
+    "back": "Rückseite",
+    "create": "Karte hinzufügen",
+    "edit": "Karte bearbeiten",
+    "delete": "Karte löschen",
+    "showAll": "Alle anzeigen",
+    "showUnlearned": "Nicht gelernte anzeigen"
+  },
+  "folders": {
+    "title": "Ordner",
+    "create": "Ordner erstellen",
+    "edit": "Ordner bearbeiten",
+    "delete": "Ordner löschen"
+  },
+  "errors": {
+    "generic": "Ein Fehler ist aufgetreten",
+    "network": "Netzwerkfehler",
+    "unauthorized": "Nicht autorisiert",
+    "notFound": "Nicht gefunden"
+  },
+  "home": {
+    "title": "Meine Karten",
+    "logout": "Abmelden",
+    "welcome": "Willkommen",
+    "profile": "Profil"
+  },
+  "forms": {
+    "newCard": "Neue Karte",
+    "newFolder": "Neuer Ordner",
+    "question": "Seite A",
+    "answer": "Seite B",
+    "folderName": "Ordnername",
+    "add": "Hinzufügen",
+    "create": "Erstellen",
+    "back": "Zurück",
+    "continue": "Fortsetzen",
+    "continueWithCount": "Lernen fortsetzen ({{count}} nicht gelernte Karten)",
+    "selectAll": "Alle auswählen"
+  },
+  "learning": {
+    "allLearned": "Alle Karten gelernt",
+    "completedCycle": "Es sind keine Karten mehr übrig",
+    "wantToContinue": "Lernen fortsetzen",
+    "showAnswer": "Seite B",
+    "showQuestion": "Seite A",
+    "initialSide": "Anfangsseite",
+    "next": "Weiter",
+    "learned": "Gelernt",
+    "notLearned": "Nicht gelernt"
+  },
+  "import": {
+    "title": "Karten importieren",
+    "selectFile": "Datei auswählen",
+    "import": "Importieren",
+    "importing": "Importiere...",
+    "format": "CSV-Format: Frage, Antwort",
+    "textImport": "Textimport",
+    "excelImport": "Excel-Import",
+    "excelDescription": "Wählen Sie eine Excel-Datei mit den Spalten 'Seite A' und 'Seite B'",
+    "excelFormat": "Nur .xlsx und .xls Dateien werden unterstützt",
+    "fileSelected": "Datei ausgewählt"
+  },
+  "export": {
+    "export": "Nach Excel exportieren",
+    "exporting": "Exportiere...",
+    "error": "Exportfehler"
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Aktualisieren Sie Ihre persönlichen Informationen und Einstellungen",
+    "profileSection": "Kontoinformationen",
+    "usernameLabel": "Anzeigename",
+    "emailLabel": "E-Mail",
+    "languageLabel": "Oberflächensprache",
+    "saveProfile": "Änderungen speichern",
+    "profileUpdated": "Profil erfolgreich aktualisiert",
+    "usernameRequired": "Anzeigename darf nicht leer sein",
+    "nothingToUpdate": "Nichts zu aktualisieren",
+    "languageSection": "Oberflächensprache",
+    "saveLanguage": "Sprache speichern",
+    "languageUpdated": "Oberflächensprache aktualisiert",
+    "passwordSection": "Passwort ändern",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Neues Passwort bestätigen",
+    "savePassword": "Passwort ändern",
+    "passwordUpdated": "Passwort erfolgreich geändert",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "openProfile": "Profil öffnen",
+    "registerGuestTitle": "Dauerhaftes Profil registrieren",
+    "registerGuestSubtitle": "Füllen Sie die Details aus, um ein dauerhaftes Konto zu erstellen",
+    "registerGuestButton": "Registrieren",
+    "registerGuestSuccess": "Profil erfolgreich registriert",
+    "passwordLabel": "Passwort",
+    "getToken": "Token abrufen",
+    "token": "Token",
+    "createToken": "Token erstellen",
+    "creatingToken": "Token wird erstellt...",
+    "copyToken": "Kopieren",
+    "tokenError": "Fehler beim Abrufen des Tokens"
+  }
+}

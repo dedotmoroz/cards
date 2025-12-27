@@ -1,0 +1,253 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat Skuteczny system nauki za pomocą kart. Zapamiętuj informacje szybciej i na dłużej."
+  },
+  "landing": {
+    "appName": "Karty słownictwa",
+    "firstScreen": {
+      "tag": "Nowe podejście do nauki języków",
+      "title": "Zapamiętuj słowa w kontekście, nie z list",
+      "description": "Karty do nauki języków, które pomagają rozumieć, a nie tylko zapamiętywać. Twórz przykłady za pomocą AI, zapisuj słowa bezpośrednio z przeglądarki i ucz się ich we własnym tempie.",
+      "button1": "Rozpocznij naukę",
+      "button2": "Jak to działa"
+    },
+    "hero": {
+      "title": "Zacznij świadomie zapamiętywać słowa",
+      "description": "Dodawaj słowa z rzeczywistych treści, ucz się ich w kontekście i wracaj do nich, gdy jest to naprawdę konieczne.",
+      "button": "Rozpocznij naukę"
+    },
+    "context": {
+      "title": "Dlaczego kontekst jest ważniejszy niż zapamiętywanie",
+      "subtitle1": "Pojedyncze słowa szybko się zapomina.",
+      "subtitle2": "Słowa w zdaniach — pozostają.",
+      "description": "Stworzyliśmy serwis, w którym uczysz się słów tak, jak są używane w prawdziwym życiu: w zdaniach, sytuacjach i żywym kontekście. To zmniejsza obciążenie pamięci i sprawia, że nauka jest naturalna."
+    },
+    "features": {
+      "contextAI": {
+        "title": "Kontekst + AI",
+        "subtitle": "Ucz się słów w zdaniach — automatycznie.",
+        "item1": "— Twórz przykładowe zdania za pomocą AI",
+        "item2": "— Zobacz słowo w różnych kontekstach",
+        "item3": "— Lepiej rozumiej niuanse znaczenia i użycia",
+        "accent": "Karta to nie tylko tłumaczenie, ale kompletny blok semantyczny."
+      },
+      "chrome": {
+        "title": "Rozszerzenie Chrome",
+        "subtitle": "Dodawaj słowa bezpośrednio ze stron internetowych.",
+        "description": "Czytasz artykuły, dokumentację lub wiadomości? Za pomocą rozszerzenia Chrome możesz:",
+        "item1": "— Podświetlić słowo lub frazę na stronie",
+        "item2": "— Dodać je do słownika jednym kliknięciem",
+        "item3": "— Zapisać źródło i kontekst",
+        "accent": "Bez kopiowania do notatek i \"na później\"."
+      },
+      "importExport": {
+        "title": "Import / Eksport",
+        "subtitle": "Pełna kontrola nad słownikiem.",
+        "description": "Nie jesteś przywiązany do platformy.",
+        "item1": "— Importuj słowa z Excela",
+        "item2": "— Eksportuj słownik do kopii zapasowej",
+        "item3": "— Wygodna praca z dużymi listami",
+        "accent": "Odpowiednie zarówno do nauki osobistej, jak i systematycznej pracy ze słownikiem."
+      },
+      "adaptive": {
+        "title": "Adaptacyjność",
+        "subtitle": "Wygodne na każdym ekranie.",
+        "description": "Serwis jest dostosowany do:",
+        "item1": "— Urządzeń mobilnych",
+        "item2": "— Laptopów",
+        "item3": "— Dużych monitorów",
+        "accent": "Interfejs jest prosty, lekki i przejrzysty — nic nie rozprasza od nauki."
+      }
+    }
+  },
+  "seo": {
+    "keywords": "fiszki, nauka, pamięć, edukacja, studia, karty",
+    "landing": {
+      "title": "KotCat",
+      "description": "Skuteczny system nauki za pomocą kart. Zapamiętuj informacje szybciej i na dłużej."
+    },
+    "learn": {
+      "title": "KotCat Nauka",
+      "description": "Ucz się fiszek i skutecznie zapamiętuj informacje"
+    },
+    "profile": {
+      "title": "KotCat Profil",
+      "description": "Zarządzaj profilem i ustawieniami konta"
+    },
+    "signin": {
+      "title": "KotCat Logowanie",
+      "description": "Zaloguj się na swoje konto, aby uzyskać dostęp do fiszek"
+    },
+    "signup": {
+      "title": "KotCat Rejestracja",
+      "description": "Utwórz konto i zacznij uczyć się fiszek"
+    },
+    "notFound": {
+      "title": "KotCat Strona nie znaleziona",
+      "description": "Żądana strona nie istnieje"
+    }
+  },
+  "navigation": {
+    "home": "Strona główna",
+    "learn": "Nauka",
+    "signin": "Logowanie",
+    "signup": "Rejestracja"
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "register": "Zarejestruj się",
+    "logout": "Wyloguj się",
+    "email": "E-mail",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "cancel": "Anuluj",
+    "submit": "Wyślij",
+    "loading": "Ładowanie...",
+    "notRegistered": "Jeśli nie jesteś jeszcze zarejestrowany,",
+    "registerLink": "Zarejestruj się",
+    "alreadyRegistered": "Masz już konto?",
+    "loginLink": "Zaloguj się",
+    "invalidCredentials": "Nieprawidłowy e-mail lub hasło",
+    "noAccount": "Nie masz konta?",
+    "passwordMismatch": "Hasła nie pasują",
+    "passwordMinLength": "Hasło musi mieć co najmniej 6 znaków",
+    "registerDescription": "Utwórz konto i zacznij zapamiętywać"
+  },
+  "buttons": {
+    "startLearning": "Ucz się słów",
+    "learnWords": "Ucz się słów",
+    "learnPhrases": "Ucz się fraz",
+    "tryIt": "Spróbuj",
+    "enterSystem": "Wejdź do systemu",
+    "create": "Utwórz",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "close": "Zamknij"
+  },
+  "features": {
+    "title": "Dlaczego wybrać nas",
+    "interactiveCards": {
+      "title": "Interaktywne karty",
+      "description": "Twórz i studiuj karty z pytaniami i odpowiedziami"
+    },
+    "adaptiveLearning": {
+      "title": "Adaptacyjna nauka",
+      "description": "System zapamiętuje Twoje wyniki i dostosowuje proces"
+    },
+    "fastLearning": {
+      "title": "Szybka nauka",
+      "description": "Skuteczne metody zapamiętywania do szybkiego opanowania materiału"
+    }
+  },
+  "cta": {
+    "title": "Gotowy, aby zacząć zapamiętywać?",
+    "description": "Dołącz do tysięcy użytkowników, którzy już poprawili swoją pamięć"
+  },
+  "cards": {
+    "title": "Karty",
+    "front": "Przód",
+    "back": "Tył",
+    "create": "Dodaj kartę",
+    "edit": "Edytuj kartę",
+    "delete": "Usuń kartę",
+    "showAll": "Pokaż wszystkie",
+    "showUnlearned": "Pokaż nieprzerobione"
+  },
+  "folders": {
+    "title": "Foldery",
+    "create": "Utwórz folder",
+    "edit": "Edytuj folder",
+    "delete": "Usuń folder"
+  },
+  "errors": {
+    "generic": "Wystąpił błąd",
+    "network": "Błąd sieci",
+    "unauthorized": "Nieautoryzowany",
+    "notFound": "Nie znaleziono"
+  },
+  "home": {
+    "title": "Moje karty",
+    "logout": "Wyloguj się",
+    "welcome": "Witamy",
+    "profile": "Profil"
+  },
+  "forms": {
+    "newCard": "Nowa karta",
+    "newFolder": "Nowy folder",
+    "question": "Strona A",
+    "answer": "Strona B",
+    "folderName": "Nazwa folderu",
+    "add": "Dodaj",
+    "create": "Utwórz",
+    "back": "Wstecz",
+    "continue": "Kontynuuj",
+    "continueWithCount": "Kontynuuj naukę ({{count}} nieprzerobionych kart)",
+    "selectAll": "Zaznacz wszystko"
+  },
+  "learning": {
+    "allLearned": "Wszystkie karty przyswojone",
+    "completedCycle": "Nie pozostały żadne karty",
+    "wantToContinue": "Kontynuuj naukę",
+    "showAnswer": "Strona B",
+    "showQuestion": "Strona A",
+    "initialSide": "Początkowa strona",
+    "next": "Dalej",
+    "learned": "Przyswojone",
+    "notLearned": "Nieprzerobione"
+  },
+  "import": {
+    "title": "Importuj karty",
+    "selectFile": "Wybierz plik",
+    "import": "Importuj",
+    "importing": "Importowanie...",
+    "format": "Format CSV: pytanie, odpowiedź",
+    "textImport": "Import tekstu",
+    "excelImport": "Import Excel",
+    "excelDescription": "Wybierz plik Excel z kolumnami 'Strona A' i 'Strona B'",
+    "excelFormat": "Obsługiwane są tylko pliki .xlsx i .xls",
+    "fileSelected": "Plik wybrany"
+  },
+  "export": {
+    "export": "Eksportuj do Excela",
+    "exporting": "Eksportowanie...",
+    "error": "Błąd eksportu"
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Zaktualizuj swoje dane osobowe i preferencje",
+    "profileSection": "Informacje o koncie",
+    "usernameLabel": "Wyświetlana nazwa",
+    "emailLabel": "E-mail",
+    "languageLabel": "Język interfejsu",
+    "saveProfile": "Zapisz zmiany",
+    "profileUpdated": "Profil zaktualizowany pomyślnie",
+    "usernameRequired": "Wyświetlana nazwa nie może być pusta",
+    "nothingToUpdate": "Nic do zaktualizowania",
+    "languageSection": "Język interfejsu",
+    "saveLanguage": "Zapisz język",
+    "languageUpdated": "Język interfejsu zaktualizowany",
+    "passwordSection": "Zmień hasło",
+    "currentPassword": "Obecne hasło",
+    "newPassword": "Nowe hasło",
+    "confirmPassword": "Potwierdź nowe hasło",
+    "savePassword": "Zmień hasło",
+    "passwordUpdated": "Hasło zmienione pomyślnie",
+    "passwordMismatch": "Hasła nie pasują",
+    "openProfile": "Otwórz profil",
+    "registerGuestTitle": "Zarejestruj stały profil",
+    "registerGuestSubtitle": "Wypełnij szczegóły, aby utworzyć stałe konto",
+    "registerGuestButton": "Zarejestruj się",
+    "registerGuestSuccess": "Profil zarejestrowany pomyślnie",
+    "passwordLabel": "Hasło",
+    "getToken": "Pobierz token",
+    "token": "Token",
+    "createToken": "Utwórz token",
+    "creatingToken": "Tworzenie tokenu...",
+    "copyToken": "Kopiuj",
+    "tokenError": "Błąd pobierania tokenu"
+  }
+}

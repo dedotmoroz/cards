@@ -5,6 +5,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // Import translation files
 import enCommon from '../locales/en/common.json';
 import ruCommon from '../locales/ru/common.json';
+import ukCommon from '../locales/uk/common.json';
+import deCommon from '../locales/de/common.json';
+import esCommon from '../locales/es/common.json';
+import frCommon from '../locales/fr/common.json';
+import plCommon from '../locales/pl/common.json';
+import ptCommon from '../locales/pt/common.json';
+import zhCommon from '../locales/zh/common.json';
 
 const resources = {
   en: {
@@ -12,6 +19,27 @@ const resources = {
   },
   ru: {
     common: ruCommon
+  },
+  uk: {
+    common: ukCommon
+  },
+  de: {
+    common: deCommon
+  },
+  es: {
+    common: esCommon
+  },
+  fr: {
+    common: frCommon
+  },
+  pl: {
+    common: plCommon
+  },
+  pt: {
+    common: ptCommon
+  },
+  zh: {
+    common: zhCommon
   }
 };
 
@@ -37,7 +65,7 @@ i18n
     ns: ['common'],
     
     // Language switching
-    supportedLngs: ['en', 'ru'],
+    supportedLngs: ['en', 'ru', 'uk', 'de', 'es', 'fr', 'pl', 'pt', 'zh'],
     nonExplicitSupportedLngs: false,
   });
 

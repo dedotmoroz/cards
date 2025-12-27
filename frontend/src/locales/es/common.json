@@ -1,0 +1,253 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat Sistema eficaz de aprendizaje con tarjetas. Recuerda información más rápido y durante más tiempo."
+  },
+  "landing": {
+    "appName": "Tarjetas de vocabulario",
+    "firstScreen": {
+      "tag": "Un nuevo enfoque para aprender idiomas",
+      "title": "Memoriza palabras en contexto, no por listas",
+      "description": "Tarjetas para aprender idiomas que te ayudan a entender, no solo memorizar. Crea ejemplos con IA, guarda palabras directamente desde tu navegador y apréndelas a tu propio ritmo.",
+      "button1": "Comenzar a aprender",
+      "button2": "Cómo funciona"
+    },
+    "hero": {
+      "title": "Comienza a memorizar palabras conscientemente",
+      "description": "Añade palabras de contenido real, apréndelas en contexto y vuelve a ellas cuando sea realmente necesario.",
+      "button": "Comenzar a aprender"
+    },
+    "context": {
+      "title": "Por qué el contexto es más importante que memorizar",
+      "subtitle1": "Las palabras individuales se olvidan rápidamente.",
+      "subtitle2": "Las palabras en oraciones — permanecen.",
+      "description": "Hemos creado un servicio donde aprendes palabras como se usan en la vida real: en oraciones, situaciones y contexto vivo. Esto reduce la carga en la memoria y hace que el aprendizaje sea natural."
+    },
+    "features": {
+      "contextAI": {
+        "title": "Contexto + IA",
+        "subtitle": "Aprende palabras en oraciones — automáticamente.",
+        "item1": "— Crea oraciones de ejemplo con IA",
+        "item2": "— Ve la palabra en diferentes contextos",
+        "item3": "— Entiende mejor los matices de significado y uso",
+        "accent": "Una tarjeta no es solo una traducción, sino un bloque semántico completo."
+      },
+      "chrome": {
+        "title": "Extensión de Chrome",
+        "subtitle": "Añade palabras directamente desde sitios web.",
+        "description": "¿Lees artículos, documentación o noticias? Con la extensión de Chrome puedes:",
+        "item1": "— Resaltar una palabra o frase en la página",
+        "item2": "— Añadirla a tu diccionario con un clic",
+        "item3": "— Guardar fuente y contexto",
+        "accent": "Sin copiar a notas y \"para después\"."
+      },
+      "importExport": {
+        "title": "Importar / Exportar",
+        "subtitle": "Control total sobre tu diccionario.",
+        "description": "No estás atado a la plataforma.",
+        "item1": "— Importa palabras desde Excel",
+        "item2": "— Exporta diccionario para respaldo",
+        "item3": "— Conveniente para trabajar con listas grandes",
+        "accent": "Adecuado tanto para aprendizaje personal como para trabajo sistemático con un diccionario."
+      },
+      "adaptive": {
+        "title": "Adaptabilidad",
+        "subtitle": "Cómodo en cualquier pantalla.",
+        "description": "El servicio está adaptado para:",
+        "item1": "— Dispositivos móviles",
+        "item2": "— Portátiles",
+        "item3": "— Monitores grandes",
+        "accent": "La interfaz es simple, ligera y ordenada — nada distrae del aprendizaje."
+      }
+    }
+  },
+  "seo": {
+    "keywords": "tarjetas, aprendizaje, memoria, educación, estudio, flash cards",
+    "landing": {
+      "title": "KotCat",
+      "description": "Sistema eficaz de aprendizaje con tarjetas. Recuerda información más rápido y durante más tiempo."
+    },
+    "learn": {
+      "title": "KotCat Aprender",
+      "description": "Estudia tarjetas y memoriza información eficazmente"
+    },
+    "profile": {
+      "title": "KotCat Perfil",
+      "description": "Gestiona tu perfil y configuraciones de cuenta"
+    },
+    "signin": {
+      "title": "KotCat Iniciar sesión",
+      "description": "Inicia sesión en tu cuenta para acceder a las tarjetas"
+    },
+    "signup": {
+      "title": "KotCat Registrarse",
+      "description": "Crea una cuenta y comienza a estudiar tarjetas"
+    },
+    "notFound": {
+      "title": "KotCat Página no encontrada",
+      "description": "La página solicitada no existe"
+    }
+  },
+  "navigation": {
+    "home": "Inicio",
+    "learn": "Aprender",
+    "signin": "Iniciar sesión",
+    "signup": "Registrarse"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "notRegistered": "Si aún no estás registrado,",
+    "registerLink": "Regístrate",
+    "alreadyRegistered": "¿Ya tienes una cuenta?",
+    "loginLink": "Iniciar sesión",
+    "invalidCredentials": "Correo electrónico o contraseña incorrectos",
+    "noAccount": "¿No tienes una cuenta?",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+    "registerDescription": "Crea una cuenta y comienza a memorizar"
+  },
+  "buttons": {
+    "startLearning": "Aprender palabras",
+    "learnWords": "Aprender palabras",
+    "learnPhrases": "Aprender frases",
+    "tryIt": "Probar",
+    "enterSystem": "Entrar al sistema",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar"
+  },
+  "features": {
+    "title": "Por qué elegirnos",
+    "interactiveCards": {
+      "title": "Tarjetas interactivas",
+      "description": "Crea y estudia tarjetas con preguntas y respuestas"
+    },
+    "adaptiveLearning": {
+      "title": "Aprendizaje adaptativo",
+      "description": "El sistema recuerda tus resultados y adapta el proceso"
+    },
+    "fastLearning": {
+      "title": "Aprendizaje rápido",
+      "description": "Métodos efectivos de memorización para dominio rápido del material"
+    }
+  },
+  "cta": {
+    "title": "¿Listo para empezar a recordar?",
+    "description": "Únete a miles de usuarios que ya han mejorado su memoria"
+  },
+  "cards": {
+    "title": "Tarjetas",
+    "front": "Frente",
+    "back": "Reverso",
+    "create": "Añadir tarjeta",
+    "edit": "Editar tarjeta",
+    "delete": "Eliminar tarjeta",
+    "showAll": "Mostrar todas",
+    "showUnlearned": "Mostrar no aprendidas"
+  },
+  "folders": {
+    "title": "Carpetas",
+    "create": "Crear carpeta",
+    "edit": "Editar carpeta",
+    "delete": "Eliminar carpeta"
+  },
+  "errors": {
+    "generic": "Ocurrió un error",
+    "network": "Error de red",
+    "unauthorized": "No autorizado",
+    "notFound": "No encontrado"
+  },
+  "home": {
+    "title": "Mis tarjetas",
+    "logout": "Cerrar sesión",
+    "welcome": "Bienvenido",
+    "profile": "Perfil"
+  },
+  "forms": {
+    "newCard": "Nueva tarjeta",
+    "newFolder": "Nueva carpeta",
+    "question": "Lado A",
+    "answer": "Lado B",
+    "folderName": "Nombre de carpeta",
+    "add": "Añadir",
+    "create": "Crear",
+    "back": "Atrás",
+    "continue": "Continuar",
+    "continueWithCount": "Continuar aprendiendo ({{count}} tarjetas no aprendidas)",
+    "selectAll": "Seleccionar todo"
+  },
+  "learning": {
+    "allLearned": "Todas las tarjetas aprendidas",
+    "completedCycle": "No quedan tarjetas",
+    "wantToContinue": "Continuar aprendiendo",
+    "showAnswer": "Lado B",
+    "showQuestion": "Lado A",
+    "initialSide": "Lado inicial",
+    "next": "Siguiente",
+    "learned": "Aprendido",
+    "notLearned": "No aprendido"
+  },
+  "import": {
+    "title": "Importar tarjetas",
+    "selectFile": "Seleccionar archivo",
+    "import": "Importar",
+    "importing": "Importando...",
+    "format": "Formato CSV: pregunta, respuesta",
+    "textImport": "Importar texto",
+    "excelImport": "Importar Excel",
+    "excelDescription": "Selecciona archivo Excel con columnas 'Lado A' y 'Lado B'",
+    "excelFormat": "Solo se admiten archivos .xlsx y .xls",
+    "fileSelected": "Archivo seleccionado"
+  },
+  "export": {
+    "export": "Exportar a Excel",
+    "exporting": "Exportando...",
+    "error": "Error de exportación"
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Actualiza tu información personal y preferencias",
+    "profileSection": "Información de cuenta",
+    "usernameLabel": "Nombre para mostrar",
+    "emailLabel": "Correo electrónico",
+    "languageLabel": "Idioma de interfaz",
+    "saveProfile": "Guardar cambios",
+    "profileUpdated": "Perfil actualizado exitosamente",
+    "usernameRequired": "El nombre para mostrar no puede estar vacío",
+    "nothingToUpdate": "Nada que actualizar",
+    "languageSection": "Idioma de interfaz",
+    "saveLanguage": "Guardar idioma",
+    "languageUpdated": "Idioma de interfaz actualizado",
+    "passwordSection": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar nueva contraseña",
+    "savePassword": "Cambiar contraseña",
+    "passwordUpdated": "Contraseña actualizada exitosamente",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "openProfile": "Abrir perfil",
+    "registerGuestTitle": "Registrar perfil permanente",
+    "registerGuestSubtitle": "Completa los detalles para crear una cuenta permanente",
+    "registerGuestButton": "Registrarse",
+    "registerGuestSuccess": "Perfil registrado exitosamente",
+    "passwordLabel": "Contraseña",
+    "getToken": "Obtener token",
+    "token": "Token",
+    "createToken": "Crear token",
+    "creatingToken": "Creando token...",
+    "copyToken": "Copiar",
+    "tokenError": "Error al obtener token"
+  }
+}

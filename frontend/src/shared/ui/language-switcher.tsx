@@ -11,8 +11,15 @@ import type { SelectChangeEvent } from '@mui/material';
 // import { Language } from '@mui/icons-material';
 
 const languages = [
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-  { code: 'en', name: 'English', flag: '🇺🇸' }
+    {code: 'en', name: 'English', flag: '🇺🇸'},
+    {code: 'de', name: 'Deutsch', flag: '🇩🇪'},
+    {code: 'es', name: 'Español', flag: '🇪🇸'},
+    {code: 'fr', name: 'Français', flag: '🇫🇷'},
+    {code: 'pl', name: 'Polski', flag: '🇵🇱'},
+    {code: 'pt', name: 'Português', flag: '🇵🇹'},
+    {code: 'ru', name: 'Русский', flag: '🇷🇺'},
+    {code: 'uk', name: 'Українська', flag: '🇺🇦'},
+    {code: 'zh', name: '中文', flag: '🇨🇳'}
 ];
 
 export const LanguageSwitcher: React.FC = () => {
