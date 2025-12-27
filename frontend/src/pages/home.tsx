@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Grid, Drawer, useMediaQuery, useTheme} from '@mui/material';
@@ -53,6 +53,9 @@ export const HomePage = () => {
     }, [folderName]);
 
 
+    // Используем ref для отслеживания последнего загруженного folderId, чтобы избежать повторных загрузок
+    const lastFetchedFolderId = useRef<string | null>(null);
+
     // Загружаем папки при монтировании компонента
     useEffect(() => {
         fetchFolders();
@@ -65,8 +68,6 @@ export const HomePage = () => {
             if (folderId !== selectedFolderId) {
                 setSelectedFolder(folderId);
             }
-            // Загружаем карточки для этой папки
-            fetchCards(folderId);
         } else if (userId && !folderId && folders.length > 0) {
             // Если в URL есть userId, но нет folderId, редиректим на первую папку
             navigate(`/learn/${userId}/${folders[0].id}`, { replace: true });
@@ -81,7 +82,15 @@ export const HomePage = () => {
             // Если нет ни userId, ни текущего пользователя, редиректим на /learn
             navigate('/learn', { replace: true });
         }
-    }, [userId, folderId, folders, selectedFolderId, setSelectedFolder, navigate, fetchCards, currentUserId]);
+    }, [userId, folderId, folders, selectedFolderId, setSelectedFolder, navigate, currentUserId]);
+
+    // Отдельный useEffect для загрузки карточек, зависит только от folderId
+    useEffect(() => {
+        if (userId && folderId && folderId !== lastFetchedFolderId.current) {
+            lastFetchedFolderId.current = folderId;
+            fetchCards(folderId);
+        }
+    }, [userId, folderId, fetchCards]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
