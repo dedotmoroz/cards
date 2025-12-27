@@ -1,4 +1,5 @@
 import {Box} from "@mui/material";
+import {useTranslation} from "react-i18next";
 import {
     StyledExampleCard,
     StyledBookIcon,
@@ -12,6 +13,8 @@ import {StyledWordIcon} from "@/shared/ui/logo/styled-components.ts";
 
 
 export const ExampleCard = () => {
+    const { t } = useTranslation();
+    
     return(
         <StyledExampleCard>
             <StyledExampleHeader>
@@ -20,10 +23,10 @@ export const ExampleCard = () => {
                 </StyledBookIcon>
                 <Box>
                     <StyledSideA>
-                        overachiever
+                        {t('landing.exampleCard.word')}
                     </StyledSideA>
                     <StyledSideB>
-                        сверхуспевающий, отличник
+                        {t('landing.exampleCard.translation')}
                     </StyledSideB>
                 </Box>
             </StyledExampleHeader>

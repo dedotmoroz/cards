@@ -59,6 +59,11 @@
         "item3": "— Monitores grandes",
         "accent": "A interface é simples, leve e desordenada — nada distrai do aprendizado."
       }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "sobrerrealizador, alto desempenho",
+      "example": "Ser um overachiever às vezes pode levar a problemas de comunicação porque outros podem se sentir pressionados a atender aos seus altos padrões."
     }
   },
   "seo": {

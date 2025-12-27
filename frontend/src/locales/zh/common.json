@@ -59,6 +59,11 @@
         "item3": "— 大显示器",
         "accent": "界面简单、轻量且整洁 — 没有任何东西会分散学习的注意力。"
       }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "高成就者，优等生",
+      "example": "作为一个overachiever有时可能会导致沟通问题，因为其他人可能会感到压力，需要满足你的高标准。"
     }
   },
   "seo": {

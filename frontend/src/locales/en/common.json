@@ -59,6 +59,11 @@
         "item3": "— Large monitors",
         "accent": "The interface is simple, light, and uncluttered — nothing distracts from learning."
       }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "overachiever, high achiever",
+      "example": "Being an overachiever can sometimes lead to communication issues because others may feel pressured to meet your high standards."
     }
   },
   "seo": {

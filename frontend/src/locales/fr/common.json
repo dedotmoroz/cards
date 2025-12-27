@@ -59,6 +59,11 @@
         "item3": "— Grands moniteurs",
         "accent": "L'interface est simple, légère et épurée — rien ne distrait de l'apprentissage."
       }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "surdoué, surperformant",
+      "example": "Être un overachiever peut parfois mener à des problèmes de communication parce que les autres peuvent se sentir pressés de répondre à vos hauts standards."
     }
   },
   "seo": {

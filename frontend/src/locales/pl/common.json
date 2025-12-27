@@ -59,6 +59,11 @@
         "item3": "— Dużych monitorów",
         "accent": "Interfejs jest prosty, lekki i przejrzysty — nic nie rozprasza od nauki."
       }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "przeciętniak, wybitny uczeń",
+      "example": "Bycie overachiever może czasami prowadzić do problemów w komunikacji, ponieważ inni mogą czuć presję, aby sprostać Twoim wysokim standardom."
     }
   },
   "seo": {
