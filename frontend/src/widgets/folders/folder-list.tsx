@@ -22,9 +22,10 @@ interface FolderListProps {
     onSelect: (id: string) => void;
     onRename?: (id: string, name: string) => void;
     onDelete?: (id: string) => void;
+    onFolderSelect?: () => void;
 }
 
-export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }: FolderListProps) => {
+export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, onFolderSelect }: FolderListProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -49,6 +50,10 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete }
             navigate(`/learn/${currentUserId}/${folderId}`);
         } else {
             navigate(`/learn/${folderId}`);
+        }
+        // Закрываем мобильное меню при выборе папки
+        if (onFolderSelect) {
+            onFolderSelect();
         }
     };
 

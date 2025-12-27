@@ -4,7 +4,11 @@ import {CreateFolder} from "@/features/create-folder/index.tsx";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {StyledWrappedBox, StyledCaptionBox, StyledTypography} from "./styled-components.ts";
 
-export const Folders = () => {
+interface FoldersProps {
+    onFolderSelect?: () => void;
+}
+
+export const Folders = ({ onFolderSelect }: FoldersProps) => {
     const { t } = useTranslation();
     const {
         folders,
@@ -28,6 +32,7 @@ export const Folders = () => {
                 onSelect={setSelectedFolder}
                 onRename={updateFolderName}
                 onDelete={deleteFolder}
+                onFolderSelect={onFolderSelect}
             />
         </StyledWrappedBox>
     )

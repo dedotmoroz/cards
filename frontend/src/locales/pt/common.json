@@ -7,7 +7,9 @@
     "appName": "Cartões de vocabulário",
     "firstScreen": {
       "tag": "Uma nova abordagem para aprender idiomas",
-      "title": "Memorize palavras no contexto, não por listas",
+      "title1": "Memorize",
+      "title2": "palavras no contexto,",
+      "title3": "não por listas",
       "description": "Cartões para aprender idiomas que ajudam você a entender, não apenas memorizar. Crie exemplos com IA, salve palavras diretamente do seu navegador e aprenda-as no seu próprio ritmo.",
       "button1": "Começar a aprender",
       "button2": "Como funciona"

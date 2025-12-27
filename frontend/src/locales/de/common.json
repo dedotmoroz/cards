@@ -7,7 +7,9 @@
     "appName": "Vokabelkarten",
     "firstScreen": {
       "tag": "Ein neuer Ansatz zum Sprachenlernen",
-      "title": "Wörter im Kontext lernen, nicht aus Listen",
+      "title1": "Lerne",
+      "title2": "Wörter im Kontext,",
+      "title3": "nicht aus Listen",
       "description": "Sprachlernkarten, die Ihnen helfen zu verstehen, nicht nur auswendig zu lernen. Erstellen Sie Beispiele mit KI, speichern Sie Wörter direkt aus dem Browser und lernen Sie sie in Ihrem eigenen Tempo.",
       "button1": "Lernen beginnen",
       "button2": "So funktioniert's"

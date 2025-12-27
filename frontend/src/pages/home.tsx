@@ -145,7 +145,7 @@ export const HomePage = () => {
                                     handleGoMain={goToHome}
                                 />
                             </StyledLogoPlace>
-                            <Folders />
+                            <Folders onFolderSelect={handleDrawerToggle} />
                         </Box>
                     </Drawer>
                     <StyledCardsBox>

@@ -7,7 +7,9 @@
     "appName": "Karty słownictwa",
     "firstScreen": {
       "tag": "Nowe podejście do nauki języków",
-      "title": "Zapamiętuj słowa w kontekście, nie z list",
+      "title1": "Zapamiętuj",
+      "title2": "słowa w kontekście,",
+      "title3": "nie z list",
       "description": "Karty do nauki języków, które pomagają rozumieć, a nie tylko zapamiętywać. Twórz przykłady za pomocą AI, zapisuj słowa bezpośrednio z przeglądarki i ucz się ich we własnym tempie.",
       "button1": "Rozpocznij naukę",
       "button2": "Jak to działa"

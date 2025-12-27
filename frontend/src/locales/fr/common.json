@@ -7,7 +7,9 @@
     "appName": "Cartes de vocabulaire",
     "firstScreen": {
       "tag": "Une nouvelle approche de l'apprentissage des langues",
-      "title": "Mémorisez les mots en contexte, pas par listes",
+      "title1": "Mémorisez",
+      "title2": "les mots en contexte,",
+      "title3": "pas par listes",
       "description": "Cartes d'apprentissage des langues qui vous aident à comprendre, pas seulement à mémoriser. Créez des exemples avec l'IA, enregistrez des mots directement depuis votre navigateur et apprenez-les à votre rythme.",
       "button1": "Commencer à apprendre",
       "button2": "Comment ça marche"

@@ -442,3 +442,12 @@ export const StyledImagesBox = styled(Box)(() => ({
     minHeight: '400px',
 }));
 
+export const StyledColorTitle = styled(Box)`
+    display: inline;
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 50%, #E60076 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`
+
+

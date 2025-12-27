@@ -12,6 +12,7 @@ import {
     StyledFirstScreenDescription,
     StyledInButton,
     StyledShowButton,
+    StyledColorTitle,
 } from './styled-components.ts'
 
 import {useTranslation} from "react-i18next";
@@ -34,7 +35,7 @@ export const Headline = ({ handleStartLearning }: HeadlineProps) => {
                 label={<StyledFS>{t('landing.firstScreen.tag')}</StyledFS>}
             />
             <StyledFirstScreenTitle>
-                {t('landing.firstScreen.title')}
+                {t('landing.firstScreen.title1')} <StyledColorTitle>{t('landing.firstScreen.title2')}</StyledColorTitle> {t('landing.firstScreen.title3')}
             </StyledFirstScreenTitle>
             <StyledFirstScreenDescription>
                 {t('landing.firstScreen.description')}

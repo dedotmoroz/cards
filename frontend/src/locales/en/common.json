@@ -7,7 +7,9 @@
     "appName": "Vocabulary Cards",
     "firstScreen": {
       "tag": "A new approach to language learning",
-      "title": "Memorize words in context, not by lists",
+      "title1": "Memorize",
+      "title2": "words in context,",
+      "title3": "not by lists",
       "description": "Language learning cards that help you understand, not just memorize. Create examples with AI, save words directly from your browser, and learn them at your own pace.",
       "button1": "Start Learning",
       "button2": "How it works"

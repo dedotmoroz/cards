@@ -5,7 +5,7 @@ import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { ToggleShowOnlyUnlearned } from '@/features/toggle-show-only-unlearned';
 import { SelectAllCards } from '@/features/select-all-cards';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
-import { GenerateAllAiSentencesButton } from '@/features/generate-all-ai-sentences';
+// import { GenerateAllAiSentencesButton } from '@/features/generate-all-ai-sentences';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
@@ -19,7 +19,7 @@ import {
     StyledHeaderCardActions,
     StyledCardHeaderContent,
     StyledHeaderWithButton,
-    StyledMargin,
+    // StyledMargin,
     StyledMarginMobile,
 } from './styled-components.ts';
 
@@ -45,7 +45,14 @@ export const CardList: React.FC<CardListProps> = ({
                                                      // onToggleLearned
 }) => {
   const { t } = useTranslation();
-  const { updateCardApi, updateCardLearnStatus, deleteCard, generateCardSentences, generateAllCardsSentences, generationStatuses } = useCardsStore();
+  const {
+      updateCardApi,
+      updateCardLearnStatus,
+      deleteCard,
+      generateCardSentences,
+      // generateAllCardsSentences,
+      generationStatuses
+  } = useCardsStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [renameOpen, setRenameOpen] = useState(false);
@@ -149,13 +156,13 @@ export const CardList: React.FC<CardListProps> = ({
     }
   };
 
-  const handleGenerateAll = async () => {
-    await generateAllCardsSentences();
-  };
+  // const handleGenerateAll = async () => {
+  //   await generateAllCardsSentences();
+  // };
 
-  const isAnyGenerating = Object.values(generationStatuses).some(
-    status => status.status === 'pending' || status.status === 'polling'
-  );
+  // const isAnyGenerating = Object.values(generationStatuses).some(
+  //   status => status.status === 'pending' || status.status === 'polling'
+  // );
 
   return (
       <StyledBoxWrapper>
@@ -190,13 +197,13 @@ export const CardList: React.FC<CardListProps> = ({
                 </StyledBoxSideB>
             </StyledCardHeaderContent>
             <StyledHeaderCardActions>
-                <StyledMargin>
-                    <GenerateAllAiSentencesButton
-                        onGenerate={handleGenerateAll}
-                        isGenerating={isAnyGenerating}
-                        disabled={filteredCards.length === 0}
-                    />
-                </StyledMargin>
+                {/*<StyledMargin>*/}
+                {/*    <GenerateAllAiSentencesButton*/}
+                {/*        onGenerate={handleGenerateAll}*/}
+                {/*        isGenerating={isAnyGenerating}*/}
+                {/*        disabled={filteredCards.length === 0}*/}
+                {/*    />*/}
+                {/*</StyledMargin>*/}
                 {onSelectAllChange && (
                     <StyledMarginMobile>
                         <SelectAllCards

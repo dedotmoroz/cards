@@ -7,7 +7,9 @@
     "appName": "Tarjetas de vocabulario",
     "firstScreen": {
       "tag": "Un nuevo enfoque para aprender idiomas",
-      "title": "Memoriza palabras en contexto, no por listas",
+      "title1": "Memoriza",
+      "title2": "palabras en contexto,",
+      "title3": "no por listas",
       "description": "Tarjetas para aprender idiomas que te ayudan a entender, no solo memorizar. Crea ejemplos con IA, guarda palabras directamente desde tu navegador y apréndelas a tu propio ritmo.",
       "button1": "Comenzar a aprender",
       "button2": "Cómo funciona"
