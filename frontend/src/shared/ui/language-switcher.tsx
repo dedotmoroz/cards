@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   FormControl, 
   Select, 
@@ -22,12 +23,34 @@ const languages = [
     {code: 'zh', name: '中文', flag: '🇨🇳'}
 ];
 
+const supportedLanguages = languages.map(lang => lang.code);
+
 export const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
     const newLanguage = event.target.value;
-    i18n.changeLanguage(newLanguage);
+    
+    // Проверяем, находимся ли мы на главной странице (/) или языковой странице (/:lang)
+    const pathname = location.pathname;
+    const isLandingPage = pathname === '/';
+    const isLanguagePage = supportedLanguages.some(lang => pathname === `/${lang}`);
+    
+    if (isLandingPage || isLanguagePage) {
+      // Если на главной или языковой странице, перенаправляем на языковую страницу
+      // Английский язык идет на главную страницу (/), остальные на /:lang
+      if (newLanguage === 'en') {
+        // navigate('/');
+        navigate(`/${newLanguage}`);
+      } else {
+        navigate(`/${newLanguage}`);
+      }
+    } else {
+      // На других страницах просто меняем язык интерфейса
+      i18n.changeLanguage(newLanguage);
+    }
   };
 
   return (
