@@ -1,0 +1,38 @@
+WORDS_TO_USE:
+{WORDS_LIST}
+
+TARGET_LANGUAGE: "{TARGET_LANGUAGE}"
+TRANSLATION_LANGUAGE: "{TRANSLATION_LANGUAGE}"
+CEFR_LEVEL: {CEFR_LEVEL}
+
+Instructions:
+
+1) Text Requirements:
+   - Create ONE coherent, engaging text (story, article, narrative, or informative passage).
+   - The text must be a complete, flowing narrative - not separate sentences.
+   - The text should be 150-300 words long (approximately 3-5 paragraphs).
+   - All words from WORDS_TO_USE must be naturally incorporated into the text.
+   - Each word should appear at least once in its exact form (as provided in the word field).
+
+2) Language and Level:
+   - Write the text in TARGET_LANGUAGE.
+   - The text complexity must match CEFR_LEVEL.
+   - Use natural, authentic language appropriate for the level.
+
+3) Translation:
+   - Provide a complete translation of the entire text in TRANSLATION_LANGUAGE.
+   - The translation should be natural and preserve the meaning and style of the original.
+
+4) Output Format:
+   - Output ONLY valid JSON with this exact structure:
+
+{
+  "text": "The complete coherent text in TARGET_LANGUAGE with all words naturally incorporated...",
+  "translation": "The complete translation of the text in TRANSLATION_LANGUAGE..."
+}
+
+Important:
+- Do not include any markdown formatting, explanations, or additional text.
+- Return only the JSON object.
+- Ensure the text is cohesive and reads naturally.
+

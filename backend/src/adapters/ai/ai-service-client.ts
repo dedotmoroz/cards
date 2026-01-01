@@ -74,4 +74,46 @@ export async function fetchGenerationStatus(jobId: string): Promise<GenerateJobS
   });
 }
 
+// Типы для контекстного чтения
+export type ContextRequestPayload = {
+  words: Array<{ word: string; translation: string }>;
+  lang: string;
+  level?: string;
+  translationLang?: string;
+  userId?: string;
+  traceId?: string;
+};
+
+export type ContextJobResponse = {
+  jobId: string;
+};
+
+export type ContextJobStatusText = {
+  text: string;
+  translation: string;
+};
+
+export type ContextJobStatusResponse = {
+  id: string;
+  state: 'waiting' | 'active' | 'completed' | 'failed' | 'delayed' | 'paused' | 'not_found';
+  progress: number;
+  result: null | ContextJobStatusText;
+  error?: string;
+};
+
+export async function requestContextGeneration(
+  payload: ContextRequestPayload,
+): Promise<ContextJobResponse> {
+  return callAiService<ContextJobResponse>('/generate-context', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchContextGenerationStatus(jobId: string): Promise<ContextJobStatusResponse> {
+  return callAiService<ContextJobStatusResponse>(`/jobs/${jobId}`, {
+    method: 'GET',
+  });
+}
+
 

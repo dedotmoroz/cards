@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "worker": "tsx watch src/workers/generateWorker.ts",
+    "worker": "concurrently \"npm run worker:words\" \"npm run worker:context\"",
+    "worker:words": "tsx watch src/workers/generateWorker.ts",
+    "worker:context": "tsx watch src/workers/contextWorker.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "start:worker": "node dist/workers/generateWorker.js",
+    "start:worker": "concurrently \"npm run start:worker:words\" \"npm run start:worker:context\"",
+    "start:worker:words": "node dist/workers/generateWorker.js",
+    "start:worker:context": "node dist/workers/contextWorker.js",
     "test": "vitest"
   },
   "dependencies": {
@@ -22,6 +26,7 @@
   "devDependencies": {
     "@types/ioredis": "^4.28.10",
     "@types/node": "^22.19.0",
+    "concurrently": "^9.1.2",
     "tsx": "^4.20.0",
     "typescript": "^5.6.3",
     "vitest": "^1.6.0"
