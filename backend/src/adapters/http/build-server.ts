@@ -23,7 +23,7 @@ import { UserService } from '../../application/user-service';
 import { PostgresCardRepository } from '../db/postgres-card-repo';
 import { PostgresFolderRepository } from '../db/postgres-folder-repo';
 import { PostgresUserRepository } from '../db/postgres-user-repo';
-import { requestGeneration, fetchGenerationStatus } from '../ai/ai-service-client';
+import { requestGeneration, fetchGenerationStatus, requestContextGeneration } from '../ai/ai-service-client';
 
 import { GetNextContextCardsUseCase, ResetContextReadingUseCase }
     from '../../application/context-reading-service';
@@ -966,6 +966,97 @@ export async function buildServer() {
             });
 
             return reply.send({ok: true});
+        }
+    );
+
+    /**
+     * Контекстное обучение - генерация текста для карточек
+     */
+    fastify.post(
+        '/context-reading/generate',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['cardIds', 'lang'],
+                    properties: {
+                        cardIds: {
+                            type: 'array',
+                            items: { type: 'string', format: 'uuid' },
+                            minItems: 3,
+                            maxItems: 5,
+                        },
+                        lang: { type: 'string' },
+                        level: { type: 'string' },
+                    },
+                },
+                response: {
+                    202: {
+                        type: 'object',
+                        required: ['jobId'],
+                        properties: {
+                            jobId: { type: 'string' },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Generate context text for cards',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Body: { cardIds: string[]; lang: string; level?: string };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const userId = (req.user as any).userId;
+            const { cardIds, lang, level } = req.body;
+
+            // Загружаем карточки
+            const cards = await Promise.all(
+                cardIds.map(id => cardService.getById(id))
+            );
+
+            // Проверяем, что все карточки найдены
+            const missingCards = cards.filter(card => card === null);
+            if (missingCards.length > 0) {
+                return reply.code(404).send({ message: 'Some cards not found' });
+            }
+
+            // Формируем payload для AI-сервиса
+            const words = (cards as NonNullable<typeof cards[0]>[]).map(card => ({
+                word: card.question,
+                translation: card.answer,
+            }));
+
+            // Получаем язык пользователя для перевода
+            const user = await userService.getById(userId);
+            const translationLang = user?.language ?? 'en';
+
+            // Вызываем AI-сервис
+            const { jobId } = await requestContextGeneration({
+                words,
+                lang,
+                level: level ?? 'B1',
+                translationLang,
+                userId,
+                traceId: randomUUID(),
+            });
+
+            return reply.code(202).send({ jobId });
         }
     );
 
