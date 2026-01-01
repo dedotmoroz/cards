@@ -25,12 +25,11 @@ import { PostgresFolderRepository } from '../db/postgres-folder-repo';
 import { PostgresUserRepository } from '../db/postgres-user-repo';
 import { requestGeneration, fetchGenerationStatus } from '../ai/ai-service-client';
 
-// import { GetNextContextCardsUseCase, ResetContextReadingUseCase }
-//     from '../../application/context-reading-service';
-//
-// import { PostgresContextReadingStateRepository, PostgresContextReadingCardRepository }
-//     from '../db/postgres-context-reading-repo';
-//
+import { GetNextContextCardsUseCase, ResetContextReadingUseCase }
+    from '../../application/context-reading-service';
+
+import { PostgresContextReadingStateRepository, PostgresContextReadingCardRepository }
+    from '../db/postgres-context-reading-repo';
 
 import { CreateCardDTO, CardDTO, UpdateCardDTO, CreateFolderDTO, FolderDTO } from './dto'
 import { defaultSetting } from '../../config/app-config';
@@ -178,26 +177,25 @@ export async function buildServer() {
     const userRepo = new PostgresUserRepository();
     const userService = new UserService(userRepo);
 
+    // Репозиторий карточек (ТОЛЬКО для context-reading)
+    const contextReadingCardRepo =
+        new PostgresContextReadingCardRepository();
 
-//     // Репозиторий карточек (ТОЛЬКО для context-reading)
-//     const contextReadingCardRepo =
-//         new PostgresContextReadingCardRepository();
-//
-// // Репозиторий состояния
-//     const contextReadingStateRepo =
-//         new PostgresContextReadingStateRepository();
-//
-// // Use-cases
-//     const getNextContextCardsUseCase =
-//         new GetNextContextCardsUseCase(
-//             contextReadingCardRepo,
-//             contextReadingStateRepo
-//         );
-//
-//     const resetContextReadingUseCase =
-//         new ResetContextReadingUseCase(
-//             contextReadingStateRepo
-//         );
+    // Репозиторий состояния
+    const contextReadingStateRepo =
+        new PostgresContextReadingStateRepository();
+
+    // Use-cases
+    const getNextContextCardsUseCase =
+        new GetNextContextCardsUseCase(
+            contextReadingCardRepo,
+            contextReadingStateRepo
+        );
+
+    const resetContextReadingUseCase =
+        new ResetContextReadingUseCase(
+            contextReadingStateRepo
+        );
 
     /**
      * Создать Карточку
@@ -869,107 +867,107 @@ export async function buildServer() {
     /**
      * Контекстное обучение - получение карточек
      */
-    // fastify.post(
-    //     '/context-reading/next',
-    //     {
-    //         preHandler: [fastify.authenticate],
-    //         schema: {
-    //             body: {
-    //                 type: 'object',
-    //                 required: ['folderId'],
-    //                 properties: {
-    //                     folderId: {type: 'string', format: 'uuid'},
-    //                     limit: {type: 'number', minimum: 1, maximum: 5},
-    //                 },
-    //             },
-    //             response: {
-    //                 200: {
-    //                     type: 'object',
-    //                     properties: {
-    //                         cards: {
-    //                             type: 'array',
-    //                             items: zodToJsonSchema(CardDTO),
-    //                         },
-    //                         progress: {
-    //                             type: 'object',
-    //                             properties: {
-    //                                 used: {type: 'number'},
-    //                                 total: {type: 'number'},
-    //                             },
-    //                         },
-    //                         completed: {type: 'boolean'},
-    //                     },
-    //                 },
-    //             },
-    //             tags: ['context-reading'],
-    //             summary: 'Get next cards for context reading',
-    //         },
-    //     },
-    //     async (
-    //         req: FastifyRequest<{
-    //             Body: { folderId: string; limit?: number };
-    //         }>,
-    //         reply: FastifyReply
-    //     ) => {
-    //         const userId = (req.user as any).userId;
-    //         const {folderId, limit = 3} = req.body;
-    //
-    //         const result = await getNextContextCardsUseCase.execute({
-    //             userId,
-    //             folderId,
-    //             limit,
-    //         });
-    //
-    //         return reply.send({
-    //             cards: result.cards.map(c => c.toPublicDTO()),
-    //             progress: result.progress,
-    //             completed: result.completed,
-    //         });
-    //     }
-    // );
-    //
-    // /**
-    //  * Контекстное обучение - сбросить прогресс контекстного чтения
-    //  */
-    // fastify.post(
-    //     '/context-reading/reset',
-    //     {
-    //         preHandler: [fastify.authenticate],
-    //         schema: {
-    //             body: {
-    //                 type: 'object',
-    //                 required: ['folderId'],
-    //                 properties: {
-    //                     folderId: {type: 'string', format: 'uuid'},
-    //                 },
-    //             },
-    //             response: {
-    //                 200: {
-    //                     type: 'object',
-    //                     properties: {
-    //                         ok: {type: 'boolean'},
-    //                     },
-    //                 },
-    //             },
-    //             tags: ['context-reading'],
-    //             summary: 'Reset context reading progress',
-    //         },
-    //     },
-    //     async (
-    //         req: FastifyRequest<{ Body: { folderId: string } }>,
-    //         reply: FastifyReply
-    //     ) => {
-    //         const userId = (req.user as any).userId;
-    //         const {folderId} = req.body;
-    //
-    //         await resetContextReadingUseCase.execute({
-    //             userId,
-    //             folderId,
-    //         });
-    //
-    //         return reply.send({ok: true});
-    //     }
-    // );
+    fastify.post(
+        '/context-reading/next',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['folderId'],
+                    properties: {
+                        folderId: {type: 'string', format: 'uuid'},
+                        limit: {type: 'number', minimum: 1, maximum: 5},
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            cards: {
+                                type: 'array',
+                                items: zodToJsonSchema(CardDTO),
+                            },
+                            progress: {
+                                type: 'object',
+                                properties: {
+                                    used: {type: 'number'},
+                                    total: {type: 'number'},
+                                },
+                            },
+                            completed: {type: 'boolean'},
+                        },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Get next cards for context reading',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Body: { folderId: string; limit?: number };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const userId = (req.user as any).userId;
+            const {folderId, limit = 3} = req.body;
+
+            const result = await getNextContextCardsUseCase.execute({
+                userId,
+                folderId,
+                limit,
+            });
+
+            return reply.send({
+                cards: result.cards.map(c => c.toPublicDTO()),
+                progress: result.progress,
+                completed: result.completed,
+            });
+        }
+    );
+
+    /**
+     * Контекстное обучение - сбросить прогресс контекстного чтения
+     */
+    fastify.post(
+        '/context-reading/reset',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['folderId'],
+                    properties: {
+                        folderId: {type: 'string', format: 'uuid'},
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            ok: {type: 'boolean'},
+                        },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Reset context reading progress',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Body: { folderId: string } }>,
+            reply: FastifyReply
+        ) => {
+            const userId = (req.user as any).userId;
+            const {folderId} = req.body;
+
+            await resetContextReadingUseCase.execute({
+                userId,
+                folderId,
+            });
+
+            return reply.send({ok: true});
+        }
+    );
 
     /**
      * Регистрация и аутентификация

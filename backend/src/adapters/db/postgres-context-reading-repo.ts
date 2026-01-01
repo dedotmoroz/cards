@@ -1,28 +1,18 @@
 import { eq, and } from 'drizzle-orm';
 import { db } from '../../db/db';
-import { pgTable, uuid, timestamp } from 'drizzle-orm/pg-core';
-import { cards } from '../../db/schema';
+import { cards, contextReadingStates } from '../../db/schema';
 import { toCard } from './mappers/toCard';
+import { Card } from '../../domain/card';
 import { ContextReadingState } from '../../domain/context-reading';
-import { ContextReadingStateRepository } from '../../ports/context-reading-repository';
-
-export const contextReadingStates = pgTable(
-    'context_reading_states',
-    {
-        userId: uuid('user_id').notNull(),
-        folderId: uuid('folder_id').notNull(),
-        usedCardIds: uuid('used_card_ids').array().notNull(),
-        updatedAt: timestamp('updated_at').notNull(),
-    }
-);
+import { CardRepository, ContextReadingStateRepository } from '../../ports/context-reading-repository';
 
 export class PostgresContextReadingCardRepository
-    implements ContextReadingStateRepository {
+    implements CardRepository {
 
     async findUnlearnedByFolder(
         userId: string,
         folderId: string
-    ) {
+    ): Promise<Card[]> {
         const rows = await db
             .select()
             .from(cards)

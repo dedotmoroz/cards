@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, vector, boolean, timestamp, integer, real } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey } from 'drizzle-orm/pg-core';
 
 export const cards = pgTable('cards', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -47,3 +47,16 @@ export const users = pgTable('users', {
   language: text('language'),
   is_guest: boolean('is_guest'),
 });
+
+export const contextReadingStates = pgTable(
+    'context_reading_states',
+    {
+        userId: text('user_id').notNull(),
+        folderId: text('folder_id').notNull(),
+        usedCardIds: text('used_card_ids').array().notNull(),
+        updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+    },
+    (table) => ({
+        pk: primaryKey({ columns: [table.userId, table.folderId] }),
+    })
+);
