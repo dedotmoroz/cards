@@ -23,7 +23,7 @@ import { UserService } from '../../application/user-service';
 import { PostgresCardRepository } from '../db/postgres-card-repo';
 import { PostgresFolderRepository } from '../db/postgres-folder-repo';
 import { PostgresUserRepository } from '../db/postgres-user-repo';
-import { requestGeneration, fetchGenerationStatus, requestContextGeneration } from '../ai/ai-service-client';
+import { requestGeneration, fetchGenerationStatus, requestContextGeneration, fetchContextGenerationStatus } from '../ai/ai-service-client';
 
 import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase }
     from '../../application/context-reading-service';
@@ -1044,6 +1044,61 @@ export async function buildServer() {
             } catch (error) {
                 if (error instanceof Error && error.message === 'Some cards not found') {
                     return reply.code(404).send({ message: error.message });
+                }
+                throw error;
+            }
+        }
+    );
+
+    /**
+     * Контекстное обучение - статус генерации текста
+     */
+    fastify.get(
+        '/context-reading/generate-status',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['jobId'],
+                    properties: {
+                        jobId: { type: 'string' },
+                    },
+                },
+                // Не валидируем response, т.к. структура result зависит от типа job в ai-service
+                tags: ['context-reading'],
+                summary: 'Get context text generation status',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Querystring: { jobId: string };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const { jobId } = req.query;
+
+            try {
+                const status = await fetchContextGenerationStatus(jobId);
+                
+                // Проверяем тип очереди - должен быть 'context', а не 'generate'
+                if (status.queueType && status.queueType !== 'context') {
+                    return reply.code(400).send({ 
+                        message: 'Invalid job type. Expected context job, but got generate job. Please use correct jobId from context-reading/generate endpoint.' 
+                    });
+                }
+                
+                // Если queueType не указан, проверяем структуру результата (обратная совместимость)
+                if (!status.queueType && status.result && 'sentences' in status.result) {
+                    return reply.code(400).send({ 
+                        message: 'Invalid job type. Expected context job, but got generate job. Please use correct jobId from context-reading/generate endpoint.' 
+                    });
+                }
+                
+                return reply.send(status);
+            } catch (error) {
+                if (error instanceof Error && error.message.includes('404')) {
+                    return reply.code(404).send({ message: 'Job not found' });
                 }
                 throw error;
             }

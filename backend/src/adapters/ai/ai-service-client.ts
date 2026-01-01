@@ -99,6 +99,7 @@ export type ContextJobStatusResponse = {
   progress: number;
   result: null | ContextJobStatusText;
   error?: string;
+  queueType?: 'generate' | 'context';
 };
 
 export async function requestContextGeneration(

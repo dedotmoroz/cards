@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline, CircularProgress, Box } from '@mui/material';
 import { HomePage } from '@/pages/home';
 import { LearnPage } from '@/pages/learn';
+import { ContextReadingPage } from '@/pages/context-reading';
 import { SignUpPage } from '@/pages/signup';
 import { SignInPage } from '@/pages/signin';
 import { LandingPage } from '@/pages/landing';
@@ -70,6 +71,7 @@ export default function App() {
                             <Route path="/learn/:userId" element={<HomePage />} />
                             <Route path="/learn/:userId/:folderId" element={<HomePage />} />
                             <Route path="/learn/:userId/:folderId/study" element={<PageContainer><LearnPage /></PageContainer>} />
+                            <Route path="/learn/:userId/:folderId/context-reading" element={<PageContainer><ContextReadingPage /></PageContainer>} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<NotFoundPage />} />

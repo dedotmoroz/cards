@@ -248,18 +248,35 @@ export default async function registerApi(app: FastifyInstance) {
             progress: number;
             result: GenerateJobResult | ContextJobResult | null;
             error?: string;
+            queueType?: 'generate' | 'context';
         };
     }>("/jobs/:id", {
-        schema: JobStatusSchema as unknown as FastifySchema,
+        schema: {
+            params: {
+                type: 'object',
+                required: ['id'],
+                properties: {
+                    id: { type: 'string' },
+                },
+            },
+        } as unknown as FastifySchema,
         handler: async (req, reply) => {
             const { id } = req.params;
             
-            // Пробуем найти задачу в очереди generate
-            let job = await Job.fromId<GenerateJobInput, GenerateJobResult>(generateQueue, id);
+            // Сначала пробуем найти в очереди context (для контекстного чтения)
+            // Потом в очереди generate (для генерации предложений)
+            // Это важно, так как jobId могут пересекаться между очередями в Redis
+            let job = await Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id) as any;
+            let queueType: 'generate' | 'context' | undefined = undefined;
             
-            // Если не найдена, пробуем в очереди context
-            if (!job) {
-                job = await Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id) as any;
+            if (job) {
+                queueType = 'context';
+            } else {
+                // Если не найдена в context, пробуем в generate
+                job = await Job.fromId<GenerateJobInput, GenerateJobResult>(generateQueue, id);
+                if (job) {
+                    queueType = 'generate';
+                }
             }
 
             if (!job) {
@@ -277,7 +294,7 @@ export default async function registerApi(app: FastifyInstance) {
             const result = state === "completed" ? (job.returnvalue as GenerateJobResult | ContextJobResult) : null;
             const failedReason = state === "failed" ? job.failedReason : undefined;
 
-            return reply.send({ id, state, progress, result, error: failedReason });
+            return reply.send({ id, state, progress, result, error: failedReason, queueType });
         },
     });
 
