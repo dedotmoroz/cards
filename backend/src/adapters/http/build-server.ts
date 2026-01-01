@@ -25,7 +25,7 @@ import { PostgresFolderRepository } from '../db/postgres-folder-repo';
 import { PostgresUserRepository } from '../db/postgres-user-repo';
 import { requestGeneration, fetchGenerationStatus, requestContextGeneration } from '../ai/ai-service-client';
 
-import { GetNextContextCardsUseCase, ResetContextReadingUseCase }
+import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase }
     from '../../application/context-reading-service';
 
 import { PostgresContextReadingStateRepository, PostgresContextReadingCardRepository }
@@ -195,6 +195,13 @@ export async function buildServer() {
     const resetContextReadingUseCase =
         new ResetContextReadingUseCase(
             contextReadingStateRepo
+        );
+
+    const generateContextTextUseCase =
+        new GenerateContextTextUseCase(
+            cardRepo,
+            userRepo,
+            requestContextGeneration
         );
 
     /**
@@ -1025,38 +1032,21 @@ export async function buildServer() {
             const userId = (req.user as any).userId;
             const { cardIds, lang, level } = req.body;
 
-            // Загружаем карточки
-            const cards = await Promise.all(
-                cardIds.map(id => cardService.getById(id))
-            );
+            try {
+                const result = await generateContextTextUseCase.execute({
+                    userId,
+                    cardIds,
+                    lang,
+                    level,
+                });
 
-            // Проверяем, что все карточки найдены
-            const missingCards = cards.filter(card => card === null);
-            if (missingCards.length > 0) {
-                return reply.code(404).send({ message: 'Some cards not found' });
+                return reply.code(202).send(result);
+            } catch (error) {
+                if (error instanceof Error && error.message === 'Some cards not found') {
+                    return reply.code(404).send({ message: error.message });
+                }
+                throw error;
             }
-
-            // Формируем payload для AI-сервиса
-            const words = (cards as NonNullable<typeof cards[0]>[]).map(card => ({
-                word: card.question,
-                translation: card.answer,
-            }));
-
-            // Получаем язык пользователя для перевода
-            const user = await userService.getById(userId);
-            const translationLang = user?.language ?? 'en';
-
-            // Вызываем AI-сервис
-            const { jobId } = await requestContextGeneration({
-                words,
-                lang,
-                level: level ?? 'B1',
-                translationLang,
-                userId,
-                traceId: randomUUID(),
-            });
-
-            return reply.code(202).send({ jobId });
         }
     );
 

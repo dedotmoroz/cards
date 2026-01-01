@@ -1,6 +1,10 @@
+import { randomUUID } from 'crypto';
 import { ContextReadingState } from '../domain/context-reading'
-import { CardRepository, ContextReadingStateRepository } from '../ports/context-reading-repository'
+import { CardRepository as ContextReadingCardRepository, ContextReadingStateRepository } from '../ports/context-reading-repository'
+import { CardRepository } from '../ports/card-repository'
+import { UserRepository } from '../ports/user-repository'
 import { Card } from '../domain/card'
+import type { ContextRequestPayload, ContextJobResponse } from '../adapters/ai/ai-service-client'
 
 function shuffle<T>(arr: T[]): T[] {
     return [...arr].sort(() => Math.random() - 0.5)
@@ -8,7 +12,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 export class GetNextContextCardsUseCase {
     constructor(
-        private readonly cardRepo: CardRepository,
+        private readonly cardRepo: ContextReadingCardRepository,
         private readonly stateRepo: ContextReadingStateRepository
     ) {}
 
@@ -85,5 +89,55 @@ export class ResetContextReadingUseCase {
         const { userId, folderId } = params;
 
         await this.stateRepo.reset(userId, folderId);
+    }
+}
+
+export class GenerateContextTextUseCase {
+    constructor(
+        private readonly cardRepo: CardRepository,
+        private readonly userRepo: UserRepository,
+        private readonly requestContextGeneration: (payload: ContextRequestPayload) => Promise<ContextJobResponse>
+    ) {}
+
+    async execute(params: {
+        userId: string;
+        cardIds: string[];
+        lang: string;
+        level?: string;
+    }): Promise<{ jobId: string }> {
+        const { userId, cardIds, lang, level } = params;
+
+        // Загружаем карточки
+        const cards = await Promise.all(
+            cardIds.map(id => this.cardRepo.findById(id))
+        );
+
+        // Проверяем, что все карточки найдены
+        const missingCards = cards.filter(card => card === null);
+        if (missingCards.length > 0) {
+            throw new Error('Some cards not found');
+        }
+
+        // Формируем payload для AI-сервиса
+        const words = (cards as NonNullable<typeof cards[0]>[]).map(card => ({
+            word: card.question,
+            translation: card.answer,
+        }));
+
+        // Получаем язык пользователя для перевода
+        const user = await this.userRepo.findById(userId);
+        const translationLang = user?.language ?? 'en';
+
+        // Вызываем AI-сервис
+        const { jobId } = await this.requestContextGeneration({
+            words,
+            lang,
+            level: level ?? 'B1',
+            translationLang,
+            userId,
+            traceId: randomUUID(),
+        });
+
+        return { jobId };
     }
 }
