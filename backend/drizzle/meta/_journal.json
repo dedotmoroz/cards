@@ -15,6 +15,13 @@
       "when": 1762876800000,
       "tag": "0002_add_card_sentences",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767385270855,
+      "tag": "0002_concerned_doctor_octopus",
+      "breakpoints": true
     }
   ]
 }
