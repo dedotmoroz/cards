@@ -1,38 +1,69 @@
 WORDS_TO_USE:
 {WORDS_LIST}
 
-TARGET_LANGUAGE: "{TARGET_LANGUAGE}"
-TRANSLATION_LANGUAGE: "{TRANSLATION_LANGUAGE}"
 CEFR_LEVEL: {CEFR_LEVEL}
 
 Instructions:
 
-1) Text Requirements:
-   - Create ONE coherent, engaging text (story, article, narrative, or informative passage).
-   - The text must be a complete, flowing narrative - not separate sentences.
-   - The text should be 150-300 words long (approximately 3-5 paragraphs).
-   - All words from WORDS_TO_USE must be naturally incorporated into the text.
-   - Each word should appear at least once in its exact form (as provided in the word field).
+1) Understanding WORDS_TO_USE:
+   - Each item in WORDS_TO_USE contains:
+     a) a word or phrase in its ORIGINAL LANGUAGE (this is the form that MUST be used in the text)
+     b) an optional explanation or translation in parentheses
+   - Text inside parentheses is provided ONLY to clarify meaning.
+   - Parentheses content MUST NOT appear in the generated text.
+   - The AI must automatically:
+     - infer the original language of each word or phrase
+     - infer the target translation language from the explanations in parentheses
 
-2) Language and Level:
-   - Write the text in TARGET_LANGUAGE.
-   - The text complexity must match CEFR_LEVEL.
-   - Use natural, authentic language appropriate for the level.
+2) Language Selection:
+   - The main text MUST be written in the dominant original language of WORDS_TO_USE.
+   - The translation MUST be written in the dominant language used inside the parentheses.
+   - No languages are explicitly provided — the AI must infer them.
 
-3) Translation:
-   - Provide a complete translation of the entire text in TRANSLATION_LANGUAGE.
-   - The translation should be natural and preserve the meaning and style of the original.
+3) Text Requirements:
+   - Create ONE coherent, engaging text (story, article, or narrative).
+   - The text must be a complete, flowing narrative — not a list of sentences.
+   - All original words or phrases from WORDS_TO_USE must be used naturally.
+   - Words may be grammatically transformed if appropriate.
+   - Across the entire text, each word or phrase from WORDS_TO_USE should appear multiple times.
+   - On average, each sentence should contain around 2 words from WORDS_TO_USE.
+   - The text should be compact and concise, avoiding unnecessary details or filler.
+   - Prefer shorter sentences and a limited number of sentences while keeping the text coherent.
+   - Aim for the minimum length required to naturally incorporate all words.
 
-4) Output Format:
+4) Level:
+   - The text complexity must strictly match CEFR_LEVEL.
+   - Use natural, authentic language appropriate for this level.
+
+5) Translation:
+   - Provide a complete, natural translation of the entire text.
+   - Translate meaning, not form.
+   - Each word or phrase from WORDS_TO_USE must be translated according to its meaning from the parentheses.
+
+6) Output Format:
+   - Do NOT swap these fields.
    - Output ONLY valid JSON with this exact structure:
 
 {
-  "text": "The complete coherent text in TARGET_LANGUAGE with all words naturally incorporated...",
-  "translation": "The complete translation of the text in TRANSLATION_LANGUAGE..."
+  "text": "Complete coherent text in the inferred original language",
+  "translation": "Complete translation in the inferred translation language"
 }
 
-Important:
-- Do not include any markdown formatting, explanations, or additional text.
-- Return only the JSON object.
-- Ensure the text is cohesive and reads naturally.
+7) Self-Check and Regeneration:
+   - After generating the text, internally verify that:
+     a) ALL words or phrases from WORDS_TO_USE are used at least once
+     b) The text reads naturally and is not overloaded with vocabulary
+     c) The text matches the specified CEFR_LEVEL
+   - If these conditions are not met, regenerate the text.
+   - Do NOT mention the self-check in the output.
+   - Verify that the "text" field is written in the dominant original language of WORDS_TO_USE.
+   - Verify that the "translation" field is written in the dominant language used inside parentheses.
+   - Verify that original words or phrases from WORDS_TO_USE appear ONLY in "text" and NEVER in "translation".
+   - Verify that "text" and "translation" are NOT swapped.
+   - If any of these checks fail, regenerate the entire output.
 
+Important:
+- Do NOT include explanations, comments, or markdown.
+- Do NOT repeat WORDS_TO_USE in the output.
+- Do NOT include text from parentheses in the original text.
+- Return ONLY the JSON object.

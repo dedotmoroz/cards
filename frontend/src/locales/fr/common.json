@@ -159,6 +159,7 @@
     "front": "Recto",
     "back": "Verso",
     "create": "Ajouter une carte",
+    "context": "Contexte",
     "edit": "Modifier la carte",
     "delete": "Supprimer la carte",
     "showAll": "Afficher tout",

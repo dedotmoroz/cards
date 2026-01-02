@@ -2,7 +2,7 @@ import "dotenv/config";
 import { Worker, Job } from "bullmq";
 import { redis } from "../redis/connection";
 import { queueName, GenerateJobInput, GenerateJobResult } from "../queues/generateQueue";
-import { generateSentences } from "../services/openaiService"; // 👈 вот это добавляем
+import { generateSentences } from "../services/generateService"; // 👈 вот это добавляем
 
 // (заглушка) генерация предложений.
 // Здесь позже подключишь реальный вызов модели (OpenAI и т.п.)

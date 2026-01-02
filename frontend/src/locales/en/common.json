@@ -159,6 +159,7 @@
     "front": "Front",
     "back": "Back",
     "create": "Add Card",
+    "context": "Context",
     "edit": "Edit Card",
     "delete": "Delete Card",
     "showAll": "Show All",
@@ -256,5 +257,18 @@
     "creatingToken": "Creating token...",
     "copyToken": "Copy",
     "tokenError": "Error getting token"
+  },
+  "contextReading": {
+    "title": "Context Reading",
+    "text": "Text",
+    "translation": "Translation",
+    "generating": "Generating text...",
+    "waiting": "Waiting for generation to start...",
+    "reset": "Reset",
+    "next": "Next",
+    "back": "Back",
+    "words": "Words from content",
+    "progress": "{{used}}/{{total}} (remaining: {{remaining}})",
+    "languageLevel": "Language Level"
   }
 }

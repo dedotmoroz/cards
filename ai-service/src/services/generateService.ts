@@ -12,12 +12,12 @@ const client = new OpenAI({
 
 // читаем файлы один раз при загрузке модуля
 const systemPrompt = fs.readFileSync(
-    path.join(__dirname, "../prompts/aiSystemPrompt.txt"),
+    path.join(__dirname, "../prompts/generateSystemPrompt.txt"),
     "utf8"
 );
 
 const userTemplate = fs.readFileSync(
-    path.join(__dirname, "../prompts/aiUserPrompt.txt"),
+    path.join(__dirname, "../prompts/generateUserPrompt.txt"),
     "utf8"
 );
 

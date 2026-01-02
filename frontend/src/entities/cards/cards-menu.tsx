@@ -3,6 +3,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DriveFolderUpload from '@mui/icons-material/DriveFolderUpload';
 
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import { useTranslation } from 'react-i18next';
 import {useState} from "react";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
@@ -10,9 +11,16 @@ import {ImportCardsButton} from "@/features/import-cards";
 import { MenuUI } from '@/shared/ui/menu-ui';
 import { StyledIconButton } from './styled-components.ts';
 import { cardsApi } from '@/shared/api/cardsApi';
+import {useNavigate, useParams} from "react-router-dom";
+import {useAuthStore} from "@/shared/store/authStore.ts";
 
 export const CardsMenu = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const { userId, folderId: folderIdFromUrl } = useParams<{ userId?: string; folderId?: string }>();
+    const { user } = useAuthStore();
+    const currentUserId = user?.id;
+
     const { selectedFolderId } = useFoldersStore();
 
     const [isImportingCards, setIsImportingCards] = useState(false);
@@ -29,6 +37,13 @@ export const CardsMenu = () => {
 
     const handleImportClick = () => {
         setIsImportingCards(true);
+        handleMenuClose();
+    };
+
+    const handleGoToContent = () => {
+        const currentFolderId = folderIdFromUrl || selectedFolderId;
+        const currentUserIdForNav = userId || currentUserId;
+        navigate(`/learn/${currentUserIdForNav}/${currentFolderId}/context-reading`)
         handleMenuClose();
     };
 
@@ -79,6 +94,10 @@ export const CardsMenu = () => {
                 <MenuItem onClick={handleExportClick} disabled={!selectedFolderId || isExporting}>
                     <FileDownloadIcon sx={{mr: 1}}/>
                     {isExporting ? t('export.exporting') : t('export.export')}
+                </MenuItem>
+                <MenuItem onClick={handleGoToContent} disabled={!selectedFolderId}>
+                    <AutoStoriesOutlinedIcon sx={{mr: 1}}/>
+                    {t('cards.context')}
                 </MenuItem>
             </MenuUI>
             <ImportCardsButton isImportingCards={isImportingCards} setIsImportingCards={setIsImportingCards}/>

@@ -159,6 +159,7 @@
     "front": "正面",
     "back": "背面",
     "create": "添加卡片",
+    "context": "上下文",
     "edit": "编辑卡片",
     "delete": "删除卡片",
     "showAll": "显示全部",

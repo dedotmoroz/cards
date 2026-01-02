@@ -17,7 +17,7 @@ vi.mock("openai", () => ({
     },
 }));
 
-import { generateSentences } from "../src/services/openaiService";
+import { generateSentences } from "../src/services/generateService";
 
 describe("generateSentences", () => {
     beforeEach(() => {
