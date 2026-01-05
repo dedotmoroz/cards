@@ -24,12 +24,19 @@ import { PostgresCardRepository } from '../db/postgres-card-repo';
 import { PostgresFolderRepository } from '../db/postgres-folder-repo';
 import { PostgresUserRepository } from '../db/postgres-user-repo';
 import { requestGeneration, fetchGenerationStatus, requestContextGeneration, fetchContextGenerationStatus } from '../ai/ai-service-client';
+import { PostgresTelegramNonceRepository } from '../db/postgres-telegram-nonce-repo';
+import { PostgresExternalAccountRepository } from '../db/postgres-external-account-repo'
+import { ExternalAccountAlreadyBoundError, UserAlreadyHasExternalAccountError } from '../../domain/external-account'
 
 import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase }
     from '../../application/context-reading-service';
 
 import { PostgresContextReadingStateRepository, PostgresContextReadingCardRepository }
     from '../db/postgres-context-reading-repo';
+
+import { TelegramAuthService, InvalidOrExpiredNonceError } from '../../application/telegram-auth-service';
+import { ExternalAccountService } from '../../application/external-account-service';
+
 
 import { CreateCardDTO, CardDTO, UpdateCardDTO, CreateFolderDTO, FolderDTO } from './dto'
 import { defaultSetting } from '../../config/app-config';
@@ -75,6 +82,31 @@ export async function buildServer() {
     });
 
     // ✅ Декоратор для получения текущего пользователя
+    // fastify.decorate(
+    //     'authenticate',
+    //     async function (request: any, reply: any) {
+    //         try {
+    //             let token: string | undefined;
+    //
+    //             const authHeader = request.headers['authorization'] as string | undefined;
+    //             if (authHeader && authHeader.startsWith('Bearer ')) {
+    //                 token = authHeader.slice(7);
+    //             } else if (request.cookies?.token) {
+    //                 token = request.cookies.token;
+    //             }
+    //
+    //             if (!token) {
+    //                 throw new Error('No token provided');
+    //             }
+    //
+    //             await request.jwtVerify({ token });
+    //         } catch (err) {
+    //             request.log.error({ err }, 'Auth failed');
+    //             reply.code(401).send({ message: 'Unauthorized' });
+    //         }
+    //     }
+    // );
+
     fastify.decorate(
         'authenticate',
         async function (request: any, reply: any) {
@@ -89,12 +121,38 @@ export async function buildServer() {
                 }
 
                 if (!token) {
-                    throw new Error('No token provided');
+                    reply.code(401).send({ message: 'Unauthorized' });
+                    return;
                 }
 
                 await request.jwtVerify({ token });
             } catch (err) {
                 request.log.error({ err }, 'Auth failed');
+                reply.code(401).send({ message: 'Unauthorized' });
+            }
+        }
+    );
+
+    fastify.decorate(
+        'authenticateService',
+        async function (request: any, reply: any) {
+            try {
+                const authHeader = request.headers['authorization'] as string | undefined;
+                if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                    reply.code(401).send({ message: 'Unauthorized' });
+                    return;
+                }
+
+                const token = authHeader.slice(7);
+                await request.jwtVerify({ token });
+                const payload = request.user as { type?: string };
+
+                if (payload.type !== 'bot') {
+                    reply.code(403).send({ message: 'Forbidden' });
+                    return;
+                }
+            } catch (err) {
+                request.log.error({ err }, 'Service auth failed');
                 reply.code(401).send({ message: 'Unauthorized' });
             }
         }
@@ -203,6 +261,15 @@ export async function buildServer() {
             userRepo,
             requestContextGeneration
         );
+
+    const telegramNonceRepository = new PostgresTelegramNonceRepository();
+    const externalAccountRepo = new PostgresExternalAccountRepository();
+    const externalAccountService = new ExternalAccountService(externalAccountRepo);
+
+    const telegramAuthService = new TelegramAuthService(
+        telegramNonceRepository,
+        externalAccountService
+    );
 
     /**
      * Создать Карточку
@@ -1759,6 +1826,199 @@ export async function buildServer() {
             const body = z.object({ idToken: z.string() }).parse(req.body);
             const token = await userService.loginWithGoogle(body.idToken);
             return reply.send({ token });
+        }
+    );
+
+    /**
+     * Авторизация через Telegram
+     */
+    fastify.post(
+        '/telegram/auth/nonce',
+        {
+            preHandler: [fastify.authenticateService],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['telegramUserId'],
+                    properties: {
+                        telegramUserId: { type: 'number' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            nonce: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['telegram'],
+                summary: 'Telegram nonce',
+            },
+        },
+        async (request, reply) => {
+            const { telegramUserId } = request.body as {
+                telegramUserId: number;
+            };
+
+            const { nonce } =
+                await telegramAuthService.createNonce(telegramUserId);
+
+            reply.send({ nonce });
+        }
+    );
+
+    /**
+     * Привязка Telegram аккаунта к пользователю
+     */
+    fastify.post(
+        '/telegram/auth/bind',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['nonce'],
+                    properties: {
+                        nonce: { type: 'string', minLength: 1 },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            ok: { type: 'boolean' },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                    409: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['telegram'],
+                summary: 'Bind Telegram account to user',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Body: { nonce: string } }>,
+            reply: FastifyReply
+        ) => {
+            const { nonce } = req.body;
+            const userId = (req.user as any).userId;
+
+            try {
+                await telegramAuthService.bindByNonce({
+                    nonce,
+                    userId,
+                });
+
+                return reply.send({ ok: true });
+            } catch (error) {
+                // ❌ Невалидный или протухший nonce
+                if (error instanceof InvalidOrExpiredNonceError) {
+                    return reply
+                        .code(400)
+                        .send({ message: 'Invalid or expired nonce' });
+                }
+
+                // ❌ Telegram уже привязан
+                if (error instanceof ExternalAccountAlreadyBoundError) {
+                    return reply
+                        .code(409)
+                        .send({ message: 'Telegram account already bound' });
+                }
+
+                // ❌ Пользователь уже привязал Telegram
+                if (error instanceof UserAlreadyHasExternalAccountError) {
+                    return reply
+                        .code(409)
+                        .send({ message: 'User already has Telegram account bound' });
+                }
+
+                throw error;
+            }
+        }
+    );
+
+    /**
+     * Информация о Telegram-привязке
+     */
+    fastify.get(
+        '/telegram/me',
+        {
+            preHandler: [fastify.authenticateService],
+            schema: {
+                headers: {
+                    type: 'object',
+                    required: ['x-telegram-user-id'],
+                    properties: {
+                        'x-telegram-user-id': { type: 'string' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            linked: { type: 'boolean' },
+                            userId: { type: 'string', format: 'uuid' },
+                            name: { type: 'string' },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['telegram'],
+                summary: 'Get Telegram account binding status',
+            },
+        },
+        async (req, reply) => {
+            const telegramUserIdRaw =
+                req.headers['x-telegram-user-id'];
+
+            const telegramUserId = String(telegramUserIdRaw);
+
+            if (!telegramUserId) {
+                return reply
+                    .code(400)
+                    .send({ message: 'Missing telegram user id' });
+            }
+
+            const externalAccount =
+                await externalAccountRepo.findByProviderAndExternalId(
+                    'telegram',
+                    telegramUserId
+                );
+
+            if (!externalAccount) {
+                return reply.send({ linked: false });
+            }
+
+            const user = await userService.getById(
+                externalAccount.userId
+            );
+
+            if (!user) {
+                // теоретически не должно происходить
+                return reply.send({ linked: false });
+            }
+
+            return reply.send({
+                linked: true,
+                userId: user.id,
+                name: user.name ?? null,
+            });
         }
     );
 

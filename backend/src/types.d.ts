@@ -4,6 +4,7 @@ import 'fastify';
 declare module 'fastify' {
     interface FastifyInstance {
         authenticate: any;
+        authenticateService: any;
     }
 
     interface FastifyRequest {

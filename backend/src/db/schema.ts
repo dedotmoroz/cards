@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey, bigint } from 'drizzle-orm/pg-core';
 
 export const cards = pgTable('cards', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -60,3 +60,22 @@ export const contextReadingStates = pgTable(
         pk: primaryKey({ columns: [table.userId, table.folderId] }),
     })
 );
+
+export const telegramAuthNonce = pgTable(
+    'telegram_auth_nonce',
+    {
+        nonce: text('nonce').primaryKey(),
+        telegramUserId: bigint('telegram_user_id', {mode: 'number'}).notNull(),
+        expiresAt: timestamp('expires_at').notNull(),
+        usedAt: timestamp('used_at'),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
+    });
+
+export const externalAccounts = pgTable(
+    'external_accounts',
+    {
+        provider: text('provider').notNull(),
+        externalId: text('external_id').notNull(),
+        userId: uuid('user_id').notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
+    });
