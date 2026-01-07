@@ -1,7 +1,12 @@
-import { CircularProgress } from '@mui/material';
-import ReplayIcon from '@mui/icons-material/Replay';
 import type { CardGenerationState } from '@/shared/store/cardsStore';
-import { StyledGenerateButton } from './styled-components';
+import {
+    StyledGenerateButton,
+    StyledAutoAwesomeIcon,
+    StyledCircularProgress
+} from './styled-components';
+
+// import ReplayIcon from '@mui/icons-material/Replay';
+// import AutoModeIcon from '@mui/icons-material/AutoMode';
 
 interface GenerateAiSentencesButtonProps {
     cardId: string;
@@ -26,8 +31,8 @@ export const GenerateAiSentencesButton = ({ cardId, generationStatus, onGenerate
             disabled={isGenerating}
         >
             {isGenerating
-                ? (<CircularProgress size={16} />)
-                : (<ReplayIcon fontSize="small" />)
+                ? (<StyledCircularProgress size={16} />)
+                : (<StyledAutoAwesomeIcon fontSize="small" />)
             }
         </StyledGenerateButton>
     );
