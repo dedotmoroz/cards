@@ -22,6 +22,13 @@
       "when": 1767385270855,
       "tag": "0002_concerned_doctor_octopus",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767643290380,
+      "tag": "0003_sleepy_shotgun",
+      "breakpoints": true
     }
   ]
 }

@@ -137,19 +137,16 @@ export async function buildServer() {
         'authenticateService',
         async function (request: any, reply: any) {
             try {
-                const authHeader = request.headers['authorization'] as string | undefined;
-                if (!authHeader || !authHeader.startsWith('Bearer ')) {
-                    reply.code(401).send({ message: 'Unauthorized' });
-                    return;
+                const authHeader = request.headers['authorization'];
+                if (!authHeader?.startsWith('Bearer ')) {
+                    return reply.code(401).send({ message: 'Unauthorized' });
                 }
 
                 const token = authHeader.slice(7);
-                await request.jwtVerify({ token });
-                const payload = request.user as { type?: string };
+                const payload = await request.jwtVerify({ token });
 
                 if (payload.type !== 'bot') {
-                    reply.code(403).send({ message: 'Forbidden' });
-                    return;
+                    return reply.code(403).send({ message: 'Forbidden' });
                 }
             } catch (err) {
                 request.log.error({ err }, 'Service auth failed');
