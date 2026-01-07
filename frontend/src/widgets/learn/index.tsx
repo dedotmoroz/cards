@@ -23,6 +23,7 @@ interface LearningHook {
   learnedCount: number;
   unlearnedCount: number;
   initialDisplayCardsCount: number;
+  initialSide: 'question' | 'answer';
   
   // Actions
   toggleAnswer: () => void;
@@ -105,6 +106,8 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                 isFirst={learning.currentIndex === 0}
                 onPrevious={handlePrevious}
                 onNext={handleNext}
+                initialSide={learning.initialSide}
+                onSideChange={learning.setInitialSide}
             />
 
             {/* Card or completion screen */}

@@ -8,7 +8,7 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
   const [phrasesMode, setPhrasesMode] = useState(false);
-  const [, setInitialSideState] = useState<'question' | 'answer'>(initialSideFromUrl || 'question');
+  const [initialSideState, setInitialSideState] = useState<'question' | 'answer'>(initialSideFromUrl || 'question');
   // Используем ref для хранения актуального значения initialSide
   const initialSideRef = useRef<'question' | 'answer'>(initialSideFromUrl || 'question');
   // showAnswer = true означает показывать question (согласно логике CardFlip: showAnswer ? question : answer)
@@ -251,9 +251,11 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
     // В CardFlip: showAnswer ? question : answer
     // Если side = 'question', то showAnswer = true (показываем question)
     // Если side = 'answer', то showAnswer = false (показываем answer)
-    // НЕ меняем showAnswer здесь - пусть пользователь сам переключает карточку
-    // showAnswer будет сброшен только при переходе к новой карточке
+    // Меняем showAnswer для текущей карточки сразу
+    setShowAnswer(side === 'question');
   };
+
+  const initialSide = initialSideState;
 
   return {
     // State
@@ -270,6 +272,7 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
     learnedCount,
     unlearnedCount,
     initialDisplayCardsCount,
+    initialSide,
     
     // Actions
     toggleAnswer,

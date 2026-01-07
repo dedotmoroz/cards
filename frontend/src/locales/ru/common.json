@@ -197,6 +197,8 @@
     "selectAll": "Выбрать все"
   },
   "learning": {
+    "sideA": "Сторона A",
+    "sideB": "Сторона B",
     "allLearned": "Все карточки выучены",
     "completedCycle": "Карточки закончились",
     "wantToContinue": "Продолжить обучение",

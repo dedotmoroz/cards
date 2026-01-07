@@ -197,6 +197,8 @@
     "selectAll": "Вибрати все"
   },
   "learning": {
+    "sideA": "Сторона A",
+    "sideB": "Сторона B",
     "allLearned": "Всі картки вивчені",
     "completedCycle": "Карток не залишилося",
     "wantToContinue": "Продовжити навчання",

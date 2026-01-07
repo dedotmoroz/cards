@@ -197,6 +197,8 @@
     "selectAll": "Seleccionar todo"
   },
   "learning": {
+    "sideA": "Lado A",
+    "sideB": "Lado B",
     "allLearned": "Todas las tarjetas aprendidas",
     "completedCycle": "No quedan tarjetas",
     "wantToContinue": "Continuar aprendiendo",

@@ -197,6 +197,8 @@
     "selectAll": "Alle auswählen"
   },
   "learning": {
+    "sideA": "Seite A",
+    "sideB": "Seite B",
     "allLearned": "Alle Karten gelernt",
     "completedCycle": "Es sind keine Karten mehr übrig",
     "wantToContinue": "Lernen fortsetzen",

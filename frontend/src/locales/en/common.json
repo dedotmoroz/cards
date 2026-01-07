@@ -197,6 +197,8 @@
     "selectAll": "Select All"
   },
   "learning": {
+    "sideA": "Side A",
+    "sideB": "Side B",
     "allLearned": "All cards learned",
     "completedCycle": "There are no cards left",
     "wantToContinue": "Continue learning",

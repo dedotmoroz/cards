@@ -197,6 +197,8 @@
     "selectAll": "Zaznacz wszystko"
   },
   "learning": {
+    "sideA": "Strona A",
+    "sideB": "Strona B",
     "allLearned": "Wszystkie karty przyswojone",
     "completedCycle": "Nie pozostały żadne karty",
     "wantToContinue": "Kontynuuj naukę",

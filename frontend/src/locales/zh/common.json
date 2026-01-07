@@ -197,6 +197,8 @@
     "selectAll": "全选"
   },
   "learning": {
+    "sideA": "A面",
+    "sideB": "B面",
     "allLearned": "所有卡片已学习",
     "completedCycle": "没有剩余的卡片",
     "wantToContinue": "继续学习",
