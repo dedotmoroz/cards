@@ -105,7 +105,6 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                 isFirst={learning.currentIndex === 0}
                 onPrevious={handlePrevious}
                 onNext={handleNext}
-                onBack={handleBackToFolders}
             />
 
             {/* Card or completion screen */}
