@@ -85,11 +85,6 @@ export const StyledHeaderWithButton = styled(Box)`
     display: flex;
     align-items: center;
     gap: ${({ theme }) => theme.spacing(1)};
-    
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        flex-direction: column;
-        align-items: flex-start;
-    }
 `
 
 export const StyledListItem = styled(ListItem)`
@@ -125,10 +120,15 @@ export const StyledCardHeaderContent = styled(Box)`
     display: flex;
     width: 100%;
     gap: ${({ theme }) => theme.spacing(2)};
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+    }
 `
 
-export const StyledCardColumn = styled(Box)`
+export const StyledCardColumn = styled(Box)<{ $isVisible: boolean }>`
     flex: 1;
+    visibility: ${({ $isVisible }) => $isVisible ? 'visible' : 'hidden'};
 `;
 
 export const StyledCardActions = styled(Box)`
@@ -168,13 +168,8 @@ export const StyledSentencesContainer = styled(Box)`
     gap: ${({ theme }) => theme.spacing(1)};
 `;
 
-interface StyledCardTextProps {
-    $isVisible: boolean;
-}
-
-export const StyledCardText = styled(Typography)<StyledCardTextProps>`
+export const StyledCardText = styled(Typography)`
     font-size: 20px;
-    visibility: ${({ $isVisible }) => $isVisible ? 'visible' : 'hidden'};
 `;
 
 export const StyledCardSentencesText = styled(Typography)`

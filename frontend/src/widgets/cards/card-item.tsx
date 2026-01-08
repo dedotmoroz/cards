@@ -50,12 +50,13 @@ export const CardItem: React.FC<CardItemProps> = ({
         >
             <StyledCardContainer>
                 <StyledCardContent>
-                    <StyledCardColumn>
+                    <StyledCardColumn
+                        $isVisible={displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id}
+                    >
                         <Box display="flex" alignItems="center" justifyContent="space-between" gap={1}>
                             <StyledCardText
                                 variant="body1"
                                 color="text.primary"
-                                $isVisible={displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id}
                             >
                                 {card.question}
                             </StyledCardText>
@@ -75,11 +76,12 @@ export const CardItem: React.FC<CardItemProps> = ({
                             )}
                         </StyledSentencesContainer>
                     </StyledCardColumn>
-                    <StyledCardColumn>
+                    <StyledCardColumn
+                        $isVisible={displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id}
+                    >
                         <StyledCardText
                             variant="body1"
                             color="text.primary"
-                            $isVisible={displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id}
                         >
                             {card.answer}
                         </StyledCardText>
