@@ -60,4 +60,18 @@ export class ExternalAccountService {
 
         await this.repository.save(account);
     }
+
+    async findUserByTelegramUserId(
+        telegramUserId: number
+    ): Promise<{ userId: string } | null> {
+        const account =
+            await this.repository.findByProviderAndExternalId(
+                'telegram',
+                telegramUserId.toString()
+            );
+
+        if (!account) return null;
+
+        return { userId: account.userId };
+    }
 }

@@ -2019,5 +2019,78 @@ export async function buildServer() {
         }
     );
 
+    /**
+     * Получить папки пользователя по Telegram
+     */
+    fastify.get(
+        '/telegram/folders',
+        {
+            preHandler: [fastify.authenticateService],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['telegramUserId'],
+                    properties: {
+                        telegramUserId: { type: 'number' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            folders: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'string', format: 'uuid' },
+                                        name: { type: 'string' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['telegram'],
+                summary: 'Get user folders by telegram account',
+            },
+        },
+        async (request, reply) => {
+            const { telegramUserId } = request.query as {
+                telegramUserId: number;
+            };
+
+            // 1. Найти привязку Telegram → User
+            const account =
+                await externalAccountService.findUserByTelegramUserId(
+                    telegramUserId
+                );
+
+            if (!account) {
+                return reply
+                    .code(404)
+                    .send({ message: 'Telegram account not linked' });
+            }
+
+            // 2. Получить папки пользователя
+            const folders =
+                await folderService.getAll(account.userId);
+
+            // 3. Вернуть только нужные поля
+            return reply.send({
+                folders: folders.map((f) => ({
+                    id: f.id,
+                    name: f.name,
+                })),
+            });
+        }
+    );
+
     return fastify;
 }

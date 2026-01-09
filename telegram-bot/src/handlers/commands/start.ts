@@ -11,6 +11,7 @@ export function registerStart(bot: Bot<BotContext>) {
 
         const me = await apiClient.telegramMe(telegramUserId);
 
+        // ❌ НЕ привязан
         if (!me.linked) {
             const keyboard = new InlineKeyboard().url(
                 '🔐 Подключить аккаунт',
@@ -24,6 +25,25 @@ export function registerStart(bot: Bot<BotContext>) {
             return;
         }
 
-        // дальше логика…
+        // ✅ ПРИВЯЗАН — ПОКАЗЫВАЕМ ПАПКИ
+        const folders = await apiClient.telegramFolders(telegramUserId);
+
+        if (folders.length === 0) {
+            await ctx.reply(
+                'У тебя пока нет папок 📂\n\nСоздай первую папку на сайте.'
+            );
+            return;
+        }
+
+        const keyboard = new InlineKeyboard();
+        for (const folder of folders) {
+            keyboard.text(folder.name, `folder:${folder.id}`).row();
+        }
+
+        await ctx.reply(
+            'Выбери папку для контекстного изучения 👇',
+            { reply_markup: keyboard }
+        );
+
     });
 }
