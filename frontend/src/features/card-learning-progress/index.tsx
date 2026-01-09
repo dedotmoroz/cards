@@ -1,4 +1,4 @@
-import { Box, LinearProgress } from '@mui/material';
+import { StyledLinearProgress } from './styled-components';
 
 interface CardLearningProgressProps {
   currentIndex: number;
@@ -23,20 +23,10 @@ export const CardLearningProgress = ({
     : 0;
 
   return (
-    <Box sx={{ mb: 2 }}>
-      <LinearProgress 
+      <StyledLinearProgress 
         variant="determinate" 
         value={Math.min(progress, 100)} 
-        sx={{ 
-          height: 8, 
-          borderRadius: 4,
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
-          '& .MuiLinearProgress-bar': {
-            borderRadius: 4,
-          }
-        }} 
       />
-    </Box>
   );
 };
 

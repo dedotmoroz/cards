@@ -1,6 +1,8 @@
-import { Button, Stack, Typography, Box } from '@mui/material';
-import { ThumbUp, ThumbDown } from '@mui/icons-material';
+import { Stack, Box } from '@mui/material';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import { useTranslation } from 'react-i18next';
+import { StyledDontKnowButton, StyledKnowButton, StyledUnlearnedCount, StyledLearnedCount } from './styled-components';
 
 interface LearningControlsProps {
   onKnow: () => void;
@@ -16,50 +18,40 @@ export const LearningControls = ({ onKnow, onDontKnow, disabled, learnedCount = 
     <Box sx={{ mt: 3 }}>
       {/* Счетчики */}
         <Box sx={{display: 'flex', justifyContent: 'center', gap: 4, mb: 2}}>
-            <Box sx={{textAlign: 'center'}}>
-                <Typography variant="h6" color="error.main" fontWeight="bold">
+            <Box>
+                <StyledUnlearnedCount variant="h4">
                     {unlearnedCount}
-                </Typography>
+                </StyledUnlearnedCount>
             </Box>
-            <Box sx={{textAlign: 'center'}}>
-                <Typography variant="h6" color="success.main" fontWeight="bold">
+            <Box>
+                <StyledLearnedCount variant="h4">
                     {learnedCount}
-                </Typography>
+                </StyledLearnedCount>
             </Box>
         </Box>
       
       {/* Кнопки */}
       <Stack direction="row" spacing={2} justifyContent="center">
-      <Button
+      <StyledDontKnowButton
         variant="contained"
         color="error"
         onClick={onDontKnow}
         disabled={disabled}
         size="large"
-        startIcon={<ThumbDown />}
-        sx={{ 
-          minWidth: 120,
-          transform: disabled ? 'scale(0.95)' : 'scale(1)',
-          transition: 'transform 0.2s ease'
-        }}
+        startIcon={<ThumbDownOutlinedIcon />}
       >
-        ← {t('learning.notLearned')}
-      </Button>
-      <Button
+        {t('learning.notLearned')}
+      </StyledDontKnowButton>
+      <StyledKnowButton
         variant="contained"
         color="success"
         onClick={onKnow}
         disabled={disabled}
         size="large"
-        startIcon={<ThumbUp />}
-        sx={{ 
-          minWidth: 120,
-          transform: disabled ? 'scale(0.95)' : 'scale(1)',
-          transition: 'transform 0.2s ease'
-        }}
+        endIcon={<ThumbUpOutlinedIcon />}
       >
-        {t('learning.learned')} →
-      </Button>
+        {t('learning.learned')}
+      </StyledKnowButton>
       </Stack>
     </Box>
   );

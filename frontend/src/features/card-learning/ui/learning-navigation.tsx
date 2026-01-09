@@ -27,11 +27,13 @@ export const LearningNavigation = ({
   return (
     <Box mb={3}>
       {/* Прогресс-бар */}
-      <CardLearningProgress
-        currentIndex={currentIndex}
-        totalCards={totalCards}
-        isCompleted={isCompleted}
-      />
+        <Box sx={{mb: 4, ml: 2, mr: 2}}>
+            <CardLearningProgress
+                currentIndex={currentIndex}
+                totalCards={totalCards}
+                isCompleted={isCompleted}
+            />
+        </Box>
 
       {/* Навигация */}
       <Box display="flex" justifyContent="space-between" alignItems="center">

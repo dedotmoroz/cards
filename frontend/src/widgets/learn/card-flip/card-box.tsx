@@ -1,5 +1,6 @@
-import {Card, CardContent, Typography} from "@mui/material";
+import {CardContent, Typography} from "@mui/material";
 import React from "react";
+import { StyledCardBox } from "./styled-components";
 
 interface CardBoxProps {
     children: React.ReactNode;
@@ -8,22 +9,7 @@ interface CardBoxProps {
 export const CardBox: React.FC<CardBoxProps> = ({children}) => {
 
     return (
-        <Card
-            sx={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                backfaceVisibility: 'hidden',
-                transform: 'rotateY(0deg)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '20px',
-                '&:hover': {
-                    boxShadow: 3
-                },
-            }}
-        >
+        <StyledCardBox>
             <CardContent sx={{width: '100%', textAlign: 'center', p: 4}}>
                 <Typography variant="h4" sx={{
                     mb: 3,
@@ -35,6 +21,6 @@ export const CardBox: React.FC<CardBoxProps> = ({children}) => {
                     {children}
                 </Typography>
             </CardContent>
-        </Card>
+        </StyledCardBox>
     )
 }

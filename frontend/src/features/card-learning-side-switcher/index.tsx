@@ -1,6 +1,7 @@
-import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { FormControl } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import {StyledSelect, StyledMenuItem} from "./styled-components.tsx";
 
 interface CardLearningSideSwitcherProps {
   initialSide: 'question' | 'answer';
@@ -15,17 +16,14 @@ export const CardLearningSideSwitcher = ({
 }: CardLearningSideSwitcherProps) => {
   const { t } = useTranslation();
 
-  const handleSideChange = (event: SelectChangeEvent<string>) => {
+  const handleSideChange = (event: SelectChangeEvent<unknown>) => {
     const newSide = event.target.value as 'question' | 'answer';
     onSideChange(newSide);
   };
 
   return (
     <FormControl size="small" disabled={disabled} sx={{ minWidth: 120 }}>
-      <InputLabel id="card-side-select-label">
-        {t('learning.initialSide')}
-      </InputLabel>
-      <Select
+      <StyledSelect
         labelId="card-side-select-label"
         id="card-side-select"
         value={initialSide}
@@ -33,13 +31,13 @@ export const CardLearningSideSwitcher = ({
         onChange={handleSideChange}
         disabled={disabled}
       >
-        <MenuItem value="question">
+        <StyledMenuItem value="question">
           {t('learning.sideA')}
-        </MenuItem>
-        <MenuItem value="answer">
+        </StyledMenuItem>
+        <StyledMenuItem value="answer">
           {t('learning.sideB')}
-        </MenuItem>
-      </Select>
+        </StyledMenuItem>
+      </StyledSelect>
     </FormControl>
   );
 };
