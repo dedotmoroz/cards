@@ -104,5 +104,17 @@ export const authApi = {
       withCredentials: true
     });
     return response.data.token;
+  },
+
+  /**
+   * Привязка Telegram аккаунта к пользователю
+   */
+  bindTelegram: async (nonce: string): Promise<{ ok: boolean }> => {
+    const response = await axios.post(
+      `${API_BASE_URL}/telegram/auth/bind`,
+      { nonce },
+      { withCredentials: true }
+    );
+    return response.data;
   }
 };

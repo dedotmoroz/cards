@@ -272,5 +272,20 @@
     "words": "Слова из контента",
     "progress": "{{used}}/{{total}} (осталось: {{remaining}})",
     "languageLevel": "Уровень языка"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Подключение Telegram",
+      "description": "Подключение Telegram аккаунта",
+      "processing": "Подключение аккаунта...",
+      "success": "Telegram аккаунт успешно подключен!",
+      "error": "Ошибка при подключении аккаунта",
+      "invalidNonce": "Неверный или истекший код. Попробуйте снова из Telegram бота.",
+      "alreadyBound": "Этот Telegram аккаунт уже привязан к другому пользователю",
+      "userAlreadyBound": "У вас уже привязан Telegram аккаунт",
+      "noNonce": "Отсутствует параметр nonce. Пожалуйста, перейдите по ссылке из Telegram бота.",
+      "goToApp": "Перейти в приложение",
+      "close": "Закрыть"
+    }
   }
 }

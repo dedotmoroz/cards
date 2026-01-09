@@ -272,5 +272,20 @@
     "words": "Words from content",
     "progress": "{{used}}/{{total}} (remaining: {{remaining}})",
     "languageLevel": "Language Level"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Connect Telegram",
+      "description": "Connect Telegram account",
+      "processing": "Connecting account...",
+      "success": "Telegram account successfully connected!",
+      "error": "Error connecting account",
+      "invalidNonce": "Invalid or expired code. Please try again from Telegram bot.",
+      "alreadyBound": "This Telegram account is already bound to another user",
+      "userAlreadyBound": "You already have a Telegram account bound",
+      "noNonce": "Missing nonce parameter. Please follow the link from Telegram bot.",
+      "goToApp": "Go to app",
+      "close": "Close"
+    }
   }
 }

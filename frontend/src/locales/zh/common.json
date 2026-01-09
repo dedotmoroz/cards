@@ -259,5 +259,20 @@
     "creatingToken": "创建令牌中...",
     "copyToken": "复制",
     "tokenError": "获取令牌错误"
+  },
+  "telegram": {
+    "connect": {
+      "title": "连接 Telegram",
+      "description": "连接 Telegram 账户",
+      "processing": "正在连接账户...",
+      "success": "Telegram 账户连接成功！",
+      "error": "连接账户时出错",
+      "invalidNonce": "无效或过期的代码。请从 Telegram 机器人重试。",
+      "alreadyBound": "此 Telegram 账户已绑定到其他用户",
+      "userAlreadyBound": "您已经绑定了 Telegram 账户",
+      "noNonce": "缺少 nonce 参数。请从 Telegram 机器人点击链接。",
+      "goToApp": "前往应用",
+      "close": "关闭"
+    }
   }
 }

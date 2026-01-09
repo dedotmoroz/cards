@@ -10,6 +10,7 @@ import { LandingPage } from '@/pages/landing';
 import { LanguageLandingPage } from '@/pages/language-landing';
 import { NotFoundPage } from '@/pages/404';
 import { ProfilePage } from '@/pages/profile';
+import { TelegramConnectPage } from '@/pages/telegram-connect';
 import { useAuthStore } from '@/shared/store/authStore';
 import { PageContainer } from '@/shared/ui/page-container';
 
@@ -73,6 +74,7 @@ export default function App() {
                             <Route path="/learn/:userId/:folderId/study" element={<PageContainer><LearnPage /></PageContainer>} />
                             <Route path="/learn/:userId/:folderId/context-reading" element={<PageContainer><ContextReadingPage /></PageContainer>} />
                             <Route path="/profile" element={<ProfilePage />} />
+                            <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<NotFoundPage />} />
                         </>
@@ -81,6 +83,7 @@ export default function App() {
                             <Route path="/" element={<LandingPage />} />
                             <Route path="/signup" element={<SignUpPage />} />
                             <Route path="/signin" element={<SignInPage />} />
+                            <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<LandingPage />} />
                         </>

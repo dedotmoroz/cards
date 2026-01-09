@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Container,
@@ -16,6 +16,7 @@ import { useSEO } from '@/shared/hooks/useSEO';
 
 export const SignInPage = () => {
   const { t, i18n } = useTranslation();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -41,7 +42,9 @@ export const SignInPage = () => {
 
     try {
       await login(formData.email, formData.password);
-      navigate('/learn', { replace: true });
+      // Перенаправляем на указанный путь или на /learn по умолчанию
+      const redirectPath = searchParams.get('redirect') || '/learn';
+      navigate(redirectPath, { replace: true });
     } catch (error: any) {
       setError(error.message || t('auth.invalidCredentials'));
       setIsLoading(false);

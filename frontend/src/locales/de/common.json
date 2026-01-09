@@ -259,5 +259,20 @@
     "creatingToken": "Token wird erstellt...",
     "copyToken": "Kopieren",
     "tokenError": "Fehler beim Abrufen des Tokens"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Telegram verbinden",
+      "description": "Telegram-Konto verbinden",
+      "processing": "Konto wird verbunden...",
+      "success": "Telegram-Konto erfolgreich verbunden!",
+      "error": "Fehler beim Verbinden des Kontos",
+      "invalidNonce": "Ungültiger oder abgelaufener Code. Bitte versuchen Sie es erneut vom Telegram-Bot.",
+      "alreadyBound": "Dieses Telegram-Konto ist bereits an einen anderen Benutzer gebunden",
+      "userAlreadyBound": "Sie haben bereits ein Telegram-Konto gebunden",
+      "noNonce": "Fehlender nonce-Parameter. Bitte folgen Sie dem Link vom Telegram-Bot.",
+      "goToApp": "Zur App gehen",
+      "close": "Schließen"
+    }
   }
 }

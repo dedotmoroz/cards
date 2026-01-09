@@ -259,5 +259,20 @@
     "creatingToken": "Створення токена...",
     "copyToken": "Копіювати",
     "tokenError": "Помилка отримання токена"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Підключення Telegram",
+      "description": "Підключення Telegram акаунта",
+      "processing": "Підключення акаунта...",
+      "success": "Telegram акаунт успішно підключено!",
+      "error": "Помилка при підключенні акаунта",
+      "invalidNonce": "Невірний або застарілий код. Спробуйте знову з Telegram бота.",
+      "alreadyBound": "Цей Telegram акаунт вже прив'язаний до іншого користувача",
+      "userAlreadyBound": "У вас вже прив'язаний Telegram акаунт",
+      "noNonce": "Відсутній параметр nonce. Будь ласка, перейдіть за посиланням з Telegram бота.",
+      "goToApp": "Перейти до додатку",
+      "close": "Закрити"
+    }
   }
 }

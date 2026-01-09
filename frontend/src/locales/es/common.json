@@ -259,5 +259,20 @@
     "creatingToken": "Creando token...",
     "copyToken": "Copiar",
     "tokenError": "Error al obtener token"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Conectar Telegram",
+      "description": "Conectar cuenta de Telegram",
+      "processing": "Conectando cuenta...",
+      "success": "¡Cuenta de Telegram conectada exitosamente!",
+      "error": "Error al conectar cuenta",
+      "invalidNonce": "Código inválido o expirado. Intente nuevamente desde el bot de Telegram.",
+      "alreadyBound": "Esta cuenta de Telegram ya está vinculada a otro usuario",
+      "userAlreadyBound": "Ya tiene una cuenta de Telegram vinculada",
+      "noNonce": "Falta el parámetro nonce. Por favor, siga el enlace del bot de Telegram.",
+      "goToApp": "Ir a la aplicación",
+      "close": "Cerrar"
+    }
   }
 }
