@@ -31,7 +31,7 @@ Telegram-бот для сервиса **KotCat** — изучение иност
 │  ├─ index.ts              # entrypoint
 │  ├─ bot.ts                # фабрика бота
 │  ├─ config/
-│  │  └─ env.ts             # env + проверки
+│  │  └─ env.ts             # env 
 │  ├─ api/
 │  │  └─ client.ts          # HTTP-клиент к backend
 │  ├─ handlers/
