@@ -33,7 +33,8 @@ jobs:
               - 'ai-service/**'
               - 'Dockerfile.ai-service'
             telegram:
-              - 'telegram/**'
+              - 'telegram-bot/**'
+              - 'Dockerfile.telegram-bot'
             android:
               - 'android/**'
 
