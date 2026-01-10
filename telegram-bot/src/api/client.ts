@@ -35,6 +35,10 @@ async function request<T>(
 // ===== Public API =====
 
 export const apiClient = {
+
+    /**
+     * Проверка авторизации
+     */
     telegramMe(telegramUserId: number) {
         return request<{
             linked: boolean;
@@ -45,6 +49,9 @@ export const apiClient = {
         });
     },
 
+    /**
+     * Получение списка папок
+     */
     telegramFolders(telegramUserId: number) {
         return request<
             { id: string; name: string }[]
@@ -53,6 +60,9 @@ export const apiClient = {
         });
     },
 
+    /**
+     * Получение следующей порции слов для контекста
+     */
     telegramContextNext(
         telegramUserId: number,
         folderId: string
