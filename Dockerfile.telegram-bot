@@ -1,0 +1,31 @@
+# ---------- build stage ----------
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Копируем package-файлы ИЗ telegram-bot
+COPY telegram-bot/package.json telegram-bot/package-lock.json ./
+RUN npm ci
+
+# Копируем исходники
+COPY telegram-bot ./
+
+# Сборка TypeScript
+RUN npm run build
+
+
+# ---------- runtime stage ----------
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Копируем package-файлы (опять же из telegram-bot)
+COPY telegram-bot/package.json telegram-bot/package-lock.json ./
+RUN npm ci --omit=dev
+
+# Копируем собранный код
+COPY --from=builder /app/dist ./dist
+
+ENV NODE_ENV=production
+
+CMD ["node", "dist/index.js"]

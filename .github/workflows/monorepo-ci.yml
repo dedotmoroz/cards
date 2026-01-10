@@ -125,6 +125,37 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  build-telegram:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.telegram == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/cards-telegram-bot
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.telegram-bot
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   deploy-backend:
     needs: [detect-changes, build-backend]
     if: always() && needs.detect-changes.outputs.backend == 'true' && (needs.build-backend.result == 'success' || needs.build-backend.result == 'skipped')
@@ -182,3 +213,25 @@ jobs:
             docker compose pull ai ai-worker
             docker compose up -d --force-recreate ai ai-worker
             docker system prune -af
+
+  deploy-telegram:
+    needs: [detect-changes, build-telegram]
+    if: |
+      always() &&
+      needs.detect-changes.outputs.telegram == 'true' &&
+      (needs.build-telegram.result == 'success' || needs.build-telegram.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Telegram bot
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /srv/selltime.org
+            docker compose pull telegram-bot
+            docker compose up -d telegram-bot
+            docker image prune -f
