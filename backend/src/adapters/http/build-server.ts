@@ -2092,5 +2092,102 @@ export async function buildServer() {
         }
     );
 
+    fastify.post(
+        '/telegram/context/next',
+        {
+            preHandler: [fastify.authenticateService],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['telegramUserId', 'folderId'],
+                    properties: {
+                        telegramUserId: { type: 'number' },
+                        folderId: { type: 'string', format: 'uuid' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        required: ['text', 'translation', 'completed'],
+                        properties: {
+                            text: { type: 'string' },
+                            translation: { type: 'string' },
+                            completed: { type: 'boolean' },
+                        },
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['telegram'],
+                summary: 'Get next context text for Telegram user',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Body: {
+                    telegramUserId: number;
+                    folderId: string;
+                };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const { telegramUserId, folderId } = req.body;
+
+            // 1. Найти привязку Telegram → User
+            const account =
+                await externalAccountService.findUserByTelegramUserId(
+                    telegramUserId
+                );
+
+            if (!account) {
+                return reply.code(401).send({ message: 'Telegram not linked' });
+            }
+
+            const userId = account.userId;
+
+            // 2️⃣ получить карточки
+            const result = await getNextContextCardsUseCase.execute({
+                userId,
+                folderId,
+                limit: 3,
+            });
+
+            if (result.cards.length === 0) {
+                return reply.send({
+                    text: '',
+                    translation: '',
+                    completed: true,
+                });
+            }
+
+            // 3️⃣ собрать текст (ты это уже делал в генерации)
+            const text = result.cards
+                .map(c => c.questionSentences)
+                .filter(Boolean)
+                .join('\n\n');
+
+            const translation = result.cards
+                .map(c => c.answerSentences)
+                .filter(Boolean)
+                .join('\n\n');
+
+            return reply.send({
+                text,
+                translation,
+                completed: result.completed,
+            });
+        }
+    );
+
     return fastify;
 }

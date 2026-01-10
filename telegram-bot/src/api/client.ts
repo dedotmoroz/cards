@@ -74,7 +74,10 @@ export const apiClient = {
         }>('/telegram/context/next', {
             method: 'POST',
             telegramUserId,
-            body: { folderId },
+            body: {
+                telegramUserId,
+                folderId,
+            },
         });
-    },
+    }
 };
