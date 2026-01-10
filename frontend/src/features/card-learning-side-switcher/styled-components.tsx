@@ -6,11 +6,11 @@ import { styled } from "@mui/material/styles";
 
 const BaseStyledSelect = styled(Select)`
     display: flex;
-    padding: 4px 12px;
     justify-content: space-between;
     align-items: center;
     font-size: 18px;
     color: #4A5565;
+    width: 70px;
     & .MuiSelect-select {
         padding: 0;
     }
@@ -55,5 +55,10 @@ StyledSelect.displayName = 'StyledSelect';
 
 export const StyledMenuItem = styled(MenuItem)`
     font-size: 18px;
+    min-width: 70px;
+    max-width: 70px;
+    width: 70px;
+    padding: 8px 16px;
+    justify-content: center;
 `;
 

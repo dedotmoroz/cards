@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import { useParams } from 'react-router-dom';
+import { useMediaQuery, useTheme } from '@mui/material';
 import { CardFlip } from "./card-flip/card-flip";
 import {LearningControls} from "@/features/card-learning/ui/learning-controls.tsx";
 import {LearningNavigation} from "@/features/card-learning/ui/learning-navigation.tsx";
@@ -43,6 +44,8 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
     const navigate = useNavigate();
     const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
     const { selectedFolderId } = useFoldersStore();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const { showAnswer, currentCard, toggleAnswer, handleKnow, handleDontKnow } = learning;
 
@@ -128,13 +131,15 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                         handleKnow={handleKnow}
                         handleDontKnow={handleDontKnow}
                     />
-                    {/* Controls */}
-                    <LearningControls
-                        onKnow={learning.handleKnow}
-                        onDontKnow={learning.handleDontKnow}
-                        learnedCount={learning.learnedCount || 0}
-                        unlearnedCount={learning.unlearnedCount || 0}
-                    />
+                    {/* Controls - только для десктопа */}
+                    {!isMobile && (
+                        <LearningControls
+                            onKnow={learning.handleKnow}
+                            onDontKnow={learning.handleDontKnow}
+                            learnedCount={learning.learnedCount || 0}
+                            unlearnedCount={learning.unlearnedCount || 0}
+                        />
+                    )}
                 </>)
             }
         </>

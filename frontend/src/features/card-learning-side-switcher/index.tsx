@@ -1,6 +1,7 @@
-import { FormControl } from '@mui/material';
+import { FormControl, Box } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import ImportContactsOutlinedIcon from '@mui/icons-material/ImportContactsOutlined';
 import {StyledSelect, StyledMenuItem} from "./styled-components.tsx";
 
 interface CardLearningSideSwitcherProps {
@@ -22,7 +23,7 @@ export const CardLearningSideSwitcher = ({
   };
 
   return (
-    <FormControl size="small" disabled={disabled} sx={{ minWidth: 120 }}>
+    <FormControl size="small" disabled={disabled} sx={{ minWidth: 60, width: 60 }}>
       <StyledSelect
         labelId="card-side-select-label"
         id="card-side-select"
@@ -31,12 +32,18 @@ export const CardLearningSideSwitcher = ({
         onChange={handleSideChange}
         disabled={disabled}
       >
-        <StyledMenuItem value="question">
-          {t('learning.sideA')}
-        </StyledMenuItem>
-        <StyledMenuItem value="answer">
-          {t('learning.sideB')}
-        </StyledMenuItem>
+          <StyledMenuItem value="question">
+              <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+                  <ImportContactsOutlinedIcon sx={{fontSize: 18}}/>
+                  <span>A</span>
+              </Box>
+          </StyledMenuItem>
+          <StyledMenuItem value="answer">
+              <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+                  <ImportContactsOutlinedIcon sx={{fontSize: 18}}/>
+                  <span>B</span>
+              </Box>
+          </StyledMenuItem>
       </StyledSelect>
     </FormControl>
   );
