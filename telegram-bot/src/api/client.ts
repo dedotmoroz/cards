@@ -61,7 +61,7 @@ export const apiClient = {
     },
 
     /**
-     * Получение следующей порции слов для контекста
+     * Получение следующей порции слов для контекста.
      */
     telegramContextNext(
         telegramUserId: number,
