@@ -2027,11 +2027,11 @@ export async function buildServer() {
         {
             preHandler: [fastify.authenticateService],
             schema: {
-                querystring: {
+                headers: {
                     type: 'object',
-                    required: ['telegramUserId'],
+                    required: ['x-telegram-user-id'],
                     properties: {
-                        telegramUserId: { type: 'number' },
+                        'x-telegram-user-id': {type: 'string'},
                     },
                 },
                 response: {
@@ -2050,6 +2050,12 @@ export async function buildServer() {
                             },
                         },
                     },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
                     404: {
                         type: 'object',
                         properties: {
@@ -2062,9 +2068,15 @@ export async function buildServer() {
             },
         },
         async (request, reply) => {
-            const { telegramUserId } = request.query as {
-                telegramUserId: number;
-            };
+            const telegramUserId = Number(
+                request.headers['x-telegram-user-id']
+            );
+
+            if (!telegramUserId) {
+                return reply.code(400).send({
+                    message: 'Missing telegram user id',
+                });
+            }
 
             // 1. Найти привязку Telegram → User
             const account =
