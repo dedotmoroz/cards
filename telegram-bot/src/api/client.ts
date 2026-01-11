@@ -10,6 +10,12 @@ async function request<T>(
     path: string,
     options: RequestOptions
 ): Promise<T> {
+    console.log('➡️ API REQUEST', {
+        url: `${env.API_URL}${path}`,
+        method: options.method ?? 'GET',
+        telegramUserId: options.telegramUserId,
+        body: options.body,
+    });
     const res = await fetch(`${env.API_URL}${path}`, {
         method: options.method ?? 'GET',
         headers: {
@@ -22,12 +28,23 @@ async function request<T>(
             : undefined,
     });
 
+    const text = await res.text();
+
+    console.log('⬅️ API RESPONSE', {
+        path,
+        status: res.status,
+        raw: text,
+    });
+
     if (!res.ok) {
         const text = await res.text();
         throw new Error(
             `API ${res.status} ${path}: ${text}`
         );
     }
+
+    const json = JSON.parse(text);
+    console.log('📦 API PARSED JSON', json);
 
     return res.json() as Promise<T>;
 }
