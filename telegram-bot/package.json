@@ -2,7 +2,6 @@
   "name": "kotcat-telegram-bot",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "description": "Telegram bot for KotCat (context-based language learning)",
   "author": "KotCat",
   "license": "UNLICENSED",
