@@ -2036,18 +2036,14 @@ export async function buildServer() {
                 },
                 response: {
                     200: {
-                        type: 'object',
-                        properties: {
-                            folders: {
-                                type: 'array',
-                                items: {
-                                    type: 'object',
-                                    properties: {
-                                        id: { type: 'string', format: 'uuid' },
-                                        name: { type: 'string' },
-                                    },
-                                },
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                id: { type: 'string', format: 'uuid' },
+                                name: { type: 'string' },
                             },
+                            required: ['id', 'name'],
                         },
                     },
                     400: {
@@ -2095,12 +2091,12 @@ export async function buildServer() {
                 await folderService.getAll(account.userId);
 
             // 3. Вернуть только нужные поля
-            return reply.send({
-                folders: folders.map((f) => ({
+            return reply.send(
+                folders.map((f) => ({
                     id: f.id,
                     name: f.name,
-                })),
-            });
+                }))
+            );
         }
     );
 
