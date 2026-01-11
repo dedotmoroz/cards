@@ -13,9 +13,12 @@ export function registerStart(bot: Bot<BotContext>) {
 
         // ❌ НЕ привязан
         if (!me.linked) {
+
+            const { nonce } = await apiClient.telegramAuthNonce(telegramUserId);
+
             const keyboard = new InlineKeyboard().url(
                 '🔐 Подключить аккаунт',
-                `${process.env.WEB_APP_URL}/telegram-connect`
+                `${process.env.WEB_APP_URL}/telegram-connect?nonce=${encodeURIComponent(nonce)}`
             );
 
             await ctx.reply(

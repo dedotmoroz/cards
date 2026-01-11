@@ -50,6 +50,20 @@ export const apiClient = {
     },
 
     /**
+     * Получение nonce
+     */
+    telegramAuthNonce(telegramUserId: number) {
+        return request<{ nonce: string }>(
+            '/telegram/auth/nonce',
+            {
+                method: 'POST',
+                telegramUserId,
+                body: { telegramUserId },
+            }
+        );
+    },
+
+    /**
      * Получение списка папок
      */
     telegramFolders(telegramUserId: number) {
