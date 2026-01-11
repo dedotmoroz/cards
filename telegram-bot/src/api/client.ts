@@ -36,17 +36,25 @@ async function request<T>(
         raw: text,
     });
 
+    // if (!res.ok) {
+    //     const text = await res.text();
+    //     throw new Error(
+    //         `API ${res.status} ${path}: ${text}`
+    //     );
+    // }
+
     if (!res.ok) {
-        const text = await res.text();
         throw new Error(
             `API ${res.status} ${path}: ${text}`
         );
     }
 
-    const json = JSON.parse(text);
+    const json = text ? JSON.parse(text) : null;
+
     console.log('📦 API PARSED JSON', json);
 
-    return res.json() as Promise<T>;
+    return json as T;
+    // return res.json() as Promise<T>;
 }
 
 // ===== Public API =====
