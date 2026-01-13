@@ -207,7 +207,9 @@
     "initialSide": "初始面",
     "next": "下一个",
     "learned": "已学习",
-    "notLearned": "未学习"
+    "notLearned": "未学习",
+    "remainingCards": "剩余卡片：{{count}}",
+    "continueLearning": "继续学习"
   },
   "import": {
     "title": "导入卡片",

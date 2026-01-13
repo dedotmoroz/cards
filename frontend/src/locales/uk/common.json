@@ -207,7 +207,9 @@
     "initialSide": "Початкова сторона",
     "next": "Далі",
     "learned": "Вивчено",
-    "notLearned": "Не вивчено"
+    "notLearned": "Не вивчено",
+    "remainingCards": "Залишилося карток: {{count}}",
+    "continueLearning": "Продовжити навчання"
   },
   "import": {
     "title": "Імпорт карток",

@@ -207,7 +207,9 @@
     "initialSide": "Initial side",
     "next": "Next",
     "learned": "Learned",
-    "notLearned": "Not Learned"
+    "notLearned": "Not Learned",
+    "remainingCards": "Remaining cards: {{count}}",
+    "continueLearning": "Continue learning"
   },
   "import": {
     "title": "Import Cards",

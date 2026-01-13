@@ -207,7 +207,9 @@
     "initialSide": "Anfangsseite",
     "next": "Weiter",
     "learned": "Gelernt",
-    "notLearned": "Nicht gelernt"
+    "notLearned": "Nicht gelernt",
+    "remainingCards": "Verbleibende Karten: {{count}}",
+    "continueLearning": "Lernen fortsetzen"
   },
   "import": {
     "title": "Karten importieren",

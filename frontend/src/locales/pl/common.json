@@ -207,7 +207,9 @@
     "initialSide": "Początkowa strona",
     "next": "Dalej",
     "learned": "Przyswojone",
-    "notLearned": "Nieprzerobione"
+    "notLearned": "Nieprzerobione",
+    "remainingCards": "Pozostało kart: {{count}}",
+    "continueLearning": "Kontynuuj naukę"
   },
   "import": {
     "title": "Importuj karty",

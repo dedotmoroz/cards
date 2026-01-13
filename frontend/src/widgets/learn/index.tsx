@@ -4,7 +4,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import { CardFlip } from "./card-flip/card-flip";
 import {LearningControls} from "@/features/card-learning/ui/learning-controls.tsx";
 import {LearningNavigation} from "@/features/card-learning/ui/learning-navigation.tsx";
-import {CompletionScreen} from "@/features/learning-completion/ui/completion-screen.tsx";
+import {CompletionScreen} from "@/widgets/learn/learning-completion/ui/completion-screen.tsx";
 import {useNavigate} from "react-router-dom";
 import { useFoldersStore } from '@/shared/store/foldersStore';
 import type { Card } from "@/shared/types/cards";
@@ -101,18 +101,6 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
 
     return (
         <>
-            {/* Navigation */}
-            <LearningNavigation
-                currentIndex={learning.currentIndex}
-                totalCards={learning.initialDisplayCardsCount}
-                isCompleted={learning.isCompleted}
-                isFirst={learning.currentIndex === 0}
-                onPrevious={handlePrevious}
-                onNext={handleNext}
-                initialSide={learning.initialSide}
-                onSideChange={learning.setInitialSide}
-            />
-
             {/* Card or completion screen */}
             {learning.isCompleted ? (
                 <CompletionScreen
@@ -123,6 +111,17 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     unlearnedCount={learning.cards.filter(card => !card.isLearned).length}
                 />
             ) : (<>
+                {/* Navigation */}
+                <LearningNavigation
+                    currentIndex={learning.currentIndex}
+                    totalCards={learning.initialDisplayCardsCount}
+                    isCompleted={learning.isCompleted}
+                    isFirst={learning.currentIndex === 0}
+                    onPrevious={handlePrevious}
+                    onNext={handleNext}
+                    initialSide={learning.initialSide}
+                    onSideChange={learning.setInitialSide}
+                />
                     <CardFlip
                         question={learning.phrasesMode ? currentCard?.questionSentences : currentCard?.question}
                         answer={learning.phrasesMode ? currentCard?.answerSentences : currentCard?.answer}

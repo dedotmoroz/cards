@@ -207,7 +207,9 @@
     "initialSide": "Начальная сторона",
     "next": "Далее",
     "learned": "Выучено",
-    "notLearned": "Не выучено"
+    "notLearned": "Не выучено",
+    "remainingCards": "Осталось карточек: {{count}}",
+    "continueLearning": "Продолжить изучение"
   },
   "import": {
     "title": "Импорт карточек",

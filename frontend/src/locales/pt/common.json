@@ -207,7 +207,9 @@
     "initialSide": "Lado inicial",
     "next": "Próximo",
     "learned": "Aprendido",
-    "notLearned": "Não aprendido"
+    "notLearned": "Não aprendido",
+    "remainingCards": "Cartões restantes: {{count}}",
+    "continueLearning": "Continuar aprendendo"
   },
   "import": {
     "title": "Importar cartões",

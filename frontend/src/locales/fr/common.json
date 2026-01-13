@@ -207,7 +207,9 @@
     "initialSide": "Face initiale",
     "next": "Suivant",
     "learned": "Appris",
-    "notLearned": "Non appris"
+    "notLearned": "Non appris",
+    "remainingCards": "Cartes restantes : {{count}}",
+    "continueLearning": "Continuer à apprendre"
   },
   "import": {
     "title": "Importer des cartes",
