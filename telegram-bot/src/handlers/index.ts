@@ -7,6 +7,7 @@ import { registerFolders } from './callbacks/folders';
 import { registerNext } from './callbacks/next';
 import { registerTranslate } from './callbacks/translate';
 import { registerReset } from './callbacks/reset';
+import { registerPickFolder } from './callbacks/pickFolder';
 
 export function registerHandlers(bot: Bot<BotContext>) {
     registerStart(bot);
@@ -14,4 +15,5 @@ export function registerHandlers(bot: Bot<BotContext>) {
     registerNext(bot);
     registerTranslate(bot);
     registerReset(bot);
+    registerPickFolder(bot);
 }
