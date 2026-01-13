@@ -10,12 +10,12 @@ async function request<T>(
     path: string,
     options: RequestOptions
 ): Promise<T> {
-    console.log('➡️ API REQUEST', {
-        url: `${env.API_URL}${path}`,
-        method: options.method ?? 'GET',
-        telegramUserId: options.telegramUserId,
-        body: options.body,
-    });
+    // console.log('➡️ API REQUEST', {
+    //     url: `${env.API_URL}${path}`,
+    //     method: options.method ?? 'GET',
+    //     telegramUserId: options.telegramUserId,
+    //     body: options.body,
+    // });
     const res = await fetch(`${env.API_URL}${path}`, {
         method: options.method ?? 'GET',
         headers: {
@@ -30,18 +30,11 @@ async function request<T>(
 
     const text = await res.text();
 
-    console.log('⬅️ API RESPONSE', {
-        path,
-        status: res.status,
-        raw: text,
-    });
-
-    // if (!res.ok) {
-    //     const text = await res.text();
-    //     throw new Error(
-    //         `API ${res.status} ${path}: ${text}`
-    //     );
-    // }
+    // console.log('⬅️ API RESPONSE', {
+    //     path,
+    //     status: res.status,
+    //     raw: text,
+    // });
 
     if (!res.ok) {
         throw new Error(
@@ -51,10 +44,9 @@ async function request<T>(
 
     const json = text ? JSON.parse(text) : null;
 
-    console.log('📦 API PARSED JSON', json);
+    // console.log('📦 API PARSED JSON', json);
 
     return json as T;
-    // return res.json() as Promise<T>;
 }
 
 // ===== Public API =====
@@ -118,5 +110,22 @@ export const apiClient = {
                 folderId,
             },
         });
+    },
+
+    /**
+     * Сброс прогресса папки.
+     */
+    telegramContextReset(
+        telegramUserId: number,
+        folderId: string
+    ) {
+        return request<void>(
+            '/telegram/context-reading/reset',
+            {
+                method: 'POST',
+                telegramUserId,
+                body: { folderId },
+            }
+        );
     }
 };

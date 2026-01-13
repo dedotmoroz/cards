@@ -30,11 +30,16 @@ export function registerNext(bot: Bot<BotContext>) {
             );
 
             if (result.completed) {
-                ctx.session.state = 'IDLE';
-                ctx.session.folderId = undefined;
+                ctx.session.state = 'COMPLETED';
+
+                const keyboard = new InlineKeyboard()
+                    .text('🔄 Начать заново', 'reset')
+                    .row()
+                    .text('📂 Выбрать папку', 'pick-folder');
 
                 await ctx.reply(
-                    '🎉 Контекстное чтение завершено!\nВыбери другую папку командой /start'
+                    '🎉 Контекстное чтение завершено!',
+                    { reply_markup: keyboard }
                 );
                 return;
             }

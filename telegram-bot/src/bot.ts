@@ -3,7 +3,7 @@ import type { SessionFlavor, Context } from 'grammy';
 import { env } from './config/env';
 
 export type SessionData = {
-    state: 'IDLE' | 'WAITING_FOLDER' | 'READING';
+    state: 'IDLE' | 'WAITING_FOLDER' | 'READING' | 'COMPLETED';
     folderId?: string;
     lastTranslation?: string;
 };

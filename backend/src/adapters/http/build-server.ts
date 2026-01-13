@@ -2100,6 +2100,9 @@ export async function buildServer() {
         }
     );
 
+    /**
+     * Контекстное обучение - получение карточек из Telegram
+     */
     fastify.post(
         '/telegram/context/next',
         {
@@ -2194,6 +2197,89 @@ export async function buildServer() {
                 translation,
                 completed: result.completed,
             });
+        }
+    );
+
+    /**
+     * Контекстное обучение - сбросить прогресс контекстного чтения из Telegram
+     */
+    fastify.post(
+        '/telegram/context-reading/reset',
+        {
+            preHandler: [fastify.authenticateService],
+            schema: {
+                headers: {
+                    type: 'object',
+                    required: ['x-telegram-user-id'],
+                    properties: {
+                        'x-telegram-user-id': { type: 'string' },
+                    },
+                },
+                body: {
+                    type: 'object',
+                    required: ['folderId'],
+                    properties: {
+                        folderId: { type: 'string', format: 'uuid' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            ok: { type: 'boolean' },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['telegram'],
+                summary: 'Reset context reading state for folder',
+            },
+        },
+        async (request, reply) => {
+            const telegramUserId = Number(
+                request.headers['x-telegram-user-id']
+            );
+
+            if (!telegramUserId) {
+                return reply.code(400).send({
+                    message: 'Missing telegram user id',
+                });
+            }
+
+            const { folderId } = request.body as {
+                folderId: string;
+            };
+
+            // 1️⃣ Найти пользователя по Telegram
+            const account =
+                await externalAccountService.findUserByTelegramUserId(
+                    telegramUserId
+                );
+
+            if (!account) {
+                return reply
+                    .code(404)
+                    .send({ message: 'Telegram account not linked' });
+            }
+
+            // 2️⃣ Сбросить состояние контекстного чтения
+            await resetContextReadingUseCase.execute({
+                userId: account.userId,
+                folderId,
+            });
+
+            return reply.send({ ok: true });
         }
     );
 
