@@ -196,3 +196,19 @@ export const StyledCreateCardBox = styled(Box)`
         padding-right: 8px;
     }
 `
+
+export const StyledBoxAnswer = styled(Box)`
+    display: flex;
+    align-items: center;
+    min-height: 24px;
+    width: 100%;
+`
+
+export const StyledBoxQuestion = styled(Box)`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 24px;
+    width: 100%;
+`

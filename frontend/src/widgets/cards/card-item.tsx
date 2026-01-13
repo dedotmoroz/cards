@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import type { Card } from "@/shared/types/cards";
 import type { CardGenerationState } from "@/shared/store/cardsStore";
 import { GenerateAiSentencesButton } from '@/features/generate-ai-sentences';
@@ -15,6 +15,8 @@ import {
     StyledCardText,
     StyledCardSentencesText,
     StyledMargin,
+    StyledBoxAnswer,
+    StyledBoxQuestion,
 } from './styled-components.ts';
 
 interface CardItemProps {
@@ -53,14 +55,14 @@ export const CardItem: React.FC<CardItemProps> = ({
                     <StyledCardColumn
                         $isVisible={displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id}
                     >
-                        <Box display="flex" alignItems="center" justifyContent="space-between" gap={1}>
+                        <StyledBoxQuestion>
                             <StyledCardText
                                 variant="body1"
                                 color="text.primary"
                             >
                                 {card.question}
                             </StyledCardText>
-                        </Box>
+                        </StyledBoxQuestion>
                         <StyledSentencesContainer>
                             {isGenerating ? (
                                 <CardSkeleton />
@@ -79,12 +81,14 @@ export const CardItem: React.FC<CardItemProps> = ({
                     <StyledCardColumn
                         $isVisible={displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id}
                     >
-                        <StyledCardText
-                            variant="body1"
-                            color="text.primary"
-                        >
-                            {card.answer}
-                        </StyledCardText>
+                        <StyledBoxAnswer>
+                            <StyledCardText
+                                variant="body1"
+                                color="text.primary"
+                            >
+                                {card.answer}
+                            </StyledCardText>
+                        </StyledBoxAnswer>
                         {isGenerating ? (
                             <CardSkeleton />
                         ) : (
