@@ -45,10 +45,14 @@ export function registerFolders(bot: Bot<BotContext>) {
             console.error('folder callback failed', err);
 
             ctx.session.state = 'IDLE';
-            ctx.session.folderId = undefined;
+            // folderId НЕ сбрасываем — он нужен для reset
+
+            const keyboard = new InlineKeyboard()
+                .text('🔄 Сбросить контекст', 'reset')
 
             await ctx.reply(
-                'Не удалось загрузить контекст 😕\nПопробуй позже.'
+                'Не удалось загрузить контекст 😕\n\nЧто можно сделать:',
+                { reply_markup: keyboard }
             );
         }
     });
