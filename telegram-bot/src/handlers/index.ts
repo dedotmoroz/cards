@@ -3,6 +3,7 @@ import type { Bot } from 'grammy';
 import type { BotContext } from '../bot';
 
 import { registerStart } from './commands/start';
+import { registerFoldersCommand } from './commands/folders';
 import { registerFolders } from './callbacks/folders';
 import { registerNext } from './callbacks/next';
 import { registerTranslate } from './callbacks/translate';
@@ -16,4 +17,5 @@ export function registerHandlers(bot: Bot<BotContext>) {
     registerTranslate(bot);
     registerReset(bot);
     registerPickFolder(bot);
+    registerFoldersCommand(bot);
 }
