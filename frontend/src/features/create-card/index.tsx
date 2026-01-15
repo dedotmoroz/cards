@@ -8,7 +8,7 @@ interface CreateCardButtonProps {
     isFormOpen: boolean;
 }
 
-export const CreateCardButton: React.FC<CreateCardButtonProps> = ({ onToggleForm, isFormOpen }) => {
+export const CreateCardButton: React.FC<CreateCardButtonProps> = ({ onToggleForm }) => {
     const { t } = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
