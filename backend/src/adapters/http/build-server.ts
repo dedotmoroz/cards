@@ -620,6 +620,179 @@ export async function buildServer() {
     );
 
     /**
+     * Импорт карточек из Excel
+     */
+    fastify.post('/cards/folder/:folderId/import',
+      {
+        preHandler: [fastify.authenticate],
+        schema: {
+          params: {
+            type: 'object',
+            properties: {
+              folderId: { type: 'string', format: 'uuid' },
+            },
+            required: ['folderId'],
+          },
+          tags: ['cards'],
+          summary: 'Import cards from Excel file',
+        },
+      },
+      async (req: FastifyRequest<{ Params: { folderId: string } }>, reply: FastifyReply) => {
+        const { folderId } = req.params;
+        const userId = (req.user as any).userId;
+
+        // Проверяем существование папки и права доступа
+        const folder = await folderRepo.findById(folderId);
+        if (!folder) {
+          return reply.code(404).send({ message: 'Folder not found' });
+        }
+
+        if (folder.userId !== userId) {
+          return reply.code(403).send({ message: 'Access denied. Folder does not belong to user' });
+        }
+
+        // Проверяем, что запрос содержит файл
+        if (!req.isMultipart()) {
+          return reply.code(400).send({ message: 'Request must be multipart/form-data' });
+        }
+
+        const data = await req.file();
+        
+        if (!data) {
+          return reply.code(400).send({ message: 'No file provided' });
+        }
+
+        // Проверяем тип файла
+        const allowedMimeTypes = [
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+          'application/vnd.ms-excel', // .xls
+        ];
+        
+        if (!allowedMimeTypes.includes(data.mimetype)) {
+          return reply.code(400).send({ 
+            message: 'Invalid file type. Only .xlsx and .xls files are supported' 
+          });
+        }
+
+        try {
+          // Читаем файл в буфер
+          const buffer = await data.toBuffer();
+          
+          // Загружаем Excel файл
+          const workbook = new ExcelJS.Workbook();
+          
+          // ExcelJS поддерживает только .xlsx, для .xls нужно использовать другой метод
+          // Но для простоты пока поддерживаем только .xlsx
+          if (data.mimetype === 'application/vnd.ms-excel') {
+            return reply.code(400).send({ 
+              message: '.xls format is not supported. Please use .xlsx format' 
+            });
+          }
+          
+          await workbook.xlsx.load(buffer as any);
+          
+          // Получаем первый лист
+          const worksheet = workbook.worksheets[0];
+          if (!worksheet) {
+            return reply.code(400).send({ message: 'Excel file is empty' });
+          }
+
+          // Находим колонки "Сторона A" и "Сторона B" по заголовкам
+          let questionColIndex: number | null = null;
+          let answerColIndex: number | null = null;
+
+          // Проверяем первую строку (заголовки)
+          const headerRow = worksheet.getRow(1);
+          headerRow.eachCell({ includeEmpty: false }, (cell, colNumber) => {
+            const headerValue = cell.value?.toString().trim() || '';
+            if (headerValue === 'Сторона A' || headerValue === 'Side A' || headerValue.toLowerCase() === 'question') {
+              questionColIndex = colNumber;
+            }
+            if (headerValue === 'Сторона B' || headerValue === 'Side B' || headerValue.toLowerCase() === 'answer') {
+              answerColIndex = colNumber;
+            }
+          });
+
+          if (questionColIndex === null || answerColIndex === null) {
+            return reply.code(400).send({ 
+              message: 'Excel file must contain columns "Сторона A" (or "Side A" or "Question") and "Сторона B" (or "Side B" or "Answer")' 
+            });
+          }
+
+          // Читаем данные начиная со второй строки
+          let rowIndex = 2;
+          let successCount = 0;
+          let errorCount = 0;
+          const errors: string[] = [];
+
+          // Используем actualRowCount для более точного определения количества строк
+          const lastRow = worksheet.lastRow;
+          const maxRow = lastRow ? lastRow.number : 0;
+
+          while (rowIndex <= maxRow) {
+            const row = worksheet.getRow(rowIndex);
+            const questionCell = row.getCell(questionColIndex);
+            const answerCell = row.getCell(answerColIndex);
+            
+            const question = questionCell.value?.toString().trim() || '';
+            const answer = answerCell.value?.toString().trim() || '';
+
+            // Пропускаем пустые строки
+            if (!question && !answer) {
+              rowIndex++;
+              continue;
+            }
+
+            // Валидация
+            if (!question || !answer) {
+              errorCount++;
+              errors.push(`Row ${rowIndex}: Both question and answer must be filled`);
+              rowIndex++;
+              continue;
+            }
+
+            try {
+              await cardService.createCard(folderId, question, answer);
+              successCount++;
+            } catch (error) {
+              errorCount++;
+              errors.push(`Row ${rowIndex}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            }
+
+            rowIndex++;
+          }
+
+          if (successCount === 0 && errorCount > 0) {
+            return reply.code(400).send({
+              message: 'No cards were imported',
+              errors,
+            });
+          }
+
+          return reply.code(200).send({
+            message: 'Import completed',
+            successCount,
+            errorCount,
+            errors: errors.length > 0 ? errors : undefined,
+          });
+        } catch (error) {
+          req.log.error({ err: error }, 'Error importing Excel file');
+          
+          // Более детальная обработка ошибок парсинга Excel
+          if (error instanceof Error && error.message.includes('Invalid file')) {
+            return reply.code(400).send({ 
+              message: 'Invalid Excel file format. Please ensure the file is a valid .xlsx file' 
+            });
+          }
+          
+          return reply.code(500).send({ 
+            message: error instanceof Error ? error.message : 'Error importing Excel file' 
+          });
+        }
+      }
+    );
+
+    /**
      * Запустить генерацию предложений для карточки
      */
     fastify.post('/cards/:id/generate',

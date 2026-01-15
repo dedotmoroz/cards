@@ -106,4 +106,28 @@ export const cardsApi = {
     link.remove();
     window.URL.revokeObjectURL(url);
   },
+
+  /**
+   * Импорт карточек из Excel файла
+   */
+  importCardsFromExcel: async (folderId: string, file: File): Promise<{
+    message: string;
+    successCount: number;
+    errorCount: number;
+    errors?: string[];
+  }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await axios.post(
+      `${API_BASE_URL}/cards/folder/${folderId}/import`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  },
 };
