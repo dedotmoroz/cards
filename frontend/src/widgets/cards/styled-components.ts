@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
-import { Grid, Box, ListItem, Typography } from "@mui/material";
+import { Grid, Box, ListItem, Typography, IconButton } from "@mui/material";
+import type { InputHTMLAttributes } from "react";
 
 export const StyledGrid = styled(Grid)`
     height: calc(100vh - 64px);
@@ -211,4 +212,41 @@ export const StyledBoxQuestion = styled(Box)`
     gap: 10px;
     min-height: 24px;
     width: 100%;
+`
+
+export const StyledInput = styled('input')<InputHTMLAttributes<HTMLInputElement>>`
+    width: 100%;
+    border: 2px solid #d5d5d5;
+    outline: none;
+    background: transparent;
+    font-size: 20px;
+    font-family: inherit;
+    color: inherit;
+    padding: 6px 6px;
+    border-radius: 4px;
+    margin-top: -3px;
+    margin-bottom: -1px;
+
+    &::placeholder {
+        color: rgba(0, 0, 0, 0.2);
+        opacity: 1;
+    }
+
+    &:focus {
+        outline: none;
+        background: #fff;
+        border: 2px solid #615FFF;
+        box-shadow: 0 0 5px 3px rgba(97, 95, 255, 0.3);
+    }
+`
+export const StyledSaveIconButton = styled(IconButton)`
+    background: #00A63E;
+    color: #fff;
+
+    &:hover {
+        background: #00A63E;
+    }
+`
+
+export const StyledCloseIconButton = styled(IconButton)`
 `

@@ -9,6 +9,7 @@ import { useCardsStore } from '@/shared/store/cardsStore.ts';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
+import {CreateCardForm} from "@/widgets/cards/create-card-form.tsx";
 import type { Card } from "@/shared/types/cards";
 import {
     StyledCardBoxHeader,
@@ -32,6 +33,9 @@ type CardListProps = {
   selectAll?: boolean;
   onSelectAllChange?: (checked: boolean) => void;
   onToggleShowOnlyUnlearned?: () => void;
+  isCreatingCard?: boolean;
+  folderId?: string;
+  onCancelCreateCard?: () => void;
 };
 
 export const CardList: React.FC<CardListProps> = ({
@@ -42,6 +46,9 @@ export const CardList: React.FC<CardListProps> = ({
                                                     selectAll = false,
                                                     onSelectAllChange,
                                                     onToggleShowOnlyUnlearned,
+                                                    isCreatingCard = false,
+                                                    folderId,
+                                                    onCancelCreateCard,
                                                      // onToggleLearned
 }) => {
   const { t } = useTranslation();
@@ -50,6 +57,7 @@ export const CardList: React.FC<CardListProps> = ({
       updateCardLearnStatus,
       deleteCard,
       generateCardSentences,
+      createCard,
       // generateAllCardsSentences,
       generationStatuses
   } = useCardsStore();
@@ -123,6 +131,17 @@ export const CardList: React.FC<CardListProps> = ({
   const filteredCards = showOnlyUnlearned 
     ? cards.filter(card => !card.isLearned)
     : cards;
+
+  const handleSaveCard = async (question: string, answer: string) => {
+    if (folderId) {
+      await createCard(folderId, question, answer);
+      onCancelCreateCard?.();
+    }
+  };
+
+  const handleAutoSaveCard = async (autoSaveFolderId: string, question: string, answer: string) => {
+    await createCard(autoSaveFolderId, question, answer);
+  };
 
   const handleQuestionToggle = () => {
     console.log('Question toggle clicked, current filter:', displayFilter);
@@ -224,6 +243,15 @@ export const CardList: React.FC<CardListProps> = ({
         </StyledCardBoxHeader>
         
         <List>
+          {isCreatingCard && folderId && (
+            <CreateCardForm
+              displayFilter={displayFilter}
+              folderId={folderId}
+              onSave={handleSaveCard}
+              onCancel={onCancelCreateCard || (() => {})}
+              onAutoSave={handleAutoSaveCard}
+            />
+          )}
           {!!filteredCards.length && filteredCards.map((card) => (
               <CardItem
                   key={card.id}

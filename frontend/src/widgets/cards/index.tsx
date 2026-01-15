@@ -1,7 +1,7 @@
 import {Box, Typography} from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import { CreateCardButton } from "@/features/create-card/index.tsx";
@@ -13,6 +13,7 @@ export const Cards = () => {
     const [displayFilter, setDisplayFilter] = useState<'A' | 'AB' | 'B'>('AB');
     const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
+    const [isCreatingCard, setIsCreatingCard] = useState(false);
 
     const {
         cards,
@@ -25,6 +26,11 @@ export const Cards = () => {
     } = useFoldersStore();
     
     const selectedFolder = folders.find(f => f.id === selectedFolderId);
+
+    // Сбрасываем форму создания при смене папки
+    useEffect(() => {
+        setIsCreatingCard(false);
+    }, [selectedFolderId]);
 
     const handleFilterChange = (newFilter: 'A' | 'AB' | 'B') => {
         console.log('handleFilterChange called with:', newFilter);
@@ -42,6 +48,10 @@ export const Cards = () => {
         for (const card of cards) {
             await updateCardLearnStatus(card.id, isChecked);
         }
+    };
+
+    const handleToggleCreateCard = () => {
+        setIsCreatingCard(prev => !prev);
     };
 
     return (
@@ -66,7 +76,7 @@ export const Cards = () => {
                 </StyleLeftBox>
                 <StyledCreateCardBox>
                     {/* Add card */}
-                    <CreateCardButton/>
+                    <CreateCardButton onToggleForm={handleToggleCreateCard} isFormOpen={isCreatingCard}/>
                 </StyledCreateCardBox>
             </StyledTopBox>
             <CardList
@@ -77,6 +87,9 @@ export const Cards = () => {
                 selectAll={selectAll}
                 onSelectAllChange={handleSelectAllChange}
                 onToggleShowOnlyUnlearned={handleUnlearnedToggle}
+                isCreatingCard={isCreatingCard}
+                folderId={selectedFolderId ?? undefined}
+                onCancelCreateCard={() => setIsCreatingCard(false)}
             />
         </StyledWrapperBox>
     )
