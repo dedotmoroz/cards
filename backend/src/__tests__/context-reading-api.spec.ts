@@ -327,8 +327,6 @@ describe('📖 Context Reading API (e2e)', () => {
                     limit: 2,
                 });
 
-            const firstIds = firstRes.body.cards.map((c: any) => c.id);
-
             // Сбрасываем снова
             await request(fastify.server)
                 .post('/context-reading/reset')

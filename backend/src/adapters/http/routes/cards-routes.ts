@@ -91,8 +91,7 @@ export function registerCardsRoutes(
             }>,
             reply: FastifyReply
         ) => {
-            const { word, folderId, sourceUrl, sentence } = req.body;
-            const userId = (req.user as any).userId;
+            const { word, folderId, sentence } = req.body;
 
             const question = word;
             const answer = '';

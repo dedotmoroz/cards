@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import jsonwebtoken from 'jsonwebtoken';
 import { randomUUID, randomBytes } from 'crypto';
