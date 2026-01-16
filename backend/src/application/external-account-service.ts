@@ -74,4 +74,11 @@ export class ExternalAccountService {
 
         return { userId: account.userId };
     }
+
+    async findByProviderAndExternalId(
+        provider: ExternalAccountProvider,
+        externalId: string
+    ): Promise<ExternalAccount | null> {
+        return this.repository.findByProviderAndExternalId(provider, externalId);
+    }
 }
