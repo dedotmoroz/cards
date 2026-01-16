@@ -427,5 +427,138 @@ describe('📖 Context Reading API (e2e)', () => {
             expect(afterResetRes.body.progress.used).toBe(3);
         });
     });
+
+    describe('POST /context-reading/generate', () => {
+        it('запускает генерацию текста для карточек', async () => {
+            // Используем первые 3 карточки
+            const cardIdsToGenerate = cardIds.slice(0, 3);
+
+            const res = await request(fastify.server)
+                .post('/context-reading/generate')
+                .set('Cookie', authCookie)
+                .send({
+                    cardIds: cardIdsToGenerate,
+                    lang: 'en',
+                    level: 'B1',
+                });
+
+            expect(res.status).toBe(202);
+            expect(res.body).toHaveProperty('jobId');
+            expect(typeof res.body.jobId).toBe('string');
+        });
+
+        it('требует минимум 3 карточки', async () => {
+            const res = await request(fastify.server)
+                .post('/context-reading/generate')
+                .set('Cookie', authCookie)
+                .send({
+                    cardIds: [cardIds[0], cardIds[1]], // только 2 карточки
+                    lang: 'en',
+                });
+
+            expect(res.status).toBe(400);
+        });
+
+        it('требует максимум 5 карточек', async () => {
+            const res = await request(fastify.server)
+                .post('/context-reading/generate')
+                .set('Cookie', authCookie)
+                .send({
+                    cardIds: cardIds.concat(['00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002']), // 7 карточек
+                    lang: 'en',
+                });
+
+            expect(res.status).toBe(400);
+        });
+
+        it('требует lang', async () => {
+            const res = await request(fastify.server)
+                .post('/context-reading/generate')
+                .set('Cookie', authCookie)
+                .send({
+                    cardIds: cardIds.slice(0, 3),
+                });
+
+            expect(res.status).toBe(400);
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .post('/context-reading/generate')
+                .send({
+                    cardIds: cardIds.slice(0, 3),
+                    lang: 'en',
+                });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('возвращает 404 для несуществующих карточек', async () => {
+            const fakeCardIds = [
+                '00000000-0000-0000-0000-000000000001',
+                '00000000-0000-0000-0000-000000000002',
+                '00000000-0000-0000-0000-000000000003',
+            ];
+
+            const res = await request(fastify.server)
+                .post('/context-reading/generate')
+                .set('Cookie', authCookie)
+                .send({
+                    cardIds: fakeCardIds,
+                    lang: 'en',
+                });
+
+            expect(res.status).toBe(404);
+        });
+    });
+
+    describe('GET /context-reading/generate-status', () => {
+        it('возвращает статус генерации текста', async () => {
+            // Запускаем генерацию
+            const generateRes = await request(fastify.server)
+                .post('/context-reading/generate')
+                .set('Cookie', authCookie)
+                .send({
+                    cardIds: cardIds.slice(0, 3),
+                    lang: 'en',
+                });
+
+            const jobId = generateRes.body.jobId;
+
+            const res = await request(fastify.server)
+                .get('/context-reading/generate-status')
+                .set('Cookie', authCookie)
+                .query({ jobId });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('state');
+        });
+
+        it('требует jobId в query', async () => {
+            const res = await request(fastify.server)
+                .get('/context-reading/generate-status')
+                .set('Cookie', authCookie);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .get('/context-reading/generate-status')
+                .query({ jobId: 'some-job-id' });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('возвращает 404 для несуществующего jobId', async () => {
+            const res = await request(fastify.server)
+                .get('/context-reading/generate-status')
+                .set('Cookie', authCookie)
+                .query({ jobId: 'non-existent-job-id' });
+
+            // Может вернуть 404 или другой статус в зависимости от реализации
+            expect([404, 500]).toContain(res.status);
+        });
+    });
 });
 

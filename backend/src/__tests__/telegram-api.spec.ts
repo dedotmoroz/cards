@@ -363,5 +363,278 @@ describe('Telegram API (e2e)', () => {
             expect(res.body.linked).toBe(false);
         });
     });
+
+    describe('GET /telegram/folders', () => {
+        it('возвращает папки пользователя по Telegram', async () => {
+            // Привязываем Telegram аккаунт
+            const nonceRes = await request(fastify.server)
+                .post('/telegram/auth/nonce')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({ telegramUserId });
+
+            const nonce = nonceRes.body.nonce;
+
+            await request(fastify.server)
+                .post('/telegram/auth/bind')
+                .set('Cookie', userAuthCookie)
+                .send({ nonce });
+
+            // Создаем папку для пользователя
+            const folderRes = await request(fastify.server)
+                .post('/folders')
+                .set('Cookie', userAuthCookie)
+                .send({ userId, name: 'Telegram Test Folder' });
+
+            const folderId = folderRes.body.id;
+
+            // Получаем папки через Telegram API
+            const res = await request(fastify.server)
+                .get('/telegram/folders')
+                .set('Authorization', `Bearer ${botToken}`)
+                .set('x-telegram-user-id', String(telegramUserId));
+
+            expect(res.status).toBe(200);
+            expect(Array.isArray(res.body)).toBe(true);
+            expect(res.body.length).toBeGreaterThan(0);
+            expect(res.body.some((f: any) => f.id === folderId)).toBe(true);
+            
+            // Проверяем структуру папки
+            const folder = res.body.find((f: any) => f.id === folderId);
+            expect(folder).toHaveProperty('id');
+            expect(folder).toHaveProperty('name');
+            expect(folder.name).toBe('Telegram Test Folder');
+        });
+
+        it('возвращает 404 для непривязанного Telegram аккаунта', async () => {
+            const res = await request(fastify.server)
+                .get('/telegram/folders')
+                .set('Authorization', `Bearer ${botToken}`)
+                .set('x-telegram-user-id', String(999999999));
+
+            expect(res.status).toBe(404);
+            expect(res.body.message).toBe('Telegram account not linked');
+        });
+
+        it('требует авторизацию', async () => {
+            const res = await request(fastify.server)
+                .get('/telegram/folders')
+                .set('x-telegram-user-id', String(telegramUserId));
+
+            expect(res.status).toBe(401);
+        });
+
+        it('требует Bearer токен с типом bot', async () => {
+            const userToken = jwt.sign({ userId: 'test' }, process.env.JWT_SECRET!);
+            
+            const res = await request(fastify.server)
+                .get('/telegram/folders')
+                .set('Authorization', `Bearer ${userToken}`)
+                .set('x-telegram-user-id', String(telegramUserId));
+
+            expect(res.status).toBe(403);
+        });
+
+        it('требует заголовок x-telegram-user-id', async () => {
+            const res = await request(fastify.server)
+                .get('/telegram/folders')
+                .set('Authorization', `Bearer ${botToken}`);
+
+            expect(res.status).toBe(400);
+        });
+    });
+
+    describe('POST /telegram/context/next', () => {
+        let folderId: string;
+        let cardIds: string[] = [];
+
+        beforeEach(async () => {
+            // Привязываем Telegram аккаунт
+            const nonceRes = await request(fastify.server)
+                .post('/telegram/auth/nonce')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({ telegramUserId });
+
+            const nonce = nonceRes.body.nonce;
+
+            await request(fastify.server)
+                .post('/telegram/auth/bind')
+                .set('Cookie', userAuthCookie)
+                .send({ nonce });
+
+            // Создаем папку и карточки
+            const folderRes = await request(fastify.server)
+                .post('/folders')
+                .set('Cookie', userAuthCookie)
+                .send({ userId, name: 'Context Folder' });
+
+            folderId = folderRes.body.id;
+
+            // Создаем карточки с предложениями
+            for (let i = 1; i <= 3; i++) {
+                const cardRes = await request(fastify.server)
+                    .post('/cards')
+                    .set('Cookie', userAuthCookie)
+                    .send({
+                        folderId,
+                        question: `Question ${i}`,
+                        answer: `Answer ${i}`,
+                        questionSentences: `Sentence ${i}`,
+                        answerSentences: `Translation ${i}`,
+                    });
+                cardIds.push(cardRes.body.id);
+            }
+        });
+
+        it('возвращает текст и перевод для карточек', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context/next')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({
+                    telegramUserId,
+                    folderId,
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('text');
+            expect(res.body).toHaveProperty('translation');
+            expect(res.body).toHaveProperty('completed');
+            expect(typeof res.body.text).toBe('string');
+            expect(typeof res.body.translation).toBe('string');
+            expect(typeof res.body.completed).toBe('boolean');
+        });
+
+        it('возвращает completed=true когда карточки закончились', async () => {
+            // Используем все карточки через обычный API
+            await request(fastify.server)
+                .post('/context-reading/next')
+                .set('Cookie', userAuthCookie)
+                .send({ folderId, limit: 5 });
+
+            const res = await request(fastify.server)
+                .post('/telegram/context/next')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({
+                    telegramUserId,
+                    folderId,
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body.completed).toBe(true);
+            expect(res.body.text).toBe('');
+            expect(res.body.translation).toBe('');
+        });
+
+        it('требует авторизацию', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context/next')
+                .send({
+                    telegramUserId,
+                    folderId,
+                });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('возвращает 401 для непривязанного Telegram аккаунта', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context/next')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({
+                    telegramUserId: 999999999,
+                    folderId,
+                });
+
+            expect(res.status).toBe(401);
+            expect(res.body.message).toBe('Telegram not linked');
+        });
+
+        it('требует telegramUserId и folderId', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context/next')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({
+                    folderId,
+                });
+
+            expect(res.status).toBe(400);
+        });
+    });
+
+    describe('POST /telegram/context-reading/reset', () => {
+        let folderId: string;
+
+        beforeEach(async () => {
+            // Привязываем Telegram аккаунт
+            const nonceRes = await request(fastify.server)
+                .post('/telegram/auth/nonce')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({ telegramUserId });
+
+            const nonce = nonceRes.body.nonce;
+
+            await request(fastify.server)
+                .post('/telegram/auth/bind')
+                .set('Cookie', userAuthCookie)
+                .send({ nonce });
+
+            // Создаем папку
+            const folderRes = await request(fastify.server)
+                .post('/folders')
+                .set('Cookie', userAuthCookie)
+                .send({ userId, name: 'Reset Folder' });
+
+            folderId = folderRes.body.id;
+        });
+
+        it('сбрасывает прогресс контекстного чтения', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context-reading/reset')
+                .set('Authorization', `Bearer ${botToken}`)
+                .set('x-telegram-user-id', String(telegramUserId))
+                .send({ folderId });
+
+            expect(res.status).toBe(200);
+            expect(res.body.ok).toBe(true);
+        });
+
+        it('требует авторизацию', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context-reading/reset')
+                .set('x-telegram-user-id', String(telegramUserId))
+                .send({ folderId });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('возвращает 404 для непривязанного Telegram аккаунта', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context-reading/reset')
+                .set('Authorization', `Bearer ${botToken}`)
+                .set('x-telegram-user-id', String(999999999))
+                .send({ folderId });
+
+            expect(res.status).toBe(404);
+            expect(res.body.message).toBe('Telegram account not linked');
+        });
+
+        it('требует folderId', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context-reading/reset')
+                .set('Authorization', `Bearer ${botToken}`)
+                .set('x-telegram-user-id', String(telegramUserId))
+                .send({});
+
+            expect(res.status).toBe(400);
+        });
+
+        it('требует заголовок x-telegram-user-id', async () => {
+            const res = await request(fastify.server)
+                .post('/telegram/context-reading/reset')
+                .set('Authorization', `Bearer ${botToken}`)
+                .send({ folderId });
+
+            expect(res.status).toBe(400);
+        });
+    });
 });
 

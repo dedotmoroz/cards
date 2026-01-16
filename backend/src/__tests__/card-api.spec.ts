@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { buildServer } from '../adapters/http/build-server';
-import request from "supertest"
+import request from "supertest";
+import ExcelJS from 'exceljs';
 
 describe('📦 Card Repository (e2e)', () => {
     let fastify: FastifyInstance;
@@ -246,5 +247,297 @@ describe('📦 Card Repository (e2e)', () => {
             .set('Cookie', authCookie)
         const card = res.body.find((c: any) => c.id === toDeleteId);
         expect(card).toBeUndefined();
+    });
+
+    describe('POST /ext/cards', () => {
+        it('создает карточку из браузерного расширения', async () => {
+            const res = await request(fastify.server)
+                .post('/ext/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    word: 'hello',
+                    folderId,
+                    sourceUrl: 'https://example.com',
+                    sentence: 'Hello world',
+                });
+
+            expect(res.status).toBe(201);
+            expect(res.body).toHaveProperty('id');
+            expect(res.body.word).toBe('hello');
+            expect(res.body.folderId).toBe(folderId);
+        });
+
+        it('создает карточку из расширения без sentence', async () => {
+            const res = await request(fastify.server)
+                .post('/ext/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    word: 'test',
+                    folderId,
+                });
+
+            expect(res.status).toBe(201);
+            expect(res.body).toHaveProperty('id');
+            expect(res.body.word).toBe('test');
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .post('/ext/cards')
+                .send({
+                    word: 'hello',
+                    folderId,
+                });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('требует word и folderId', async () => {
+            const res = await request(fastify.server)
+                .post('/ext/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                });
+
+            expect(res.status).toBe(400);
+        });
+    });
+
+    describe('GET /cards/folder/:folderId/export', () => {
+        it('экспортирует карточки в Excel', async () => {
+            // Создаем несколько карточек для экспорта
+            await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'Question 1',
+                    answer: 'Answer 1',
+                });
+
+            await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'Question 2',
+                    answer: 'Answer 2',
+                });
+
+            const res = await request(fastify.server)
+                .get(`/cards/folder/${folderId}/export`)
+                .set('Cookie', authCookie)
+                .buffer()
+                .parse((res, callback) => {
+                    const chunks: Buffer[] = [];
+                    res.on('data', (chunk: Buffer) => {
+                        chunks.push(chunk);
+                    });
+                    res.on('end', () => {
+                        callback(null, Buffer.concat(chunks));
+                    });
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.headers['content-type']).toContain('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            expect(res.headers['content-disposition']).toContain('.xlsx');
+            expect(Buffer.isBuffer(res.body)).toBe(true);
+            expect(res.body.length).toBeGreaterThan(0);
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .get(`/cards/folder/${folderId}/export`);
+
+            expect(res.status).toBe(401);
+        });
+    });
+
+    describe('POST /cards/folder/:folderId/import', () => {
+        it('импортирует карточки из Excel файла', async () => {
+            // Создаем простой Excel файл в памяти
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Cards');
+            
+            worksheet.columns = [
+                { header: 'Сторона A', key: 'question', width: 50 },
+                { header: 'Сторона B', key: 'answer', width: 50 },
+            ];
+            
+            worksheet.addRow({ question: 'Imported Question 1', answer: 'Imported Answer 1' });
+            worksheet.addRow({ question: 'Imported Question 2', answer: 'Imported Answer 2' });
+            
+            const buffer = await workbook.xlsx.writeBuffer();
+
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${folderId}/import`)
+                .set('Cookie', authCookie)
+                .attach('file', Buffer.from(buffer), 'test.xlsx');
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('message');
+            expect(res.body).toHaveProperty('successCount');
+            expect(res.body).toHaveProperty('errorCount');
+            expect(res.body.successCount).toBeGreaterThan(0);
+        });
+
+        it('возвращает ошибку для невалидного файла', async () => {
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${folderId}/import`)
+                .set('Cookie', authCookie)
+                .attach('file', Buffer.from('invalid file'), 'test.txt');
+
+            expect(res.status).toBe(400);
+        });
+
+        it('возвращает ошибку для Excel без нужных колонок', async () => {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Cards');
+            
+            worksheet.addRow({ col1: 'Wrong', col2: 'Columns' });
+            
+            const buffer = await workbook.xlsx.writeBuffer();
+
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${folderId}/import`)
+                .set('Cookie', authCookie)
+                .attach('file', Buffer.from(buffer), 'test.xlsx');
+
+            expect(res.status).toBe(400);
+            expect(res.body.message).toContain('Сторона A');
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${folderId}/import`);
+
+            expect(res.status).toBe(401);
+        });
+
+        it('возвращает 404 для несуществующей папки', async () => {
+            const fakeFolderId = '00000000-0000-0000-0000-000000000000';
+            const ExcelJS = require('exceljs');
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Cards');
+            
+            worksheet.columns = [
+                { header: 'Сторона A', key: 'question', width: 50 },
+                { header: 'Сторона B', key: 'answer', width: 50 },
+            ];
+            
+            const buffer = await workbook.xlsx.writeBuffer();
+
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${fakeFolderId}/import`)
+                .set('Cookie', authCookie)
+                .attach('file', buffer, 'test.xlsx');
+
+            expect(res.status).toBe(404);
+        });
+    });
+
+    describe('POST /cards/:id/generate', () => {
+        it('запускает генерацию предложений для карточки', async () => {
+            // Создаем карточку
+            const createRes = await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'hello',
+                    answer: 'привет',
+                });
+
+            const cardId = createRes.body.id;
+
+            const res = await request(fastify.server)
+                .post(`/cards/${cardId}/generate`)
+                .set('Cookie', authCookie)
+                .send({
+                    lang: 'en',
+                    level: 'B1',
+                    count: 1,
+                });
+
+            expect(res.status).toBe(202);
+            expect(res.body).toHaveProperty('jobId');
+            expect(typeof res.body.jobId).toBe('string');
+        });
+
+        it('возвращает 404 для несуществующей карточки', async () => {
+            const fakeCardId = '00000000-0000-0000-0000-000000000000';
+            const res = await request(fastify.server)
+                .post(`/cards/${fakeCardId}/generate`)
+                .set('Cookie', authCookie)
+                .send({});
+
+            expect(res.status).toBe(404);
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .post(`/cards/${cardId}/generate`)
+                .send({});
+
+            expect(res.status).toBe(401);
+        });
+    });
+
+    describe('GET /cards/:id/generate-status', () => {
+        it('возвращает статус генерации', async () => {
+            // Создаем карточку и запускаем генерацию
+            const createRes = await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'test',
+                    answer: 'тест',
+                });
+
+            const cardId = createRes.body.id;
+
+            const generateRes = await request(fastify.server)
+                .post(`/cards/${cardId}/generate`)
+                .set('Cookie', authCookie)
+                .send({});
+
+            const jobId = generateRes.body.jobId;
+
+            const res = await request(fastify.server)
+                .get(`/cards/${cardId}/generate-status`)
+                .set('Cookie', authCookie)
+                .query({ jobId });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('status');
+        });
+
+        it('возвращает 404 для несуществующей карточки', async () => {
+            const fakeCardId = '00000000-0000-0000-0000-000000000000';
+            const res = await request(fastify.server)
+                .get(`/cards/${fakeCardId}/generate-status`)
+                .set('Cookie', authCookie)
+                .query({ jobId: 'some-job-id' });
+
+            expect(res.status).toBe(404);
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .get(`/cards/${cardId}/generate-status`)
+                .query({ jobId: 'some-job-id' });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('требует jobId в query', async () => {
+            const res = await request(fastify.server)
+                .get(`/cards/${cardId}/generate-status`)
+                .set('Cookie', authCookie);
+
+            expect(res.status).toBe(400);
+        });
     });
 });

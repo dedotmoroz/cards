@@ -1,7 +1,8 @@
 import { UserService } from '../application/user-service';
 import { User } from '../domain/user';
 import { UserRepository } from '../ports/user-repository';
-import { hash, compare } from 'bcryptjs';
+import * as bcryptjs from 'bcryptjs';
+import * as jsonwebtoken from 'jsonwebtoken';
 
 jest.mock('bcryptjs', () => ({
     hash: jest.fn(() => Promise.resolve('hashed_password')),
@@ -18,6 +19,7 @@ describe('UserService', () => {
 
     beforeEach(() => {
         process.env.JWT_SECRET = 'test_secret';
+        jest.clearAllMocks();
         userRepo = {
             create: jest.fn(),
             findByEmail: jest.fn(),
@@ -39,7 +41,7 @@ describe('UserService', () => {
 
         const result = await userService.register('test@example.com', 'plain_password');
 
-        expect(hash).toHaveBeenCalledWith('plain_password', 10);
+        expect(bcryptjs.hash).toHaveBeenCalledWith('plain_password', 10);
         expect(userRepo.create).toHaveBeenCalledWith({
             email: 'test@example.com',
             passwordHash: 'hashed_password',
@@ -62,7 +64,7 @@ describe('UserService', () => {
 
         const result = await userService.register('test@example.com', 'plain_password', 'Test User');
 
-        expect(hash).toHaveBeenCalledWith('plain_password', 10);
+        expect(bcryptjs.hash).toHaveBeenCalledWith('plain_password', 10);
         expect(userRepo.create).toHaveBeenCalledWith({
             email: 'test@example.com',
             passwordHash: 'hashed_password',
@@ -84,6 +86,7 @@ describe('UserService', () => {
 
         const result = await userService.login('test@example.com', 'plain_password');
 
+        expect(jsonwebtoken.sign).toHaveBeenCalled();
         expect(result).toBe('mocked_jwt');
     });
 
@@ -122,7 +125,7 @@ describe('UserService', () => {
         const result = await userService.loginWithGoogle('some_token');
 
         // Теперь используется register
-        expect(hash).toHaveBeenCalledWith('', 10);
+        expect(bcryptjs.hash).toHaveBeenCalledWith('', 10);
         expect(userRepo.create).toHaveBeenCalledWith({
             email: 'user@example.com',
             passwordHash: 'hashed_password',
@@ -130,6 +133,7 @@ describe('UserService', () => {
             language: undefined,
             isGuest: false,
         });
+        expect(jsonwebtoken.sign).toHaveBeenCalled();
         expect(result).toBe('mocked_jwt');
     });
 
@@ -232,7 +236,7 @@ describe('UserService', () => {
 
         expect(userRepo.findById).toHaveBeenCalledWith('1');
         expect(userRepo.findByEmail).toHaveBeenCalledWith('new@example.com');
-        expect(hash).toHaveBeenCalledWith('newPassword123', 10);
+        expect(bcryptjs.hash).toHaveBeenCalledWith('newPassword123', 10);
         expect(userRepo.update).toHaveBeenCalledWith('1', {
             email: 'new@example.com',
             passwordHash: 'hashed_password',

@@ -77,4 +77,61 @@ describe('📁 Folder API (e2e)', () => {
     expect(res.status).toBe(200);
     expect(res.body.find((f: any) => f.id === createdFolderId)).toBeUndefined();
   });
+
+  it('переименовывает папку', async () => {
+    // Создаем папку для переименования
+    const folderRes = await request(fastify.server)
+        .post('/folders')
+        .set('Cookie', authCookie)
+        .send({ userId, name: 'Original Name' });
+
+    const folderId = folderRes.body.id;
+
+    // Переименовываем
+    const renameRes = await request(fastify.server)
+        .patch(`/folders/${folderId}`)
+        .set('Cookie', authCookie)
+        .send({ name: 'New Name' });
+
+    expect(renameRes.status).toBe(200);
+    expect(renameRes.body.name).toBe('New Name');
+    expect(renameRes.body.id).toBe(folderId);
+
+    // Проверяем, что имя действительно изменилось
+    const getRes = await request(fastify.server)
+        .get(`/folders/${userId}`)
+        .set('Cookie', authCookie);
+
+    const renamedFolder = getRes.body.find((f: any) => f.id === folderId);
+    expect(renamedFolder).toBeDefined();
+    expect(renamedFolder.name).toBe('New Name');
+  });
+
+  it('возвращает 404 при переименовании несуществующей папки', async () => {
+    const fakeFolderId = '00000000-0000-0000-0000-000000000000';
+    const res = await request(fastify.server)
+        .patch(`/folders/${fakeFolderId}`)
+        .set('Cookie', authCookie)
+        .send({ name: 'New Name' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe('Folder not found');
+  });
+
+  it('требует аутентификации для переименования', async () => {
+    const res = await request(fastify.server)
+        .patch(`/folders/${createdFolderId}`)
+        .send({ name: 'New Name' });
+
+    expect(res.status).toBe(401);
+  });
+
+  it('требует поле name для переименования', async () => {
+    const res = await request(fastify.server)
+        .patch(`/folders/${createdFolderId}`)
+        .set('Cookie', authCookie)
+        .send({});
+
+    expect(res.status).toBe(400);
+  });
 });
