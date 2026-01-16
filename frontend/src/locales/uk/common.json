@@ -194,7 +194,8 @@
     "back": "Назад",
     "continue": "Продовжити",
     "continueWithCount": "Продовжити навчання ({{count}} невивчених карток)",
-    "selectAll": "Вибрати все"
+    "selectAll": "Вибрати все",
+    "translating": "Перекладаю..."
   },
   "learning": {
     "sideA": "Сторона A",

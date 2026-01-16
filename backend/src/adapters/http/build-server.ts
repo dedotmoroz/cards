@@ -38,6 +38,7 @@ import { registerFoldersRoutes } from './routes/folders-routes';
 import { registerContextReadingRoutes } from './routes/context-reading-routes';
 import { registerAuthRoutes } from './routes/auth-routes';
 import { registerTelegramRoutes } from './routes/telegram-routes';
+import { registerTranslateRoutes } from './routes/translate-routes';
 
 export async function buildServer() {
     const fastify = Fastify({ logger: true });
@@ -188,6 +189,7 @@ export async function buildServer() {
         getNextContextCardsUseCase,
         resetContextReadingUseCase
     );
+    registerTranslateRoutes(fastify);
 
     return fastify;
 }

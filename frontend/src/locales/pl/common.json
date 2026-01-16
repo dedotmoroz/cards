@@ -194,7 +194,8 @@
     "back": "Wstecz",
     "continue": "Kontynuuj",
     "continueWithCount": "Kontynuuj naukę ({{count}} nieprzerobionych kart)",
-    "selectAll": "Zaznacz wszystko"
+    "selectAll": "Zaznacz wszystko",
+    "translating": "Tłumaczenie..."
   },
   "learning": {
     "sideA": "Strona A",

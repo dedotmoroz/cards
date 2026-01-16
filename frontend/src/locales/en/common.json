@@ -194,7 +194,8 @@
     "back": "Back",
     "continue": "Continue",
     "continueWithCount": "Continue Learning ({{count}} unlearned cards)",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "translating": "Translating..."
   },
   "learning": {
     "sideA": "Side A",

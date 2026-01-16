@@ -24,3 +24,6 @@ backup
 *.njsproj
 *.sln
 *.sw?
+
+# Service token generator
+backend/src/gen-service-token.ts

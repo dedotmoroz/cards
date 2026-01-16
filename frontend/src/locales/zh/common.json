@@ -194,7 +194,8 @@
     "back": "返回",
     "continue": "继续",
     "continueWithCount": "继续学习（{{count}} 张未学习的卡片）",
-    "selectAll": "全选"
+    "selectAll": "全选",
+    "translating": "翻译中..."
   },
   "learning": {
     "sideA": "A面",

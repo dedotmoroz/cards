@@ -1,6 +1,7 @@
 import { styled } from "@mui/material/styles";
 import { Grid, Box, ListItem, Typography, IconButton } from "@mui/material";
 import type { InputHTMLAttributes } from "react";
+import React, { forwardRef } from "react";
 
 export const StyledGrid = styled(Grid)`
     height: calc(100vh - 64px);
@@ -214,7 +215,15 @@ export const StyledBoxQuestion = styled(Box)`
     width: 100%;
 `
 
-export const StyledInput = styled('input')<InputHTMLAttributes<HTMLInputElement>>`
+// Создаем базовый компонент с forwardRef
+const BaseInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
+    (props, ref) => React.createElement('input', { ref, ...props })
+);
+
+BaseInput.displayName = 'BaseInput';
+
+// Обертываем его в styled
+export const StyledInput = styled(BaseInput)`
     width: 100%;
     border: 2px solid #d5d5d5;
     outline: none;
@@ -249,4 +258,47 @@ export const StyledSaveIconButton = styled(IconButton)`
 `
 
 export const StyledCloseIconButton = styled(IconButton)`
+`
+
+export const StyledSuggestionsBox = styled(Box)`
+    position: relative;
+    width: 100%;
+`
+
+export const StyledSuggestionsList = styled(Box)`
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d5d5d5;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+`
+
+export const StyledSuggestionItem = styled(Box)`
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
+`
+
+export const StyledLoadingIndicator = styled(Box)`
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
 `
