@@ -63,14 +63,15 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
 
   // Обновляем unlearnedCards при изменении cards
   // НЕ сбрасываем счетчики при обновлении unlearnedCards
-  useEffect(() => {
-    if (cards.length > 0) {
-      const unlearned = cards.filter(card => !card.isLearned);
-      setUnlearnedCards(unlearned);
-    } else {
-      setUnlearnedCards([]);
-    }
-  }, [cards]);
+
+  // useEffect(() => {
+  //   if (cards.length > 0) {
+  //     const unlearned = cards.filter(card => !card.isLearned);
+  //     setUnlearnedCards(unlearned);
+  //   } else {
+  //     setUnlearnedCards([]);
+  //   }
+  // }, [cards]);
 
   // Инициализируем initialDisplayCardsCount только при изменении режима или первой загрузке
   // Используем ref для отслеживания предыдущего значения режима
@@ -135,6 +136,10 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
     setShowAnswer(!showAnswer);
   };
 
+
+    /**
+     * Обработка Знаю
+     */
   const handleKnow = async () => {
     if (!currentCard) return;
     
