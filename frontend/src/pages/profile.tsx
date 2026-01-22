@@ -21,6 +21,8 @@ import { ArrowBack, AccountCircle, ContentCopy } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { authApi } from '@/shared/api/authApi';
+import { ButtonLink } from '@/shared/ui/button-link';
+
 
 const languages = [
   { code: 'ru', label: 'Русский' },
@@ -234,18 +236,17 @@ export const ProfilePage = () => {
   // Если пользователь гость, показываем форму регистрации
   if (user.isGuest) {
     return (
-      <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+      <Box>
         <Container maxWidth="sm" >
           {/* Header */}
           <Box sx={{py: 4}}>
             <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Button
+              <ButtonLink
                 startIcon={<ArrowBack/>}
                 onClick={() => navigate(-1)}
-                sx={{color: 'white'}}
               >
                 {t('forms.back')}
-              </Button>
+              </ButtonLink>
             </Box>
           </Box>
 
@@ -345,18 +346,17 @@ export const ProfilePage = () => {
 
   // Обычная форма профиля для зарегистрированных пользователей
   return (
-      <Box sx={{minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+      <Box>
           <Container maxWidth="sm" >
               {/* Header */}
               <Box sx={{py: 4}}>
                   <Box display="flex" alignItems="center" justifyContent="space-between">
-                      <Button
+                      <ButtonLink
                           startIcon={<ArrowBack/>}
                           onClick={() => navigate(-1)}
-                          sx={{color: 'white'}}
                       >
                           {t('forms.back')}
-                      </Button>
+                      </ButtonLink>
                   </Box>
               </Box>
 

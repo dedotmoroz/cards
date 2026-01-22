@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
 
-export const StyledBottonBack = styled(Button)`
+export const StyledButtonLink = styled(Button)`
     display: flex;
     padding: 12px 12px;
     justify-content: center;
@@ -19,4 +19,3 @@ export const StyledBottonBack = styled(Button)`
         align-items: center;
     }
 `
-

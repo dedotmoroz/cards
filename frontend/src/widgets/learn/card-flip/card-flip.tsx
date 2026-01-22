@@ -1,7 +1,8 @@
 import React, {forwardRef, useRef} from 'react';
-import {Box, Card} from '@mui/material';
+import {Box} from '@mui/material';
 import {CardBox} from './card-box.tsx'
 import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
+import {StyledEmptyCardPlace} from './styled-components';
 
 interface CardFlipProps {
     question?: string;
@@ -174,15 +175,7 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                     alignItems: 'center',
                 }}
             >
-                <Card
-                    sx={{
-                        height: 300,
-                        width: 500,
-                        boxShadow: 0,
-                        borderRadius: '20px',
-                        backgroundColor: '#ececec',
-                    }}
-                />
+                <StyledEmptyCardPlace />
             </Box>
             </Box>
         );

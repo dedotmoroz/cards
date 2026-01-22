@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useFoldersStore } from '@/shared/store/foldersStore';
-import { StyledBottonBack } from './styled-components';
+import { ButtonLink } from '@/shared/ui/button-link';
 
 export const CardLearningBack = () => {
   const { t } = useTranslation();
@@ -24,12 +24,12 @@ export const CardLearningBack = () => {
   };
   
   return (
-    <StyledBottonBack
+    <ButtonLink
       onClick={handleBack}
       startIcon={<ChevronLeftIcon />}
     >
       {t('forms.back')}
-    </StyledBottonBack>
+    </ButtonLink>
   );
 };
 

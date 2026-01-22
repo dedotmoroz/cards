@@ -16,6 +16,7 @@ import {
 import { ArrowBack, PersonAdd } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
+import { ButtonLink } from '@/shared/ui/button-link';
 
 export const SignUpPage = () => {
   const { t, i18n } = useTranslation();
@@ -80,18 +81,17 @@ export const SignUpPage = () => {
   });
 
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+    <Box>
       <Container maxWidth="sm">
         {/* Header */}
         <Box sx={{ py: 4 }}>
           <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Button
+            <ButtonLink
               startIcon={<ArrowBack />}
               onClick={() => navigate('/')}
-              sx={{ color: 'white' }}
             >
               {t('forms.back')}
-            </Button>
+            </ButtonLink>
             <Typography variant="h4" fontWeight="bold" color="white">
               {t('app.title')}
             </Typography>
