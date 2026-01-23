@@ -163,7 +163,8 @@
     "edit": "编辑卡片",
     "delete": "删除卡片",
     "showAll": "显示全部",
-    "showUnlearned": "显示未学习的"
+    "showUnlearned": "显示未学习的",
+    "emptyFolder": "文件夹中没有卡片"
   },
   "folders": {
     "title": "文件夹",

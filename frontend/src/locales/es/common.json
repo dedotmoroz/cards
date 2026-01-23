@@ -163,7 +163,8 @@
     "edit": "Editar tarjeta",
     "delete": "Eliminar tarjeta",
     "showAll": "Mostrar todas",
-    "showUnlearned": "Mostrar no aprendidas"
+    "showUnlearned": "Mostrar no aprendidas",
+    "emptyFolder": "No hay tarjetas en la carpeta"
   },
   "folders": {
     "title": "Carpetas",

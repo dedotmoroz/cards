@@ -163,7 +163,8 @@
     "edit": "Edit Card",
     "delete": "Delete Card",
     "showAll": "Show All",
-    "showUnlearned": "Show Unlearned"
+    "showUnlearned": "Show Unlearned",
+    "emptyFolder": "No cards in folder"
   },
   "folders": {
     "title": "Folders",

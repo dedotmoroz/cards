@@ -163,7 +163,8 @@
     "edit": "Modifier la carte",
     "delete": "Supprimer la carte",
     "showAll": "Afficher tout",
-    "showUnlearned": "Afficher non apprises"
+    "showUnlearned": "Afficher non apprises",
+    "emptyFolder": "Aucune carte dans le dossier"
   },
   "folders": {
     "title": "Dossiers",

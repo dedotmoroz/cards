@@ -163,7 +163,8 @@
     "edit": "Karte bearbeiten",
     "delete": "Karte löschen",
     "showAll": "Alle anzeigen",
-    "showUnlearned": "Nicht gelernte anzeigen"
+    "showUnlearned": "Nicht gelernte anzeigen",
+    "emptyFolder": "Keine Karten im Ordner"
   },
   "folders": {
     "title": "Ordner",

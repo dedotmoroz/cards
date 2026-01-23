@@ -67,11 +67,15 @@ export const Cards = () => {
                             </Typography>
                             <CardsMenu/>
                         </StyledHeaderBox>
-                        {cards.length > 0 && (
-                            <Typography variant="body1" color="text.secondary">
-                                {cards.length} {t('cards.title').toLowerCase()}
-                            </Typography>
-                        )}
+                        {cards.length > 0
+                            ? (<Typography variant="body1" color="text.secondary">
+                                    {cards.length} {t('cards.title').toLowerCase()}
+                                </Typography>)
+                            :
+                            (<Typography variant="body1" color="text.secondary">
+                                  &nbsp;
+                            </Typography>)
+                        }
                     </Box>
                 </StyleLeftBox>
                 <StyledCreateCardBox>

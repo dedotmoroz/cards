@@ -163,7 +163,8 @@
     "edit": "Edytuj kartę",
     "delete": "Usuń kartę",
     "showAll": "Pokaż wszystkie",
-    "showUnlearned": "Pokaż nieprzerobione"
+    "showUnlearned": "Pokaż nieprzerobione",
+    "emptyFolder": "Brak kart w folderze"
   },
   "folders": {
     "title": "Foldery",

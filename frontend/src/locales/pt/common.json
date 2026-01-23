@@ -163,7 +163,8 @@
     "edit": "Editar cartão",
     "delete": "Excluir cartão",
     "showAll": "Mostrar todos",
-    "showUnlearned": "Mostrar não aprendidos"
+    "showUnlearned": "Mostrar não aprendidos",
+    "emptyFolder": "Nenhum cartão na pasta"
   },
   "folders": {
     "title": "Pastas",

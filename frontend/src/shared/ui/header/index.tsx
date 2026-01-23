@@ -17,7 +17,7 @@ export const HeaderToolbar = ({
                                   learnWordsButton,
                                   learnPhrasesButton,
                                   // learnWordsMoreButton,
-                                  selectSide,
+                                  // selectSide,
                                   onDrawerToggle
                               }: HeaderToolbarProps) => {
     const navigate = useNavigate();
@@ -38,7 +38,7 @@ export const HeaderToolbar = ({
                 )}
                 <Box sx={{ flexGrow: 1 }} />
                 <StyledNavigationBox>
-                    {selectSide}
+                    {/*{selectSide}*/}
                     {learnWordsButton}
                     {learnPhrasesButton}
                     {/*{learnWordsMoreButton}*/}

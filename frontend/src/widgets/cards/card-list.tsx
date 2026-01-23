@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List, IconButton } from '@mui/material';
+import { List, IconButton, Box, Typography } from '@mui/material';
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { ToggleShowOnlyUnlearned } from '@/features/toggle-show-only-unlearned';
 import { SelectAllCards } from '@/features/select-all-cards';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
 // import { GenerateAllAiSentencesButton } from '@/features/generate-all-ai-sentences';
+import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
@@ -252,7 +253,8 @@ export const CardList: React.FC<CardListProps> = ({
               onAutoSave={handleAutoSaveCard}
             />
           )}
-          {!!filteredCards.length && filteredCards.map((card) => (
+          {!!filteredCards.length ? (
+            filteredCards.map((card) => (
               <CardItem
                   key={card.id}
                   card={card}
@@ -264,7 +266,37 @@ export const CardList: React.FC<CardListProps> = ({
                   onReload={generateCardSentences}
                   generationStatus={generationStatuses[card.id]}
               />
-          ))}
+            ))
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                py: 12,
+                px: 4,
+              }}
+            >
+              <StyleOutlinedIcon
+                sx={{
+                  fontSize: 80,
+                  color: 'text.secondary',
+                  mb: 3,
+                  opacity: 0.3,
+                }}
+              />
+              <Typography
+                variant="h6"
+                sx={{
+                  color: 'text.secondary',
+                  textAlign: 'center',
+                }}
+              >
+                {t('cards.emptyFolder')}
+              </Typography>
+            </Box>
+          )}
           <MenuCard
               handleMenuClose={handleMenuClose}
               handleDelete={handleDelete}

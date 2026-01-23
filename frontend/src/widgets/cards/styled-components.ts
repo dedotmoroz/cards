@@ -55,6 +55,8 @@ export const StyledBoxWrapper = styled(Box)`
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.10);
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
     overflow: hidden;
 `
 
@@ -94,7 +96,9 @@ export const StyledListItem = styled(ListItem)`
     margin: 0;
     padding: 10px 20px;
     border-bottom: 2px solid rgba(227, 231, 237, 0.74);
-    //border-bottom: 1px solid #d2d6dc;
+    &:last-child {
+        border-bottom: none;
+    }
 `;
 
 export const StyledCardContainer = styled(Box)`
