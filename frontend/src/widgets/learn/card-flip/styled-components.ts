@@ -45,6 +45,6 @@ export const StyledEmptyCardPlace = styled(Card)`
     width: 500px;
     box-shadow: none;
     border-radius: 20px;
-    background: linear-gradient(90deg, rgba(224, 231, 255, 0.60) 0%, rgba(243, 232, 255, 0.60) 50%, rgba(252, 231, 243, 0.60) 100%);
+    background: linear-gradient(135deg, rgba(224, 231, 255, 0.50) 0%, rgba(243, 232, 255, 0.50) 50%, rgba(252, 231, 243, 0.50) 100%);
 `;
 

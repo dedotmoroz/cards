@@ -1,8 +1,10 @@
-import React, {forwardRef, useRef} from 'react';
+import React, {forwardRef, useRef, useState, useEffect} from 'react';
 import {Box} from '@mui/material';
 import {CardBox} from './card-box.tsx'
 import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
 import {StyledEmptyCardPlace} from './styled-components';
+import {useTranslation} from 'react-i18next';
+import type {Card} from '@/shared/types/cards';
 
 interface CardFlipProps {
     question?: string;
@@ -11,6 +13,8 @@ interface CardFlipProps {
     toggleAnswer: () => void;
     handleKnow: () => void;
     handleDontKnow: () => void;
+    phrasesMode?: boolean;
+    currentCard?: Card;
 }
 
 export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
@@ -21,7 +25,16 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
        toggleAnswer,
        handleKnow,
        handleDontKnow,
+       phrasesMode = false,
+       currentCard,
   }, ref) => {
+      const { t } = useTranslation();
+      const [showAlternateContent, setShowAlternateContent] = useState(false);
+      
+      // Сбрасываем состояние при изменении карточки или переключении стороны
+      useEffect(() => {
+          setShowAlternateContent(false);
+      }, [currentCard?.id, showAnswer]);
       const start = useRef<{x:number; y:number; t:number}>({x:0,y:0,t:0});
       const dragging = useRef(false);
       const THRESHOLD_PX = 6;     // допуск на «клик»
@@ -177,6 +190,51 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
             >
                 <StyledEmptyCardPlace />
             </Box>
+            {/* Кнопка показа контекста/слова */}
+            {((phrasesMode && currentCard?.question && currentCard?.answer) || 
+              (!phrasesMode && currentCard?.questionSentences && currentCard?.answerSentences)) && (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        mt: 2,
+                    }}
+                >
+                    {!showAlternateContent ? (
+                        <Box
+                            onClick={() => setShowAlternateContent(true)}
+                            sx={{
+                                minHeight: '50px',
+                            }}
+                        >
+                            {phrasesMode 
+                                ? t('cards.showWord', 'Показать слово')
+                                : t('cards.showContext', 'Показать контекст')
+                            }
+                        </Box>
+                    ) : (
+                        <Box
+                            sx={{
+                                maxWidth: 500,
+                                width: '100%',
+                                textAlign: 'center',
+                                fontWeight: 'bold',
+                                minHeight: '50px',
+                            }}
+                        >
+                            {phrasesMode ? (
+                                <Box onClick={() => setShowAlternateContent(false)}>
+                                    {showAnswer ? currentCard?.question : currentCard?.answer}
+                                </Box>
+                            ) : (
+                                <Box onClick={() => setShowAlternateContent(false)}>
+                                    {showAnswer ? currentCard?.questionSentences : currentCard?.answerSentences}
+                                </Box>
+                            )}
+                        </Box>
+                    )}
+                </Box>
+            )}
             </Box>
         );
     }

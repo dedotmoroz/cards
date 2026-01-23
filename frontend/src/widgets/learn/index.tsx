@@ -129,6 +129,8 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                         toggleAnswer={toggleAnswer}
                         handleKnow={handleKnow}
                         handleDontKnow={handleDontKnow}
+                        phrasesMode={learning.phrasesMode}
+                        currentCard={currentCard}
                     />
                     {/* Controls - только для десктопа */}
                     {!isMobile && (
