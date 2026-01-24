@@ -164,7 +164,8 @@
     "delete": "Usuń kartę",
     "showAll": "Pokaż wszystkie",
     "showUnlearned": "Pokaż nieprzerobione",
-    "emptyFolder": "Brak kart w folderze"
+    "emptyFolder": "Brak kart w folderze",
+    "pronounce": "Wymów"
   },
   "folders": {
     "title": "Foldery",

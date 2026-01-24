@@ -206,6 +206,7 @@ export const StyledCreateCardBox = styled(Box)`
 export const StyledBoxAnswer = styled(Box)`
     display: flex;
     align-items: center;
+    gap: 10px;
     min-height: 24px;
     width: 100%;
 `
@@ -213,7 +214,7 @@ export const StyledBoxAnswer = styled(Box)`
 export const StyledBoxQuestion = styled(Box)`
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 10px;
     min-height: 24px;
     width: 100%;

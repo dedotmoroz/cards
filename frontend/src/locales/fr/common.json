@@ -164,7 +164,8 @@
     "delete": "Supprimer la carte",
     "showAll": "Afficher tout",
     "showUnlearned": "Afficher non apprises",
-    "emptyFolder": "Aucune carte dans le dossier"
+    "emptyFolder": "Aucune carte dans le dossier",
+    "pronounce": "Prononcer"
   },
   "folders": {
     "title": "Dossiers",

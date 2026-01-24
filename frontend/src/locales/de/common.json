@@ -164,7 +164,8 @@
     "delete": "Karte löschen",
     "showAll": "Alle anzeigen",
     "showUnlearned": "Nicht gelernte anzeigen",
-    "emptyFolder": "Keine Karten im Ordner"
+    "emptyFolder": "Keine Karten im Ordner",
+    "pronounce": "Aussprechen"
   },
   "folders": {
     "title": "Ordner",

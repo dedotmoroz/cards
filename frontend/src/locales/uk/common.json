@@ -164,7 +164,8 @@
     "delete": "Видалити картку",
     "showAll": "Показати всі",
     "showUnlearned": "Показати невивчені",
-    "emptyFolder": "У папці немає карток"
+    "emptyFolder": "У папці немає карток",
+    "pronounce": "Вимовити"
   },
   "folders": {
     "title": "Папки",

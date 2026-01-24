@@ -164,7 +164,8 @@
     "delete": "删除卡片",
     "showAll": "显示全部",
     "showUnlearned": "显示未学习的",
-    "emptyFolder": "文件夹中没有卡片"
+    "emptyFolder": "文件夹中没有卡片",
+    "pronounce": "发音"
   },
   "folders": {
     "title": "文件夹",

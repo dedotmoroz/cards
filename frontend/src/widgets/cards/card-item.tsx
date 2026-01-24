@@ -4,6 +4,7 @@ import type { CardGenerationState } from "@/shared/store/cardsStore";
 import { GenerateAiSentencesButton } from '@/features/generate-ai-sentences';
 import { ToggleCardLearned } from '@/features/toggle-card-learned';
 import { CardMenuButton } from '@/features/card-menu-button';
+import { PronunciationButton } from '@/features/pronunciation-button';
 import { CardSkeleton } from "@/entities/cards";
 import {
     StyledListItem,
@@ -62,18 +63,22 @@ export const CardItem: React.FC<CardItemProps> = ({
                             >
                                 {card.question}
                             </StyledCardText>
+                            <PronunciationButton text={card.question} lang={'en'} />
                         </StyledBoxQuestion>
                         <StyledSentencesContainer>
                             {isGenerating ? (
                                 <CardSkeleton />
                             ) : (
                                 card.questionSentences && (
+                                <>
                                     <StyledCardSentencesText
                                         variant="body2"
                                         color="text.secondary"
                                     >
                                         {card.questionSentences}
                                     </StyledCardSentencesText>
+                                    {/*<PronunciationButton text={card.questionSentences} lang={'en'} />*/}
+                                </>
                                 )
                             )}
                         </StyledSentencesContainer>
