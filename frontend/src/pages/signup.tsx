@@ -5,7 +5,6 @@ import {
   Container,
   Paper,
   TextField,
-  Button,
   Typography,
   Box,
   Alert,
@@ -17,6 +16,7 @@ import { ArrowBack, PersonAdd } from '@mui/icons-material';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { ButtonLink } from '@/shared/ui/button-link';
+import { ButtonColor } from "@/shared/ui";
 
 export const SignUpPage = () => {
   const { t, i18n } = useTranslation();
@@ -92,7 +92,7 @@ export const SignUpPage = () => {
             >
               {t('forms.back')}
             </ButtonLink>
-            <Typography variant="h4" fontWeight="bold" color="white">
+            <Typography variant="h4" fontWeight="bold" >
               {t('app.title')}
             </Typography>
             <Box sx={{ width: 100 }} /> {/* Spacer for centering */}
@@ -175,27 +175,18 @@ export const SignUpPage = () => {
                 disabled={isLoading}
               />
               
-              <Button
+              <ButtonColor
                 type="submit"
                 fullWidth
                 variant="contained"
-                size="large"
-                startIcon={<PersonAdd />}
-                sx={{ 
-                  mt: 3, 
+                sx={{
+                  mt: 3,
                   mb: 2,
-                  py: 1.5,
-                  fontSize: '1.1rem',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: 4
-                  },
-                  transition: 'all 0.3s ease'
                 }}
                 disabled={isLoading}
               >
                 {isLoading ? <CircularProgress size={24} /> : t('auth.register')}
-              </Button>
+              </ButtonColor>
               
               <Box textAlign="center">
                 <Typography variant="body2" color="text.secondary">

@@ -1,7 +1,8 @@
 import {useTranslation} from "react-i18next";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
-import {StyledButton, StyledPlusIcon} from "./styled-components";
+import {ButtonBlack} from "@/shared/ui/button-black";
+import {StyledPlusIcon} from "./styled-components";
 
 interface CreateCardButtonProps {
     onToggleForm: () => void;
@@ -15,7 +16,7 @@ export const CreateCardButton: React.FC<CreateCardButtonProps> = ({ onToggleForm
     const { selectedFolderId } = useFoldersStore();
 
     return (
-        <StyledButton
+        <ButtonBlack
             onClick={onToggleForm}
             disabled={!selectedFolderId}
             startIcon={<StyledPlusIcon/>}
@@ -23,6 +24,6 @@ export const CreateCardButton: React.FC<CreateCardButtonProps> = ({ onToggleForm
             <span style={{ display: isMobile ? 'none' : 'inline' }}>
                 {t('cards.create')}
             </span>
-        </StyledButton>
+        </ButtonBlack>
     )
 }

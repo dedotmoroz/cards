@@ -6,7 +6,6 @@ import {
     Paper,
     Typography,
     TextField,
-    Button,
     Stack,
     Alert,
     Box,
@@ -22,6 +21,7 @@ import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { authApi } from '@/shared/api/authApi';
 import { ButtonLink } from '@/shared/ui/button-link';
+import { ButtonColor, ButtonWhite } from "@/shared/ui";
 
 
 const languages = [
@@ -331,9 +331,9 @@ export const ProfilePage = () => {
                   </FormControl>
 
                   <Box display="flex" justifyContent="flex-end" mt={2}>
-                    <Button type="submit" variant="contained" disabled={guestLoading}>
+                    <ButtonColor variant="contained" disabled={guestLoading}>
                       {t('profile.registerGuestButton')}
-                    </Button>
+                    </ButtonColor>
                   </Box>
                 </Stack>
               </Box>
@@ -381,7 +381,7 @@ export const ProfilePage = () => {
                           </Typography>
                       </Box>
 
-                  <Box sx={{mb: 2}} component="form" onSubmit={handleProfileSubmit}>
+                  <Box sx={{mb: 8}} component="form" onSubmit={handleProfileSubmit}>
                       <Stack spacing={2}>
                           <Typography variant="h6">
                               {t('profile.profileSection')}
@@ -405,14 +405,14 @@ export const ProfilePage = () => {
                           />
 
                           <Box display="flex" justifyContent="flex-end" mt={2}>
-                              <Button type="submit" variant="contained" disabled={profileLoading}>
+                              <ButtonColor variant="contained" disabled={profileLoading}>
                                   {t('profile.saveProfile')}
-                              </Button>
+                              </ButtonColor>
                           </Box>
                       </Stack>
                   </Box>
 
-                  <Box sx={{mb: 2}} component="form" onSubmit={handleLanguageSubmit}>
+                  <Box sx={{mb: 8}} component="form" onSubmit={handleLanguageSubmit}>
                       <Stack spacing={2}>
                           <Typography variant="h6">
                               {t('profile.languageSection')}
@@ -438,14 +438,14 @@ export const ProfilePage = () => {
                           </FormControl>
 
                           <Box display="flex" justifyContent="flex-end" mt={2}>
-                              <Button type="submit" variant="contained" disabled={languageLoading}>
+                              <ButtonColor variant="contained" disabled={languageLoading}>
                                   {t('profile.saveLanguage')}
-                              </Button>
+                              </ButtonColor>
                           </Box>
                       </Stack>
                   </Box>
 
-                  <Box sx={{mb: 2}} component="form" onSubmit={handlePasswordSubmit}>
+                  <Box sx={{mb: 8}} component="form" onSubmit={handlePasswordSubmit}>
                       <Stack spacing={2}>
                           <Typography variant="h6">
                               {t('profile.passwordSection')}
@@ -482,9 +482,9 @@ export const ProfilePage = () => {
                           />
 
                           <Box display="flex" justifyContent="flex-end" mt={2}>
-                              <Button type="submit" variant="outlined" disabled={passwordLoading}>
+                              <ButtonColor variant="outlined" disabled={passwordLoading}>
                                   {t('profile.savePassword')}
-                              </Button>
+                              </ButtonColor>
                           </Box>
                       </Stack>
                   </Box>
@@ -509,7 +509,7 @@ export const ProfilePage = () => {
                           </Alert>
                       )}
                       <Box display="flex" gap={2} mt={2}>
-                          <Button
+                          <ButtonColor
                               variant="contained"
                               onClick={async () => {
                                   if (!user?.id) return;
@@ -527,8 +527,8 @@ export const ProfilePage = () => {
                               disabled={tokenLoading || !user || user.isGuest}
                           >
                               {tokenLoading ? t('profile.creatingToken') : t('profile.createToken')}
-                          </Button>
-                          <Button
+                          </ButtonColor>
+                          <ButtonWhite
                               variant="outlined"
                               startIcon={<ContentCopy />}
                               onClick={() => {
@@ -539,7 +539,7 @@ export const ProfilePage = () => {
                               disabled={!token}
                           >
                               {t('profile.copyToken')}
-                          </Button>
+                          </ButtonWhite>
                       </Box>
                   </Box>
                   </Paper>
