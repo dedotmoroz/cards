@@ -6,8 +6,10 @@ export const StyledMenuButton = styled(Button)`
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    background: rgba(17, 24, 39, 0.8);
-    color: #ffffff;
+    background: transparent;
+    color: #000;
+    //background: rgba(17, 24, 39, 0.8);
+    //color: #ffffff;
     box-shadow: none;
     border-radius: 8px;
     //border: 1px solid #fff;
