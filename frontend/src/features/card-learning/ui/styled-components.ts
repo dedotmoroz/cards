@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 
 export const StyledDontKnowButton = styled(Button)`
     border-radius: 14px;
@@ -59,7 +59,20 @@ export const StyledUnlearnedCount = styled(Typography)`
 
 export const StyledLearnedCount = styled(Typography)`
     text-align: center;
-    color: #00C950;;
+    color: #00C950;
     font-weight: bold;
 `;
+
+export const StyledAudioBlock = styled(Box)`
+    position: absolute;
+    z-index: 50;
+    width: 100%;
+    display: flex; 
+    justify-content: center; 
+    margin-top: 15px;
+`
+
+export const StyledCardCount = styled(Box)`
+font-size: 18px;
+`
 

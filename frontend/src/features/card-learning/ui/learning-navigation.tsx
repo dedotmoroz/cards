@@ -1,8 +1,10 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { CardLearningBack } from '@/features/card-learning-back';
 import { CardLearningSideSwitcher } from '@/features/card-learning-side-switcher';
 import { CardLearningProgress } from '@/features/card-learning-progress';
+import { PronunciationButton } from '@/features/pronunciation-button';
+import { StyledAudioBlock, StyledCardCount } from './styled-components.ts'
 
 interface LearningNavigationProps {
   currentIndex: number;
@@ -14,6 +16,7 @@ interface LearningNavigationProps {
   initialSide: 'question' | 'answer';
   onSideChange: (side: 'question' | 'answer') => void;
   disabled?: boolean;
+  currentText?: string;
 }
 
 export const LearningNavigation = ({
@@ -23,6 +26,7 @@ export const LearningNavigation = ({
   initialSide,
   onSideChange,
   disabled,
+  currentText,
 }: LearningNavigationProps) => {
   return (
     <Box mb={3}>
@@ -39,9 +43,9 @@ export const LearningNavigation = ({
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <CardLearningBack />
 
-        <Typography variant="h6">
+        <StyledCardCount>
           {isCompleted ? `${totalCards} / ${totalCards}` : `${currentIndex + 1} / ${totalCards}`}
-        </Typography>
+        </StyledCardCount>
 
         <CardLearningSideSwitcher
           initialSide={initialSide}
@@ -49,6 +53,13 @@ export const LearningNavigation = ({
           disabled={disabled || isCompleted}
         />
       </Box>
+
+      {/* Кнопка произношения - только на стороне A */}
+        {currentText && initialSide === 'question' && (
+            <StyledAudioBlock>
+                <PronunciationButton text={currentText} size="medium" lang="en"/>
+            </StyledAudioBlock>
+        )}
     </Box>
   );
 };

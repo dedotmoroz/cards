@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Card, Typography, CardContent } from '@mui/material';
+import { Card, Typography, CardContent, Box } from '@mui/material';
 
 export const StyledCardBox = styled(Card)`
     position: absolute;
@@ -48,3 +48,13 @@ export const StyledEmptyCardPlace = styled(Card)`
     background: linear-gradient(135deg, rgba(224, 231, 255, 0.50) 0%, rgba(243, 232, 255, 0.50) 50%, rgba(252, 231, 243, 0.50) 100%);
 `;
 
+export const StyledTipBox = styled(Box)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    min-height: 50px;
+`
