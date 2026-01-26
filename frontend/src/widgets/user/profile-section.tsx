@@ -13,19 +13,21 @@ interface ProfileSectionProps {
 export const ProfileSection = ({ initialUsername, userEmail, onSubmit }: ProfileSectionProps) => {
     const { t } = useTranslation();
     const [username, setUsername] = useState(initialUsername);
+    const [lastSavedUsername, setLastSavedUsername] = useState(initialUsername);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setUsername(initialUsername);
+        setLastSavedUsername(initialUsername);
     }, [initialUsername]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         
         const trimmedName = username.trim();
-        if (trimmedName === initialUsername) {
+        if (trimmedName === lastSavedUsername) {
             setError(t('profile.nothingToUpdate'));
             return;
         }
@@ -41,6 +43,7 @@ export const ProfileSection = ({ initialUsername, userEmail, onSubmit }: Profile
 
         try {
             await onSubmit(trimmedName);
+            setLastSavedUsername(trimmedName);
             setSuccess(t('profile.profileUpdated'));
         } catch (err: any) {
             setError(err.message || t('errors.generic'));
@@ -78,7 +81,7 @@ export const ProfileSection = ({ initialUsername, userEmail, onSubmit }: Profile
                 />
 
                 <StyledButtonBox>
-                    <ButtonColor variant="contained" disabled={loading}>
+                    <ButtonColor variant="contained" type="submit" disabled={loading}>
                         {t('profile.saveProfile')}
                     </ButtonColor>
                 </StyledButtonBox>

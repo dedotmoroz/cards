@@ -81,7 +81,7 @@ export const LanguageSection = ({ initialLanguage, onSubmit }: LanguageSectionPr
                 </FormControl>
 
                 <StyledButtonBox>
-                    <ButtonColor variant="contained" disabled={loading}>
+                    <ButtonColor variant="contained" type="submit" disabled={loading}>
                         {t('profile.saveLanguage')}
                     </ButtonColor>
                 </StyledButtonBox>

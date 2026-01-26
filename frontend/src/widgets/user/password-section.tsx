@@ -87,7 +87,7 @@ export const PasswordSection = ({ onSubmit }: PasswordSectionProps) => {
                 />
 
                 <StyledButtonBox>
-                    <ButtonColor variant="outlined" disabled={loading}>
+                    <ButtonColor variant="outlined" type="submit" disabled={loading}>
                         {t('profile.savePassword')}
                     </ButtonColor>
                 </StyledButtonBox>
