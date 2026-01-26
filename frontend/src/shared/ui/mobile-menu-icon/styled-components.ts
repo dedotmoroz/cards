@@ -25,8 +25,9 @@ export const StyledMenuButton = styled(Button)`
     }
 
     &:hover {
+        background: #fff;
         //border: 1px solid rgba(255, 255, 255, 0.20);
-        background: rgba(17, 24, 39, 0.9);
+        // background: rgba(17, 24, 39, 0.9);
         box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.3), 0 4px 6px -4px rgba(17, 24, 39, 0.3);
     }
 `;

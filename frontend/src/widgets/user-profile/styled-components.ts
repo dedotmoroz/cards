@@ -1,5 +1,6 @@
 import { Box, Avatar } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { AccountCircle } from '@mui/icons-material';
 
 export const StyledUserCard = styled(Box)`
     cursor: pointer;
@@ -26,7 +27,10 @@ export const StyledUserCard = styled(Box)`
 export const StyledAvatar = styled(Avatar)`
     width: 32px;
     height: 32px;
-    background-color: #fff;
-    color: rgba(0, 0, 0, 0.9);
+    background: none;
 `;
 
+export const StyledAccountCircle = styled(AccountCircle)`
+    font-size: 28px;
+    color: rgba(0, 0, 0, 0.9);
+`

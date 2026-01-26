@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Box, Typography, Button, MenuItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
-import { Logout, Person, AccountCircle } from '@mui/icons-material';
+import { Logout, Person } from '@mui/icons-material';
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/shared/store/authStore';
-import { StyledUserCard, StyledAvatar } from './styled-components';
+import { StyledUserCard, StyledAvatar, StyledAccountCircle } from './styled-components';
 import { MenuUI } from '@/shared/ui/menu-ui';
 
 export const UserProfile = () => {
@@ -46,7 +46,9 @@ export const UserProfile = () => {
                     >
                         {user.username}
                     </Typography>}
-                    <StyledAvatar><AccountCircle fontSize={'large'} /></StyledAvatar>
+                    <StyledAvatar>
+                        <StyledAccountCircle />
+                    </StyledAvatar>
                 </StyledUserCard>
                 <MenuUI
                     anchorEl={anchorEl}
