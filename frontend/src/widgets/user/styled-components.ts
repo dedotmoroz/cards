@@ -18,26 +18,30 @@ export const StyledProfileContainer = styled(Box)`
 `;
 
 // Группировка секций формы
-export const StyledGroupBox = styled(Box)`
-    // border: 1px solid ${({ theme }) => theme.palette.divider};
-    padding: 12px 25px 25px;
-    border-radius: 16px;
-    margin-bottom: 40px;
-    
-    border: 1px solid #F3F4F6;
-    background: #FFF;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.10);
-`;
+export const StyledGroupBox = styled(Box)(({ theme }) => ({
+    padding: '12px 25px 25px',
+    borderRadius: '16px',
+    marginBottom: '40px',
+    border: '1px solid #F3F4F6',
+    background: '#FFF',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.10)',
+    [theme.breakpoints.down('md')]: {
+        padding: '12px',
+    },
+}));
 
 // Paper для форм
-export const StyledFormPaper = styled(Paper)`
-    margin-top: 16px;
-    padding: 32px;
-    background: linear-gradient(156deg, #FFF 8.54%, #F9FAFB 91.46%), #FFF;
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-`;
+export const StyledFormPaper = styled(Paper)(({ theme }) => ({
+    marginTop: '16px',
+    padding: '32px',
+    background: 'linear-gradient(156deg, #FFF 8.54%, #F9FAFB 91.46%), #FFF',
+    backdropFilter: 'blur(10px)',
+    borderRadius: '24px',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    [theme.breakpoints.down('md')]: {
+        padding: '16px',
+    },
+}));
 
 // Header секция с иконкой и заголовком
 export const StyledHeaderBox = styled(Box)`
@@ -96,13 +100,10 @@ export const StyledFormContainer = styled(Box)`
 
 // Guest registration specific
 export const StyledGuestContainer = styled(Box)`
-    padding-top: 32px;
     padding-bottom: 32px;
 `;
 
 export const StyledGuestNavigationBox = styled(Box)`
-    padding-top: 32px;
-    padding-bottom: 32px;
 `;
 
 export const StyledTypography = styled(Box)`
@@ -114,4 +115,10 @@ export const StyledLabel = styled(Box)`
     font-size: 14px;
     padding: 16px 0 8px;
     color: #6A7282;
+`
+
+export const StyledTextField = styled(TextField)`
+    & .MuiInputBase-root.Mui-disabled {
+        background-color: #f3f3f3;
+    }
 `

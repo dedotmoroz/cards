@@ -1,22 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import {
-    Container,
     Box,
     Typography,
     TextField,
-    Stack,
     Alert,
     MenuItem,
     Select,
     FormControl,
-    InputLabel,
     useMediaQuery,
     useTheme,
+    InputAdornment,
+    IconButton,
 } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
-import { ButtonLink } from '@/shared/ui/button-link';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { ButtonColor } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore';
 import {
@@ -25,9 +22,11 @@ import {
     StyledHeaderIcon,
     StyledButtonBox,
     StyledGuestContainer,
-    StyledGuestNavigationBox,
-    StyledNavigationInner,
+    StyledProfileWrapper,
+    StyledLabel,
+    StyledProfileContainer,
 } from './styled-components';
+import {ProfileHeader} from "@/widgets/user/profile-header.tsx";
 
 const languages = [
     { code: 'ru', label: 'Русский' },
@@ -43,7 +42,6 @@ const languages = [
 
 export const GuestRegistrationForm = () => {
     const { t, i18n } = useTranslation();
-    const navigate = useNavigate();
     const { user, registerGuest } = useAuthStore();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -52,6 +50,8 @@ export const GuestRegistrationForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [language, setLanguage] = useState(user?.language || i18n.language || 'ru');
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
@@ -107,24 +107,15 @@ export const GuestRegistrationForm = () => {
     };
 
     return (
-        <Box>
-            <Container maxWidth="sm">
-                <StyledGuestNavigationBox>
-                    <StyledNavigationInner>
-                        <ButtonLink
-                            startIcon={<ArrowBack />}
-                            onClick={() => navigate(-1)}
-                        >
-                            {t('forms.back')}
-                        </ButtonLink>
-                    </StyledNavigationInner>
-                </StyledGuestNavigationBox>
+        <StyledProfileWrapper>
+            <StyledProfileContainer>
+                <ProfileHeader />
 
                 <StyledGuestContainer>
                     <StyledFormPaper>
                         <StyledHeaderBox>
                             <StyledHeaderIcon />
-                            <Typography variant={isMobile ? 'h4' : 'h3'} fontWeight="bold" gutterBottom>
+                            <Typography variant={isMobile ? 'h5' : 'h3'} fontWeight="bold" gutterBottom>
                                 {t('profile.registerGuestTitle')}
                             </Typography>
                             <Typography variant="body1" color="text.secondary">
@@ -133,20 +124,24 @@ export const GuestRegistrationForm = () => {
                         </StyledHeaderBox>
 
                         <Box component="form" onSubmit={handleSubmit}>
-                            <Stack spacing={2}>
+
                                 {success && <Alert severity="success">{success}</Alert>}
                                 {error && <Alert severity="error">{error}</Alert>}
 
+                                <StyledLabel>
+                                    {t('profile.usernameLabel')}
+                                </StyledLabel>
                                 <TextField
-                                    label={t('profile.usernameLabel')}
                                     value={name}
                                     onChange={(event) => setName(event.target.value)}
                                     fullWidth
                                     required
                                 />
 
+                                <StyledLabel>
+                                    {t('profile.emailLabel')}
+                                </StyledLabel>
                                 <TextField
-                                    label={t('profile.emailLabel')}
                                     type="email"
                                     value={email}
                                     onChange={(event) => setEmail(event.target.value)}
@@ -154,29 +149,60 @@ export const GuestRegistrationForm = () => {
                                     required
                                 />
 
+                                <StyledLabel>
+                                    {t('profile.passwordLabel')}
+                                </StyledLabel>
                                 <TextField
-                                    label={t('profile.passwordLabel')}
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
                                     fullWidth
                                     required
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    edge="end"
+                                                    aria-label={showPassword ? 'hide password' : 'show password'}
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
                                 />
 
+                                <StyledLabel>
+                                    {t('auth.confirmPassword')}
+                                </StyledLabel>
                                 <TextField
-                                    label={t('profile.confirmPassword')}
-                                    type="password"
+                                    type={showConfirmPassword ? 'text' : 'password'}
                                     value={confirmPassword}
                                     onChange={(event) => setConfirmPassword(event.target.value)}
                                     fullWidth
                                     required
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    edge="end"
+                                                    aria-label={showConfirmPassword ? 'hide password' : 'show password'}
+                                                >
+                                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
                                 />
 
                                 <FormControl fullWidth>
-                                    <InputLabel id="guest-language-label">{t('profile.languageLabel')}</InputLabel>
+                                    <StyledLabel>
+                                        {t('profile.languageLabel')}
+                                    </StyledLabel>
                                     <Select
                                         labelId="guest-language-label"
-                                        label={t('profile.languageLabel')}
                                         value={language}
                                         onChange={(event) => {
                                             const newLanguage = event.target.value as string;
@@ -193,15 +219,14 @@ export const GuestRegistrationForm = () => {
                                 </FormControl>
 
                                 <StyledButtonBox>
-                                    <ButtonColor variant="contained" disabled={loading}>
+                                    <ButtonColor variant="contained" type="submit" disabled={loading}>
                                         {t('profile.registerGuestButton')}
                                     </ButtonColor>
                                 </StyledButtonBox>
-                            </Stack>
                         </Box>
                     </StyledFormPaper>
                 </StyledGuestContainer>
-            </Container>
-        </Box>
+            </StyledProfileContainer>
+        </StyledProfileWrapper>
     );
 };

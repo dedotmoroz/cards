@@ -263,7 +263,8 @@
     "createToken": "Créer un token",
     "creatingToken": "Création du token...",
     "copyToken": "Copier",
-    "tokenError": "Erreur lors de l'obtention du token"
+    "tokenError": "Erreur lors de l'obtention du token",
+    "tokenNotCreated": "Token pas encore créé"
   },
   "telegram": {
     "connect": {

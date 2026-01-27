@@ -7,9 +7,9 @@ import { authApi } from '@/shared/api/authApi';
 import {
     StyledGroupBox,
     StyledButtonsRow,
-    StyledTokenField,
     StyledTypography,
     StyledLabel,
+    StyledTextField,
 } from './styled-components';
 
 interface TokenSectionProps {
@@ -54,10 +54,10 @@ export const TokenSection = ({ userId, isGuest }: TokenSectionProps) => {
                 <StyledLabel>
                     {t('profile.token')}
                 </StyledLabel>
-                <StyledTokenField
+                <StyledTextField
                     multiline
                     rows={4}
-                    value={token}
+                    value={token ? token : t('profile.tokenNotCreated')}
                     fullWidth
                     disabled
                 />

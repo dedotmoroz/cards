@@ -263,7 +263,8 @@
     "createToken": "Створити токен",
     "creatingToken": "Створення токена...",
     "copyToken": "Копіювати",
-    "tokenError": "Помилка отримання токена"
+    "tokenError": "Помилка отримання токена",
+    "tokenNotCreated": "Токен ще не створено"
   },
   "telegram": {
     "connect": {

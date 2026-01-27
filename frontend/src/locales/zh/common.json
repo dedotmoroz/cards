@@ -263,7 +263,8 @@
     "createToken": "创建令牌",
     "creatingToken": "创建令牌中...",
     "copyToken": "复制",
-    "tokenError": "获取令牌错误"
+    "tokenError": "获取令牌错误",
+    "tokenNotCreated": "令牌尚未创建"
   },
   "telegram": {
     "connect": {

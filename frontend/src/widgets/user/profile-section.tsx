@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TextField, Box, Alert } from '@mui/material';
+import { Box, Alert } from '@mui/material';
 import { ButtonColor } from '@/shared/ui';
-import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel} from './styled-components';
+import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel, StyledTextField} from './styled-components';
 
 interface ProfileSectionProps {
     initialUsername: string;
@@ -65,7 +65,7 @@ export const ProfileSection = ({ initialUsername, userEmail, onSubmit }: Profile
                 <StyledLabel>
                     {t('profile.usernameLabel')}
                 </StyledLabel>
-                <TextField
+                <StyledTextField
                     value={username}
                     onChange={(event) => setUsername(event.target.value)}
                     fullWidth
@@ -74,7 +74,7 @@ export const ProfileSection = ({ initialUsername, userEmail, onSubmit }: Profile
                 <StyledLabel>
                     {t('profile.emailLabel')}
                 </StyledLabel>
-                <TextField
+                <StyledTextField
                     value={userEmail}
                     disabled
                     fullWidth

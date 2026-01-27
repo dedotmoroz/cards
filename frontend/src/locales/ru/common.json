@@ -263,7 +263,8 @@
     "createToken": "Создать токен",
     "creatingToken": "Создание токена...",
     "copyToken": "Скопировать",
-    "tokenError": "Ошибка при получении токена"
+    "tokenError": "Ошибка при получении токена",
+    "tokenNotCreated": "Токен еще не создан"
   },
   "contextReading": {
     "title": "Контекстное чтение",

@@ -263,7 +263,8 @@
     "createToken": "Create Token",
     "creatingToken": "Creating token...",
     "copyToken": "Copy",
-    "tokenError": "Error getting token"
+    "tokenError": "Error getting token",
+    "tokenNotCreated": "Token not created yet"
   },
   "contextReading": {
     "title": "Context Reading",
