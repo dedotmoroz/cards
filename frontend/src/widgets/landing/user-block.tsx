@@ -7,7 +7,7 @@ import { StyledHeaderTop, StyledLogo } from './styled-components.ts'
 import {useTranslation} from "react-i18next";
 import {useAuthStore} from "@/shared/store/authStore.ts";
 import {useState} from "react";
-import {AuthDialog} from "@/shared/ui/auth-dialog.tsx";
+import {AuthDialog} from "@/entities/user/auth-dialog.tsx";
 import {useNavigate} from "react-router-dom";
 
 export const UserBlock = () => {

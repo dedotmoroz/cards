@@ -3,18 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
   TextField,
-  Button,
-  Typography,
   Box,
   Alert,
   CircularProgress,
   Link
 } from '@mui/material';
-import { useAuthStore } from '@/shared/store/authStore';
+import { ButtonColor, ButtonWhite } from '@/shared/ui';
+import { useAuthStore } from '@/shared/store/authStore.ts';
+import { StyledLabel, StyledDialogActions, StyledRegisterBox, StyledDialogTitle } from "./styled-components.ts";
 
 interface AuthDialogProps {
   open: boolean;
@@ -79,16 +77,14 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 2,
+          borderRadius: 4,
           p: 1
         }
       }}
     >
-      <DialogTitle>
-        <Typography variant="h5" align="center" fontWeight="bold">
+      <StyledDialogTitle>
           {t('auth.login')}
-        </Typography>
-      </DialogTitle>
+      </StyledDialogTitle>
       
       <DialogContent>
         {error && (
@@ -97,70 +93,62 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            fullWidth
-            label={t('auth.email')}
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            margin="normal"
-            required
-            disabled={isLoading}
-            autoFocus
-          />
-          
-          <TextField
-            fullWidth
-            label={t('auth.password')}
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            margin="normal"
-            required
-            disabled={isLoading}
-          />
+        <Box component="form" onSubmit={handleSubmit}>
+
+            <StyledLabel>
+                {t('auth.email')}
+            </StyledLabel>
+            <TextField
+                fullWidth
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+                autoFocus
+            />
+
+            <StyledLabel>
+                {t('auth.password')}
+            </StyledLabel>
+            <TextField
+                fullWidth
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+            />
         </Box>
       </DialogContent>
       
-      <DialogActions sx={{ p: 3, pt: 1 }}>
-        <Button
+      <StyledDialogActions>
+        <ButtonWhite
           onClick={handleClose}
           disabled={isLoading}
-          sx={{ mr: 1 }}
         >
           {t('auth.cancel')}
-        </Button>
-        <Button
+        </ButtonWhite>
+        <ButtonColor
           onClick={handleSubmit}
           variant="contained"
           disabled={isLoading}
-          sx={{ minWidth: 120 }}
         >
           {isLoading ? <CircularProgress size={24} /> : t('auth.login')}
-        </Button>
-      </DialogActions>
-      <Box sx={{ textAlign: 'center', mt: 2, mb: '14px' }}>
-        <Typography variant="h6" color="text.secondary">
+        </ButtonColor>
+      </StyledDialogActions>
+
+      <StyledRegisterBox>
           {t('auth.notRegistered')}{' '}
           <Link
             component="button"
             onClick={handleRegister}
-            sx={{ 
-              fontSize: '1.25rem',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              '&:hover': {
-                textDecoration: 'underline'
-              }
-            }}
           >
             {t('auth.registerLink')}
           </Link>
-        </Typography>
-      </Box>
+      </StyledRegisterBox>
     </Dialog>
   );
 };
