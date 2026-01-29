@@ -8,7 +8,7 @@ export const StyledButtonColor = styled(Button)`
     border: none;
     justify-content: center;
     align-items: center;
-    border-radius: 14px;
+    border-radius: 8px;
     background: linear-gradient(90deg, #615FFF 0%, #F6339A 100%);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10);
     width: 100%;

@@ -4,15 +4,18 @@ import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
-  TextField,
   Box,
   Alert,
   CircularProgress,
   Link
 } from '@mui/material';
-import { ButtonColor, ButtonWhite } from '@/shared/ui';
+import { ButtonColor, TextFieldUI } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore.ts';
-import { StyledLabel, StyledDialogActions, StyledRegisterBox, StyledDialogTitle } from "./styled-components.ts";
+import {
+    StyledDialogActions,
+    StyledRegisterBox,
+    StyledDialogTitle,
+} from "./styled-components.ts";
 
 interface AuthDialogProps {
   open: boolean;
@@ -73,12 +76,13 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
     <Dialog 
       open={open} 
       onClose={handleClose}
-      maxWidth="sm"
+      maxWidth="xs"
       fullWidth
       PaperProps={{
         sx: {
           borderRadius: 4,
-          p: 1
+          p: 1,
+          background: 'linear-gradient(135deg, #FFF 8.54%, #F9FAFB 91.46%), #FFF',
         }
       }}
     >
@@ -93,12 +97,10 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
-            <StyledLabel>
-                {t('auth.email')}
-            </StyledLabel>
-            <TextField
+            <TextFieldUI
+                placeholder={t('auth.email')}
                 fullWidth
                 name="email"
                 type="email"
@@ -109,10 +111,8 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
                 autoFocus
             />
 
-            <StyledLabel>
-                {t('auth.password')}
-            </StyledLabel>
-            <TextField
+            <TextFieldUI
+                placeholder={t('auth.password')}
                 fullWidth
                 name="password"
                 type="password"
@@ -123,22 +123,16 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
             />
         </Box>
       </DialogContent>
-      
-      <StyledDialogActions>
-        <ButtonWhite
-          onClick={handleClose}
-          disabled={isLoading}
-        >
-          {t('auth.cancel')}
-        </ButtonWhite>
-        <ButtonColor
-          onClick={handleSubmit}
-          variant="contained"
-          disabled={isLoading}
-        >
-          {isLoading ? <CircularProgress size={24} /> : t('auth.login')}
-        </ButtonColor>
-      </StyledDialogActions>
+
+        <StyledDialogActions>
+            <ButtonColor
+                onClick={handleSubmit}
+                variant="contained"
+                disabled={isLoading}
+            >
+                {isLoading ? <CircularProgress size={24}/> : t('auth.login')}
+            </ButtonColor>
+        </StyledDialogActions>
 
       <StyledRegisterBox>
           {t('auth.notRegistered')}{' '}
