@@ -120,7 +120,11 @@
     "noAccount": "Vous n'avez pas de compte ?",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
-    "registerDescription": "Créez un compte et commencez à mémoriser"
+    "registerDescription": "Créez un compte et commencez à mémoriser",
+    "emailRequired": "Entrez l'e-mail",
+    "passwordRequired": "Entrez le mot de passe",
+    "emailInvalidFormat": "Format d'e-mail invalide",
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer plus tard"
   },
   "buttons": {
     "startLearning": "Apprendre les mots",

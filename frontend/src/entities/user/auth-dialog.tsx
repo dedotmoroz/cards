@@ -5,12 +5,12 @@ import {
   Dialog,
   DialogContent,
   Box,
-  Alert,
   CircularProgress,
   Link
 } from '@mui/material';
 import { ButtonColor, TextFieldUI } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore.ts';
+import { normalizeLoginError } from '@/shared/libs/authLoginErrors';
 import {
     StyledDialogActions,
     StyledRegisterBox,
@@ -29,7 +29,8 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
     email: '',
     password: ''
   });
-  const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useAuthStore();
@@ -40,20 +41,39 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       ...formData,
       [e.target.name]: e.target.value
     });
-    setError('');
+    setEmailError('');
+    setPasswordError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setEmailError('');
+    setPasswordError('');
+
+    if (!formData.email.trim()) {
+      setEmailError(t('auth.emailRequired'));
+      return;
+    }
+
+    if (!formData.password.trim()) {
+      setPasswordError(t('auth.passwordRequired'));
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       await login(formData.email, formData.password);
       onSuccess?.();
       onClose();
-    } catch (error: any) {
-      setError(error.message || t('auth.invalidCredentials'));
+    } catch (err: unknown) {
+      const { field, messageKey } = normalizeLoginError(err);
+      const message = t(messageKey);
+      if (field === 'email') {
+        setEmailError(message);
+      } else {
+        setPasswordError(message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +82,8 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
   const handleClose = () => {
     if (!isLoading) {
       setFormData({ email: '', password: '' });
-      setError('');
+      setEmailError('');
+      setPasswordError('');
       onClose();
     }
   };
@@ -91,14 +112,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       </StyledDialogTitle>
       
       <DialogContent>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-
             <TextFieldUI
                 placeholder={t('auth.email')}
                 fullWidth
@@ -109,6 +123,8 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
                 required
                 disabled={isLoading}
                 autoFocus
+                error={!!emailError}
+                helperText={emailError}
             />
 
             <TextFieldUI
@@ -120,6 +136,8 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
                 onChange={handleChange}
                 required
                 disabled={isLoading}
+                error={!!passwordError}
+                helperText={passwordError}
             />
         </Box>
       </DialogContent>

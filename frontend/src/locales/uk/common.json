@@ -120,7 +120,11 @@
     "noAccount": "Немає облікового запису?",
     "passwordMismatch": "Паролі не співпадають",
     "passwordMinLength": "Пароль повинен містити принаймні 6 символів",
-    "registerDescription": "Створіть обліковий запис і почніть запам'ятовувати"
+    "registerDescription": "Створіть обліковий запис і почніть запам'ятовувати",
+    "emailRequired": "Введіть email",
+    "passwordRequired": "Введіть пароль",
+    "emailInvalidFormat": "Некоректний формат email",
+    "errorGeneric": "Щось пішло не так. Спробуйте пізніше"
   },
   "buttons": {
     "startLearning": "Вчити слова",

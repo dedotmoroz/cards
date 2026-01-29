@@ -120,7 +120,11 @@
     "noAccount": "Nie masz konta?",
     "passwordMismatch": "Hasła nie pasują",
     "passwordMinLength": "Hasło musi mieć co najmniej 6 znaków",
-    "registerDescription": "Utwórz konto i zacznij zapamiętywać"
+    "registerDescription": "Utwórz konto i zacznij zapamiętywać",
+    "emailRequired": "Wprowadź e-mail",
+    "passwordRequired": "Wprowadź hasło",
+    "emailInvalidFormat": "Nieprawidłowy format e-mail",
+    "errorGeneric": "Coś poszło nie tak. Spróbuj ponownie później"
   },
   "buttons": {
     "startLearning": "Ucz się słów",

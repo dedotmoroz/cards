@@ -102,7 +102,7 @@
     "signup": "Регистрация"
   },
   "auth": {
-    "login": "Войти",
+    "login": "Вход",
     "register": "Зарегистрироваться",
     "logout": "Выйти",
     "email": "Email",
@@ -120,7 +120,11 @@
     "noAccount": "Нет аккаунта?",
     "passwordMismatch": "Пароли не совпадают",
     "passwordMinLength": "Пароль должен содержать минимум 6 символов",
-    "registerDescription": "Создайте аккаунт и начните запоминать"
+    "registerDescription": "Создайте аккаунт и начните запоминать",
+    "emailRequired": "Введите email",
+    "passwordRequired": "Введите пароль",
+    "emailInvalidFormat": "Некорректный формат email",
+    "errorGeneric": "Произошла ошибка. Попробуйте позже"
   },
   "buttons": {
     "startLearning": "Учить слова",

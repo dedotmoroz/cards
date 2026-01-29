@@ -76,9 +76,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isAuthenticated: true
       });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message;
+      const errorMessage = error.response?.data?.error ?? error.response?.data?.message;
       set({ error: errorMessage });
-      throw new Error(errorMessage);
+      throw error;
     }
   },
 

@@ -120,7 +120,11 @@
     "noAccount": "Don't have an account?",
     "passwordMismatch": "Passwords do not match",
     "passwordMinLength": "Password must be at least 6 characters",
-    "registerDescription": "Create an account and start memorizing"
+    "registerDescription": "Create an account and start memorizing",
+    "emailRequired": "Enter email",
+    "passwordRequired": "Enter password",
+    "emailInvalidFormat": "Invalid email format",
+    "errorGeneric": "Something went wrong. Please try again"
   },
   "buttons": {
     "startLearning": "Learn words",

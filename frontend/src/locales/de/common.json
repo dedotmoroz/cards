@@ -120,7 +120,11 @@
     "noAccount": "Haben Sie kein Konto?",
     "passwordMismatch": "Passwörter stimmen nicht überein",
     "passwordMinLength": "Das Passwort muss mindestens 6 Zeichen lang sein",
-    "registerDescription": "Erstellen Sie ein Konto und beginnen Sie zu lernen"
+    "registerDescription": "Erstellen Sie ein Konto und beginnen Sie zu lernen",
+    "emailRequired": "E-Mail eingeben",
+    "passwordRequired": "Passwort eingeben",
+    "emailInvalidFormat": "Ungültiges E-Mail-Format",
+    "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut"
   },
   "buttons": {
     "startLearning": "Wörter lernen",

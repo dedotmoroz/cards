@@ -120,7 +120,11 @@
     "noAccount": "¿No tienes una cuenta?",
     "passwordMismatch": "Las contraseñas no coinciden",
     "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
-    "registerDescription": "Crea una cuenta y comienza a memorizar"
+    "registerDescription": "Crea una cuenta y comienza a memorizar",
+    "emailRequired": "Introduce el correo electrónico",
+    "passwordRequired": "Introduce la contraseña",
+    "emailInvalidFormat": "Formato de correo electrónico no válido",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo más tarde"
   },
   "buttons": {
     "startLearning": "Aprender palabras",
