@@ -28,7 +28,7 @@ export const TextFieldUI = ({
             InputProps={{
                 ...InputProps,
                 endAdornment: shouldShowToggle ? (
-                    <InputAdornment position="end">
+                    <InputAdornment position="end" sx={{ paddingRight: '5px' }}>
                         <IconButton
                             onClick={() => setShowPassword(!showPassword)}
                             edge="end"
