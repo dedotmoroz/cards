@@ -4,16 +4,28 @@ import { ArrowBack } from '@mui/icons-material';
 import { ButtonLink } from '@/shared/ui/button-link';
 import { StyledNavigationBox, StyledNavigationInner } from './styled-components';
 
-export const ProfileHeader = () => {
+interface ProfileHeaderProps {
+    navigateTo?: string;
+}
+
+export const ProfileHeader = ({ navigateTo }: ProfileHeaderProps) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (navigateTo !== undefined) {
+            navigate(navigateTo);
+        } else {
+            navigate(-1);
+        }
+    };
 
     return (
         <StyledNavigationBox>
             <StyledNavigationInner>
                 <ButtonLink
                     startIcon={<ArrowBack />}
-                    onClick={() => navigate(-1)}
+                    onClick={handleClick}
                 >
                     {t('forms.back')}
                 </ButtonLink>

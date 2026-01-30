@@ -20,4 +20,15 @@ export const StyledDialogTitle = styled(DialogTitle)`
     font-size: 24px;
     text-align: center;
     font-weight: 600;
-`
+`;
+
+export const StyledNavigationBox = styled(Box)`
+    padding-top: 0;
+    padding-bottom: 0;
+`;
+
+export const StyledNavigationInner = styled(Box)`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;

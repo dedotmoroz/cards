@@ -103,7 +103,7 @@
   },
   "auth": {
     "login": "Вход",
-    "register": "Зарегистрироваться",
+    "register": "Регистрация",
     "logout": "Выйти",
     "email": "Email",
     "username": "Имя пользователя",

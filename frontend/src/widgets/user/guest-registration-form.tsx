@@ -26,7 +26,7 @@ import {
     StyledLabel,
     StyledProfileContainer,
 } from './styled-components';
-import {ProfileHeader} from "@/widgets/user/profile-header.tsx";
+import { ProfileHeader} from '@/entities/user';
 
 const languages = [
     { code: 'ru', label: 'Русский' },

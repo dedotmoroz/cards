@@ -80,18 +80,6 @@ export const StyledButtonsRow = styled(Box)(({ theme }) => ({
 export const StyledTokenField = styled(TextField)`
 `;
 
-// Навигация (header с кнопкой назад)
-export const StyledNavigationBox = styled(Box)`
-    padding-top: 0;
-    padding-bottom: 0;
-`;
-
-export const StyledNavigationInner = styled(Box)`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`;
-
 // Контейнер для формы
 export const StyledFormContainer = styled(Box)`
     padding-top: 16px;

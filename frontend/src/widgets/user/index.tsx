@@ -1,4 +1,3 @@
-export { ProfileHeader } from './profile-header';
 export { ProfileSection } from './profile-section';
 export { LanguageSection } from './language-section';
 export { PasswordSection } from './password-section';

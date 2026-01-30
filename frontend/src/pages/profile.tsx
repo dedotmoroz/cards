@@ -4,7 +4,6 @@ import { Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
 import {
-    ProfileHeader,
     ProfileSection,
     LanguageSection,
     PasswordSection,
@@ -16,6 +15,11 @@ import {
     StyledHeaderBox,
     StyledHeaderIcon,
 } from '@/widgets/user';
+
+
+import {
+    ProfileHeader,
+} from '@/entities/user';
 
 export const ProfilePage = () => {
     const { t, i18n } = useTranslation();
