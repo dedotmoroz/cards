@@ -121,6 +121,7 @@
     "passwordMismatch": "Hasła nie pasują",
     "passwordMinLength": "Hasło musi mieć co najmniej 6 znaków",
     "registerDescription": "Utwórz konto i zacznij zapamiętywać",
+    "usernameRequired": "Wprowadź nazwę użytkownika",
     "emailRequired": "Wprowadź e-mail",
     "passwordRequired": "Wprowadź hasło",
     "emailInvalidFormat": "Nieprawidłowy format e-mail",

@@ -121,6 +121,7 @@
     "passwordMismatch": "As senhas não coincidem",
     "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
     "registerDescription": "Crie uma conta e comece a memorizar",
+    "usernameRequired": "Digite o nome de usuário",
     "emailRequired": "Digite o e-mail",
     "passwordRequired": "Digite a senha",
     "emailInvalidFormat": "Formato de e-mail inválido",

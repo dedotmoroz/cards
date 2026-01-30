@@ -11,6 +11,7 @@ import {
 import { ButtonColor, TextFieldUI } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore.ts';
 import { normalizeLoginError } from '@/shared/libs/authLoginErrors';
+import { isValidEmail } from '@/shared/libs/emailValidation';
 import {
     StyledDialogActions,
     StyledRegisterBox,
@@ -52,6 +53,11 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
 
     if (!formData.email.trim()) {
       setEmailError(t('auth.emailRequired'));
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setEmailError(t('auth.emailInvalidFormat'));
       return;
     }
 
@@ -112,7 +118,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       </StyledDialogTitle>
       
       <DialogContent>
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <TextFieldUI
                 placeholder={t('auth.email')}
                 fullWidth

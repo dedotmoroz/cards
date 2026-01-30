@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Alert } from '@mui/material';
-import { ButtonColor } from '@/shared/ui';
-import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel, StyledTextField} from './styled-components';
+import { ButtonColor, TextFieldUI } from '@/shared/ui';
+import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel } from './styled-components';
 
 interface ProfileSectionProps {
     initialUsername: string;
@@ -65,7 +65,7 @@ export const ProfileSection = ({ initialUsername, userEmail, onSubmit }: Profile
                 <StyledLabel>
                     {t('profile.usernameLabel')}
                 </StyledLabel>
-                <StyledTextField
+                <TextFieldUI
                     value={username}
                     onChange={(event) => setUsername(event.target.value)}
                     fullWidth
@@ -74,14 +74,14 @@ export const ProfileSection = ({ initialUsername, userEmail, onSubmit }: Profile
                 <StyledLabel>
                     {t('profile.emailLabel')}
                 </StyledLabel>
-                <StyledTextField
+                <TextFieldUI
                     value={userEmail}
                     disabled
                     fullWidth
                 />
 
                 <StyledButtonBox>
-                    <ButtonColor variant="contained" type="submit" disabled={loading}>
+                    <ButtonColor sx={{mt:2}} variant="contained" type="submit" disabled={loading}>
                         {t('profile.saveProfile')}
                     </ButtonColor>
                 </StyledButtonBox>

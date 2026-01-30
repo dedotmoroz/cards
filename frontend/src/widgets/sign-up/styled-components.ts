@@ -32,10 +32,13 @@ export const StyledSignUpPaper = styled(Paper)(({ theme }) => ({
     },
 }));
 
-export const StyledSignUpHeaderBox = styled(Box)`
-    text-align: center;
-    margin-bottom: 32px;
-`;
+export const StyledSignUpHeaderBox = styled(Box)(({ theme }) => ({
+    textAlign: 'center',
+    marginBottom: '32px',
+    [theme.breakpoints.down('md')]: {
+        marginBottom: '16px',
+    },
+}));
 
 export const StyledSignUpIcon = styled(PersonAdd)`
     font-size: 48px;

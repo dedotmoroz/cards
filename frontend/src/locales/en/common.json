@@ -121,6 +121,7 @@
     "passwordMismatch": "Passwords do not match",
     "passwordMinLength": "Password must be at least 6 characters",
     "registerDescription": "Create an account and start memorizing",
+    "usernameRequired": "Enter username",
     "emailRequired": "Enter email",
     "passwordRequired": "Enter password",
     "emailInvalidFormat": "Invalid email format",

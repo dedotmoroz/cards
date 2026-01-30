@@ -121,6 +121,7 @@
     "passwordMismatch": "密码不匹配",
     "passwordMinLength": "密码必须至少6个字符",
     "registerDescription": "创建账户并开始记忆",
+    "usernameRequired": "请输入用户名",
     "emailRequired": "请输入电子邮件",
     "passwordRequired": "请输入密码",
     "emailInvalidFormat": "电子邮件格式不正确",

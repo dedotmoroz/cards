@@ -121,6 +121,7 @@
     "passwordMismatch": "Паролі не співпадають",
     "passwordMinLength": "Пароль повинен містити принаймні 6 символів",
     "registerDescription": "Створіть обліковий запис і почніть запам'ятовувати",
+    "usernameRequired": "Введіть ім'я користувача",
     "emailRequired": "Введіть email",
     "passwordRequired": "Введіть пароль",
     "emailInvalidFormat": "Некоректний формат email",

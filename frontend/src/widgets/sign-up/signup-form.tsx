@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next';
 import {
   Container,
   Box,
-  Alert,
   CircularProgress,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
 import { useAuthStore } from '@/shared/store/authStore';
+import { normalizeRegisterError } from '@/shared/libs/authLoginErrors';
+import { isValidEmail } from '@/shared/libs/emailValidation';
 import { ButtonColor, TextFieldUI } from '@/shared/ui';
 import {
   StyledSignUpWrapper,
@@ -19,7 +20,7 @@ import {
   StyledSignUpIcon,
   StyledSignUpTitle,
 } from './styled-components';
-import { ProfileHeader} from '@/entities/user';
+import { ProfileHeader } from '@/entities/user';
 
 export const SignUpForm = () => {
   const { t } = useTranslation();
@@ -29,7 +30,10 @@ export const SignUpForm = () => {
     password: '',
     confirmPassword: '',
   });
-  const [error, setError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const { register } = useAuthStore();
@@ -42,25 +46,50 @@ export const SignUpForm = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError('');
+    setUsernameError('');
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
+    setUsernameError('');
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError(t('auth.passwordMismatch'));
-      setIsLoading(false);
+    if (!formData.username.trim()) {
+      setUsernameError(t('auth.usernameRequired'));
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setEmailError(t('auth.emailRequired'));
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setEmailError(t('auth.emailInvalidFormat'));
+      return;
+    }
+
+    if (!formData.password.trim()) {
+      setPasswordError(t('auth.passwordRequired'));
       return;
     }
 
     if (formData.password.length < 6) {
-      setError(t('auth.passwordMinLength'));
-      setIsLoading(false);
+      setPasswordError(t('auth.passwordMinLength'));
       return;
     }
+
+    if (formData.password !== formData.confirmPassword) {
+      setConfirmPasswordError(t('auth.passwordMismatch'));
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       await register(formData.username, formData.email, formData.password);
@@ -68,7 +97,12 @@ export const SignUpForm = () => {
         navigate('/learn');
       }, 100);
     } catch (err: unknown) {
-      setError((err as Error)?.message || t('errors.generic'));
+      const { field, messageKey } = normalizeRegisterError(err);
+      const message = t(messageKey);
+      if (field === 'username') setUsernameError(message);
+      else if (field === 'email') setEmailError(message);
+      else setPasswordError(message);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -88,12 +122,6 @@ export const SignUpForm = () => {
               </StyledSignUpTitle>
             </StyledSignUpHeaderBox>
 
-            {error && (
-              <Alert severity="error" sx={{ mb: 3 }}>
-                {error}
-              </Alert>
-            )}
-
             <Box component="form" onSubmit={handleSubmit}>
               <TextFieldUI
                 fullWidth
@@ -105,6 +133,8 @@ export const SignUpForm = () => {
                 required
                 disabled={isLoading}
                 autoFocus
+                error={!!usernameError}
+                helperText={usernameError}
               />
 
               <TextFieldUI
@@ -117,6 +147,8 @@ export const SignUpForm = () => {
                 margin="normal"
                 required
                 disabled={isLoading}
+                error={!!emailError}
+                helperText={emailError}
               />
 
               <TextFieldUI
@@ -129,6 +161,8 @@ export const SignUpForm = () => {
                 margin="normal"
                 required
                 disabled={isLoading}
+                error={!!passwordError}
+                helperText={passwordError}
               />
 
               <TextFieldUI
@@ -141,6 +175,8 @@ export const SignUpForm = () => {
                 margin="normal"
                 required
                 disabled={isLoading}
+                error={!!confirmPasswordError}
+                helperText={confirmPasswordError}
               />
 
               <ButtonColor
@@ -149,6 +185,7 @@ export const SignUpForm = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                 disabled={isLoading}
+                onClick={handleSubmit}
               >
                 {isLoading ? <CircularProgress size={24} /> : t('auth.register')}
               </ButtonColor>

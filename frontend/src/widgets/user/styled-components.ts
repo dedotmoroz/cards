@@ -69,7 +69,7 @@ export const StyledButtonBox = styled(Box)`
 export const StyledButtonsRow = styled(Box)(({ theme }) => ({
     display: 'flex',
     gap: '16px',
-    marginTop: '16px',
+    marginTop: '30px',
     flexDirection: 'row',
     [theme.breakpoints.down('md')]: {
         flexDirection: 'column',

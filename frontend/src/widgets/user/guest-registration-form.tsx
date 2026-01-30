@@ -3,19 +3,17 @@ import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
-    TextField,
     Alert,
     MenuItem,
     Select,
     FormControl,
     useMediaQuery,
     useTheme,
-    InputAdornment,
-    IconButton,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { ButtonColor } from '@/shared/ui';
+import { ButtonColor, TextFieldUI } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore';
+import { normalizeRegisterError } from '@/shared/libs/authLoginErrors';
+import { isValidEmail } from '@/shared/libs/emailValidation';
 import {
     StyledFormPaper,
     StyledHeaderBox,
@@ -50,11 +48,12 @@ export const GuestRegistrationForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [language, setLanguage] = useState(user?.language || i18n.language || 'ru');
     const [success, setSuccess] = useState('');
-    const [error, setError] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -63,28 +62,45 @@ export const GuestRegistrationForm = () => {
         }
     }, [user?.isGuest, user?.language, i18n.language]);
 
+    const clearFieldErrors = () => {
+        setNameError('');
+        setEmailError('');
+        setPasswordError('');
+        setConfirmPasswordError('');
+    };
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setSuccess('');
-        setError('');
+        clearFieldErrors();
 
         if (!name.trim()) {
-            setError(t('profile.usernameRequired'));
+            setNameError(t('auth.usernameRequired'));
             return;
         }
 
         if (!email.trim()) {
-            setError(t('auth.email') + ' ' + t('auth.required', 'required'));
+            setEmailError(t('auth.emailRequired'));
             return;
         }
 
-        if (password !== confirmPassword) {
-            setError(t('profile.passwordMismatch'));
+        if (!isValidEmail(email)) {
+            setEmailError(t('auth.emailInvalidFormat'));
+            return;
+        }
+
+        if (!password.trim()) {
+            setPasswordError(t('auth.passwordRequired'));
             return;
         }
 
         if (password.length < 6) {
-            setError(t('auth.passwordMinLength'));
+            setPasswordError(t('auth.passwordMinLength'));
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setConfirmPasswordError(t('auth.passwordMismatch'));
             return;
         }
 
@@ -94,13 +110,17 @@ export const GuestRegistrationForm = () => {
             await registerGuest(email, password, name, language);
             await i18n.changeLanguage(language);
             setSuccess(t('profile.registerGuestSuccess'));
-            
+
             setName('');
             setEmail('');
             setPassword('');
             setConfirmPassword('');
-        } catch (err: any) {
-            setError(err.message || t('errors.generic'));
+        } catch (err: unknown) {
+            const { field, messageKey } = normalizeRegisterError(err);
+            const message = t(messageKey);
+            if (field === 'username') setNameError(message);
+            else if (field === 'email') setEmailError(message);
+            else setPasswordError(message);
         } finally {
             setLoading(false);
         }
@@ -115,7 +135,7 @@ export const GuestRegistrationForm = () => {
                     <StyledFormPaper>
                         <StyledHeaderBox>
                             <StyledHeaderIcon />
-                            <Typography variant={isMobile ? 'h5' : 'h3'} fontWeight="bold" gutterBottom>
+                            <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight="bold" gutterBottom>
                                 {t('profile.registerGuestTitle')}
                             </Typography>
                             <Typography variant="body1" color="text.secondary">
@@ -126,75 +146,72 @@ export const GuestRegistrationForm = () => {
                         <Box component="form" onSubmit={handleSubmit}>
 
                                 {success && <Alert severity="success">{success}</Alert>}
-                                {error && <Alert severity="error">{error}</Alert>}
 
                                 <StyledLabel>
                                     {t('profile.usernameLabel')}
                                 </StyledLabel>
-                                <TextField
+                                <TextFieldUI
                                     value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    onChange={(event) => {
+                                        setName(event.target.value);
+                                        setNameError('');
+                                    }}
                                     fullWidth
                                     required
+                                    disabled={loading}
+                                    error={!!nameError}
+                                    helperText={nameError}
                                 />
 
                                 <StyledLabel>
                                     {t('profile.emailLabel')}
                                 </StyledLabel>
-                                <TextField
+                                <TextFieldUI
                                     type="email"
                                     value={email}
-                                    onChange={(event) => setEmail(event.target.value)}
+                                    onChange={(event) => {
+                                        setEmail(event.target.value);
+                                        setEmailError('');
+                                    }}
                                     fullWidth
                                     required
+                                    disabled={loading}
+                                    error={!!emailError}
+                                    helperText={emailError}
                                 />
 
                                 <StyledLabel>
                                     {t('profile.passwordLabel')}
                                 </StyledLabel>
-                                <TextField
-                                    type={showPassword ? 'text' : 'password'}
+                                <TextFieldUI
+                                    type="password"
                                     value={password}
-                                    onChange={(event) => setPassword(event.target.value)}
+                                    onChange={(event) => {
+                                        setPassword(event.target.value);
+                                        setPasswordError('');
+                                    }}
                                     fullWidth
                                     required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    edge="end"
-                                                    aria-label={showPassword ? 'hide password' : 'show password'}
-                                                >
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
+                                    disabled={loading}
+                                    error={!!passwordError}
+                                    helperText={passwordError}
                                 />
 
                                 <StyledLabel>
                                     {t('auth.confirmPassword')}
                                 </StyledLabel>
-                                <TextField
-                                    type={showConfirmPassword ? 'text' : 'password'}
+                                <TextFieldUI
+                                    type="password"
                                     value={confirmPassword}
-                                    onChange={(event) => setConfirmPassword(event.target.value)}
+                                    onChange={(event) => {
+                                        setConfirmPassword(event.target.value);
+                                        setConfirmPasswordError('');
+                                    }}
                                     fullWidth
                                     required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                    edge="end"
-                                                    aria-label={showConfirmPassword ? 'hide password' : 'show password'}
-                                                >
-                                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
+                                    disabled={loading}
+                                    error={!!confirmPasswordError}
+                                    helperText={confirmPasswordError}
                                 />
 
                                 <FormControl fullWidth>
@@ -219,7 +236,12 @@ export const GuestRegistrationForm = () => {
                                 </FormControl>
 
                                 <StyledButtonBox>
-                                    <ButtonColor variant="contained" type="submit" disabled={loading}>
+                                    <ButtonColor
+                                        sx={{mt: 2, mb: 2}}
+                                        variant="contained" 
+                                        type="submit" disabled={loading}
+                                        onClick={handleSubmit}
+                                    >
                                         {t('profile.registerGuestButton')}
                                     </ButtonColor>
                                 </StyledButtonBox>

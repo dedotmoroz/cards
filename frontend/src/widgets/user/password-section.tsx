@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TextField, Alert, Box, InputAdornment, IconButton } from '@mui/material';
+import { Alert, Box, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { ButtonColor } from '@/shared/ui';
+import { ButtonColor, TextFieldUI } from '@/shared/ui';
 import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel} from './styled-components';
 
 interface PasswordSectionProps {
@@ -60,7 +60,7 @@ export const PasswordSection = ({ onSubmit }: PasswordSectionProps) => {
                 <StyledLabel>
                     {t('profile.currentPassword')}
                 </StyledLabel>
-                <TextField
+                <TextFieldUI
                     type={showCurrentPassword ? 'text' : 'password'}
                     value={currentPassword}
                     onChange={(event) => setCurrentPassword(event.target.value)}
@@ -84,7 +84,7 @@ export const PasswordSection = ({ onSubmit }: PasswordSectionProps) => {
                 <StyledLabel>
                     {t('profile.newPassword')}
                 </StyledLabel>
-                <TextField
+                <TextFieldUI
                     type={showNewPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(event) => setNewPassword(event.target.value)}
@@ -108,7 +108,7 @@ export const PasswordSection = ({ onSubmit }: PasswordSectionProps) => {
                 <StyledLabel>
                     {t('profile.confirmPassword')}
                 </StyledLabel>
-                <TextField
+                <TextFieldUI
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(event) => setConfirmPassword(event.target.value)}
@@ -130,7 +130,7 @@ export const PasswordSection = ({ onSubmit }: PasswordSectionProps) => {
                 />
 
                 <StyledButtonBox>
-                    <ButtonColor variant="outlined" type="submit" disabled={loading}>
+                    <ButtonColor sx={{mt:2}} variant="outlined" type="submit" disabled={loading}>
                         {t('profile.savePassword')}
                     </ButtonColor>
                 </StyledButtonBox>

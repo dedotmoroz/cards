@@ -121,6 +121,7 @@
     "passwordMismatch": "Passwörter stimmen nicht überein",
     "passwordMinLength": "Das Passwort muss mindestens 6 Zeichen lang sein",
     "registerDescription": "Erstellen Sie ein Konto und beginnen Sie zu lernen",
+    "usernameRequired": "Benutzername eingeben",
     "emailRequired": "E-Mail eingeben",
     "passwordRequired": "Passwort eingeben",
     "emailInvalidFormat": "Ungültiges E-Mail-Format",

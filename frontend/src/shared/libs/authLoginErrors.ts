@@ -51,3 +51,38 @@ export function normalizeLoginError(err: unknown): NormalizedLoginError {
   // По умолчанию — общая ошибка под полем пароля
   return { field: 'password', messageKey: 'auth.errorGeneric' };
 }
+
+export type RegisterErrorField = 'username' | 'email' | 'password';
+
+export interface NormalizedRegisterError {
+  field: RegisterErrorField;
+  messageKey: string;
+}
+
+/**
+ * Нормализует ошибку регистрации с API в поле и ключ перевода.
+ */
+export function normalizeRegisterError(err: unknown): NormalizedRegisterError {
+  const raw = getRawMessage(err);
+  const rawLower = String(raw).toLowerCase();
+
+  // Ошибка формата email (Ajv/Fastify: body/email must match format "email")
+  const isEmailFormatError =
+    rawLower.includes('body/email') ||
+    rawLower.includes('must match format') ||
+    (rawLower.includes('format') && rawLower.includes('email')) ||
+    /email.*(format|required|invalid)/.test(rawLower) ||
+    /(format|required|invalid).*email/.test(rawLower);
+
+  if (isEmailFormatError) {
+    return { field: 'email', messageKey: 'auth.emailInvalidFormat' };
+  }
+
+  // Ошибки, связанные с username (занят, невалидный и т.д.)
+  if (rawLower.includes('body/username') || rawLower.includes('username') && (rawLower.includes('taken') || rawLower.includes('exist'))) {
+    return { field: 'username', messageKey: 'auth.errorGeneric' };
+  }
+
+  // По умолчанию — общая ошибка под полем email
+  return { field: 'email', messageKey: 'auth.errorGeneric' };
+}
