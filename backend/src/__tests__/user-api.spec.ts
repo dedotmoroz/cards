@@ -5,12 +5,24 @@ import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import request from "supertest"
 
+const mockVerifyTurnstileToken = jest.fn().mockResolvedValue(true);
+jest.mock('../lib/turnstile', () => ({
+    verifyTurnstileToken: (token: string) => mockVerifyTurnstileToken(token),
+}));
+
 describe('User API', () => {
     let fastify: FastifyInstance;
 
     const testEmail = 'testuser@example.com';
     const testPassword = 'securePassword123';
     const testName = 'Test User';
+
+    const registerBody = (overrides: Record<string, unknown> = {}) => ({
+        email: testEmail,
+        password: testPassword,
+        turnstileToken: 'test-captcha-token',
+        ...overrides,
+    });
 
     beforeAll(async () => {
         fastify = await buildServer();
@@ -28,7 +40,7 @@ describe('User API', () => {
     it('регистрирует пользователя', async () => {
         const res = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty('id');
@@ -44,10 +56,20 @@ describe('User API', () => {
         expect(tokenCookie).toBeDefined();
     });
 
+    it('возвращает 400 при неудачной проверке капчи', async () => {
+        mockVerifyTurnstileToken.mockResolvedValueOnce(false);
+        const res = await request(fastify.server)
+            .post('/auth/register')
+            .send(registerBody());
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Captcha verification failed');
+        mockVerifyTurnstileToken.mockResolvedValue(true);
+    });
+
     it('регистрирует пользователя с именем', async () => {
         const res = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword, name: testName });
+            .send(registerBody({ name: testName }));
 
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty('id');
@@ -66,7 +88,7 @@ describe('User API', () => {
     it('входит с правильным паролем', async () => {
         await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         const res = await request(fastify.server)
             .post('/auth/login')
@@ -78,7 +100,7 @@ describe('User API', () => {
     it('не входит с неправильным паролем', async () => {
         await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         const res = await request(fastify.server)
             .post('/auth/login')
@@ -99,7 +121,7 @@ describe('User API', () => {
         // Регистрируем - теперь токен устанавливается сразу при регистрации
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         
@@ -138,7 +160,7 @@ describe('User API', () => {
         // Регистрируем с именем - теперь токен устанавливается сразу при регистрации
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword, name: testName });
+            .send(registerBody({ name: testName }));
 
         expect(registerRes.status).toBe(201);
         
@@ -183,7 +205,7 @@ describe('User API', () => {
         // Регистрируем - теперь токен устанавливается сразу при регистрации
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         
@@ -208,7 +230,7 @@ describe('User API', () => {
         // Регистрируем с именем - теперь токен устанавливается сразу при регистрации
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword, name: 'Old Name' });
+            .send(registerBody({ name: 'Old Name' }));
 
         expect(registerRes.status).toBe(201);
         
@@ -249,7 +271,7 @@ describe('User API', () => {
         // Регистрируем - теперь токен устанавливается сразу при регистрации
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         
@@ -273,7 +295,7 @@ describe('User API', () => {
         // Регистрируем пользователя
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         
@@ -313,7 +335,7 @@ describe('User API', () => {
         // Регистрируем пользователя
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         
@@ -346,7 +368,7 @@ describe('User API', () => {
         // Регистрируем пользователя
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         
@@ -496,7 +518,7 @@ describe('User API', () => {
         // Создаем обычного пользователя
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         const userId = registerRes.body.id;
@@ -517,7 +539,7 @@ describe('User API', () => {
         // Создаем обычного пользователя
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
 
@@ -603,7 +625,7 @@ describe('User API', () => {
         // Регистрируем пользователя
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         
@@ -643,7 +665,7 @@ describe('User API', () => {
     it('требует поле language', async () => {
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         const setCookieHeader = registerRes.headers['set-cookie'];
         const tokenCookie = Array.isArray(setCookieHeader) 
@@ -663,7 +685,7 @@ describe('User API', () => {
         // Регистрируем пользователя
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         expect(registerRes.status).toBe(201);
         const userId = registerRes.body.id;
@@ -689,7 +711,7 @@ describe('User API', () => {
     it('не возвращает токен без auth cookie', async () => {
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         const userId = registerRes.body.id;
         
@@ -704,7 +726,7 @@ describe('User API', () => {
     it('не возвращает токен при несовпадении clientId', async () => {
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         const setCookieHeader = registerRes.headers['set-cookie'];
         const tokenCookie = Array.isArray(setCookieHeader) 
@@ -725,7 +747,7 @@ describe('User API', () => {
     it('очищает auth cookie при выходе', async () => {
         const registerRes = await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send(registerBody());
 
         const setCookieHeader = registerRes.headers['set-cookie'];
         const tokenCookie = Array.isArray(setCookieHeader) 

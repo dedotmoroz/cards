@@ -60,6 +60,7 @@ npm test
 
 - `AI_SERVICE_URL` — базовый URL внешнего сервиса генерации (по умолчанию `http://localhost:4000`)
 - `JWT_SECRET` — секрет для подписи JWT (обязателен)
+- `TURNSTILE_SECRET_KEY` — секрет Cloudflare Turnstile для проверки капчи при регистрации (`POST /auth/register`). Обязателен для успешной регистрации: без него проверка токена капчи не пройдёт.
 
 ---
 

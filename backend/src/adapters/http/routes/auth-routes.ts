@@ -6,6 +6,7 @@ import { UserService } from '../../../application/user-service';
 import { CardService } from '../../../application/card-service';
 import { FolderService } from '../../../application/folder-service';
 import { defaultSetting } from '../../../config/app-config';
+import { verifyTurnstileToken } from '../../../lib/turnstile';
 
 export function registerAuthRoutes(
     fastify: FastifyInstance,
@@ -21,12 +22,13 @@ export function registerAuthRoutes(
             schema: {
                 body: {
                     type: 'object',
-                    required: ['email', 'password'],
+                    required: ['email', 'password', 'turnstileToken'],
                     properties: {
                         email: { type: 'string', format: 'email' },
                         password: { type: 'string', minLength: 6 },
                         name: { type: 'string' },
                         language: { type: 'string' },
+                        turnstileToken: { type: 'string' },
                     },
                 },
                 response: {
@@ -37,6 +39,12 @@ export function registerAuthRoutes(
                             email: { type: 'string', format: 'email' },
                             name: { type: 'string' },
                             language: { type: 'string' },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
                         },
                     },
                     401: {
@@ -56,7 +64,14 @@ export function registerAuthRoutes(
                 password: z.string().min(6),
                 name: z.string().optional(),
                 language: z.string().optional(),
+                turnstileToken: z.string().min(1),
             }).parse(req.body);
+
+            const captchaValid = await verifyTurnstileToken(body.turnstileToken);
+            if (!captchaValid) {
+                return reply.code(400).send({ error: 'Captcha verification failed' });
+            }
+
             const user = await userService.register(body.email, body.password, body.name, body.language, false);
 
             if (defaultSetting.createFolder) {

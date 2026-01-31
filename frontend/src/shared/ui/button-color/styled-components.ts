@@ -18,6 +18,7 @@ export const StyledButtonColor = styled(Button)`
     }
     
     &:disabled {
+        outline: 1px dashed rgba(0, 0, 0, 0.8);
         background: #fff;
         opacity: 0.5;
     }

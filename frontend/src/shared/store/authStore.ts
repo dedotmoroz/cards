@@ -14,7 +14,7 @@ interface AuthState {
   setError: (error: string | null) => void;
   
   // Auth operations
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string, turnstileToken: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
@@ -35,11 +35,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 
-  register: async (username: string, email: string, password: string) => {
+  register: async (username: string, email: string, password: string, turnstileToken: string) => {
     set({ error: null });
     try {
       const language = localStorage.getItem('i18nextLng') || undefined;
-      await authApi.register({ name: username, email, password, language });
+      await authApi.register({ name: username, email, password, language, turnstileToken });
       const userData = await authApi.getMe();
       // Маппим name из API в username для типа User
       const user: User = {

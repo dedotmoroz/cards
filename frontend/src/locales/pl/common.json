@@ -125,7 +125,8 @@
     "emailRequired": "Wprowadź e-mail",
     "passwordRequired": "Wprowadź hasło",
     "emailInvalidFormat": "Nieprawidłowy format e-mail",
-    "errorGeneric": "Coś poszło nie tak. Spróbuj ponownie później"
+    "errorGeneric": "Coś poszło nie tak. Spróbuj ponownie później",
+    "captchaRequired": "Proszę uzupełnić captcha"
   },
   "buttons": {
     "startLearning": "Ucz się słów",

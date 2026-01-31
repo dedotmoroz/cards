@@ -125,7 +125,8 @@
     "emailRequired": "Введіть email",
     "passwordRequired": "Введіть пароль",
     "emailInvalidFormat": "Некоректний формат email",
-    "errorGeneric": "Щось пішло не так. Спробуйте пізніше"
+    "errorGeneric": "Щось пішло не так. Спробуйте пізніше",
+    "captchaRequired": "Будь ласка, пройдіть перевірку капчі"
   },
   "buttons": {
     "startLearning": "Вчити слова",

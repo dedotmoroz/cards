@@ -125,7 +125,8 @@
     "emailRequired": "Digite o e-mail",
     "passwordRequired": "Digite a senha",
     "emailInvalidFormat": "Formato de e-mail inválido",
-    "errorGeneric": "Algo deu errado. Tente novamente mais tarde"
+    "errorGeneric": "Algo deu errado. Tente novamente mais tarde",
+    "captchaRequired": "Por favor, complete a captcha"
   },
   "buttons": {
     "startLearning": "Aprender palavras",

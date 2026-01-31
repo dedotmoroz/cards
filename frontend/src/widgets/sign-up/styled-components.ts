@@ -53,3 +53,11 @@ export const StyledSignUpTitle = styled(Typography)`
 export const StyledSignUpFooter = styled(Box)`
     text-align: center;
 `;
+
+export const StyledTurnStileBox = styled(Box)`
+    margin-top: 30px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`

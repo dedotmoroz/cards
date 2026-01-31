@@ -125,7 +125,8 @@
     "emailRequired": "Enter email",
     "passwordRequired": "Enter password",
     "emailInvalidFormat": "Invalid email format",
-    "errorGeneric": "Something went wrong. Please try again"
+    "errorGeneric": "Something went wrong. Please try again",
+    "captchaRequired": "Please complete the captcha"
   },
   "buttons": {
     "startLearning": "Learn words",

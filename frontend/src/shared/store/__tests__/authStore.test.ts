@@ -114,14 +114,15 @@ describe('authStore', () => {
       mockedAuthApi.getMe.mockResolvedValueOnce(mockUser)
 
       await act(async () => {
-        await result.current.register('testuser', 'test@example.com', 'password123')
+        await result.current.register('testuser', 'test@example.com', 'password123', 'test-turnstile-token')
       })
 
-      expect(mockedAuthApi.register).toHaveBeenCalledWith({
+      expect(mockedAuthApi.register).toHaveBeenCalledWith(expect.objectContaining({
         name: 'testuser',
         email: 'test@example.com',
-        password: 'password123'
-      })
+        password: 'password123',
+        turnstileToken: 'test-turnstile-token'
+      }))
       expect(mockedAuthApi.getMe).toHaveBeenCalled()
       expect(result.current.user).toEqual(mockUser)
       expect(result.current.isAuthenticated).toBe(true)
@@ -137,7 +138,7 @@ describe('authStore', () => {
 
       await act(async () => {
         try {
-          await result.current.register('testuser', 'test@example.com', 'password123')
+          await result.current.register('testuser', 'test@example.com', 'password123', 'token')
         } catch (error) {
           // Ожидаем ошибку
         }

@@ -125,7 +125,8 @@
     "emailRequired": "Entrez l'e-mail",
     "passwordRequired": "Entrez le mot de passe",
     "emailInvalidFormat": "Format d'e-mail invalide",
-    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer plus tard"
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer plus tard",
+    "captchaRequired": "Veuillez compléter la captcha"
   },
   "buttons": {
     "startLearning": "Apprendre les mots",

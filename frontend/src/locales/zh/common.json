@@ -125,7 +125,8 @@
     "emailRequired": "请输入电子邮件",
     "passwordRequired": "请输入密码",
     "emailInvalidFormat": "电子邮件格式不正确",
-    "errorGeneric": "出错了，请稍后再试"
+    "errorGeneric": "出错了，请稍后再试",
+    "captchaRequired": "请完成验证码"
   },
   "buttons": {
     "startLearning": "学习单词",

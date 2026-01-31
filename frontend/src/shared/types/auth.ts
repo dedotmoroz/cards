@@ -11,6 +11,7 @@ export interface RegisterData {
   email: string;
   password: string;
   language?: string;
+  turnstileToken: string;
 }
 
 export interface LoginData {

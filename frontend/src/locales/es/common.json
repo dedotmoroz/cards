@@ -125,7 +125,8 @@
     "emailRequired": "Introduce el correo electrónico",
     "passwordRequired": "Introduce la contraseña",
     "emailInvalidFormat": "Formato de correo electrónico no válido",
-    "errorGeneric": "Algo salió mal. Inténtalo de nuevo más tarde"
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo más tarde",
+    "captchaRequired": "Por favor, completa la captcha"
   },
   "buttons": {
     "startLearning": "Aprender palabras",

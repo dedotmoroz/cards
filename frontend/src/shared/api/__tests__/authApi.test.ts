@@ -22,7 +22,8 @@ describe('authApi', () => {
       const registerData: RegisterData = {
         name: 'testuser',
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
+        turnstileToken: 'test-captcha-token'
       }
 
       mockedAxios.post.mockResolvedValueOnce({ data: {} })
@@ -43,7 +44,8 @@ describe('authApi', () => {
       const registerData: RegisterData = {
         name: 'testuser',
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
+        turnstileToken: 'test-captcha-token'
       }
 
       const errorMessage = 'Registration failed'

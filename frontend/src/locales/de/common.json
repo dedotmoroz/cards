@@ -125,7 +125,8 @@
     "emailRequired": "E-Mail eingeben",
     "passwordRequired": "Passwort eingeben",
     "emailInvalidFormat": "Ungültiges E-Mail-Format",
-    "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut"
+    "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut",
+    "captchaRequired": "Bitte lösen Sie die Captcha"
   },
   "buttons": {
     "startLearning": "Wörter lernen",

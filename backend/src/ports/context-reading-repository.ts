@@ -29,9 +29,13 @@ export class InMemoryCardRepository implements CardRepository {
         userId: string,
         folderId: string
     ): Promise<Card[]> {
-        return this.cards.filter(
-            c => c.folderId === folderId && !c.isLearned
-        )
+        // return this.cards.filter(
+        //     c => c.folderId === folderId && !c.isLearned
+        // )
+        /**
+         * Отключаем пока фильтр
+         */
+        return this.cards
     }
 }
 
