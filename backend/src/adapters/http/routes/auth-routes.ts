@@ -471,12 +471,13 @@ export function registerAuthRoutes(
                 },
                 body: {
                     type: 'object',
-                    required: ['email', 'password'],
+                    required: ['email', 'password', 'turnstileToken'],
                     properties: {
                         email: { type: 'string', format: 'email' },
                         password: { type: 'string', minLength: 6 },
                         name: { type: 'string' },
                         language: { type: 'string' },
+                        turnstileToken: { type: 'string' },
                     },
                 },
                 response: {
@@ -519,7 +520,13 @@ export function registerAuthRoutes(
                 password: z.string().min(6),
                 name: z.string().optional(),
                 language: z.string().optional(),
+                turnstileToken: z.string().min(1),
             }).parse(req.body);
+
+            const captchaValid = await verifyTurnstileToken(body.turnstileToken);
+            if (!captchaValid) {
+                return reply.code(400).send({ error: 'Captcha verification failed' });
+            }
 
             try {
                 const user = await userService.convertGuestToUser(

@@ -22,7 +22,7 @@ interface AuthState {
   changePassword: (data: ChangePasswordData) => Promise<void>;
   updateLanguage: (language: string) => Promise<void>;
   createGuest: (language: string) => Promise<void>;
-  registerGuest: (email: string, password: string, name: string, language: string) => Promise<void>;
+  registerGuest: (email: string, password: string, name: string, language: string, turnstileToken?: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -204,7 +204,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  registerGuest: async (email: string, password: string, name: string, language: string) => {
+  registerGuest: async (email: string, password: string, name: string, language: string, turnstileToken?: string) => {
     const currentUser = get().user;
     if (!currentUser || !currentUser.id) {
       throw new Error('User not found');
@@ -216,7 +216,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         email,
         password,
         name,
-        language
+        language,
+        turnstileToken: turnstileToken ?? '',
       });
       // Маппим name из API в username для типа User
       const user: User = {

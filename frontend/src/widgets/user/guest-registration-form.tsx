@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     Box,
@@ -23,8 +24,10 @@ import {
     StyledProfileWrapper,
     StyledLabel,
     StyledProfileContainer,
+    StyledTurnStileBox,
 } from './styled-components';
-import { ProfileHeader} from '@/entities/user';
+import { ProfileHeader } from '@/entities/user';
+import { TURNSTILE_SITE_KEY } from '@/shared/config/turnstile';
 
 const languages = [
     { code: 'ru', label: 'Русский' },
@@ -40,9 +43,12 @@ const languages = [
 
 export const GuestRegistrationForm = () => {
     const { t, i18n } = useTranslation();
+    const navigate = useNavigate();
     const { user, registerGuest } = useAuthStore();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const turnstileRef = useRef<HTMLDivElement>(null);
+    const turnstileWidgetId = useRef<string | null>(null);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -50,6 +56,8 @@ export const GuestRegistrationForm = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [language, setLanguage] = useState(user?.language || i18n.language || 'ru');
     const [success, setSuccess] = useState('');
+    const [turnstileToken, setTurnstileToken] = useState('');
+    const [captchaError, setCaptchaError] = useState('');
     const [nameError, setNameError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -61,6 +69,43 @@ export const GuestRegistrationForm = () => {
             setLanguage(user.language || i18n.language || 'ru');
         }
     }, [user?.isGuest, user?.language, i18n.language]);
+
+    useEffect(() => {
+        if (!TURNSTILE_SITE_KEY || !turnstileRef.current) return;
+        const mountWidget = () => {
+            if (!turnstileRef.current || !window.turnstile) return;
+            turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
+                sitekey: TURNSTILE_SITE_KEY,
+                callback: (token: string) => {
+                    setTurnstileToken(token);
+                    setCaptchaError('');
+                },
+            });
+        };
+        if (window.turnstile) {
+            mountWidget();
+        } else {
+            const id = setInterval(() => {
+                if (window.turnstile) {
+                    clearInterval(id);
+                    mountWidget();
+                }
+            }, 100);
+            return () => {
+                clearInterval(id);
+                if (turnstileWidgetId.current && window.turnstile) {
+                    window.turnstile.remove(turnstileWidgetId.current);
+                    turnstileWidgetId.current = null;
+                }
+            };
+        }
+        return () => {
+            if (turnstileWidgetId.current && window.turnstile) {
+                window.turnstile.remove(turnstileWidgetId.current);
+                turnstileWidgetId.current = null;
+            }
+        };
+    }, []);
 
     const clearFieldErrors = () => {
         setNameError('');
@@ -107,14 +152,14 @@ export const GuestRegistrationForm = () => {
         setLoading(true);
 
         try {
-            await registerGuest(email, password, name, language);
+            await registerGuest(email, password, name, language, turnstileToken || undefined);
             await i18n.changeLanguage(language);
             setSuccess(t('profile.registerGuestSuccess'));
-
             setName('');
             setEmail('');
             setPassword('');
             setConfirmPassword('');
+            setTimeout(() => navigate('/learn'), 100);
         } catch (err: unknown) {
             const { field, messageKey } = normalizeRegisterError(err);
             const message = t(messageKey);
@@ -238,13 +283,25 @@ export const GuestRegistrationForm = () => {
                                 <StyledButtonBox>
                                     <ButtonColor
                                         sx={{mt: 2, mb: 2}}
-                                        variant="contained" 
-                                        type="submit" disabled={loading}
+                                        variant="contained"
+                                        type="submit"
+                                        disabled={loading || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
                                         onClick={handleSubmit}
                                     >
                                         {t('profile.registerGuestButton')}
                                     </ButtonColor>
                                 </StyledButtonBox>
+
+                            {TURNSTILE_SITE_KEY && (
+                                <StyledTurnStileBox>
+                                    <div ref={turnstileRef} />
+                                    {captchaError && (
+                                        <Box component="span" sx={{ color: 'error.main', fontSize: '0.75rem', display: 'block', mt: 0.5 }}>
+                                            {captchaError}
+                                        </Box>
+                                    )}
+                                </StyledTurnStileBox>
+                            )}
                         </Box>
                     </StyledFormPaper>
                 </StyledGuestContainer>

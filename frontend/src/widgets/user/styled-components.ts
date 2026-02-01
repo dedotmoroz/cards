@@ -80,6 +80,15 @@ export const StyledButtonsRow = styled(Box)(({ theme }) => ({
 export const StyledTokenField = styled(TextField)`
 `;
 
+// Контейнер для виджета Turnstile
+export const StyledTurnStileBox = styled(Box)`
+    margin-top: 30px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
 // Контейнер для формы
 export const StyledFormContainer = styled(Box)`
     padding-top: 16px;

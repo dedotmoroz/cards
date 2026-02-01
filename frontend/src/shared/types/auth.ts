@@ -42,4 +42,5 @@ export interface RegisterGuestData {
   password: string;
   name: string;
   language: string;
+  turnstileToken?: string;
 }

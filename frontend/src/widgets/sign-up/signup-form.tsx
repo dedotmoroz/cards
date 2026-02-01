@@ -22,8 +22,7 @@ import {
   StyledTurnStileBox,
 } from './styled-components';
 import { ProfileHeader } from '@/entities/user';
-
-const TURNSTILE_SITE_KEY = '0x4AAAAAACWIZMsSk6HnxVz4';
+import { TURNSTILE_SITE_KEY } from '@/shared/config/turnstile';
 
 export const SignUpForm = () => {
   const { t } = useTranslation();

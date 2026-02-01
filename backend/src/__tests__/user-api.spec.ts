@@ -463,6 +463,7 @@ describe('User API', () => {
                 password: testPassword,
                 name: testName,
                 language: 'ru',
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(200);
@@ -494,6 +495,7 @@ describe('User API', () => {
             .send({
                 email: `test-${Date.now()}@example.com`,
                 password: testPassword,
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(200);
@@ -508,6 +510,7 @@ describe('User API', () => {
             .send({
                 email: testEmail,
                 password: testPassword,
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(404);
@@ -529,6 +532,7 @@ describe('User API', () => {
             .send({
                 email: `another-${Date.now()}@example.com`,
                 password: 'newPassword123',
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(400);
@@ -557,6 +561,7 @@ describe('User API', () => {
             .send({
                 email: testEmail,
                 password: testPassword,
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(409);
@@ -578,6 +583,7 @@ describe('User API', () => {
             .send({
                 email: `test-${Date.now()}@example.com`,
                 password: '12345', // слишком короткий
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(400);
@@ -597,6 +603,7 @@ describe('User API', () => {
             .patch(`/auth/guests/${guestId}`)
             .send({
                 password: testPassword,
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(400);
@@ -616,9 +623,30 @@ describe('User API', () => {
             .patch(`/auth/guests/${guestId}`)
             .send({
                 email: `test-${Date.now()}@example.com`,
+                turnstileToken: 'test-captcha-token',
             });
 
         expect(convertRes.status).toBe(400);
+    });
+
+    it('возвращает 400 при неудачной проверке капчи при конвертации гостя', async () => {
+        const guestRes = await request(fastify.server)
+            .post('/auth/guests')
+            .send({});
+        expect(guestRes.status).toBe(201);
+        const guestId = guestRes.body.id;
+
+        mockVerifyTurnstileToken.mockResolvedValueOnce(false);
+        const convertRes = await request(fastify.server)
+            .patch(`/auth/guests/${guestId}`)
+            .send({
+                email: `test-${Date.now()}@example.com`,
+                password: testPassword,
+                turnstileToken: 'test-captcha-token',
+            });
+        expect(convertRes.status).toBe(400);
+        expect(convertRes.body.error).toBe('Captcha verification failed');
+        mockVerifyTurnstileToken.mockResolvedValue(true);
     });
 
     it('обновляет язык пользователя', async () => {
