@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List, IconButton, Box, Typography } from '@mui/material';
+import { List, IconButton, Box, Typography, CircularProgress } from '@mui/material';
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { ToggleShowOnlyUnlearned } from '@/features/toggle-show-only-unlearned';
 import { SelectAllCards } from '@/features/select-all-cards';
@@ -37,6 +37,7 @@ type CardListProps = {
   isCreatingCard?: boolean;
   folderId?: string;
   onCancelCreateCard?: () => void;
+  isLoading?: boolean;
 };
 
 export const CardList: React.FC<CardListProps> = ({
@@ -50,6 +51,7 @@ export const CardList: React.FC<CardListProps> = ({
                                                     isCreatingCard = false,
                                                     folderId,
                                                     onCancelCreateCard,
+                                                    isLoading = false,
                                                      // onToggleLearned
 }) => {
   const { t } = useTranslation();
@@ -242,8 +244,9 @@ export const CardList: React.FC<CardListProps> = ({
                 )}
             </StyledHeaderCardActions>
         </StyledCardBoxHeader>
-        
-        <List>
+
+        <Box position="relative" sx={{ flex: 1, minHeight: 0 }}>
+          <List>
           {isCreatingCard && folderId && (
             <CreateCardForm
               displayFilter={displayFilter}
@@ -304,6 +307,22 @@ export const CardList: React.FC<CardListProps> = ({
               handleRename={handleRename}
           />
         </List>
+          {isLoading && (
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ backgroundColor: 'rgba(255, 255, 255, 0.7)' }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
+        </Box>
         <DialogCard
             renameOpen={renameOpen}
             handleRenameCancel={handleRenameCancel}

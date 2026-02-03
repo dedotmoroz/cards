@@ -1,4 +1,4 @@
-import {Box, Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState, useEffect} from "react";
@@ -8,7 +8,11 @@ import { CreateCardButton } from "@/features/create-card/index.tsx";
 import {CardsMenu} from "@/entities/cards";
 import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox, StyledCreateCardBox } from './styled-components.ts'
 
-export const Cards = () => {
+type CardsProps = {
+    isLoading?: boolean;
+};
+
+export const Cards = ({ isLoading = false }: CardsProps) => {
     const { t } = useTranslation();
     const [displayFilter, setDisplayFilter] = useState<'A' | 'AB' | 'B'>('AB');
     const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
@@ -94,6 +98,7 @@ export const Cards = () => {
                 isCreatingCard={isCreatingCard}
                 folderId={selectedFolderId ?? undefined}
                 onCancelCreateCard={() => setIsCreatingCard(false)}
+                isLoading={isLoading}
             />
         </StyledWrapperBox>
     )

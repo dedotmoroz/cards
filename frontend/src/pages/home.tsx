@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Grid, Drawer, useMediaQuery, useTheme} from '@mui/material';
+import { Box, Grid, Drawer, useMediaQuery, useTheme } from '@mui/material';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
 import { useFoldersStore } from '@/shared/store/foldersStore';
@@ -28,7 +28,7 @@ export const HomePage = () => {
     const { user } = useAuthStore();
     const currentUserId = user?.id;
 
-    const { fetchCards } = useCardsStore();
+    const { fetchCards, isLoading: cardsLoading } = useCardsStore();
     const {
         folders,
         selectedFolderId,
@@ -127,7 +127,7 @@ export const HomePage = () => {
                             <Folders />
                         </Grid>
                         <Grid size={9}>
-                            <Cards />
+                            <Cards isLoading={cardsLoading} />
                         </Grid>
                     </StyledGrid>
                 ) : (
@@ -158,7 +158,7 @@ export const HomePage = () => {
                         </Box>
                     </Drawer>
                     <StyledCardsBox>
-                        <Cards />
+                        <Cards isLoading={cardsLoading} />
                     </StyledCardsBox>
                 </StyledMobileVersionBox>
             )}

@@ -112,13 +112,15 @@ export const useCardsStore = create<CardsState>((set, get) => ({
 
     // API calls
     fetchCards: async (folderId: string) => {
-        set({ error: null })
+        set({ error: null, isLoading: true })
         try {
             const cards = await cardsApi.getCards(folderId)
             get().setCards(cards)
         } catch (error) {
             console.error('Error fetching cards:', error)
             set({ error: 'Failed to fetch cards' })
+        } finally {
+            set({ isLoading: false })
         }
     },
 
