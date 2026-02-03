@@ -64,12 +64,13 @@ export const StyledLearnedCount = styled(Typography)`
 `;
 
 export const StyledAudioBlock = styled(Box)`
-    position: absolute;
+    position: relative;
     z-index: 50;
     width: 100%;
     display: flex; 
     justify-content: center; 
     margin-top: 15px;
+    margin-bottom: -55px;
 `
 
 export const StyledCardCount = styled(Box)`

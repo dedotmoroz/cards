@@ -10,7 +10,7 @@ export const StyledButtonLink = styled(Button)`
     color: #4A5565;
     text-transform: none;
     gap: 6px;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 20px;
     
     & .MuiButton-startIcon {

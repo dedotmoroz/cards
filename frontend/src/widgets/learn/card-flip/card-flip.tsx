@@ -1,6 +1,5 @@
 import React, {forwardRef, useRef, useState, useEffect} from 'react';
-import {Box, IconButton} from '@mui/material';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
+import {Box} from '@mui/material';
 import {CardBox} from './card-box.tsx'
 import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
 import {StyledEmptyCardPlace} from './styled-components';
@@ -17,7 +16,6 @@ interface CardFlipProps {
     handleDontKnow: () => void;
     phrasesMode?: boolean;
     currentCard?: Card;
-    onTogglePhrasesMode?: () => void;
 }
 
 export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
@@ -30,7 +28,6 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
        handleDontKnow,
        phrasesMode = false,
        currentCard,
-       onTogglePhrasesMode,
   }, ref) => {
       const { t } = useTranslation();
       const [showAlternateContent, setShowAlternateContent] = useState(false);
@@ -214,18 +211,6 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                                 gap: 1,
                             }}
                         >
-                            {onTogglePhrasesMode && (
-                                <IconButton
-                                    size="small"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onTogglePhrasesMode();
-                                    }}
-                                    aria-label={t('cards.switchMode', 'Переключить режим')}
-                                >
-                                    <SwapVertIcon />
-                                </IconButton>
-                            )}
                             {phrasesMode 
                                 ? t('cards.showWord', 'Показать слово')
                                 : t('cards.showContext', 'Показать контекст')

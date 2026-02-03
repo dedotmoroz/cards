@@ -1,4 +1,4 @@
-import { StyledLinearProgress } from './styled-components';
+import { StyledLinearProgress, StyledBox, StyledCardCount, StyledCount } from './styled-components';
 
 interface CardLearningProgressProps {
   currentIndex: number;
@@ -23,10 +23,17 @@ export const CardLearningProgress = ({
     : 0;
 
   return (
-      <StyledLinearProgress 
-        variant="determinate" 
-        value={Math.min(progress, 100)} 
-      />
+      <StyledBox>
+          <StyledLinearProgress
+              variant="determinate"
+              value={Math.min(progress, 100)}
+          />
+          <StyledCardCount>
+              <StyledCount>
+                  {isCompleted ? `${totalCards} / ${totalCards}` : `${currentIndex + 1} / ${totalCards}`}
+              </StyledCount>
+          </StyledCardCount>
+      </StyledBox>
   );
 };
 

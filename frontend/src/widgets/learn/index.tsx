@@ -126,6 +126,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                             ? (learning.phrasesMode ? currentCard?.questionSentences : currentCard?.question)
                             : (learning.phrasesMode ? currentCard?.answerSentences : currentCard?.answer)
                     }
+                    onTogglePhrasesMode={() => learning.setPhrasesMode(!learning.phrasesMode)}
                 />
                     <CardFlip
                         question={learning.phrasesMode ? currentCard?.questionSentences : currentCard?.question}
@@ -136,7 +137,6 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                         handleDontKnow={handleDontKnow}
                         phrasesMode={learning.phrasesMode}
                         currentCard={currentCard}
-                        onTogglePhrasesMode={() => learning.setPhrasesMode(!learning.phrasesMode)}
                     />
                     {/* Controls - только для десктопа */}
                     {!isMobile && (
