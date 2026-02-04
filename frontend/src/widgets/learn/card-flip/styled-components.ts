@@ -1,6 +1,14 @@
 import { styled } from '@mui/material/styles';
 import { Card, Typography, CardContent, Box } from '@mui/material';
 
+export const StyledCardFlipBox = styled(Box)`
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`
+
 export const StyledCardBox = styled(Card)`
     position: absolute;
     width: 100%;
@@ -57,4 +65,7 @@ export const StyledTipBox = styled(Box)`
     text-align: center;
     font-weight: bold;
     min-height: 50px;
+`
+export const StyleWrapperBox = styled(Box)`
+  position: relative;
 `

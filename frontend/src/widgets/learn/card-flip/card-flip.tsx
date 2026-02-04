@@ -5,7 +5,7 @@ import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
 import {StyledEmptyCardPlace} from './styled-components';
 import {useTranslation} from 'react-i18next';
 import type {Card} from '@/shared/types/cards';
-import { StyledTipBox } from './styled-components.ts'
+import { StyledTipBox, StyledCardFlipBox, StyleWrapperBox } from './styled-components.ts'
 
 interface CardFlipProps {
     question?: string;
@@ -135,64 +135,70 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
       };
 
         return (
-            <Box
-                sx={{
-                    position: 'relative',
-                }}
-            >
-                <Box
-                    sx={{
-                        position: 'relative',
-                        zIndex: 30,
-                        height: 400,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                    ref={swipe.cardRef}
-                    onPointerDown={onPointerDown}
-                    onPointerMove={onPointerMove}
-                    onPointerUp={onPointerUp}
-                    onPointerLeave={onPointerLeave}
-                >
+            <StyledCardFlipBox>
+                <StyleWrapperBox>
                     <Box
-                        ref={ref}
                         sx={{
                             position: 'relative',
-                            width: '100%',
-                            maxWidth: 500,
-                            height: 300,
-                            cursor: 'pointer',
+                            zIndex: 30,
+                            height: 400,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
-
+                        ref={swipe.cardRef}
+                        onPointerDown={onPointerDown}
+                        onPointerMove={onPointerMove}
+                        onPointerUp={onPointerUp}
+                        onPointerLeave={onPointerLeave}
                     >
-                        <CardBox>
-                            {/* 
+                        <Box
+                            ref={ref}
+                            sx={{
+                                position: 'relative',
+                                width: '100%',
+                                maxWidth: 500,
+                                height: 300,
+                                cursor: 'pointer',
+                            }}
+
+                        >
+                            <CardBox>
+                                {/*
                               ЛОГИКА: showAnswer ? question : answer
                               - showAnswer = true → показывается question
                               - showAnswer = false → показывается answer
                               Если initialSide = 'answer', то showAnswer должно быть false
                             */}
-                            {showAnswer ? question : answer}
-                        </CardBox>
+                                {showAnswer ? question : answer}
+                            </CardBox>
+                        </Box>
+                    </Box>
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: 0,
+                            zIndex: 20,
+                            height: 400,
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <StyledEmptyCardPlace/>
+                    </Box>
+                </StyleWrapperBox>
+            {/* В контекстном режиме без контекста — только подпись */}
+            {phrasesMode && !(currentCard?.questionSentences && currentCard?.answerSentences) && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                    <Box sx={{ minHeight: '50px', display: 'flex', alignItems: 'center' }}>
+                        {t('cards.noContext', 'Контекст отсутствует')}
                     </Box>
                 </Box>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top:0,
-                    zIndex: 20,
-                    height: 400,
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <StyledEmptyCardPlace />
-            </Box>
+            )}
             {/* Кнопка показа контекста/слова */}
-            {((phrasesMode && currentCard?.question && currentCard?.answer) || 
+            {((phrasesMode && currentCard?.question && currentCard?.answer && currentCard?.questionSentences && currentCard?.answerSentences) || 
               (!phrasesMode && currentCard?.questionSentences && currentCard?.answerSentences)) && (
                 <Box
                     sx={{
@@ -231,7 +237,7 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                     )}
                 </Box>
             )}
-            </Box>
+            </StyledCardFlipBox>
         );
     }
 );

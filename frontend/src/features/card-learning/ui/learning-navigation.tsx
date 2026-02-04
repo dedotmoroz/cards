@@ -6,7 +6,7 @@ import { CardLearningBack } from '@/features/card-learning-back';
 import { CardLearningSideSwitcher } from '@/features/card-learning-side-switcher';
 import { CardLearningProgress } from '@/features/card-learning-progress';
 import { PronunciationButton } from '@/features/pronunciation-button';
-import { StyledAudioBlock } from './styled-components.ts'
+import { StyledAudioBlock, StyledNavigationBox } from './styled-components.ts'
 
 interface LearningNavigationProps {
   currentIndex: number;
@@ -18,8 +18,15 @@ interface LearningNavigationProps {
   initialSide: 'question' | 'answer';
   onSideChange: (side: 'question' | 'answer') => void;
   disabled?: boolean;
-  currentText?: string;
+  /** Текст стороны «вопрос» — для произношения; кнопка показывается только когда видна сторона А */
+  pronunciationText?: string;
+  /** Сейчас на карточке отображается сторона А (вопрос); не зависит от initialSide */
+  isQuestionSideVisible?: boolean;
   onTogglePhrasesMode?: () => void;
+  /** Режим контекста включён */
+  phrasesMode?: boolean;
+  /** У текущей карточки есть контекстные фразы (переход в режим контекста возможен только при true) */
+  hasPhrasesForCurrentCard?: boolean;
 }
 
 export const LearningNavigation = ({
@@ -29,13 +36,19 @@ export const LearningNavigation = ({
   initialSide,
   onSideChange,
   disabled,
-  currentText,
+  pronunciationText,
+  isQuestionSideVisible = false,
   onTogglePhrasesMode,
+  phrasesMode = false,
+  hasPhrasesForCurrentCard = false,
 }: LearningNavigationProps) => {
   const { t } = useTranslation();
+  // В режиме карточек — disabled, если нет контекста; в режиме контекста — переключение всегда доступно
+  const phrasesToggleDisabled = disabled || isCompleted || (!phrasesMode && !hasPhrasesForCurrentCard);
+  const showNoPhrasesTitle = !phrasesMode && !hasPhrasesForCurrentCard;
 
   return (
-    <Box mb={3}>
+    <StyledNavigationBox>
       {/* Прогресс-бар */}
         <Box sx={{mb: 4, ml: 2, mr: 2}}>
             <CardLearningProgress
@@ -54,8 +67,9 @@ export const LearningNavigation = ({
             <IconButton
               size="small"
               onClick={onTogglePhrasesMode}
-              disabled={disabled || isCompleted}
+              disabled={phrasesToggleDisabled}
               aria-label={t('cards.switchMode', 'Переключить режим')}
+              title={showNoPhrasesTitle ? t('cards.noPhrasesForCard', 'Нет контекстных фраз для этой карточки') : undefined}
             >
               <SwapVertIcon />
             </IconButton>
@@ -68,12 +82,12 @@ export const LearningNavigation = ({
         </Box>
       </Box>
 
-      {/* Кнопка произношения - только на стороне A */}
-        {currentText && initialSide === 'question' && (
+
+        {isQuestionSideVisible && pronunciationText && (
             <StyledAudioBlock>
-                <PronunciationButton text={currentText} size="medium" lang="en"/>
+                <PronunciationButton text={pronunciationText} size="medium" lang="en"/>
             </StyledAudioBlock>
         )}
-    </Box>
+    </StyledNavigationBox>
   );
 };

@@ -15,7 +15,7 @@ interface LearningControlsProps {
 export const LearningControls = ({ onKnow, onDontKnow, disabled, learnedCount = 0, unlearnedCount = 0 }: LearningControlsProps) => {
   const { t } = useTranslation();
   return (
-    <Box sx={{ mt: 3 }}>
+    <Box sx={{ mb: 5 }}>
       {/* Счетчики */}
         <Box sx={{display: 'flex', justifyContent: 'center', gap: 4, mb: 2}}>
             <Box>

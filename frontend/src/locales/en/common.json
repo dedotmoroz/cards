@@ -171,7 +171,9 @@
     "showAll": "Show All",
     "showUnlearned": "Show Unlearned",
     "emptyFolder": "No cards in folder",
-    "pronounce": "Pronounce"
+    "pronounce": "Pronounce",
+    "switchMode": "Switch mode",
+    "noPhrasesForCard": "No contextual phrases for this card"
   },
   "folders": {
     "title": "Folders",

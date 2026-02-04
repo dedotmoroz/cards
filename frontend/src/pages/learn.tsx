@@ -86,7 +86,7 @@ export const LearnPage = () => {
     // }
 
     return (
-        <Container maxWidth="md" sx={{mt: 4,}}>
+        <Container maxWidth="md" sx={{mt: 0, height: '100vh'}}>
             <LearnProcess learning={learning}/>
         </Container>
     );

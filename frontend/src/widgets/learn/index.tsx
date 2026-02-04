@@ -8,6 +8,7 @@ import {CompletionScreen} from "@/widgets/learn/learning-completion/ui/completio
 import {useNavigate} from "react-router-dom";
 import { useFoldersStore } from '@/shared/store/foldersStore';
 import type { Card } from "@/shared/types/cards";
+import { StyledLearningWrapper } from "./styled-components.ts";
 
 interface LearningHook {
   // State
@@ -15,6 +16,8 @@ interface LearningHook {
   displayCards: Card[];
   currentCard: Card | undefined;
   currentIndex: number;
+  progressDisplayIndex: number;
+  progressDisplayTotal: number;
   showAnswer: boolean;
   showOnlyUnlearned: boolean;
   phrasesMode: boolean;
@@ -110,27 +113,26 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     learnedCount={learning.cards.filter(card => card.isLearned).length}
                     unlearnedCount={learning.cards.filter(card => !card.isLearned).length}
                 />
-            ) : (<>
+            ) : (<StyledLearningWrapper>
                 {/* Navigation */}
                 <LearningNavigation
-                    currentIndex={learning.currentIndex}
-                    totalCards={learning.initialDisplayCardsCount}
+                    currentIndex={learning.progressDisplayIndex}
+                    totalCards={learning.progressDisplayTotal}
                     isCompleted={learning.isCompleted}
-                    isFirst={learning.currentIndex === 0}
+                    isFirst={learning.progressDisplayIndex === 0}
                     onPrevious={handlePrevious}
                     onNext={handleNext}
                     initialSide={learning.initialSide}
                     onSideChange={learning.setInitialSide}
-                    currentText={
-                        learning.initialSide === 'question'
-                            ? (learning.phrasesMode ? currentCard?.questionSentences : currentCard?.question)
-                            : (learning.phrasesMode ? currentCard?.answerSentences : currentCard?.answer)
-                    }
+                    pronunciationText={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
+                    isQuestionSideVisible={learning.showAnswer}
                     onTogglePhrasesMode={() => learning.setPhrasesMode(!learning.phrasesMode)}
+                    phrasesMode={learning.phrasesMode}
+                    hasPhrasesForCurrentCard={!!(currentCard?.questionSentences && currentCard?.answerSentences)}
                 />
                     <CardFlip
-                        question={learning.phrasesMode ? currentCard?.questionSentences : currentCard?.question}
-                        answer={learning.phrasesMode ? currentCard?.answerSentences : currentCard?.answer}
+                        question={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
+                        answer={learning.phrasesMode && currentCard?.answerSentences ? currentCard.answerSentences : currentCard?.answer}
                         showAnswer={showAnswer}
                         toggleAnswer={toggleAnswer}
                         handleKnow={handleKnow}
@@ -147,7 +149,7 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                             unlearnedCount={learning.unlearnedCount || 0}
                         />
                     )}
-                </>)
+                </StyledLearningWrapper>)
             }
         </>
     );

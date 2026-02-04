@@ -171,7 +171,9 @@
     "showUnlearned": "Показать не выученные",
     "delete": "Удалить карточку",
     "emptyFolder": "В папке нет карточек",
-    "pronounce": "Произнести"
+    "pronounce": "Произнести",
+    "switchMode": "Переключить режим",
+    "noPhrasesForCard": "Нет контекстных фраз для этой карточки"
   },
   "folders": {
     "title": "Папки",

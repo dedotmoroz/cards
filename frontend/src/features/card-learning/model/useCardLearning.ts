@@ -35,21 +35,19 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
     }
   }, [folderId]); // Загружаем только если папка изменилась
 
-  // Сбрасываем индекс при изменении фильтра карточек
-  // Используем ref для отслеживания предыдущих значений, чтобы не сбрасывать при каждом рендере
+  // Сбрасываем индекс и счётчики только при изменении showOnlyUnlearned (режим «только невыученные»).
+  // При переключении phrasesMode (слово/контекст) прогресс не сбрасываем — текущая карточка сохраняется.
   const prevShowOnlyUnlearnedRef = useRef(showOnlyUnlearned);
   const prevPhrasesModeRef = useRef(phrasesMode);
   useEffect(() => {
-    // Сбрасываем только если режим действительно изменился
-    if (prevShowOnlyUnlearnedRef.current !== showOnlyUnlearned || prevPhrasesModeRef.current !== phrasesMode) {
+    if (prevShowOnlyUnlearnedRef.current !== showOnlyUnlearned) {
       setCurrentIndex(0);
       setShowAnswer(initialSideRef.current === 'question');
-      // Сбрасываем счетчики только при изменении режима
       setLearnedCount(0);
       setUnlearnedCount(0);
       prevShowOnlyUnlearnedRef.current = showOnlyUnlearned;
-      prevPhrasesModeRef.current = phrasesMode;
     }
+    prevPhrasesModeRef.current = phrasesMode;
   }, [showOnlyUnlearned, phrasesMode]);
 
   // Сбрасываем счетчики при смене папки
@@ -73,30 +71,17 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
   //   }
   // }, [cards]);
 
-  // Инициализируем initialDisplayCardsCount только при изменении режима или первой загрузке
-  // Используем ref для отслеживания предыдущего значения режима
-  const prevPhrasesModeForCountRef = useRef(phrasesMode);
+  // Инициализируем initialDisplayCardsCount при первой загрузке или смене showOnlyUnlearned (режим слов = контекст по количеству)
   const prevShowOnlyUnlearnedForCountRef = useRef(showOnlyUnlearned);
   const initialCountSetRef = useRef(false);
   useEffect(() => {
-    // Обновляем initialDisplayCardsCount только если режим изменился или это первая загрузка
-    const modeChanged = prevPhrasesModeForCountRef.current !== phrasesMode || 
-                       prevShowOnlyUnlearnedForCountRef.current !== showOnlyUnlearned;
-    
+    const modeChanged = prevShowOnlyUnlearnedForCountRef.current !== showOnlyUnlearned;
     if (modeChanged) {
       initialCountSetRef.current = false;
-      prevPhrasesModeForCountRef.current = phrasesMode;
       prevShowOnlyUnlearnedForCountRef.current = showOnlyUnlearned;
     }
-    
     if (cards.length > 0 && (!initialCountSetRef.current || modeChanged)) {
-      if (phrasesMode) {
-        const cardsWithPhrases = cards.filter(card => card.questionSentences && card.answerSentences);
-        if (cardsWithPhrases.length > 0) {
-          setInitialDisplayCardsCount(cardsWithPhrases.length);
-          initialCountSetRef.current = true;
-        }
-      } else if (showOnlyUnlearned) {
+      if (showOnlyUnlearned) {
         const unlearned = cards.filter(card => !card.isLearned);
         if (unlearned.length > 0) {
           setInitialDisplayCardsCount(unlearned.length);
@@ -107,16 +92,12 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
         initialCountSetRef.current = true;
       }
     }
-  }, [cards, phrasesMode, showOnlyUnlearned]);
+  }, [cards, showOnlyUnlearned]);
 
-  // Фильтруем карточки в зависимости от режима
+  // Список карточек для показа: в контекстном режиме те же карточки, что и в режиме слов (без фильтра по фразам)
   const displayCards = useMemo(() => {
-    let filteredCards = showOnlyUnlearned ? unlearnedCards : cards;
-    if (phrasesMode) {
-      filteredCards = filteredCards.filter(card => card.questionSentences && card.answerSentences);
-    }
-    return filteredCards;
-  }, [cards, unlearnedCards, showOnlyUnlearned, phrasesMode]);
+    return showOnlyUnlearned ? unlearnedCards : cards;
+  }, [cards, unlearnedCards, showOnlyUnlearned]);
   
   // Защита от выхода индекса за границы при изменении displayCards
   // НЕ сбрасываем индекс, если мы находимся в процессе обновления карточки
@@ -131,6 +112,12 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
   const safeIndex = Math.min(currentIndex, displayCards.length - 1);
   const currentCard = displayCards[safeIndex >= 0 ? safeIndex : 0];
   const isCompleted = currentIndex >= displayCards.length;
+
+  // Для счётчика прогресса всегда показываем «режим слов»: номер и общее число карточек в текущем списке
+  const progressDisplayIndex = currentCard
+    ? Math.max(0, displayCards.findIndex(c => c.id === currentCard.id))
+    : 0;
+  const progressDisplayTotal = displayCards.length;
 
   const toggleAnswer = () => {
     setShowAnswer(!showAnswer);
@@ -231,19 +218,17 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
   };
 
   const setPhrasesModeHandler = (enabled: boolean) => {
+    prevPhrasesModeRef.current = enabled;
     setPhrasesMode(enabled);
     setShowOnlyUnlearned(false);
-    // Сбрасываем счетчики и индекс
-    setLearnedCount(0);
-    setUnlearnedCount(0);
-    setCurrentIndex(0);
-    // Используем ref для получения актуального значения initialSide
+    // В контекстном режиме показываем те же карточки — список не фильтруется; при переключении на «все» ищем текущую по id
+    const baseList = cards;
+    const currentId = currentCard?.id;
+    const newIndex = currentId ? baseList.findIndex(card => card.id === currentId) : 0;
+    setCurrentIndex(newIndex >= 0 ? newIndex : 0);
     setShowAnswer(initialSideRef.current === 'question');
-    // Обновляем количество карточек с предложениями
-    if (enabled && cards.length > 0) {
-      const cardsWithPhrases = cards.filter(card => card.questionSentences && card.answerSentences);
-      setInitialDisplayCardsCount(cardsWithPhrases.length);
-    } else if (cards.length > 0) {
+
+    if (cards.length > 0) {
       setInitialDisplayCardsCount(cards.length);
     }
   };
@@ -268,6 +253,8 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
     displayCards,
     currentCard,
     currentIndex,
+    progressDisplayIndex,
+    progressDisplayTotal,
     showAnswer,
     showOnlyUnlearned,
     phrasesMode,
