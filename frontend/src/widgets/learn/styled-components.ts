@@ -23,6 +23,10 @@ export const StyledNavigationBox = styled(Box)`
     flex-grow: 0;
     margin-top: 30px;
     margin-bottom: 30px;
+
+    @media (max-height: 599px) {
+        margin-bottom: -20px;
+    }
 `
 
 export const StyledLearningControls = styled(Box)`

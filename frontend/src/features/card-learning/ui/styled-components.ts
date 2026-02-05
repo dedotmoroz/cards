@@ -71,6 +71,11 @@ export const StyledAudioBlock = styled(Box)`
     justify-content: center; 
     margin-top: 15px;
     margin-bottom: -55px;
+
+    @media (max-height: 599px) {
+        margin-top: -10px;
+        margin-bottom: -30px;
+    }
 `
 
 export const StyledCardCount = styled(Box)`
