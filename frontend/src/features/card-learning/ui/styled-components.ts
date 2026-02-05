@@ -77,11 +77,4 @@ export const StyledCardCount = styled(Box)`
 font-size: 18px;
 `
 
-export const StyledNavigationBox = styled(Box)`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    justify-content: space-between;
-    flex-grow: 0;
-    margin-top: 30px;
-`
+

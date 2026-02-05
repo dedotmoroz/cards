@@ -6,7 +6,7 @@ import { CardLearningBack } from '@/features/card-learning-back';
 import { CardLearningSideSwitcher } from '@/features/card-learning-side-switcher';
 import { CardLearningProgress } from '@/features/card-learning-progress';
 import { PronunciationButton } from '@/features/pronunciation-button';
-import { StyledAudioBlock, StyledNavigationBox } from './styled-components.ts'
+import { StyledAudioBlock } from './styled-components.ts'
 
 interface LearningNavigationProps {
   currentIndex: number;
@@ -48,7 +48,7 @@ export const LearningNavigation = ({
   const showNoPhrasesTitle = !phrasesMode && !hasPhrasesForCurrentCard;
 
   return (
-    <StyledNavigationBox>
+    <>
       {/* Прогресс-бар */}
         <Box sx={{mb: 4, ml: 2, mr: 2}}>
             <CardLearningProgress
@@ -88,6 +88,6 @@ export const LearningNavigation = ({
                 <PronunciationButton text={pronunciationText} size="medium" lang="en"/>
             </StyledAudioBlock>
         )}
-    </StyledNavigationBox>
+    </>
   );
 };

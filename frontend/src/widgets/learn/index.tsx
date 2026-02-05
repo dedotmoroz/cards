@@ -8,7 +8,12 @@ import {CompletionScreen} from "@/widgets/learn/learning-completion/ui/completio
 import {useNavigate} from "react-router-dom";
 import { useFoldersStore } from '@/shared/store/foldersStore';
 import type { Card } from "@/shared/types/cards";
-import { StyledLearningWrapper } from "./styled-components.ts";
+import {
+    StyledCardFlipBox,
+    StyledLearningWrapper,
+    StyledNavigationBox,
+    StyledLearningControls,
+} from "./styled-components.ts";
 
 interface LearningHook {
   // State
@@ -113,43 +118,50 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                     learnedCount={learning.cards.filter(card => card.isLearned).length}
                     unlearnedCount={learning.cards.filter(card => !card.isLearned).length}
                 />
-            ) : (<StyledLearningWrapper>
-                {/* Navigation */}
-                <LearningNavigation
-                    currentIndex={learning.progressDisplayIndex}
-                    totalCards={learning.progressDisplayTotal}
-                    isCompleted={learning.isCompleted}
-                    isFirst={learning.progressDisplayIndex === 0}
-                    onPrevious={handlePrevious}
-                    onNext={handleNext}
-                    initialSide={learning.initialSide}
-                    onSideChange={learning.setInitialSide}
-                    pronunciationText={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
-                    isQuestionSideVisible={learning.showAnswer}
-                    onTogglePhrasesMode={() => learning.setPhrasesMode(!learning.phrasesMode)}
-                    phrasesMode={learning.phrasesMode}
-                    hasPhrasesForCurrentCard={!!(currentCard?.questionSentences && currentCard?.answerSentences)}
-                />
-                    <CardFlip
-                        question={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
-                        answer={learning.phrasesMode && currentCard?.answerSentences ? currentCard.answerSentences : currentCard?.answer}
-                        showAnswer={showAnswer}
-                        toggleAnswer={toggleAnswer}
-                        handleKnow={handleKnow}
-                        handleDontKnow={handleDontKnow}
-                        phrasesMode={learning.phrasesMode}
-                        currentCard={currentCard}
-                    />
+            ) : (
+                <StyledLearningWrapper>
+                    <StyledNavigationBox>
+                        <LearningNavigation
+                            currentIndex={learning.progressDisplayIndex}
+                            totalCards={learning.progressDisplayTotal}
+                            isCompleted={learning.isCompleted}
+                            isFirst={learning.progressDisplayIndex === 0}
+                            onPrevious={handlePrevious}
+                            onNext={handleNext}
+                            initialSide={learning.initialSide}
+                            onSideChange={learning.setInitialSide}
+                            pronunciationText={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
+                            isQuestionSideVisible={learning.showAnswer}
+                            onTogglePhrasesMode={() => learning.setPhrasesMode(!learning.phrasesMode)}
+                            phrasesMode={learning.phrasesMode}
+                            hasPhrasesForCurrentCard={!!(currentCard?.questionSentences && currentCard?.answerSentences)}
+                        />
+                    </StyledNavigationBox>
+                    <StyledCardFlipBox>
+                        <CardFlip
+                            question={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
+                            answer={learning.phrasesMode && currentCard?.answerSentences ? currentCard.answerSentences : currentCard?.answer}
+                            showAnswer={showAnswer}
+                            toggleAnswer={toggleAnswer}
+                            handleKnow={handleKnow}
+                            handleDontKnow={handleDontKnow}
+                            phrasesMode={learning.phrasesMode}
+                            currentCard={currentCard}
+                        />
+                    </StyledCardFlipBox>
                     {/* Controls - только для десктопа */}
                     {!isMobile && (
-                        <LearningControls
-                            onKnow={learning.handleKnow}
-                            onDontKnow={learning.handleDontKnow}
-                            learnedCount={learning.learnedCount || 0}
-                            unlearnedCount={learning.unlearnedCount || 0}
-                        />
+                        <StyledLearningControls>
+                            <LearningControls
+                                onKnow={learning.handleKnow}
+                                onDontKnow={learning.handleDontKnow}
+                                learnedCount={learning.learnedCount || 0}
+                                unlearnedCount={learning.unlearnedCount || 0}
+                            />
+                        </StyledLearningControls>
                     )}
-                </StyledLearningWrapper>)
+                </StyledLearningWrapper>
+            )
             }
         </>
     );

@@ -5,7 +5,7 @@ import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
 import {StyledEmptyCardPlace} from './styled-components';
 import {useTranslation} from 'react-i18next';
 import type {Card} from '@/shared/types/cards';
-import { StyledTipBox, StyledCardFlipBox, StyleWrapperBox } from './styled-components.ts'
+import { StyledTipBox, StyleWrapperBox } from './styled-components.ts'
 
 interface CardFlipProps {
     question?: string;
@@ -135,7 +135,7 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
       };
 
         return (
-            <StyledCardFlipBox>
+            <>
                 <StyleWrapperBox>
                     <Box
                         sx={{
@@ -204,7 +204,6 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
-                        mt: 2,
                     }}
                 >
                     {!showAlternateContent ? (
@@ -237,7 +236,7 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                     )}
                 </Box>
             )}
-            </StyledCardFlipBox>
+            </>
         );
     }
 );
