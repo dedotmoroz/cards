@@ -73,13 +73,23 @@ export const StyledAudioBlock = styled(Box)`
     margin-bottom: -55px;
 
     @media (max-height: 599px) {
-        margin-top: -10px;
-        margin-bottom: -30px;
+        margin-top: -20px;
+        margin-bottom: -20px;
     }
 `
 
 export const StyledCardCount = styled(Box)`
-font-size: 18px;
+    font-size: 18px;
+`
+
+export const StyledProgressBarBox = styled(Box)`
+    margin-bottom: 30px;
+    margin-right: 10px;
+    margin-left: 10px;
+
+    @media (max-height: 599px) {
+        margin-bottom: 20px;
+    }
 `
 
 

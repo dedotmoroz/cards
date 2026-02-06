@@ -61,3 +61,12 @@ export const StyledTipBox = styled(Box)`
 export const StyleWrapperBox = styled(Box)`
   position: relative;
 `
+
+export const StyledSecondContextBox = styled(Box)`
+    display: flex;
+    justify-content: center;
+
+    @media (max-height: 599px) {
+        margin-top: -20px;
+    }
+`
