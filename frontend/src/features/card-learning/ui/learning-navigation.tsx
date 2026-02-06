@@ -1,5 +1,6 @@
 import { Box, IconButton } from '@mui/material';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import { useTranslation } from 'react-i18next';
 
 import { CardLearningBack } from '@/features/card-learning-back';
@@ -18,7 +19,7 @@ interface LearningNavigationProps {
   initialSide: 'question' | 'answer';
   onSideChange: (side: 'question' | 'answer') => void;
   disabled?: boolean;
-  /** Текст стороны «вопрос» — для произношения; кнопка показывается только когда видна сторона А */
+  /** Текст стороны «вопрос» — для произношения; кнопка активна только когда видна сторона А и есть текст */
   pronunciationText?: string;
   /** Сейчас на карточке отображается сторона А (вопрос); не зависит от initialSide */
   isQuestionSideVisible?: boolean;
@@ -83,11 +84,20 @@ export const LearningNavigation = ({
       </Box>
 
 
-        {isQuestionSideVisible && pronunciationText && (
-            <StyledAudioBlock>
+        <StyledAudioBlock>
+            {isQuestionSideVisible && pronunciationText ? (
                 <PronunciationButton text={pronunciationText} size="medium" lang="en"/>
-            </StyledAudioBlock>
-        )}
+            ) : (
+                <IconButton
+                    size="medium"
+                    disabled
+                    aria-label={t('cards.pronounceUnavailable', 'Произношение недоступно')}
+                    sx={{ ml: 0.5, flexShrink: 0 }}
+                >
+                    <VolumeOffIcon fontSize="medium" />
+                </IconButton>
+            )}
+        </StyledAudioBlock>
     </>
   );
 };
