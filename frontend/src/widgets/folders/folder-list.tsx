@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {List, ListItemText,} from '@mui/material';
+import {ListItemText} from '@mui/material';
 import MoreVerticalIcon from '@mui/icons-material/MoreHoriz';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
@@ -9,7 +9,7 @@ import { RenameFolderMenuItem } from '@/features/rename-folder';
 import { DeleteFolderMenuItem } from '@/features/delete-folder';
 import { useAuthStore } from '@/shared/store/authStore';
 
-import { StyledListItemButton, StyledIconButton, StyledMenuBox } from "./styled-components.ts"
+import { StyledListItemButton, StyledIconButton, StyledMenuBox, StyledList } from "./styled-components.ts"
 
 export interface Folder {
     id: string;
@@ -59,7 +59,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
 
     return (
         <>
-            <List>
+            <StyledList>
                 {folders.map((folder) => (
                     <StyledListItemButton
                         disableRipple
@@ -82,7 +82,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                         </StyledMenuBox>
                     </StyledListItemButton>
                 ))}
-            </List>
+            </StyledList>
 
             <MenuUI
                 anchorEl={anchorEl}

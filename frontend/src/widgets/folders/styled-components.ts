@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Box, Typography, ListItemButton, IconButton } from "@mui/material";
+import { Box, Typography, ListItemButton, IconButton, List } from "@mui/material";
 
 export const StyledWrappedBox = styled(Box)`
     padding: 20px;
@@ -15,7 +15,8 @@ export const StyledCaptionBox = styled(Box)`
 export const StyledTypography = styled(Typography)``
 
 export const StyledListItemButton = styled(ListItemButton)`
- border-radius: 8px;
+    border-radius: 8px;
+    padding: 8px 12px;
 `
 
 export const StyledIconButton = styled(IconButton)`
@@ -29,4 +30,7 @@ export const StyledMenuBox = styled(Box)`
     justify-content: space-between;
     align-items: center; 
     width:100%;
+`
+export const StyledList = styled(List)`
+    margin: 0 -8px 0 -12px;
 `

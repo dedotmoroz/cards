@@ -19,15 +19,27 @@ export const StyledBox = styled(Box)`
 export const StyledCardCount = styled(Box)`
     display: flex;
     justify-content: center;
-    top: -8px;
+    top: -14px;
     width: 100%;
     position: absolute;
 `
 
+/** Счётчик в стиле glass: размытие фона и полупрозрачность (как в Liquid Glass, fallback без SVG displacement) */
 export const StyledCount = styled(Box)`
-    display: block;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 0 8px;
-    border-radius: 12px;
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 14px;
     font-size: 16px;
+    font-weight: 500;
+
+    /* Glass: полупрозрачный фон + размытие фона */
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(12px);
+
+    /* Лёгкая граница и блик как у стекла */
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
 `
