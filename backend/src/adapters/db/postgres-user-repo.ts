@@ -15,6 +15,8 @@ export class PostgresUserRepository implements UserRepository {
             name: user.name,
             language: user.language,
             is_guest: user.isGuest,
+            oauth_provider: user.oauthProvider,
+            oauth_id: user.oauthId,
         });
         return { id, ...user };
     }

@@ -117,6 +117,7 @@
     "alreadyRegistered": "Уже есть аккаунт?",
     "loginLink": "Войти",
     "invalidCredentials": "Неверный email или пароль",
+    "or": "или",
     "noAccount": "Нет аккаунта?",
     "passwordMismatch": "Пароли не совпадают",
     "passwordMinLength": "Пароль должен содержать минимум 6 символов",
@@ -238,6 +239,18 @@
     "export": "Экспорт в Excel",
     "exporting": "Экспорт...",
     "error": "Ошибка при экспорте"
+  },
+  "googleSheets": {
+    "connect": "Подключить Google Sheets",
+    "connected": "Google Sheets подключён",
+    "importTitle": "Импорт из Google Sheets",
+    "importDescription": "Вставьте ссылку на таблицу или её ID. Колонки «Сторона A» и «Сторона B» (или Question / Answer).",
+    "spreadsheetUrlOrId": "Ссылка или ID таблицы",
+    "sheetName": "Имя листа",
+    "invalidUrl": "Введите ссылку на таблицу или её ID",
+    "importFromSheets": "Импорт из Google Sheets",
+    "exportToSheets": "Экспорт в Google Sheets",
+    "exportingToSheets": "Экспорт..."
   },
   "profile": {
     "title": "Профиль",

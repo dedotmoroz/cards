@@ -648,6 +648,9 @@ export function registerAuthRoutes(
         }
     );
 
+    /**
+     * Вход через Google
+     */
     fastify.post('/auth/google',
         {
             schema: {
@@ -662,7 +665,19 @@ export function registerAuthRoutes(
                     200: {
                         type: 'object',
                         properties: {
-                            token: { type: 'string' },
+                            status: { type: 'string', enum: ['ok'] },
+                        },
+                    },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
                         },
                     },
                 },
@@ -671,9 +686,27 @@ export function registerAuthRoutes(
             },
         },
         async (req, reply) => {
-            const body = z.object({ idToken: z.string() }).parse(req.body);
-            const token = await userService.loginWithGoogle(body.idToken);
-            return reply.send({ token });
+            try {
+                const body = z.object({ idToken: z.string() }).parse(req.body);
+                const token = await userService.loginWithGoogle(body.idToken);
+
+                return reply
+                    .setCookie('token', token, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: 'lax',
+                        path: '/',
+                        maxAge: 60 * 60 * 24 * 7,
+                    })
+                    .send({ status: 'ok' });
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error.message.includes('Invalid Google token') || error.message.includes('GOOGLE_CLIENT_ID')) {
+                        return reply.code(400).send({ error: error.message });
+                    }
+                }
+                throw error;
+            }
         }
     );
 }

@@ -117,6 +117,7 @@
     "alreadyRegistered": "Haben Sie bereits ein Konto?",
     "loginLink": "Anmelden",
     "invalidCredentials": "Falsche E-Mail oder Passwort",
+    "or": "oder",
     "noAccount": "Haben Sie kein Konto?",
     "passwordMismatch": "Passwörter stimmen nicht überein",
     "passwordMinLength": "Das Passwort muss mindestens 6 Zeichen lang sein",
@@ -236,6 +237,18 @@
     "export": "Nach Excel exportieren",
     "exporting": "Exportiere...",
     "error": "Exportfehler"
+  },
+  "googleSheets": {
+    "connect": "Google Sheets verbinden",
+    "connected": "Google Sheets verbunden",
+    "importTitle": "Aus Google Sheets importieren",
+    "importDescription": "Link oder ID der Tabelle einfügen. Spalten: Seite A und Seite B (oder Question/Answer).",
+    "spreadsheetUrlOrId": "Tabellen-URL oder ID",
+    "sheetName": "Blattname",
+    "invalidUrl": "Tabellen-URL oder ID eingeben",
+    "importFromSheets": "Aus Google Sheets importieren",
+    "exportToSheets": "In Google Sheets exportieren",
+    "exportingToSheets": "Exportiere..."
   },
   "profile": {
     "title": "Profil",

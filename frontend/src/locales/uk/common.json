@@ -117,6 +117,7 @@
     "alreadyRegistered": "Вже є обліковий запис?",
     "loginLink": "Увійти",
     "invalidCredentials": "Неправильна електронна пошта або пароль",
+    "or": "або",
     "noAccount": "Немає облікового запису?",
     "passwordMismatch": "Паролі не співпадають",
     "passwordMinLength": "Пароль повинен містити принаймні 6 символів",
@@ -236,6 +237,18 @@
     "export": "Експорт у Excel",
     "exporting": "Експортування...",
     "error": "Помилка експорту"
+  },
+  "googleSheets": {
+    "connect": "Підключити Google Sheets",
+    "connected": "Google Sheets підключено",
+    "importTitle": "Імпорт з Google Sheets",
+    "importDescription": "Вставте посилання або ID таблиці. Колонки: Сторона A та Сторона B (або Question/Answer).",
+    "spreadsheetUrlOrId": "Посилання або ID таблиці",
+    "sheetName": "Назва аркуша",
+    "invalidUrl": "Введіть посилання або ID таблиці",
+    "importFromSheets": "Імпорт з Google Sheets",
+    "exportToSheets": "Експорт у Google Sheets",
+    "exportingToSheets": "Експорт..."
   },
   "profile": {
     "title": "Профіль",

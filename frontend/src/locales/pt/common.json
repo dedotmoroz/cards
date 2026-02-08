@@ -117,6 +117,7 @@
     "alreadyRegistered": "Já tem uma conta?",
     "loginLink": "Entrar",
     "invalidCredentials": "E-mail ou senha incorretos",
+    "or": "ou",
     "noAccount": "Não tem uma conta?",
     "passwordMismatch": "As senhas não coincidem",
     "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
@@ -236,6 +237,18 @@
     "export": "Exportar para Excel",
     "exporting": "Exportando...",
     "error": "Erro de exportação"
+  },
+  "googleSheets": {
+    "connect": "Conectar Google Sheets",
+    "connected": "Google Sheets conectado",
+    "importTitle": "Importar do Google Sheets",
+    "importDescription": "Cole o URL ou ID da folha. Colunas: Lado A e Lado B (ou Question/Answer).",
+    "spreadsheetUrlOrId": "URL ou ID da folha",
+    "sheetName": "Nome da folha",
+    "invalidUrl": "Digite o URL ou ID da folha",
+    "importFromSheets": "Importar do Google Sheets",
+    "exportToSheets": "Exportar para Google Sheets",
+    "exportingToSheets": "Exportando..."
   },
   "profile": {
     "title": "Perfil",

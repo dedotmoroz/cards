@@ -16,6 +16,7 @@ interface AuthState {
   // Auth operations
   register: (username: string, email: string, password: string, turnstileToken: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   updateProfile: (data: UpdateProfileData) => Promise<void>;
@@ -77,6 +78,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
     } catch (error: any) {
       const errorMessage = error.response?.data?.error ?? error.response?.data?.message;
+      set({ error: errorMessage });
+      throw error;
+    }
+  },
+
+  loginWithGoogle: async (idToken: string) => {
+    set({ error: null });
+    try {
+      await authApi.loginWithGoogle(idToken);
+
+      const userData = await authApi.getMe();
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username
+      };
+
+      set({
+        user,
+        isAuthenticated: true
+      });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error ?? error.response?.data?.message ?? 'Google sign-in failed';
       set({ error: errorMessage });
       throw error;
     }

@@ -4,13 +4,15 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import ExcelJS from 'exceljs';
 import { CardService } from '../../../application/card-service';
 import { FolderRepository } from '../../../ports/folder-repository';
+import { GoogleSheetsService } from '../../../application/google-sheets-service';
 import { CreateCardDTO, CardDTO, UpdateCardDTO } from '../dto';
 import { CreateCardInput } from './types';
 
 export function registerCardsRoutes(
     fastify: FastifyInstance,
     cardService: CardService,
-    folderRepo: FolderRepository
+    folderRepo: FolderRepository,
+    googleSheetsService?: GoogleSheetsService
 ) {
     /**
      * Создать Карточку
@@ -508,4 +510,165 @@ export function registerCardsRoutes(
             }
         }
     );
+
+    if (googleSheetsService) {
+        /**
+         * Импорт карточек из Google Sheets
+         */
+        fastify.post('/cards/folder/:folderId/import/google',
+            {
+                preHandler: [fastify.authenticate],
+                schema: {
+                    params: {
+                        type: 'object',
+                        properties: { folderId: { type: 'string', format: 'uuid' } },
+                        required: ['folderId'],
+                    },
+                    body: {
+                        type: 'object',
+                        required: ['spreadsheetId'],
+                        properties: {
+                            spreadsheetId: { type: 'string' },
+                            sheetName: { type: 'string' },
+                        },
+                    },
+                    response: {
+                        200: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string' },
+                                successCount: { type: 'number' },
+                                errorCount: { type: 'number' },
+                                errors: { type: 'array', items: { type: 'string' } },
+                            },
+                        },
+                    },
+                    tags: ['cards'],
+                    summary: 'Import cards from Google Sheets',
+                },
+            },
+            async (req: FastifyRequest<{
+                Params: { folderId: string };
+                Body: { spreadsheetId: string; sheetName?: string };
+            }>, reply: FastifyReply) => {
+                const userId = (req.user as any).userId;
+                const { folderId } = req.params;
+                const { spreadsheetId, sheetName = 'Sheet1' } = req.body;
+
+                const folder = await folderRepo.findById(folderId);
+                if (!folder) return reply.code(404).send({ message: 'Folder not found' });
+                if (folder.userId !== userId) return reply.code(403).send({ message: 'Access denied' });
+
+                try {
+                    const rows = await googleSheetsService.getSpreadsheetData(userId, spreadsheetId, sheetName);
+                    if (rows.length < 2) {
+                        return reply.code(400).send({ message: 'Sheet is empty or has no data rows' });
+                    }
+
+                    const headerRow = rows[0].map((c) => (c ?? '').toString());
+                    const colIndexes = googleSheetsService.findQuestionAndAnswerColumnIndexes(headerRow);
+                    if (!colIndexes) {
+                        return reply.code(400).send({
+                            message: 'Sheet must have columns "Сторона A" (or "Side A"/"Question") and "Сторона B" (or "Side B"/"Answer")',
+                        });
+                    }
+
+                    let successCount = 0;
+                    let errorCount = 0;
+                    const errors: string[] = [];
+
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i] || [];
+                        const question = (row[colIndexes.question] ?? '').toString().trim();
+                        const answer = (row[colIndexes.answer] ?? '').toString().trim();
+                        if (!question && !answer) continue;
+                        if (!question || !answer) {
+                            errorCount++;
+                            errors.push(`Row ${i + 1}: Both question and answer must be filled`);
+                            continue;
+                        }
+                        try {
+                            await cardService.createCard(folderId, question, answer);
+                            successCount++;
+                        } catch (err) {
+                            errorCount++;
+                            errors.push(`Row ${i + 1}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+                        }
+                    }
+
+                    if (successCount === 0 && errorCount > 0) {
+                        return reply.code(400).send({ message: 'No cards were imported', errors });
+                    }
+
+                    return reply.send({
+                        message: 'Import completed',
+                        successCount,
+                        errorCount,
+                        errors: errors.length > 0 ? errors : undefined,
+                    });
+                } catch (err) {
+                    req.log.error({ err }, 'Google Sheets import error');
+                    const msg = err instanceof Error ? err.message : 'Import failed';
+                    return reply.code(400).send({ message: msg });
+                }
+            }
+        );
+
+        /**
+         * Экспорт карточек в Google Sheets
+         */
+        fastify.post('/cards/folder/:folderId/export/google',
+            {
+                preHandler: [fastify.authenticate],
+                schema: {
+                    params: {
+                        type: 'object',
+                        properties: { folderId: { type: 'string', format: 'uuid' } },
+                        required: ['folderId'],
+                    },
+                    body: {
+                        type: 'object',
+                        properties: { title: { type: 'string' } },
+                    },
+                    response: {
+                        200: {
+                            type: 'object',
+                            properties: {
+                                spreadsheetUrl: { type: 'string' },
+                                spreadsheetId: { type: 'string' },
+                            },
+                        },
+                    },
+                    tags: ['cards'],
+                    summary: 'Export cards to Google Sheets',
+                },
+            },
+            async (req: FastifyRequest<{
+                Params: { folderId: string };
+                Body: { title?: string };
+            }>, reply: FastifyReply) => {
+                const userId = (req.user as any).userId;
+                const { folderId } = req.params;
+                const folder = await folderRepo.findById(folderId);
+                if (!folder) return reply.code(404).send({ message: 'Folder not found' });
+                if (folder.userId !== userId) return reply.code(403).send({ message: 'Access denied' });
+
+                const cards = await cardService.getAll(folderId);
+                const title = req.body?.title || `${folder.name}_${new Date().toISOString().split('T')[0]}`;
+                const rows = cards.map((c) => ({ question: c.question, answer: c.answer }));
+
+                try {
+                    const result = await googleSheetsService.createSpreadsheetAndWrite(userId, title, rows);
+                    return reply.send({
+                        spreadsheetUrl: result.spreadsheetUrl,
+                        spreadsheetId: result.spreadsheetId,
+                    });
+                } catch (err) {
+                    req.log.error({ err }, 'Google Sheets export error');
+                    const msg = err instanceof Error ? err.message : 'Export failed';
+                    return reply.code(400).send({ message: msg });
+                }
+            }
+        );
+    }
 }

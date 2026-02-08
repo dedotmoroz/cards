@@ -79,3 +79,11 @@ export const externalAccounts = pgTable(
         userId: uuid('user_id').notNull(),
         createdAt: timestamp('created_at').defaultNow().notNull(),
     });
+
+export const googleSheetsTokens = pgTable('google_sheets_tokens', {
+    user_id: text('user_id').primaryKey(),
+    access_token: text('access_token').notNull(),
+    refresh_token: text('refresh_token'),
+    expires_at: timestamp('expires_at', { withTimezone: true }).notNull(),
+    created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});

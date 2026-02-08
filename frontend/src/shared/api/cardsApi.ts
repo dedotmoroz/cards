@@ -130,4 +130,40 @@ export const cardsApi = {
     );
     return response.data;
   },
+
+  /**
+   * Статус подключения Google Sheets
+   */
+  getGoogleSheetsStatus: async (): Promise<{ connected: boolean }> => {
+    const response = await axios.get(`${API_BASE_URL}/auth/google/sheets/status`);
+    return response.data;
+  },
+
+  /**
+   * Импорт карточек из Google Sheets
+   */
+  importFromGoogleSheets: async (
+    folderId: string,
+    params: { spreadsheetId: string; sheetName?: string }
+  ): Promise<{ message: string; successCount: number; errorCount: number; errors?: string[] }> => {
+    const response = await axios.post(
+      `${API_BASE_URL}/cards/folder/${folderId}/import/google`,
+      params
+    );
+    return response.data;
+  },
+
+  /**
+   * Экспорт карточек в Google Sheets
+   */
+  exportToGoogleSheets: async (
+    folderId: string,
+    params?: { title?: string }
+  ): Promise<{ spreadsheetUrl: string; spreadsheetId: string }> => {
+    const response = await axios.post(
+      `${API_BASE_URL}/cards/folder/${folderId}/export/google`,
+      params ?? {}
+    );
+    return response.data;
+  },
 };

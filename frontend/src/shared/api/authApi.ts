@@ -107,6 +107,15 @@ export const authApi = {
   },
 
   /**
+   * Вход через Google
+   */
+  loginWithGoogle: async (idToken: string): Promise<void> => {
+    await axios.post(`${API_BASE_URL}/auth/google`, { idToken }, {
+      withCredentials: true
+    });
+  },
+
+  /**
    * Привязка Telegram аккаунта к пользователю
    */
   bindTelegram: async (nonce: string): Promise<{ ok: boolean }> => {

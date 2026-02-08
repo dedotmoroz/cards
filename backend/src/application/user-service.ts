@@ -1,7 +1,9 @@
+import { randomUUID } from 'crypto';
 import { User } from '../domain/user';
 import { UserRepository } from '../ports/user-repository';
 import { hash, compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 
 export class UserService {
     private readonly jwtSecret: string;
@@ -94,20 +96,54 @@ export class UserService {
     }
 
     async loginWithGoogle(googleIdToken: string): Promise<string> {
-        // Google token verification would be done here
-        // For example using Google Auth Library
-        const email = await this.verifyGoogleToken(googleIdToken);
+        const payload = await this.verifyGoogleToken(googleIdToken);
+        const { sub, email, name } = payload;
 
-        let user = await this.userRepo.findByEmail(email);
+        let user = await this.userRepo.findByOAuth('google', sub);
+
         if (!user) {
-            user = await this.register(email, '', '', undefined, false);
+            const existingByEmail = await this.userRepo.findByEmail(email);
+            if (existingByEmail) {
+                user = await this.userRepo.update(existingByEmail.id, {
+                    oauthProvider: 'google',
+                    oauthId: sub,
+                });
+            } else {
+                const placeholderHash = await hash(randomUUID(), 10);
+                user = await this.userRepo.create({
+                    email,
+                    passwordHash: placeholderHash,
+                    name: name || undefined,
+                    oauthProvider: 'google',
+                    oauthId: sub,
+                });
+            }
         }
 
         return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '7d' });
     }
 
-    private async verifyGoogleToken(idToken: string): Promise<string> {
-        // Mock implementation; use Google API in real code
-        return 'user@example.com';
+    private async verifyGoogleToken(
+        idToken: string
+    ): Promise<{ sub: string; email: string; name?: string }> {
+        const clientId = process.env.GOOGLE_CLIENT_ID;
+        if (!clientId) {
+            throw new Error('GOOGLE_CLIENT_ID is not configured');
+        }
+
+        const client = new OAuth2Client(clientId);
+        const ticket = await client.verifyIdToken({
+            idToken,
+            audience: clientId,
+        });
+        const payload = ticket.getPayload();
+        if (!payload || !payload.sub || !payload.email) {
+            throw new Error('Invalid Google token: missing sub or email');
+        }
+        return {
+            sub: payload.sub,
+            email: payload.email,
+            name: payload.name,
+        };
     }
 }

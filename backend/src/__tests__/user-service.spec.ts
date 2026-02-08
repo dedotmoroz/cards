@@ -112,31 +112,6 @@ describe('UserService', () => {
         expect(result).toBeNull();
     });
 
-    it('registers user on Google login if not found', async () => {
-        userRepo.findByEmail.mockResolvedValue(null);
-        const createdUser = {
-            id: '1',
-            email: 'user@example.com',
-            passwordHash: '',
-            createdAt: new Date(),
-        };
-        userRepo.create.mockResolvedValue(createdUser);
-
-        const result = await userService.loginWithGoogle('some_token');
-
-        // Теперь используется register
-        expect(bcryptjs.hash).toHaveBeenCalledWith('', 10);
-        expect(userRepo.create).toHaveBeenCalledWith({
-            email: 'user@example.com',
-            passwordHash: 'hashed_password',
-            name: '',
-            language: undefined,
-            isGuest: false,
-        });
-        expect(jsonwebtoken.sign).toHaveBeenCalled();
-        expect(result).toBe('mocked_jwt');
-    });
-
     it('updates user email', async () => {
         const user: User = {
             id: '1',

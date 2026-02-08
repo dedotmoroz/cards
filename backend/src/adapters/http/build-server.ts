@@ -39,6 +39,9 @@ import { registerContextReadingRoutes } from './routes/context-reading-routes';
 import { registerAuthRoutes } from './routes/auth-routes';
 import { registerTelegramRoutes } from './routes/telegram-routes';
 import { registerTranslateRoutes } from './routes/translate-routes';
+import { registerGoogleSheetsRoutes } from './routes/google-sheets-routes';
+import { GoogleSheetsService } from '../../application/google-sheets-service';
+import { PostgresGoogleSheetsTokensRepository } from '../db/postgres-google-sheets-tokens-repo';
 
 export async function buildServer() {
     const fastify = Fastify({ logger: true });
@@ -169,8 +172,16 @@ export async function buildServer() {
         externalAccountService
     );
 
+    const googleSheetsTokensRepo = new PostgresGoogleSheetsTokensRepository();
+    const googleClientId = process.env.GOOGLE_CLIENT_ID;
+    const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const googleSheetsService =
+        googleClientId && googleClientSecret
+            ? new GoogleSheetsService(googleSheetsTokensRepo, googleClientId, googleClientSecret)
+            : undefined;
+
     // ✅ Регистрируем все роуты
-    registerCardsRoutes(fastify, cardService, folderRepo);
+    registerCardsRoutes(fastify, cardService, folderRepo, googleSheetsService);
     registerAIRoutes(fastify, cardService, userService);
     registerFoldersRoutes(fastify, folderService);
     registerContextReadingRoutes(
@@ -190,6 +201,9 @@ export async function buildServer() {
         resetContextReadingUseCase
     );
     registerTranslateRoutes(fastify);
+    if (googleSheetsService) {
+        registerGoogleSheetsRoutes(fastify, googleSheetsService, googleSheetsTokensRepo);
+    }
 
     return fastify;
 }

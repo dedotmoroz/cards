@@ -1,4 +1,7 @@
 import {ImportCardsDialog} from "@/features/import-cards/import-cards-dialog.tsx";
+import {ImportGoogleSheetsDialog} from "@/features/import-cards/import-google-sheets-dialog.tsx";
+
+export { ImportGoogleSheetsDialog };
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {useImportCards} from "@/features/import-cards/useImportCards.ts";
 

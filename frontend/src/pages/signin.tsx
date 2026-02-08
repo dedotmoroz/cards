@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,10 +9,25 @@ import {
   Typography,
   Box,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material';
 import { useAuthStore } from '@/shared/store/authStore';
 import { useSEO } from '@/shared/hooks/useSEO';
+import { GOOGLE_CLIENT_ID } from '@/shared/config/api';
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: { client_id: string; callback: (response: { credential: string }) => void }) => void;
+          renderButton: (element: HTMLElement, config: { theme?: string; size?: string; width?: number; text?: string }) => void;
+        };
+      };
+    };
+  }
+}
 
 export const SignInPage = () => {
   const { t, i18n } = useTranslation();
@@ -23,9 +38,59 @@ export const SignInPage = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
 
-  const { login } = useAuthStore();
+  const { login, loginWithGoogle } = useAuthStore();
   const navigate = useNavigate();
+
+  const handleGoogleSignInRef = useRef<(credential: string) => Promise<void>>(async () => {});
+  handleGoogleSignInRef.current = async (credential: string) => {
+    setIsGoogleLoading(true);
+    setError('');
+    try {
+      await loginWithGoogle(credential);
+      const redirectPath = searchParams.get('redirect') || '/learn';
+      navigate(redirectPath, { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('auth.invalidCredentials'));
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID || !googleButtonRef.current) return;
+
+    const initGoogleButton = () => {
+      if (window.google?.accounts?.id && googleButtonRef.current) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: (response: { credential: string }) => {
+            handleGoogleSignInRef.current(response.credential);
+          }
+        });
+        window.google.accounts.id.renderButton(googleButtonRef.current, {
+          theme: 'outline',
+          size: 'large',
+          width: 320,
+          text: 'signin_with'
+        });
+      }
+    };
+
+    if (window.google?.accounts?.id) {
+      initGoogleButton();
+    } else {
+      const checkInterval = setInterval(() => {
+        if (window.google?.accounts?.id) {
+          clearInterval(checkInterval);
+          initGoogleButton();
+        }
+      }, 100);
+      return () => clearInterval(checkInterval);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -107,8 +172,17 @@ export const SignInPage = () => {
           >
             {isLoading ? <CircularProgress size={24} /> : t('auth.login')}
           </Button>
+
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <Divider sx={{ my: 2 }}>{t('auth.or')}</Divider>
+              <Box sx={{ display: 'flex', justifyContent: 'center', opacity: isGoogleLoading ? 0.6 : 1 }}>
+                <div ref={googleButtonRef} />
+              </Box>
+            </>
+          )}
           
-          <Box textAlign="center">
+          <Box textAlign="center" sx={{ mt: 2 }}>
             <Typography variant="body2">
               {t('auth.noAccount')}{' '}
               <Link to="/signup" style={{ textDecoration: 'none' }}>

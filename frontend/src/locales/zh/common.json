@@ -117,6 +117,7 @@
     "alreadyRegistered": "已有账户？",
     "loginLink": "登录",
     "invalidCredentials": "电子邮件或密码不正确",
+    "or": "或",
     "noAccount": "没有账户？",
     "passwordMismatch": "密码不匹配",
     "passwordMinLength": "密码必须至少6个字符",
@@ -236,6 +237,18 @@
     "export": "导出到Excel",
     "exporting": "导出中...",
     "error": "导出错误"
+  },
+  "googleSheets": {
+    "connect": "连接 Google Sheets",
+    "connected": "已连接 Google Sheets",
+    "importTitle": "从 Google Sheets 导入",
+    "importDescription": "粘贴表格链接或 ID。列：A 面和 B 面（或 Question/Answer）。",
+    "spreadsheetUrlOrId": "表格链接或 ID",
+    "sheetName": "工作表名称",
+    "invalidUrl": "请输入表格链接或 ID",
+    "importFromSheets": "从 Google Sheets 导入",
+    "exportToSheets": "导出到 Google Sheets",
+    "exportingToSheets": "导出中..."
   },
   "profile": {
     "title": "个人资料",
