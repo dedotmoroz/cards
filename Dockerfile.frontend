@@ -4,6 +4,12 @@ WORKDIR /app
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend ./
+
+# 🔑 build-time переменные для Vite
+ARG VITE_GOOGLE_CLIENT_ID
+# пробрасываем ARG → ENV, чтобы Vite их увидел
+ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+
 RUN npm run build
 
 # runtime
