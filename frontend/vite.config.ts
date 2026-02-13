@@ -14,11 +14,11 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',   // именно строка, не true
-    port: 5173,
+    port: 8888,
     strictPort: true,
     // allowedHosts: [CF_HOST],
 
-    hmr: { host: '192.168.1.50', port: 5173 }
+    hmr: { host: '192.168.1.50', port: 8888 }
     // hmr: {
     //   protocol: 'wss',
     //   host: CF_HOST,

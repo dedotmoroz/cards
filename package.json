@@ -6,6 +6,7 @@
     "start:frontend": "npm run dev --prefix frontend",
     "start:ai": "npm run dev --prefix ai-service",
     "start:worker": "npm run worker --prefix ai-service",
-    "start:telegram": "npm run dev --prefix telegram-bot"
+    "start:telegram": "npm run dev --prefix telegram-bot",
+    "start:strapi": "npm run dev --prefix strapi/cms"
   }
 }

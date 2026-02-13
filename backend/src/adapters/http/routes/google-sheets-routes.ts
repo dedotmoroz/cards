@@ -12,7 +12,7 @@ export function registerGoogleSheetsRoutes(
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
     const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/sheets/callback';
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8888';
 
     if (!clientId || !clientSecret) {
         fastify.log.warn('Google Sheets OAuth not configured: GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET missing');

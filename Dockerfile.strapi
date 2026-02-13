@@ -1,0 +1,43 @@
+# -----------------------------
+# 1) dependencies
+# -----------------------------
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+# копируем только package.json Strapi
+COPY strapi/cms/package*.json ./
+RUN npm ci --omit=dev
+
+# -----------------------------
+# 2) build stage
+# -----------------------------
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY strapi/cms/package*.json ./
+RUN npm ci
+
+# копируем весь Strapi проект
+COPY strapi/cms ./
+
+ENV NODE_ENV=production
+RUN npm run build
+
+# -----------------------------
+# 3) runtime stage
+# -----------------------------
+FROM node:20-alpine AS runtime
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    PORT=1337
+
+# прод зависимости
+COPY --from=deps /app/node_modules ./node_modules
+
+# копируем собранное приложение
+COPY --from=builder /app ./
+
+EXPOSE 1337
+
+CMD ["npm", "run", "start"]

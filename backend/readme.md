@@ -61,7 +61,7 @@ npm test
 - `AI_SERVICE_URL` — базовый URL внешнего сервиса генерации (по умолчанию `http://localhost:4000`)
 - `JWT_SECRET` — секрет для подписи JWT (обязателен)
 - `TURNSTILE_SECRET_KEY` — секрет Cloudflare Turnstile для проверки капчи при регистрации (`POST /auth/register`). Обязателен для успешной регистрации: без него проверка токена капчи не пройдёт.
-- Для **Google Sheets** (импорт/экспорт): `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` (например `http://localhost:3000/auth/google/sheets/callback`), `FRONTEND_URL` (например `http://localhost:5173`). **Обязательно применить миграцию** `drizzle/0004_google_sheets_tokens.sql` (таблица `google_sheets_tokens`), иначе подключение не сохранится.
+- Для **Google Sheets** (импорт/экспорт): `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` (например `http://localhost:3000/auth/google/sheets/callback`), `FRONTEND_URL` (например `http://localhost:8888`). **Обязательно применить миграцию** `drizzle/0004_google_sheets_tokens.sql` (таблица `google_sheets_tokens`), иначе подключение не сохранится.
 
 ---
 

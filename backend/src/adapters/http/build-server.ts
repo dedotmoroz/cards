@@ -74,7 +74,7 @@ export async function buildServer() {
             }
 
             const allowedOrigins = [
-                'http://localhost:5173',
+                'http://localhost:8888',
                 'https://kotcat.com',
             ];
 

@@ -13,6 +13,7 @@ import {RedBox} from "@/widgets/landing/red-box.tsx";
 import { ExampleCard } from "@/widgets/landing/example-card"
 import {Headline} from "@/widgets/landing/headline.tsx";
 import {UserBlock} from "@/widgets/landing/user-block.tsx";
+import { Footer } from "@/widgets/landing/footer.tsx";
 
 import {
     StyledLandingContainer,
@@ -94,6 +95,7 @@ export const LandingPage = () => {
               </StyledHeadlineContainer>
 
           </StyledLandingContainer>
+          <Footer />
       </>
   );
 };

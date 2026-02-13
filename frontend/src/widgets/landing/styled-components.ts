@@ -450,4 +450,27 @@ export const StyledColorTitle = styled(Box)`
     -webkit-text-fill-color: transparent;
 `
 
+export const StyledFooter = styled(Box)`
+    margin-top: auto;
+    padding: 24px 16px;
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+`
+
+export const StyledFooterLinks = styled(Box)`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px 24px;
+
+    a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+`
+
 
