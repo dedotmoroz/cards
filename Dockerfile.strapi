@@ -2,20 +2,14 @@ FROM node:20
 
 WORKDIR /app
 
-# системные зависимости для sharp / swc
-RUN apt-get update && apt-get install -y \
-  python3 \
-  build-essential \
-  && rm -rf /var/lib/apt/lists/*
-
+# Устанавливаем зависимости
 COPY strapi/cms/package*.json ./
+RUN npm install
 
-RUN npm ci
-
+# Копируем весь проект
 COPY strapi/cms ./
-
-ENV NODE_ENV=production
 
 EXPOSE 1337
 
-CMD ["npm", "run", "start"]
+# Запускаем в develop режиме
+CMD ["npm", "run", "develop"]
