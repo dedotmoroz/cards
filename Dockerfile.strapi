@@ -1,24 +1,43 @@
-FROM node:18-bullseye
+# ---------- STAGE 1: BUILD ----------
+FROM node:18-bullseye AS builder
 
 WORKDIR /app
 
-# Системные зависимости для sharp
+# Устанавливаем зависимости для sharp
 RUN apt-get update && apt-get install -y \
-  build-essential \
-  python3 \
-  libc6-dev \
-  libvips-dev \
-  && rm -rf /var/lib/apt/lists/*
+    build-essential \
+    python3 \
+    libvips-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Копируем package.json
+# Копируем только package.json сначала (для кеша)
 COPY strapi/cms/package*.json ./
 
-# Ставим зависимости с optional
+# Ставим зависимости включая optional (sharp!)
 RUN npm install --include=optional
 
 # Копируем весь проект
 COPY strapi/cms ./
 
+# Production build админки
+RUN npm run build
+
+
+# ---------- STAGE 2: RUNTIME ----------
+FROM node:18-bullseye
+
+WORKDIR /app
+
+# Только runtime зависимости sharp
+RUN apt-get update && apt-get install -y \
+    libvips-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем результат сборки
+COPY --from=builder /app ./
+
+ENV NODE_ENV=production
+
 EXPOSE 1337
 
-CMD ["npm", "run", "develop"]
+CMD ["npm", "run", "start"]
