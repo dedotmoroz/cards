@@ -1,16 +1,5 @@
-# -----------------------------
-# 1) dependencies
-# -----------------------------
-FROM node:20 AS deps
-WORKDIR /app
+FROM node:20
 
-COPY strapi/cms/package*.json ./
-RUN npm ci --omit=dev
-
-# -----------------------------
-# 2) build stage
-# -----------------------------
-FROM node:20 AS builder
 WORKDIR /app
 
 COPY strapi/cms/package*.json ./
@@ -20,18 +9,6 @@ COPY strapi/cms ./
 
 ENV NODE_ENV=production
 RUN npm run build
-
-# -----------------------------
-# 3) runtime stage
-# -----------------------------
-FROM node:20 AS runtime
-WORKDIR /app
-
-ENV NODE_ENV=production
-ENV PORT=1337
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app ./
 
 EXPOSE 1337
 
