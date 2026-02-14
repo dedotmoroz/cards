@@ -1,5 +1,5 @@
 # ---------- STAGE 1: BUILD ----------
-FROM node:18-bullseye AS builder
+FROM node:20-bullseye AS builder
 
 WORKDIR /app
 
@@ -10,30 +10,26 @@ RUN apt-get update && apt-get install -y \
     libvips-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем только package.json сначала (для кеша)
 COPY strapi/cms/package*.json ./
 
-# Ставим зависимости включая optional (sharp!)
+# ВАЖНО: чистая установка
 RUN npm install --include=optional
 
-# Копируем весь проект
 COPY strapi/cms ./
 
-# Production build админки
+# Production build
 RUN npm run build
 
 
 # ---------- STAGE 2: RUNTIME ----------
-FROM node:18-bullseye
+FROM node:20-bullseye
 
 WORKDIR /app
 
-# Только runtime зависимости sharp
 RUN apt-get update && apt-get install -y \
     libvips-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем результат сборки
 COPY --from=builder /app ./
 
 ENV NODE_ENV=production
