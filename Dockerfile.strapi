@@ -2,19 +2,19 @@ FROM node:20
 
 WORKDIR /app
 
-# установить build инструменты.
+# системные зависимости для sharp / swc
 RUN apt-get update && apt-get install -y \
-    python3 \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+  python3 \
+  build-essential \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY strapi/cms/package*.json ./
+
 RUN npm ci
 
 COPY strapi/cms ./
 
 ENV NODE_ENV=production
-RUN npm run build
 
 EXPOSE 1337
 
