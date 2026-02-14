@@ -1,15 +1,24 @@
-FROM node:20
+FROM node:18-bullseye
 
 WORKDIR /app
 
-# Устанавливаем зависимости
+# Системные зависимости для sharp
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  python3 \
+  libc6-dev \
+  libvips-dev \
+  && rm -rf /var/lib/apt/lists/*
+
+# Копируем package.json
 COPY strapi/cms/package*.json ./
-RUN npm install
+
+# Ставим зависимости с optional
+RUN npm install --include=optional
 
 # Копируем весь проект
 COPY strapi/cms ./
 
 EXPOSE 1337
 
-# Запускаем в develop режиме
 CMD ["npm", "run", "develop"]
