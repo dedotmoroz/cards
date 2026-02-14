@@ -2,7 +2,7 @@ FROM node:20
 
 WORKDIR /app
 
-# установить build инструменты
+# установить build инструменты.
 RUN apt-get update && apt-get install -y \
     python3 \
     build-essential \
