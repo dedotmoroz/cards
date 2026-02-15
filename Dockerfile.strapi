@@ -28,9 +28,8 @@ COPY --from=builder /app ./
 
 # Чтобы работал Content-Type Builder на сервере,
 # нам НУЖНЫ исходники и режим develop
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
 EXPOSE 1337
 
-# Используем develop вместо start
-CMD ["npm", "run", "develop"]
+CMD ["npm", "run", "start"]
