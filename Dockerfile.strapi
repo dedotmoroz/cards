@@ -1,31 +1,21 @@
 # ---------- STAGE 1: BUILD ----------
 FROM node:20-bullseye AS builder
-
 WORKDIR /app
 
-# Копируем только package.json (lock нет)
-COPY strapi/cms/package.json ./
+# Копируем оба файла!
+COPY strapi/cms/package.json strapi/cms/package-lock.json ./
 
-# Чистая установка зависимостей под Linux
-RUN npm install --include=optional
+# Устанавливаем зависимости (npm сам поймет, что он в Linux)
+RUN npm ci
 
-# Копируем остальной проект
 COPY strapi/cms ./
-
-# Сборка админки
 RUN npm run build
-
 
 # ---------- STAGE 2: RUNTIME ----------
 FROM node:20-bullseye
-
 WORKDIR /app
-
-# Копируем собранное приложение
 COPY --from=builder /app ./
 
-ENV NODE_ENV=production
-
+# ВАЖНО: Не фиксируйте NODE_ENV здесь, если хотите менять его в compose
 EXPOSE 1337
-
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "develop"]
