@@ -1,21 +1,36 @@
 # ---------- STAGE 1: BUILD ----------
 FROM node:20-bullseye AS builder
+
 WORKDIR /app
 
-# Копируем оба файла!
-COPY strapi/cms/package.json strapi/cms/package-lock.json ./
+# Копируем конфиги
+COPY strapi/cms/package.json ./
+# Если есть файл настроек админки или конфиги, они тоже могут быть нужны
+# но node_modules тут быть НЕ ДОЛЖНО
 
-# Устанавливаем зависимости (npm сам поймет, что он в Linux)
+# Устанавливаем всё, включая опциональные зависимости для линукса
 RUN npm install --platform=linux --arch=x64
 
+# Хак для Strapi 5: принудительно ставим линуксовый swc, если он потерялся
+RUN npm install @swc/core-linux-x64-gnu
+
 COPY strapi/cms ./
-RUN npm run build
+
+# Собираем админку. Переменная NODE_ENV может влиять на билд
+RUN NODE_ENV=production npm run build
 
 # ---------- STAGE 2: RUNTIME ----------
 FROM node:20-bullseye
 WORKDIR /app
+
+# Копируем всё из билдера
 COPY --from=builder /app ./
 
-# ВАЖНО: Не фиксируйте NODE_ENV здесь, если хотите менять его в compose
+# Чтобы работал Content-Type Builder на сервере,
+# нам НУЖНЫ исходники и режим develop
+ENV NODE_ENV=development
+
 EXPOSE 1337
+
+# Используем develop вместо start
 CMD ["npm", "run", "develop"]
