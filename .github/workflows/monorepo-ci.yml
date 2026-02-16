@@ -294,5 +294,5 @@ jobs:
             set -euo pipefail
             cd /srv/selltime.org
             docker compose pull strapi
-            docker compose up -d strapi
+            docker compose up -d --force-recreate strapi
             docker image prune -f
