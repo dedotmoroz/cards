@@ -4,17 +4,17 @@ FROM node:20-bullseye AS builder
 WORKDIR /app
 
 # Копируем конфиги
-COPY strapi/cms/package.json ./
-# Если есть файл настроек админки или конфиги, они тоже могут быть нужны
-# но node_modules тут быть НЕ ДОЛЖНО
+# COPY strapi/cms/package.json ./
+COPY cms/package*.json ./
 
 # Устанавливаем всё, включая опциональные зависимости для линукса
-RUN npm install --platform=linux --arch=x64
+# RUN npm install --platform=linux --arch=x64
+RUN npm ci
 
 # Хак для Strapi 5: принудительно ставим линуксовый swc, если он потерялся
-RUN npm install @swc/core-linux-x64-gnu
+# RUN npm install @swc/core-linux-x64-gnu
 
-COPY strapi/cms ./
+COPY cms ./
 
 # Собираем админку. Переменная NODE_ENV может влиять на билд
 RUN NODE_ENV=production npm run build
