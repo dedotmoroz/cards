@@ -9,7 +9,8 @@ COPY cms/package*.json ./
 
 # Устанавливаем всё, включая опциональные зависимости для линукса
 # RUN npm install --platform=linux --arch=x64
-RUN npm ci
+# RUN npm ci
+RUN npm install
 
 # Хак для Strapi 5: принудительно ставим линуксовый swc, если он потерялся
 # RUN npm install @swc/core-linux-x64-gnu
