@@ -1,4 +1,6 @@
-const STRAPI_URL = `http://${typeof window !== 'undefined' ? window.location.hostname : 'localhost'}:1337`;
+const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+const STRAPI_URL = isLocalhost ? 'http://localhost:1337' : '/cms';
 
 export async function getPage(locale: string, slug: string) {
     const res = await fetch(
