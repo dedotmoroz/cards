@@ -12,6 +12,8 @@ import { NotFoundPage } from '@/pages/404';
 import { ProfilePage } from '@/pages/profile';
 import { TelegramConnectPage } from '@/pages/telegram-connect';
 import StrapiPage from '@/pages/page';
+import { CollectionsListPage } from '@/pages/collections-list';
+import { CollectionDetailPage } from '@/pages/collection';
 import { useAuthStore } from '@/shared/store/authStore';
 import { PageContainer } from '@/shared/ui/page-container';
 
@@ -76,6 +78,8 @@ export default function App() {
                             <Route path="/learn/:userId/:folderId/context-reading" element={<PageContainer><ContextReadingPage /></PageContainer>} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
+                            <Route path="/collections" element={<CollectionsListPage />} />
+                            <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
                             <Route path="/p/:locale/:slug" element={<StrapiPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<NotFoundPage />} />
@@ -86,6 +90,8 @@ export default function App() {
                             <Route path="/signup" element={<SignUpPage />} />
                             <Route path="/signin" element={<SignInPage />} />
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
+                            <Route path="/collections" element={<CollectionsListPage />} />
+                            <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
                             <Route path="/p/:locale/:slug" element={<StrapiPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<LandingPage />} />

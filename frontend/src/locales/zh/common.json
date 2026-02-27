@@ -68,6 +68,9 @@
       "example": "作为一个overachiever有时可能会导致沟通问题，因为其他人可能会感到压力，需要满足你的高标准。"
     }
   },
+  "footer": {
+    "vocabularyCollections": "主题词汇集"
+  },
   "seo": {
     "keywords": "卡片, 学习, 记忆, 教育, 研究, 闪卡",
     "landing": {
@@ -93,6 +96,10 @@
     "notFound": {
       "title": "KotCat 页面未找到",
       "description": "请求的页面不存在"
+    },
+    "collections": {
+      "title": "主题词汇集 - KotCat",
+      "description": "用于词汇学习的主题词汇集"
     }
   },
   "navigation": {

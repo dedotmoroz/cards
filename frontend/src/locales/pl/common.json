@@ -68,6 +68,9 @@
       "example": "Bycie overachiever może czasami prowadzić do problemów w komunikacji, ponieważ inni mogą czuć presję, aby sprostać Twoim wysokim standardom."
     }
   },
+  "footer": {
+    "vocabularyCollections": "Tematyczne zbiory słów"
+  },
   "seo": {
     "keywords": "fiszki, nauka, pamięć, edukacja, studia, karty",
     "landing": {
@@ -93,6 +96,10 @@
     "notFound": {
       "title": "KotCat Strona nie znaleziona",
       "description": "Żądana strona nie istnieje"
+    },
+    "collections": {
+      "title": "Tematyczne zbiory słów - KotCat",
+      "description": "Tematyczne zbiory słów do nauki słownictwa"
     }
   },
   "navigation": {

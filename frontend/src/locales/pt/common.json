@@ -68,6 +68,9 @@
       "example": "Ser um overachiever às vezes pode levar a problemas de comunicação porque outros podem se sentir pressionados a atender aos seus altos padrões."
     }
   },
+  "footer": {
+    "vocabularyCollections": "Coleções temáticas de palavras"
+  },
   "seo": {
     "keywords": "cartões, aprendizagem, memória, educação, estudo, flash cards",
     "landing": {
@@ -93,6 +96,10 @@
     "notFound": {
       "title": "KotCat Página não encontrada",
       "description": "A página solicitada não existe"
+    },
+    "collections": {
+      "title": "Coleções temáticas de palavras - KotCat",
+      "description": "Coleções temáticas de palavras para aprender vocabulário"
     }
   },
   "navigation": {

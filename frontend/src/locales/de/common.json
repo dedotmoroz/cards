@@ -68,6 +68,9 @@
       "example": "Ein overachiever zu sein kann manchmal zu Kommunikationsproblemen führen, weil andere sich möglicherweise unter Druck gesetzt fühlen, Ihre hohen Standards zu erfüllen."
     }
   },
+  "footer": {
+    "vocabularyCollections": "Thematische Wortsammlungen"
+  },
   "seo": {
     "keywords": "Lernkarten, Lernen, Gedächtnis, Bildung, Studium, Karteikarten",
     "landing": {
@@ -93,6 +96,10 @@
     "notFound": {
       "title": "KotCat Seite nicht gefunden",
       "description": "Die angeforderte Seite existiert nicht"
+    },
+    "collections": {
+      "title": "Thematische Wortsammlungen - KotCat",
+      "description": "Thematische Wortsammlungen zum Vokabellernen"
     }
   },
   "navigation": {
