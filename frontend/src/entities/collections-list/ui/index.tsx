@@ -27,7 +27,11 @@ export const CollectionsListLayout = ({ title, backTo, children }: CollectionsLi
 
     return (
         <StyledWrapper>
-            <ButtonLink startIcon={<ArrowBack />} onClick={() => navigate(backPath)}>
+            <ButtonLink
+                startIcon={<ArrowBack />}
+                onClick={() => navigate(backPath)}
+                style={{marginLeft: '-12px'}}
+            >
                 {t('forms.back')}
             </ButtonLink>
             <StyledTitle>{title}</StyledTitle>
