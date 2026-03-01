@@ -4,7 +4,8 @@ import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-rendere
 import { getCollection, type CollectionItem } from '@/shared/api/collectionsApi';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { PageLayout } from '@/entities';
+import { PageLoader } from '@/shared/ui';
 
 export function CollectionDetailPage() {
     const { locale, slug } = useParams<{ locale: string; slug: string }>();
@@ -25,29 +26,18 @@ export function CollectionDetailPage() {
         lang: locale ?? undefined,
     });
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="40vh">
-                <CircularProgress />
-            </Box>
-        );
-    }
-    if (!collection) {
-        return (
-            <Box sx={{ maxWidth: 800, margin: '40px auto', px: 2 }}>
-                <Typography color="error">Collection not found</Typography>
-            </Box>
-        );
-    }
+    if (loading) return <PageLoader />;
+    if (!collection) return <div>Collection not found</div>;
 
     return (
-        <Box sx={{ maxWidth: 800, margin: '40px auto', px: 2 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-                {collection.title}
-            </Typography>
-            {collection.content ? (
-                <BlocksRenderer content={collection.content as BlocksContent} />
-            ) : null}
-        </Box>
+        <PageLayout
+            title={collection.title}
+            content={
+                collection.content ? (
+                    <BlocksRenderer content={collection.content as BlocksContent} />
+                ) : null
+            }
+            backTo="/collections"
+        />
     );
 }

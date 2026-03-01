@@ -1,5 +1,6 @@
 export * from './header';
 export * from './logo';
+export * from './page-loader';
 export * from './mobile-menu-icon';
 export * from './button-link';
 export * from './button-black';

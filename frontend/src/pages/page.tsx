@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BlocksRenderer, type BlocksContent } from "@strapi/blocks-react-renderer";
 import { getPage } from "@/shared/api/pagesApi";
 import { useSEO } from "@/shared/hooks/useSEO";
 import { SITE_BASE_URL } from "@/shared/config/api";
+import { PageLayout } from '@/entities';
+import { PageLoader } from '@/shared/ui';
+import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
 
 export default function Page() {
     const { locale, slug } = useParams<{ locale: string; slug: string }>();
@@ -32,13 +34,13 @@ export default function Page() {
         lang: locale ?? undefined,
     });
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <PageLoader />;
     if (!page) return <div>Page not found</div>;
 
     return (
-        <div style={{ maxWidth: 800, margin: "40px auto" }}>
-            <h1>{page.title}</h1>
-            <BlocksRenderer content={page.content as BlocksContent} />
-        </div>
+        <PageLayout
+            title={page.title}
+            content={<BlocksRenderer content={page.content as BlocksContent} />}
+        />
     );
 }
