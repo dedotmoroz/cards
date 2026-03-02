@@ -163,7 +163,7 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                             }}
 
                         >
-                            <CardBox>
+                            <CardBox swipeDirection={swipe.swipeDirection}>
                                 <Fade in timeout={500} key={`${currentCard?.id}-${showAnswer ? 'q' : 'a'}`}>
                                     <Box>{showAnswer ? question : answer}</Box>
                                 </Fade>

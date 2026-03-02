@@ -1,7 +1,23 @@
 import { styled } from '@mui/material/styles';
 import { Card, Typography, CardContent, Box } from '@mui/material';
 
-export const StyledCardBox = styled(Card)`
+interface StyledCardBoxProps {
+    $swipeDirection?: 'left' | 'right' | null;
+}
+
+const getCardBackground = (direction: 'left' | 'right' | null | undefined) => {
+    if (direction === 'right') {
+        return 'linear-gradient(135deg, #fff  0%, #c4fad8 100%)';
+    }
+    if (direction === 'left') {
+        return 'linear-gradient(320deg, #ffdada 0%, #fff 100%)';
+    }
+    return 'linear-gradient(135deg, #FFF 0%, #F9FAFB 100%)';
+};
+
+export const StyledCardBox = styled(Card, {
+    shouldForwardProp: (prop) => prop !== '$swipeDirection',
+})<StyledCardBoxProps>`
     position: absolute;
     width: 100%;
     height: 100%;
@@ -13,9 +29,10 @@ export const StyledCardBox = styled(Card)`
 
     border-radius: 24px;
     border: 1px solid #F3F4F6;
-    background: linear-gradient(135deg, #FFF 0%, #F9FAFB 100%);
+    background: ${({$swipeDirection}) => getCardBackground($swipeDirection)};
+    transition: background 0.15s ease;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    
+
     &:hover {
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }

@@ -3,6 +3,8 @@ import { StyledCardBox, StyledCardTypography, StyledCardContent } from "./styled
 
 interface CardBoxProps {
     children: React.ReactNode;
+    /** Направление перетаскивания для градиента фона */
+    swipeDirection?: 'left' | 'right' | null;
 }
 
 // Функция для извлечения текста из ReactNode
@@ -22,7 +24,7 @@ const getTextFromNode = (node: React.ReactNode): string => {
     return '';
 };
 
-export const CardBox: React.FC<CardBoxProps> = ({children}) => {
+export const CardBox: React.FC<CardBoxProps> = ({ children, swipeDirection }) => {
     // Определяем длину текста и размер шрифта
     const fontSize = useMemo(() => {
         const text = getTextFromNode(children);
@@ -31,7 +33,7 @@ export const CardBox: React.FC<CardBoxProps> = ({children}) => {
     }, [children]);
 
     return (
-        <StyledCardBox>
+        <StyledCardBox $swipeDirection={swipeDirection ?? undefined}>
             <StyledCardContent>
                 <StyledCardTypography variant="h4" $fontSize={fontSize}>
                     {children}
