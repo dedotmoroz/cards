@@ -142,16 +142,15 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
     isUpdatingCardRef.current = true;
     
     try {
+      // Переходим к следующей карточке
+      // Просто увеличиваем индекс - защита от выхода за границы есть через safeIndex
+      setCurrentIndex(nextIndex);
+      setShowAnswer(initialSideRef.current === 'question');
       // Обновляем статус карточки
       await updateCardLearnStatus(currentCardId, true);
       
       // Увеличиваем счетчик
       setLearnedCount(prev => prev + 1);
-      
-      // Переходим к следующей карточке
-      // Просто увеличиваем индекс - защита от выхода за границы есть через safeIndex
-      setCurrentIndex(nextIndex);
-      setShowAnswer(initialSideRef.current === 'question');
     } finally {
       // Сбрасываем флаг после небольшой задержки, чтобы дать время для обновления displayCards
       setTimeout(() => {
@@ -175,16 +174,15 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
     isUpdatingCardRef.current = true;
     
     try {
+      // Переходим к следующей карточке
+      // Просто увеличиваем индекс - защита от выхода за границы есть через safeIndex
+      setCurrentIndex(nextIndex);
+      setShowAnswer(initialSideRef.current === 'question');
       // Обновляем статус карточки
       await updateCardLearnStatus(currentCardId, false);
       
       // Увеличиваем счетчик
       setUnlearnedCount(prev => prev + 1);
-      
-      // Переходим к следующей карточке
-      // Просто увеличиваем индекс - защита от выхода за границы есть через safeIndex
-      setCurrentIndex(nextIndex);
-      setShowAnswer(initialSideRef.current === 'question');
     } finally {
       // Сбрасываем флаг после небольшой задержки, чтобы дать время для обновления displayCards
       setTimeout(() => {
