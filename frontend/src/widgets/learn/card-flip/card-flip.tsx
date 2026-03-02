@@ -1,5 +1,5 @@
 import React, {forwardRef, useRef, useState, useEffect} from 'react';
-import {Box} from '@mui/material';
+import { Box, Fade } from '@mui/material';
 import {CardBox} from './card-box.tsx'
 import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
 import {StyledEmptyCardPlace} from './styled-components';
@@ -164,13 +164,9 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
 
                         >
                             <CardBox>
-                                {/*
-                              ЛОГИКА: showAnswer ? question : answer
-                              - showAnswer = true → показывается question
-                              - showAnswer = false → показывается answer
-                              Если initialSide = 'answer', то showAnswer должно быть false
-                            */}
-                                {showAnswer ? question : answer}
+                                <Fade in timeout={500} key={`${currentCard?.id}-${showAnswer ? 'q' : 'a'}`}>
+                                    <Box>{showAnswer ? question : answer}</Box>
+                                </Fade>
                             </CardBox>
                         </Box>
                     </Box>
