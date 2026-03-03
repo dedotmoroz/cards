@@ -100,6 +100,7 @@ export const useCardSwipe = () => {
   const animateSwipe = (direction: 'left' | 'right') => {
     if (!cardRef.current) return;
     
+    setSwipeDirection(null);
     setIsAnimating(true);
     const rotation = direction === 'right' ? 30 : -30;
     const translateX = direction === 'right' ? '100vw' : '-100vw';
