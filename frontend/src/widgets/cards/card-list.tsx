@@ -5,6 +5,8 @@ import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { ToggleShowOnlyUnlearned } from '@/features/toggle-show-only-unlearned';
 import { SelectAllCards } from '@/features/select-all-cards';
 import { useCardsStore } from '@/shared/store/cardsStore.ts';
+import { useFoldersStore } from '@/shared/store/foldersStore.ts';
+import { MoveCardDialog } from '@/features/move-card';
 // import { GenerateAllAiSentencesButton } from '@/features/generate-all-ai-sentences';
 import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import {MenuCard} from "@/widgets/cards/menu-card.tsx";
@@ -59,13 +61,17 @@ export const CardList: React.FC<CardListProps> = ({
       updateCardApi,
       updateCardLearnStatus,
       deleteCard,
+      moveCardToFolder,
       generateCardSentences,
       createCard,
       // generateAllCardsSentences,
       generationStatuses
   } = useCardsStore();
+  const { folders } = useFoldersStore();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+  const [cardToMoveId, setCardToMoveId] = useState<string | null>(null);
   const [renameOpen, setRenameOpen] = useState(false);
   const [renameQuestion, setRenameQuestion] = useState('');
   const [renameAnswer, setRenameAnswer] = useState('');
@@ -115,6 +121,18 @@ export const CardList: React.FC<CardListProps> = ({
     } catch (error) {
       console.error('Error updating card:', error);
     }
+  };
+
+  const handleMove = () => {
+    if (!selectedCardId) return;
+    setCardToMoveId(selectedCardId);
+    setMoveDialogOpen(true);
+    handleMenuClose();
+  };
+
+  const handleMoveDialogClose = () => {
+    setMoveDialogOpen(false);
+    setCardToMoveId(null);
   };
 
   const handleDelete = async () => {
@@ -305,6 +323,7 @@ export const CardList: React.FC<CardListProps> = ({
               handleDelete={handleDelete}
               anchorEl={anchorEl}
               handleRename={handleRename}
+              handleMove={handleMove}
           />
         </List>
           {isLoading && (
@@ -331,6 +350,14 @@ export const CardList: React.FC<CardListProps> = ({
             renameAnswer={renameAnswer}
             setRenameAnswer={setRenameAnswer}
             handleRenameSave={handleRenameSave}
+        />
+        <MoveCardDialog
+            open={moveDialogOpen}
+            onClose={handleMoveDialogClose}
+            currentFolderId={folderId ?? null}
+            folders={folders}
+            onMove={moveCardToFolder}
+            cardId={cardToMoveId}
         />
       </StyledBoxWrapper>
   );

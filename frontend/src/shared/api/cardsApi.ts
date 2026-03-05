@@ -47,6 +47,16 @@ export const cardsApi = {
   },
 
   /**
+   * Перемещение карточки в другую папку
+   */
+  moveCardToFolder: async (id: string, folderId: string): Promise<Card> => {
+    const response = await axios.patch(`${API_BASE_URL}/cards/${id}/move`, {
+      folderId,
+    });
+    return response.data;
+  },
+
+  /**
    * Удаление карточки
    */
   deleteCard: async (id: string): Promise<void> => {

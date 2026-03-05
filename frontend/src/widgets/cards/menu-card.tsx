@@ -1,6 +1,7 @@
 import {ListItemIcon, ListItemText, MenuItem} from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { MenuUI } from '@/shared/ui/menu-ui';
 
@@ -8,6 +9,7 @@ interface MenuCardProps {
     handleMenuClose: () => void;
     anchorEl: HTMLElement | null;
     handleRename: () => void;
+    handleMove: () => void;
     handleDelete: () => void;
 }
 
@@ -15,6 +17,7 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                              handleMenuClose,
                              anchorEl,
                              handleRename,
+                             handleMove,
                              handleDelete,
                          }) => {
     const { t } = useTranslation();
@@ -32,6 +35,14 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                 </ListItemIcon>
                 <ListItemText>
                     {t('buttons.edit')}
+                </ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleMove}>
+                <ListItemIcon>
+                    <DriveFileMoveOutlinedIcon/>
+                </ListItemIcon>
+                <ListItemText>
+                    {t('cards.move')}
                 </ListItemText>
             </MenuItem>
             <MenuItem onClick={handleDelete}>

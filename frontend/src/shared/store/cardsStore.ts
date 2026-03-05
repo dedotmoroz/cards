@@ -52,6 +52,7 @@ interface CardsState {
     updateCardApi: (id: string, updates: { question?: string; answer?: string; questionSentences?: string | null; answerSentences?: string | null }) => Promise<void>
     updateCardLearnStatus: (id: string, isLearned: boolean) => Promise<void>
     deleteCard: (id: string) => Promise<void>
+    moveCardToFolder: (cardId: string, targetFolderId: string) => Promise<void>
     generateCardSentences: (id: string, options?: CardGenerationRequest) => Promise<void>
     generateAllCardsSentences: (options?: CardGenerationRequest) => Promise<void>
 }
@@ -170,6 +171,17 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         } catch (error) {
             console.error('Error deleting card:', error)
             set({ error: 'Failed to delete card' })
+        }
+    },
+
+    moveCardToFolder: async (cardId: string, targetFolderId: string) => {
+        set({ error: null })
+        try {
+            await cardsApi.moveCardToFolder(cardId, targetFolderId)
+            get().removeCard(cardId)
+        } catch (error) {
+            console.error('Error moving card:', error)
+            set({ error: 'Failed to move card' })
         }
     },
 
