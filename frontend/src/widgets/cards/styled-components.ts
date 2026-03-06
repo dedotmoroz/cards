@@ -309,3 +309,19 @@ export const StyledLoadingIndicator = styled(Box)`
     color: #666;
     font-style: italic;
 `
+
+export const StyledLoaderOverlay = styled(Box)`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+`
+
+export const StyledLoaderSpinner = styled(Box)`
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`

@@ -29,7 +29,7 @@ export class UserService {
         const isMatch = await compare(password, user.passwordHash);
         if (!isMatch) return null;
 
-        return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '7d' });
+        return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '90d' });
     }
 
     async getById(userId: string): Promise<User | null> {
@@ -120,7 +120,7 @@ export class UserService {
             }
         }
 
-        return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '7d' });
+        return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '90d' });
     }
 
     private async verifyGoogleToken(

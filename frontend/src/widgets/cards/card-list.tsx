@@ -23,6 +23,8 @@ import {
     StyledHeaderCardActions,
     StyledCardHeaderContent,
     StyledHeaderWithButton,
+    StyledLoaderOverlay,
+    StyledLoaderSpinner,
     // StyledMargin,
     StyledMarginMobile,
 } from './styled-components.ts';
@@ -327,19 +329,12 @@ export const CardList: React.FC<CardListProps> = ({
           />
         </List>
           {isLoading && (
-            <Box
-              position="absolute"
-              top={0}
-              left={0}
-              right={0}
-              bottom={0}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ backgroundColor: 'rgba(255, 255, 255, 0.7)' }}
-            >
-              <CircularProgress />
-            </Box>
+              <>
+                  <StyledLoaderOverlay />
+                  <StyledLoaderSpinner>
+                      <CircularProgress />
+                  </StyledLoaderSpinner>
+              </>
           )}
         </Box>
         <DialogCard

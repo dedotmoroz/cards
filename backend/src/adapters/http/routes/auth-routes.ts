@@ -94,7 +94,7 @@ export function registerAuthRoutes(
                     secure: true,
                     sameSite: 'lax',
                     path: '/',
-                    maxAge: 60 * 60 * 24 * 7,
+                    maxAge: 60 * 60 * 24 * 90,
                 })
                 .send({
                     id: user.id,
@@ -186,7 +186,7 @@ export function registerAuthRoutes(
                     secure: true,
                     sameSite: 'lax',
                     path: '/',
-                    maxAge: 60 * 60 * 24 * 7,
+                    maxAge: 60 * 60 * 24 * 90,
                 })
                 .send({
                     id: user.id,
@@ -241,7 +241,7 @@ export function registerAuthRoutes(
                     secure: true,
                     sameSite: 'lax',
                     path: '/',
-                    maxAge: 60 * 60 * 24 * 7,
+                    maxAge: 60 * 60 * 24 * 90,
                 })
                 .send({ status: 'ok' });
         }
@@ -616,7 +616,7 @@ export function registerAuthRoutes(
                     return reply.code(401).send({ error: 'User not found' });
                 }
 
-                const token = jsonwebtoken.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '7d' });
+                const token = jsonwebtoken.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '90d' });
 
                 return reply.send({ token });
             } catch (err) {
@@ -696,7 +696,7 @@ export function registerAuthRoutes(
                         secure: true,
                         sameSite: 'lax',
                         path: '/',
-                        maxAge: 60 * 60 * 24 * 7,
+                        maxAge: 60 * 60 * 24 * 90,
                     })
                     .send({ status: 'ok' });
             } catch (error) {
