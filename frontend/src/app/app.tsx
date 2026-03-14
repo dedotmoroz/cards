@@ -1,28 +1,29 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline, CircularProgress, Box } from '@mui/material';
-import { HomePage } from '@/pages/home';
-import { LearnPage } from '@/pages/learn';
-import { ContextReadingPage } from '@/pages/context-reading';
-import { SignUpPage } from '@/pages/signup';
-import { SignInPage } from '@/pages/signin';
 import { LandingPage } from '@/pages/landing';
-import { LanguageLandingPage } from '@/pages/language-landing';
-import { NotFoundPage } from '@/pages/404';
-import { ProfilePage } from '@/pages/profile';
-import { TelegramConnectPage } from '@/pages/telegram-connect';
-import StrapiPage from '@/pages/page';
-import { CollectionsListPage } from '@/pages/collections-list';
-import { CollectionDetailPage } from '@/pages/collection';
 import { useAuthStore } from '@/shared/store/authStore';
 import { PageContainer } from '@/shared/ui/page-container';
+
+const HomePage = lazy(() => import('@/pages/home').then(m => ({ default: m.HomePage })));
+const LearnPage = lazy(() => import('@/pages/learn').then(m => ({ default: m.LearnPage })));
+const ContextReadingPage = lazy(() => import('@/pages/context-reading').then(m => ({ default: m.ContextReadingPage })));
+const SignUpPage = lazy(() => import('@/pages/signup').then(m => ({ default: m.SignUpPage })));
+const SignInPage = lazy(() => import('@/pages/signin').then(m => ({ default: m.SignInPage })));
+const LanguageLandingPage = lazy(() => import('@/pages/language-landing').then(m => ({ default: m.LanguageLandingPage })));
+const NotFoundPage = lazy(() => import('@/pages/404').then(m => ({ default: m.NotFoundPage })));
+const ProfilePage = lazy(() => import('@/pages/profile').then(m => ({ default: m.ProfilePage })));
+const TelegramConnectPage = lazy(() => import('@/pages/telegram-connect').then(m => ({ default: m.TelegramConnectPage })));
+const StrapiPage = lazy(() => import('@/pages/page').then(m => ({ default: m.default })));
+const CollectionsListPage = lazy(() => import('@/pages/collections-list').then(m => ({ default: m.CollectionsListPage })));
+const CollectionDetailPage = lazy(() => import('@/pages/collection').then(m => ({ default: m.CollectionDetailPage })));
 
 // Поддерживаемые языки для hreflang
 const supportedLanguages = ['en', 'ru', 'uk', 'de', 'es', 'fr', 'pl', 'pt', 'zh'];
 const BASE_URL = 'https://kotcat.com';
 
 export default function App() {
-    const { checkAuth, isLoading, isAuthenticated } = useAuthStore();
+    const { checkAuth, isAuthenticated } = useAuthStore();
 
     useEffect(() => {
         // Проверяем аутентификацию только один раз при загрузке приложения
@@ -56,17 +57,10 @@ export default function App() {
         document.head.appendChild(defaultLink);
     }, []);
 
-    if (isLoading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
-            </Box>
-        );
-    }
-
     return (
             <BrowserRouter>
                 <CssBaseline />
+                <Suspense fallback={<Box display="flex" justifyContent="center" alignItems="center" height="100vh"><CircularProgress /></Box>}>
                 <Routes>
                     {isAuthenticated ? (
                         <>
@@ -98,6 +92,7 @@ export default function App() {
                         </>
                     )}
                 </Routes>
+                </Suspense>
             </BrowserRouter>
     );
 }

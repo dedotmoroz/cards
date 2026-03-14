@@ -29,7 +29,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: true, // до первой проверки auth показываем загрузку
+  isLoading: false, // не блокируем первый рендер, checkAuth идёт в фоне
   error: null,
 
   setUser: (user) => set({ user, isAuthenticated: !!user }),
@@ -122,11 +122,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     // Если пользователь уже аутентифицирован, не делаем запрос
     if (currentState.isAuthenticated && currentState.user) {
-      set({ isLoading: false });
       return;
     }
 
-    set({ isLoading: true });
     try {
       const userData = await authApi.getMe();
       // Маппим name из API в username для типа User
