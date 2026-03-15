@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Card, CardGenerationRequest } from '../types/cards'
 import { cardsApi } from '../api/cardsApi'
+import { useFoldersStore } from './foldersStore'
 
 const POLLING_INTERVAL_MS = 2000
 const generationTimers = new Map<string, number>()
@@ -130,6 +131,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         try {
             await cardsApi.createCard({ folderId, question, answer })
             await get().fetchCards(folderId)
+            useFoldersStore.getState().incrementFolderCount(folderId)
         } catch (error) {
             console.error('Error creating card:', error)
             set({ error: 'Failed to create card' })
@@ -166,8 +168,12 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     deleteCard: async (id: string) => {
         set({ error: null })
         try {
+            const card = get().cards.find((c) => c.id === id)
             await cardsApi.deleteCard(id)
             get().removeCard(id)
+            if (card?.folderId) {
+                useFoldersStore.getState().decrementFolderCount(card.folderId)
+            }
         } catch (error) {
             console.error('Error deleting card:', error)
             set({ error: 'Failed to delete card' })
@@ -177,8 +183,12 @@ export const useCardsStore = create<CardsState>((set, get) => ({
     moveCardToFolder: async (cardId: string, targetFolderId: string) => {
         set({ error: null })
         try {
+            const card = get().cards.find((c) => c.id === cardId)
             await cardsApi.moveCardToFolder(cardId, targetFolderId)
             get().removeCard(cardId)
+            if (card?.folderId && card.folderId !== targetFolderId) {
+                useFoldersStore.getState().adjustFolderCountsOnMove(card.folderId, targetFolderId)
+            }
         } catch (error) {
             console.error('Error moving card:', error)
             set({ error: 'Failed to move card' })

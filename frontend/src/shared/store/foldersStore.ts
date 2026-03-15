@@ -6,6 +6,7 @@ import { foldersApi } from '../api/foldersApi'
 interface FoldersState {
     // State
     folders: Folder[]
+    folderCardCounts: Record<string, number>
     selectedFolderId: string | null
     isLoading: boolean
     error: string | null
@@ -21,6 +22,11 @@ interface FoldersState {
     updateFolder: (id: string, updates: Partial<Folder>) => void
     removeFolder: (id: string) => void
 
+    // Card count adjustments (used by cardsStore)
+    incrementFolderCount: (folderId: string) => void
+    decrementFolderCount: (folderId: string) => void
+    adjustFolderCountsOnMove: (sourceFolderId: string, targetFolderId: string) => void
+
     // API calls
     fetchFolders: () => Promise<void>
     createFolder: (name: string) => Promise<void>
@@ -32,6 +38,7 @@ interface FoldersState {
 export const useFoldersStore = create<FoldersState>((set, get) => ({
     // Initial state
     folders: [],
+    folderCardCounts: {},
     selectedFolderId: null,
     isLoading: false,
     error: null,
@@ -53,17 +60,45 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         )
     })),
 
-    removeFolder: (id) => set((state) => ({
-        folders: state.folders.filter(folder => folder.id !== id),
-        selectedFolderId: state.selectedFolderId === id ? null : state.selectedFolderId
+    removeFolder: (id) => set((state) => {
+        const { [id]: _, ...restCounts } = state.folderCardCounts;
+        return {
+            folders: state.folders.filter(folder => folder.id !== id),
+            selectedFolderId: state.selectedFolderId === id ? null : state.selectedFolderId,
+            folderCardCounts: restCounts
+        };
+    }),
+
+    incrementFolderCount: (folderId) => set((state) => ({
+        folderCardCounts: {
+            ...state.folderCardCounts,
+            [folderId]: (state.folderCardCounts[folderId] ?? 0) + 1
+        }
     })),
+
+    decrementFolderCount: (folderId) => set((state) => ({
+        folderCardCounts: {
+            ...state.folderCardCounts,
+            [folderId]: Math.max(0, (state.folderCardCounts[folderId] ?? 0) - 1)
+        }
+    })),
+
+    adjustFolderCountsOnMove: (sourceFolderId, targetFolderId) => set((state) => {
+        const counts = { ...state.folderCardCounts };
+        counts[sourceFolderId] = Math.max(0, (counts[sourceFolderId] ?? 0) - 1);
+        counts[targetFolderId] = (counts[targetFolderId] ?? 0) + 1;
+        return { folderCardCounts: counts };
+    }),
 
     // API calls
     fetchFolders: async () => {
         set({ error: null })
         try {
             const folders = await foldersApi.getFolders()
-            set({ folders })
+            const folderCardCounts = Object.fromEntries(
+                folders.map((f) => [f.id, f.cardCount ?? 0])
+            )
+            set({ folders, folderCardCounts })
         } catch (error) {
             console.error('Error fetching folders:', error)
             set({ error: 'Failed to fetch folders' })
@@ -73,8 +108,11 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
     createFolder: async (name: string) => {
         set({ error: null })
         try {
-            await foldersApi.createFolder({ name })
-            await get().fetchFolders()
+            const folder = await foldersApi.createFolder({ name })
+            get().addFolder(folder)
+            set((state) => ({
+                folderCardCounts: { ...state.folderCardCounts, [folder.id]: 0 }
+            }))
         } catch (error) {
             console.error('Error creating folder:', error)
             set({ error: 'Failed to create folder' })

@@ -17,6 +17,7 @@ describe('foldersStore', () => {
   beforeEach(() => {
     useFoldersStore.setState({
       folders: [],
+      folderCardCounts: {},
       selectedFolderId: null,
       isLoading: false,
       error: null
@@ -48,7 +49,7 @@ describe('foldersStore', () => {
   })
 
   it('should fetch folders successfully', async () => {
-    mockedFoldersApi.getFolders.mockResolvedValueOnce([mockFolder])
+    mockedFoldersApi.getFolders.mockResolvedValueOnce([{ ...mockFolder, cardCount: 2 }])
 
     const { result } = renderHook(() => useFoldersStore())
 
@@ -57,7 +58,8 @@ describe('foldersStore', () => {
     })
 
     expect(mockedFoldersApi.getFolders).toHaveBeenCalled()
-    expect(result.current.folders).toEqual([mockFolder])
+    expect(result.current.folders).toEqual([{ ...mockFolder, cardCount: 2 }])
+    expect(result.current.folderCardCounts).toEqual({ 'folder-1': 2 })
     expect(result.current.isLoading).toBe(false)
     expect(result.current.error).toBeNull()
   })
@@ -72,13 +74,13 @@ describe('foldersStore', () => {
     })
 
     expect(result.current.folders).toEqual([])
+    expect(result.current.folderCardCounts).toEqual({})
     expect(result.current.isLoading).toBe(false)
     expect(result.current.error).toBe('Failed to fetch folders')
   })
 
-  it('should create folder and refresh list', async () => {
+  it('should create folder and add with zero count', async () => {
     mockedFoldersApi.createFolder.mockResolvedValueOnce(mockFolder)
-    mockedFoldersApi.getFolders.mockResolvedValueOnce([mockFolder])
 
     const { result } = renderHook(() => useFoldersStore())
 
@@ -87,8 +89,8 @@ describe('foldersStore', () => {
     })
 
     expect(mockedFoldersApi.createFolder).toHaveBeenCalledWith({ name: 'My folder' })
-    expect(mockedFoldersApi.getFolders).toHaveBeenCalled()
     expect(result.current.folders).toEqual([mockFolder])
+    expect(result.current.folderCardCounts['folder-1']).toBe(0)
   })
 
   it('should update folder name', async () => {
@@ -114,6 +116,7 @@ describe('foldersStore', () => {
   it('should delete folder and reset selection if necessary', async () => {
     useFoldersStore.setState({
       folders: [mockFolder],
+      folderCardCounts: { 'folder-1': 3 },
       selectedFolderId: 'folder-1',
       isLoading: false,
       error: null
@@ -129,6 +132,7 @@ describe('foldersStore', () => {
 
     expect(mockedFoldersApi.deleteFolder).toHaveBeenCalledWith('folder-1')
     expect(result.current.folders).toHaveLength(0)
+    expect(result.current.folderCardCounts).toEqual({})
     expect(result.current.selectedFolderId).toBeNull()
   })
 })

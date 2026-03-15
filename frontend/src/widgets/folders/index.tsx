@@ -12,6 +12,7 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
     const { t } = useTranslation();
     const {
         folders,
+        folderCardCounts,
         selectedFolderId,
         setSelectedFolder,
         updateFolderName,
@@ -33,6 +34,7 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
                 onRename={updateFolderName}
                 onDelete={deleteFolder}
                 onFolderSelect={onFolderSelect}
+                folderCardCounts={folderCardCounts}
             />
         </StyledWrappedBox>
     )

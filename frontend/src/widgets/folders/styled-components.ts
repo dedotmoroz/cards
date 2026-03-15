@@ -30,7 +30,16 @@ export const StyledMenuBox = styled(Box)`
     justify-content: space-between;
     align-items: center; 
     width:100%;
+    position: relative;
 `
 export const StyledList = styled(List)`
     margin: 0 -8px 0 -12px;
+`
+
+export const StyledFolderCounter = styled(Box)`
+    font-size: 9px;
+    left: 12px;
+    top: -4px;
+    position: absolute;
+    color: rgba(0, 0, 0, 0.42);
 `

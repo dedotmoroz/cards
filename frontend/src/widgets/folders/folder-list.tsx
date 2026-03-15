@@ -9,7 +9,7 @@ import { RenameFolderMenuItem } from '@/features/rename-folder';
 import { DeleteFolderMenuItem } from '@/features/delete-folder';
 import { useAuthStore } from '@/shared/store/authStore';
 
-import { StyledListItemButton, StyledIconButton, StyledMenuBox, StyledList } from "./styled-components.ts"
+import { StyledListItemButton, StyledIconButton, StyledMenuBox, StyledList, StyledFolderCounter } from "./styled-components.ts"
 
 export interface Folder {
     id: string;
@@ -23,9 +23,10 @@ interface FolderListProps {
     onRename?: (id: string, name: string) => void;
     onDelete?: (id: string) => void;
     onFolderSelect?: () => void;
+    folderCardCounts?: Record<string, number>;
 }
 
-export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, onFolderSelect }: FolderListProps) => {
+export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, onFolderSelect, folderCardCounts }: FolderListProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -71,6 +72,9 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                             {selectedId === folder.id
                                 ? <FolderOpenOutlinedIcon sx={{mr: 1}}/>
                                 : <FolderOutlinedIcon sx={{mr: 1}}/>}
+                            {folderCardCounts && (
+                                <StyledFolderCounter>{folderCardCounts[folder.id] ?? 0}</StyledFolderCounter>
+                            )}
                             <ListItemText primary={folder.name} />
                             <StyledIconButton
                                 edge="end"
