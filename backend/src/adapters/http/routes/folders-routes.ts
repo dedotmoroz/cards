@@ -2,11 +2,13 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { FolderService } from '../../../application/folder-service';
+import { CardRepository } from '../../../ports/card-repository';
 import { CreateFolderDTO, FolderDTO } from '../dto';
 
 export function registerFoldersRoutes(
     fastify: FastifyInstance,
-    folderService: FolderService
+    folderService: FolderService,
+    cardRepo: CardRepository
 ) {
     /**
      * Создать Папку
@@ -154,7 +156,17 @@ export function registerFoldersRoutes(
             reply: FastifyReply
         ) => {
             const folders = await folderService.getAll(req.params.userId);
-            return reply.send(folders);
+            if (folders.length === 0) {
+                return reply.send([]);
+            }
+            const counts = await cardRepo.countByFolderIds(folders.map((f) => f.id));
+            const foldersWithCounts = folders.map((f) => ({
+                id: f.id,
+                userId: f.userId,
+                name: f.name,
+                cardCount: counts[f.id] ?? 0,
+            }));
+            return reply.send(foldersWithCounts);
         }
     );
 }

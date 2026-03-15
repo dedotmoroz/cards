@@ -22,4 +22,17 @@ export class InMemoryCardRepository implements CardRepository {
     async delete(id: string): Promise<void> {
         this.cards = this.cards.filter(card => card.id !== id);
     }
+
+    async countByFolderIds(folderIds: string[]): Promise<Record<string, number>> {
+        const result: Record<string, number> = {};
+        for (const fid of folderIds) {
+            result[fid] = 0;
+        }
+        for (const card of this.cards) {
+            if (folderIds.includes(card.folderId)) {
+                result[card.folderId] = (result[card.folderId] ?? 0) + 1;
+            }
+        }
+        return result;
+    }
 }

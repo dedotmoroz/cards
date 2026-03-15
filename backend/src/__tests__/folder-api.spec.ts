@@ -50,14 +50,46 @@ describe('📁 Folder API (e2e)', () => {
     createdFolderId = res.body.id;
   });
 
-  it('возвращает список папок пользователя', async () => {
+  it('возвращает список папок пользователя с cardCount', async () => {
     const res = await request(fastify.server)
         .get(`/folders/${userId}`)
         .set('Cookie', authCookie);
 
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.some((f: any) => f.id === createdFolderId)).toBe(true);
+    const folder = res.body.find((f: any) => f.id === createdFolderId);
+    expect(folder).toBeDefined();
+    expect(folder).toHaveProperty('cardCount');
+    expect(folder.cardCount).toBe(0);
+  });
+
+  it('возвращает cardCount равный числу карточек в папке', async () => {
+    const folderRes = await request(fastify.server)
+        .post('/folders')
+        .set('Cookie', authCookie)
+        .send({ userId, name: 'Folder With Cards' });
+    const folderId = folderRes.body.id;
+
+    await request(fastify.server)
+        .post('/cards')
+        .set('Cookie', authCookie)
+        .send({ folderId, question: 'Q1', answer: 'A1' });
+    await request(fastify.server)
+        .post('/cards')
+        .set('Cookie', authCookie)
+        .send({ folderId, question: 'Q2', answer: 'A2' });
+    await request(fastify.server)
+        .post('/cards')
+        .set('Cookie', authCookie)
+        .send({ folderId, question: 'Q3', answer: 'A3' });
+
+    const listRes = await request(fastify.server)
+        .get(`/folders/${userId}`)
+        .set('Cookie', authCookie);
+
+    const folder = listRes.body.find((f: any) => f.id === folderId);
+    expect(folder).toBeDefined();
+    expect(folder.cardCount).toBe(3);
   });
 
   it('удаляет папку', async () => {

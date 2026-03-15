@@ -1,4 +1,4 @@
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, inArray, sql } from 'drizzle-orm';
 import { db } from '../../db/db';
 import { Card } from '../../domain/card';
 import { CardRepository } from '../../ports/card-repository';
@@ -79,5 +79,18 @@ export class PostgresCardRepository implements CardRepository {
 
     async delete(id: string): Promise<void> {
         await db.delete(cards).where(eq(cards.id, id));
+    }
+
+    async countByFolderIds(folderIds: string[]): Promise<Record<string, number>> {
+        if (folderIds.length === 0) return {};
+        const rows = await db
+            .select({
+                folderId: cards.folderId,
+                count: sql<number>`count(*)::int`,
+            })
+            .from(cards)
+            .where(inArray(cards.folderId, folderIds))
+            .groupBy(cards.folderId);
+        return Object.fromEntries(rows.map((r) => [r.folderId, r.count]));
     }
 }

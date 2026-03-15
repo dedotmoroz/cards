@@ -37,6 +37,7 @@ export const FolderDTO = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
   name: z.string(),
+  cardCount: z.number().int().min(0).optional(),
 }).describe('FolderDTO');
 
 export const CreateUserDTO = z.object({
