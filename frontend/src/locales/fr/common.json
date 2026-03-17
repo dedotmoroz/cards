@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "Recueils thématiques de mots"
+    "vocabularyCollections": "Recueils thématiques de mots",
+    "ecosystem": "Écosystème"
   },
   "seo": {
     "keywords": "cartes, apprentissage, mémoire, éducation, étude, flash cards",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "Recueils thématiques de mots - KotCat",
       "description": "Recueils thématiques de mots pour l'apprentissage du vocabulaire"
+    },
+    "ecosystem": {
+      "title": "Écosystème - KotCat",
+      "description": "Pages de l'écosystème"
     }
   },
   "navigation": {

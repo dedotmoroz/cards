@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "Thematische Wortsammlungen"
+    "vocabularyCollections": "Thematische Wortsammlungen",
+    "ecosystem": "Ökosystem"
   },
   "seo": {
     "keywords": "Lernkarten, Lernen, Gedächtnis, Bildung, Studium, Karteikarten",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "Thematische Wortsammlungen - KotCat",
       "description": "Thematische Wortsammlungen zum Vokabellernen"
+    },
+    "ecosystem": {
+      "title": "Ökosystem - KotCat",
+      "description": "Ökosystem-Seiten"
     }
   },
   "navigation": {

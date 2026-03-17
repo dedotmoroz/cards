@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "Coleções temáticas de palavras"
+    "vocabularyCollections": "Coleções temáticas de palavras",
+    "ecosystem": "Ecossistema"
   },
   "seo": {
     "keywords": "cartões, aprendizagem, memória, educação, estudo, flash cards",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "Coleções temáticas de palavras - KotCat",
       "description": "Coleções temáticas de palavras para aprender vocabulário"
+    },
+    "ecosystem": {
+      "title": "Ecossistema - KotCat",
+      "description": "Páginas do ecossistema"
     }
   },
   "navigation": {

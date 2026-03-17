@@ -25,6 +25,7 @@
     "@strapi/blocks-react-renderer": "^1.0.2",
     "axios": "^1.11.0",
     "clsx": "^2.1.1",
+    "dompurify": "^3.3.3",
     "i18next": "^25.6.0",
     "i18next-browser-languagedetector": "^8.2.0",
     "react": "^19.1.1",

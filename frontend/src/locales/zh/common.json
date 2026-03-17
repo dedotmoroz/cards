@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "主题词汇集"
+    "vocabularyCollections": "主题词汇集",
+    "ecosystem": "生态系统"
   },
   "seo": {
     "keywords": "卡片, 学习, 记忆, 教育, 研究, 闪卡",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "主题词汇集 - KotCat",
       "description": "用于词汇学习的主题词汇集"
+    },
+    "ecosystem": {
+      "title": "生态系统 - KotCat",
+      "description": "生态系统页面"
     }
   },
   "navigation": {

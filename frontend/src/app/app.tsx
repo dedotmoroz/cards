@@ -17,6 +17,8 @@ const TelegramConnectPage = lazy(() => import('@/pages/telegram-connect').then(m
 const StrapiPage = lazy(() => import('@/pages/page').then(m => ({ default: m.default })));
 const CollectionsListPage = lazy(() => import('@/pages/collections-list').then(m => ({ default: m.CollectionsListPage })));
 const CollectionDetailPage = lazy(() => import('@/pages/collection').then(m => ({ default: m.CollectionDetailPage })));
+const EcosystemsListPage = lazy(() => import('@/pages/ecosystems-list').then(m => ({ default: m.EcosystemsListPage })));
+const EcosystemDetailPage = lazy(() => import('@/pages/ecosystem').then(m => ({ default: m.EcosystemDetailPage })));
 
 // Поддерживаемые языки для hreflang
 const supportedLanguages = ['en', 'ru', 'uk', 'de', 'es', 'fr', 'pl', 'pt', 'zh'];
@@ -74,6 +76,8 @@ export default function App() {
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/collections" element={<CollectionsListPage />} />
                             <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
+                            <Route path="/ecosystem" element={<EcosystemsListPage />} />
+                            <Route path="/ecosystem/:locale/:slug" element={<EcosystemDetailPage />} />
                             <Route path="/p/:locale/:slug" element={<StrapiPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<NotFoundPage />} />
@@ -86,6 +90,8 @@ export default function App() {
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/collections" element={<CollectionsListPage />} />
                             <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
+                            <Route path="/ecosystem" element={<EcosystemsListPage />} />
+                            <Route path="/ecosystem/:locale/:slug" element={<EcosystemDetailPage />} />
                             <Route path="/p/:locale/:slug" element={<StrapiPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<LandingPage />} />

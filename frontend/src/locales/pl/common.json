@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "Tematyczne zbiory słów"
+    "vocabularyCollections": "Tematyczne zbiory słów",
+    "ecosystem": "Ekosystem"
   },
   "seo": {
     "keywords": "fiszki, nauka, pamięć, edukacja, studia, karty",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "Tematyczne zbiory słów - KotCat",
       "description": "Tematyczne zbiory słów do nauki słownictwa"
+    },
+    "ecosystem": {
+      "title": "Ekosystem - KotCat",
+      "description": "Strony ekosystemu"
     }
   },
   "navigation": {

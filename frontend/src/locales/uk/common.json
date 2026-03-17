@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "Тематичні підбірки слів"
+    "vocabularyCollections": "Тематичні підбірки слів",
+    "ecosystem": "Екосистема"
   },
   "seo": {
     "keywords": "картки, навчання, пам'ять, освіта, вивчення, флешкарти",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "Тематичні підбірки слів - KotCat",
       "description": "Тематичні підбірки слів для вивчення лексики"
+    },
+    "ecosystem": {
+      "title": "Екосистема - KotCat",
+      "description": "Сторінки екосистеми"
     }
   },
   "navigation": {

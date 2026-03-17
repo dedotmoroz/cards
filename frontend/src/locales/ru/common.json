@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "Тематические подборки слов"
+    "vocabularyCollections": "Тематические подборки слов",
+    "ecosystem": "Экосистема"
   },
   "seo": {
     "keywords": "карточки, обучение, память, образование, изучение, флешкарты",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "Тематические подборки слов - KotCat",
       "description": "Тематические подборки слов для изучения лексики"
+    },
+    "ecosystem": {
+      "title": "Экосистема - KotCat",
+      "description": "Страницы экосистемы"
     }
   },
   "navigation": {

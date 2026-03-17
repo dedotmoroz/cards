@@ -69,7 +69,8 @@
     }
   },
   "footer": {
-    "vocabularyCollections": "Vocabulary Collections"
+    "vocabularyCollections": "Vocabulary Collections",
+    "ecosystem": "Ecosystem"
   },
   "seo": {
     "keywords": "flashcards, learning, memory, education, study, flash cards",
@@ -100,6 +101,10 @@
     "collections": {
       "title": "Vocabulary Collections - KotCat",
       "description": "Thematic word collections for vocabulary learning"
+    },
+    "ecosystem": {
+      "title": "Ecosystem - KotCat",
+      "description": "Ecosystem pages"
     }
   },
   "navigation": {
