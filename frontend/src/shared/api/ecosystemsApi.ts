@@ -9,10 +9,10 @@ export interface EcosystemListItem {
 }
 
 export interface EcosystemItem extends EcosystemListItem {
-    content?: string | null;
+    content?: unknown;
     seoTitle?: string | null;
     seoDescription?: string | null;
-    images?: { url?: string; data?: Array<{ attributes?: { url?: string } }> } | null;
+    images?: { data?: Array<{ attributes?: { url?: string } }> } | null;
 }
 
 export async function getEcosystems(locale: string): Promise<EcosystemListItem[]> {
@@ -36,7 +36,11 @@ export async function getEcosystem(locale: string, slug: string): Promise<Ecosys
         'filters[slug][$eq]': slug,
         locale: locale,
     });
-    const res = await fetch(`${STRAPI_URL}/api/ecosystems?${params}&populate=prevImg&populate=images`);
+    // Strapi: repeated "populate" keys may override; use indexed populate.
+    // Detail page needs `images` (prevImg/prevText are used on list page only).
+    const res = await fetch(
+        `${STRAPI_URL}/api/ecosystems?${params}&populate[0]=images`
+    );
     if (!res.ok) {
         throw new Error('Failed to fetch ecosystem');
     }
