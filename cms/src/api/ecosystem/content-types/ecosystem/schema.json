@@ -48,6 +48,14 @@
         "audios"
       ]
     },
+    "content": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "seoTitle": {
       "type": "string",
       "pluginOptions": {
@@ -86,14 +94,6 @@
         "videos",
         "audios"
       ]
-    },
-    "content": {
-      "type": "blocks",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
     }
   }
 }
