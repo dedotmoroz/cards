@@ -13,7 +13,7 @@ export interface EcosystemItem extends EcosystemListItem {
     contentBlock?: unknown;
     seoTitle?: string | null;
     seoDescription?: string | null;
-    images?: { data?: Array<{ attributes?: { url?: string } }> } | null;
+    images?: unknown;
 }
 
 export async function getEcosystems(locale: string): Promise<EcosystemListItem[]> {

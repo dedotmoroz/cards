@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
 import { getEcosystems, type EcosystemListItem } from '@/shared/api/ecosystemsApi';
+import { STRAPI_URL } from '@/shared/api/strapiBase';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
 import { PageLoader } from '@/shared/ui';
@@ -17,9 +18,10 @@ import {
 function getImageUrl(item: EcosystemListItem): string {
     const url = item.prevImg?.data?.attributes?.url ?? item.prevImg?.url ?? '';
     if (!url) return '';
-    return url.startsWith('http')
-        ? url
-        : `${typeof window !== 'undefined' ? window.location.origin : ''}${url}`;
+    if (url.startsWith('http')) return url;
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const base = STRAPI_URL.startsWith('http') ? STRAPI_URL : origin;
+    return `${base}${url}`;
 }
 
 export function EcosystemsListPage() {
