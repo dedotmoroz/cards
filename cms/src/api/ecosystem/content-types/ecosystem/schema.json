@@ -94,6 +94,14 @@
         "videos",
         "audios"
       ]
+    },
+    "contentBlock": {
+      "type": "blocks",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }
