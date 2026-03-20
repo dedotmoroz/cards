@@ -72,6 +72,22 @@
     "vocabularyCollections": "Recueils thématiques de mots",
     "ecosystem": "Écosystème"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "Mots de la collection",
+      "takeButton": "Ajouter à mes dossiers",
+      "createGuestButton": "Créer",
+      "guestPrompt": "Vous n’êtes pas connecté. Créer cette collection dans un compte temporaire ?",
+      "goToFolder": "Aller au dossier",
+      "success": "Terminé : cartes créées — {{count}}",
+      "errors": {
+        "missingFolderName": "folderName introuvable dans words",
+        "selectAtLeastOne": "Sélectionnez au moins un mot",
+        "folderExists": "Le dossier « {{folderName}} » existe déjà",
+        "importFailed": "Échec de l’import"
+      }
+    }
+  },
   "seo": {
     "keywords": "cartes, apprentissage, mémoire, éducation, étude, flash cards",
     "landing": {

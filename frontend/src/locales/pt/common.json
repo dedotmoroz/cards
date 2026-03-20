@@ -72,6 +72,22 @@
     "vocabularyCollections": "Coleções temáticas de palavras",
     "ecosystem": "Ecossistema"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "Palavras da coleção",
+      "takeButton": "Adicionar às minhas pastas",
+      "createGuestButton": "Criar",
+      "guestPrompt": "Você não está autenticado. Criar esta coleção em uma conta temporária?",
+      "goToFolder": "Ir para a pasta",
+      "success": "Pronto: cartões criados — {{count}}",
+      "errors": {
+        "missingFolderName": "folderName não encontrado em words",
+        "selectAtLeastOne": "Selecione pelo menos uma palavra",
+        "folderExists": "A pasta «{{folderName}}» já existe",
+        "importFailed": "Falha ao importar"
+      }
+    }
+  },
   "seo": {
     "keywords": "cartões, aprendizagem, memória, educação, estudo, flash cards",
     "landing": {

@@ -72,6 +72,22 @@
     "vocabularyCollections": "Tematyczne zbiory słów",
     "ecosystem": "Ekosystem"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "Słowa z kolekcji",
+      "takeButton": "Dodaj do moich folderów",
+      "createGuestButton": "Utwórz",
+      "guestPrompt": "Nie jesteś zalogowany. Utworzyć tę kolekcję w tymczasowym koncie?",
+      "goToFolder": "Przejdź do folderu",
+      "success": "Gotowe: utworzono fiszki — {{count}}",
+      "errors": {
+        "missingFolderName": "Nie znaleziono folderName w words",
+        "selectAtLeastOne": "Wybierz co najmniej jedno słowo",
+        "folderExists": "Folder „{{folderName}}” już istnieje",
+        "importFailed": "Import nie powiódł się"
+      }
+    }
+  },
   "seo": {
     "keywords": "fiszki, nauka, pamięć, edukacja, studia, karty",
     "landing": {

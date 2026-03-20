@@ -72,6 +72,22 @@
     "vocabularyCollections": "Vocabulary Collections",
     "ecosystem": "Ecosystem"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "Collection words",
+      "takeButton": "Add to my folders",
+      "createGuestButton": "Create",
+      "guestPrompt": "You are not signed in. Create this collection in a temporary account?",
+      "goToFolder": "Go to folder",
+      "success": "Done: cards created — {{count}}",
+      "errors": {
+        "missingFolderName": "folderName not found in words",
+        "selectAtLeastOne": "Select at least one word",
+        "folderExists": "Folder \"{{folderName}}\" already exists",
+        "importFailed": "Import failed"
+      }
+    }
+  },
   "seo": {
     "keywords": "flashcards, learning, memory, education, study, flash cards",
     "landing": {

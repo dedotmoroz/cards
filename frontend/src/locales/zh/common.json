@@ -72,6 +72,22 @@
     "vocabularyCollections": "主题词汇集",
     "ecosystem": "生态系统"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "合集单词",
+      "takeButton": "添加到我的文件夹",
+      "createGuestButton": "创建",
+      "guestPrompt": "您尚未登录。要在临时账号中创建该合集吗？",
+      "goToFolder": "前往文件夹",
+      "success": "完成：已创建卡片 — {{count}}",
+      "errors": {
+        "missingFolderName": "在 words 中未找到 folderName",
+        "selectAtLeastOne": "请至少选择一个单词",
+        "folderExists": "文件夹「{{folderName}}」已存在",
+        "importFailed": "导入失败"
+      }
+    }
+  },
   "seo": {
     "keywords": "卡片, 学习, 记忆, 教育, 研究, 闪卡",
     "landing": {

@@ -72,6 +72,22 @@
     "vocabularyCollections": "Тематические подборки слов",
     "ecosystem": "Экосистема"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "Слова коллекции",
+      "takeButton": "Забрать себе",
+      "createGuestButton": "Создать",
+      "guestPrompt": "Вы не авторизовались. Создать коллекцию во временном аккаунте?",
+      "goToFolder": "Перейти в папку",
+      "success": "Готово: создано карточек — {{count}}",
+      "errors": {
+        "missingFolderName": "Не найдено folderName в words",
+        "selectAtLeastOne": "Выберите хотя бы одно слово",
+        "folderExists": "Папка «{{folderName}}» уже существует",
+        "importFailed": "Ошибка импорта"
+      }
+    }
+  },
   "seo": {
     "keywords": "карточки, обучение, память, образование, изучение, флешкарты",
     "landing": {

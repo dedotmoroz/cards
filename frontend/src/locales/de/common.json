@@ -72,6 +72,22 @@
     "vocabularyCollections": "Thematische Wortsammlungen",
     "ecosystem": "Ökosystem"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "Wörter der Sammlung",
+      "takeButton": "Zu meinen Ordnern hinzufügen",
+      "createGuestButton": "Erstellen",
+      "guestPrompt": "Sie sind nicht angemeldet. Diese Sammlung in einem temporären Konto erstellen?",
+      "goToFolder": "Zum Ordner",
+      "success": "Fertig: Karten erstellt — {{count}}",
+      "errors": {
+        "missingFolderName": "folderName wurde in words nicht gefunden",
+        "selectAtLeastOne": "Wähle mindestens ein Wort aus",
+        "folderExists": "Der Ordner „{{folderName}}“ existiert bereits",
+        "importFailed": "Import fehlgeschlagen"
+      }
+    }
+  },
   "seo": {
     "keywords": "Lernkarten, Lernen, Gedächtnis, Bildung, Studium, Karteikarten",
     "landing": {

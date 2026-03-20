@@ -9,6 +9,7 @@ export interface CollectionListItem {
 
 export interface CollectionItem extends CollectionListItem {
     content?: unknown;
+    words?: unknown;
     seoTitle?: string | null;
     seoDescription?: string | null;
 }

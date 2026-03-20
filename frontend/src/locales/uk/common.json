@@ -72,6 +72,22 @@
     "vocabularyCollections": "Тематичні підбірки слів",
     "ecosystem": "Екосистема"
   },
+  "collections": {
+    "wordsImport": {
+      "title": "Слова колекції",
+      "takeButton": "Забрати собі",
+      "createGuestButton": "Створити",
+      "guestPrompt": "Ви не авторизовані. Створити колекцію в тимчасовому акаунті?",
+      "goToFolder": "Перейти до папки",
+      "success": "Готово: створено карток — {{count}}",
+      "errors": {
+        "missingFolderName": "Не знайдено folderName в words",
+        "selectAtLeastOne": "Виберіть хоча б одне слово",
+        "folderExists": "Папка «{{folderName}}» вже існує",
+        "importFailed": "Помилка імпорту"
+      }
+    }
+  },
   "seo": {
     "keywords": "картки, навчання, пам'ять, освіта, вивчення, флешкарти",
     "landing": {
