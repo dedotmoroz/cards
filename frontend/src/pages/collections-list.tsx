@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { getCollections, type CollectionListItem } from '@/shared/api/collectionsApi';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
@@ -12,6 +12,7 @@ import {
     StyledLink,
     StyledCover,
 } from '@/entities';
+import { Footer } from '@/widgets/landing/footer.tsx';
 
 function getCoverUrl(item: CollectionListItem): string {
     const url = item.cover?.data?.attributes?.url ?? item.cover?.url ?? '';
@@ -42,24 +43,31 @@ export function CollectionsListPage() {
     if (loading) return <PageLoader />;
 
     return (
-        <CollectionsListLayout title={t('footer.vocabularyCollections')}>
-            {collections.length === 0 ? (
-                <Typography color="text.secondary">{t('errors.notFound')}</Typography>
-            ) : (
-                <StyledList>
-                    {collections.map((item) => {
-                        const coverUrl = getCoverUrl(item);
-                        return (
-                            <StyledListItem key={item.id}>
-                                <StyledLink to={`/collections/${locale}/${item.slug}`}>
-                                    {coverUrl ? <StyledCover src={coverUrl} alt="" /> : null}
-                                    <Typography variant="h6">{item.title}</Typography>
-                                </StyledLink>
-                            </StyledListItem>
-                        );
-                    })}
-                </StyledList>
-            )}
-        </CollectionsListLayout>
+        <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ flex: '1 1 auto' }}>
+                <CollectionsListLayout title={t('footer.vocabularyCollections')}>
+                    {collections.length === 0 ? (
+                        <Typography color="text.secondary">{t('errors.notFound')}</Typography>
+                    ) : (
+                        <StyledList>
+                            {collections.map((item) => {
+                                const coverUrl = getCoverUrl(item);
+                                return (
+                                    <StyledListItem key={item.id}>
+                                        <StyledLink to={`/collections/${locale}/${item.slug}`}>
+                                            {coverUrl ? <StyledCover src={coverUrl} alt="" /> : null}
+                                            <Typography variant="h6">{item.title}</Typography>
+                                        </StyledLink>
+                                    </StyledListItem>
+                                );
+                            })}
+                        </StyledList>
+                    )}
+                </CollectionsListLayout>
+            </Box>
+            <Box sx={{ mt: 'auto' }}>
+                <Footer />
+            </Box>
+        </Box>
     );
 }

@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
 import { getCollection, type CollectionItem } from '@/shared/api/collectionsApi';
 import {
     Alert,
     Box,
     Button,
-    Checkbox,
     CircularProgress,
     FormControlLabel,
     FormGroup,
@@ -18,8 +16,9 @@ import { useTranslation } from 'react-i18next';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
 import { PageLayout } from '@/entities';
-import { PageLoader } from '@/shared/ui';
+import { PageLoader, ButtonColor, CheckboxUI } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore';
+import { Footer } from '@/widgets/landing/footer.tsx';
 
 type WordItem = {
     word: string;
@@ -199,12 +198,35 @@ export function CollectionDetailPage() {
     };
 
     return (
-        <PageLayout
-            title={collection.title}
-            content={
-                <Box>
-                    {collection.content ? (
-                        <BlocksRenderer content={collection.content as BlocksContent} />
+        <>
+            <PageLayout
+                title={collection.title}
+                content={
+                    <Box>
+                    {wordsData.items.length > 0 ? (
+                        <Box
+                            sx={{
+                                '& ul': { margin: 0, paddingLeft: 2 },
+                                '& li': { color: 'text.secondary' },
+                            }}
+                        >
+                            {wordsData.items.map((item, idx) => (
+                                <Box key={`${item.word}-${idx}`} sx={{ mb: 2 }}>
+                                    <Typography component="h5" variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                        {item.word}
+                                        {item.translationWord ? ` - ${item.translationWord}` : ''}
+                                    </Typography>
+                                    {item.context || item.translationContext ? (
+                                        <Box component="ul">
+                                            {item.context ? <Box component="li">{item.context}</Box> : null}
+                                            {item.translationContext ? (
+                                                <Box component="li">{item.translationContext}</Box>
+                                            ) : null}
+                                        </Box>
+                                    ) : null}
+                                </Box>
+                            ))}
+                        </Box>
                     ) : null}
 
                     {wordsData.items.length > 0 ? (
@@ -213,20 +235,21 @@ export function CollectionDetailPage() {
                                 sx={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: 2,
+                                    gap: 4,
                                     mb: 1,
+                                    mt: 5,
                                 }}
                             >
-                                <Typography variant="h6">{t('collections.wordsImport.title')}</Typography>
-                                <Button
+                                <Typography variant="h5">{t('collections.wordsImport.title')}</Typography>
+                                <ButtonColor
                                     variant="contained"
                                     onClick={handleImport}
+                                    style={{ width: 'fit-content', flexShrink: 0, padding: '8px 30px' }}
                                     disabled={isImporting || selectedItems.length === 0}
                                     startIcon={isImporting ? <CircularProgress size={18} /> : undefined}
                                 >
                                     {t('collections.wordsImport.takeButton')}
-                                </Button>
+                                </ButtonColor>
                             </Box>
 
                             {showGuestPrompt ? (
@@ -273,12 +296,14 @@ export function CollectionDetailPage() {
                                 </Alert>
                             ) : null}
 
-                            <FormGroup>
+                            <FormGroup sx={{ alignItems: 'flex-start' }}>
                                 {wordsData.items.map((item, idx) => (
                                     <FormControlLabel
+                                        sx={{ pt: 2, pl: 3, width: 'fit-content' }}
                                         key={`${item.word}-${idx}`}
                                         control={
-                                            <Checkbox
+                                            <CheckboxUI
+                                                sx={{ pr: 1}}
                                                 checked={Boolean(checked[String(idx)])}
                                                 onChange={(e) =>
                                                     setChecked((prev) => ({
@@ -295,8 +320,12 @@ export function CollectionDetailPage() {
                         </Box>
                     ) : null}
                 </Box>
-            }
-            backTo="/collections"
-        />
+                }
+                backTo="/collections"
+            />
+            <Box sx={{ mt: 5}}>
+            <Footer />
+            </Box>
+        </>
     );
 }

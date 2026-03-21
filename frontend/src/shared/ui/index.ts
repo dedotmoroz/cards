@@ -7,3 +7,4 @@ export * from './button-black';
 export * from './button-color';
 export * from './button-white';
 export * from './textfield-ui';
+export * from './checkbox-ui';
