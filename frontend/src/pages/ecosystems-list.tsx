@@ -6,7 +6,7 @@ import { getEcosystems, type EcosystemListItem } from '@/shared/api/ecosystemsAp
 import { STRAPI_URL } from '@/shared/api/strapiBase';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
-import { PageLoader } from '@/shared/ui';
+import { HeaderCollection, PageLoader } from '@/shared/ui';
 import {
     CollectionsListLayout,
     StyledList,
@@ -14,6 +14,7 @@ import {
     StyledLink,
     StyledCover,
 } from '@/entities';
+import { Footer } from '@/widgets/landing/footer.tsx';
 
 function getImageUrl(item: EcosystemListItem): string {
     const url = item.prevImg?.data?.attributes?.url ?? item.prevImg?.url ?? '';
@@ -47,42 +48,58 @@ export function EcosystemsListPage() {
     if (loading) return <PageLoader />;
 
     return (
-        <CollectionsListLayout title={t('footer.ecosystem', 'Ecosystem')}>
-            {items.length === 0 ? (
-                <Typography color="text.secondary">{t('errors.notFound')}</Typography>
-            ) : (
-                <StyledList>
-                    {items.map((item) => {
-                        const imageUrl = getImageUrl(item);
-                        return (
-                            <StyledListItem key={item.id}>
-                                <StyledLink to={`/ecosystem/${locale}/${item.slug}`}>
-                                    {imageUrl ? <StyledCover src={imageUrl} alt="" /> : null}
-                                    <Box sx={{ minWidth: 0 }}>
-                                        <Typography variant="h6" noWrap>
-                                            {item.title ?? ''}
-                                        </Typography>
-                                        {item.prevText ? (
-                                            <Box
-                                                sx={{
-                                                    color: 'text.secondary',
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 3,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    '& p': { margin: 0 },
-                                                }}
-                                            >
-                                                <BlocksRenderer content={item.prevText as BlocksContent} />
+        <Box
+            sx={{
+                minHeight: '100vh',
+                boxSizing: 'border-box',
+                pt: { xs: '56px', sm: '64px' },
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            <HeaderCollection />
+            <Box sx={{ flex: '1 1 auto' }}>
+                <CollectionsListLayout title={t('footer.ecosystem', 'Ecosystem')}>
+                    {items.length === 0 ? (
+                        <Typography color="text.secondary">{t('errors.notFound')}</Typography>
+                    ) : (
+                        <StyledList>
+                            {items.map((item) => {
+                                const imageUrl = getImageUrl(item);
+                                return (
+                                    <StyledListItem key={item.id}>
+                                        <StyledLink to={`/ecosystem/${locale}/${item.slug}`}>
+                                            {imageUrl ? <StyledCover src={imageUrl} alt="" /> : null}
+                                            <Box sx={{ minWidth: 0 }}>
+                                                <Typography variant="h6" noWrap>
+                                                    {item.title ?? ''}
+                                                </Typography>
+                                                {item.prevText ? (
+                                                    <Box
+                                                        sx={{
+                                                            color: 'text.secondary',
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 3,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden',
+                                                            '& p': { margin: 0 },
+                                                        }}
+                                                    >
+                                                        <BlocksRenderer content={item.prevText as BlocksContent} />
+                                                    </Box>
+                                                ) : null}
                                             </Box>
-                                        ) : null}
-                                    </Box>
-                                </StyledLink>
-                            </StyledListItem>
-                        );
-                    })}
-                </StyledList>
-            )}
-        </CollectionsListLayout>
+                                        </StyledLink>
+                                    </StyledListItem>
+                                );
+                            })}
+                        </StyledList>
+                    )}
+                </CollectionsListLayout>
+            </Box>
+            <Box sx={{ mt: 'auto' }}>
+                <Footer />
+            </Box>
+        </Box>
     );
 }

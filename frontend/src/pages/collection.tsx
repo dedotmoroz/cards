@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
 import { PageLayout } from '@/entities';
-import { PageLoader, ButtonColor, CheckboxUI } from '@/shared/ui';
+import { PageLoader, ButtonColor, CheckboxUI, HeaderCollection } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore';
 import { Footer } from '@/widgets/landing/footer.tsx';
 
@@ -198,134 +198,159 @@ export function CollectionDetailPage() {
     };
 
     return (
-        <>
-            <PageLayout
-                title={collection.title}
-                content={
-                    <Box>
-                    {wordsData.items.length > 0 ? (
-                        <Box
-                            sx={{
-                                '& ul': { margin: 0, paddingLeft: 2 },
-                                '& li': { color: 'text.secondary' },
-                            }}
-                        >
-                            {wordsData.items.map((item, idx) => (
-                                <Box key={`${item.word}-${idx}`} sx={{ mb: 2 }}>
-                                    <Typography component="h5" variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                        {item.word}
-                                        {item.translationWord ? ` - ${item.translationWord}` : ''}
-                                    </Typography>
-                                    {item.context || item.translationContext ? (
-                                        <Box component="ul">
-                                            {item.context ? <Box component="li">{item.context}</Box> : null}
-                                            {item.translationContext ? (
-                                                <Box component="li">{item.translationContext}</Box>
+        <Box
+            sx={{
+                minHeight: '100vh',
+                boxSizing: 'border-box',
+                pt: { xs: '56px', sm: '64px' },
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            <HeaderCollection />
+            <Box sx={{ flex: '1 1 auto' }}>
+                <PageLayout
+                    title={collection.title}
+                    content={
+                        <Box>
+                            {wordsData.items.length > 0 ? (
+                                <Box
+                                    sx={{
+                                        '& ul': { margin: 0, paddingLeft: 2 },
+                                        '& li': { color: 'text.secondary' },
+                                    }}
+                                >
+                                    {wordsData.items.map((item, idx) => (
+                                        <Box key={`${item.word}-${idx}`} sx={{ mb: 2 }}>
+                                            <Typography
+                                                component="h5"
+                                                variant="subtitle1"
+                                                sx={{ fontWeight: 600 }}
+                                            >
+                                                {item.word}
+                                                {item.translationWord ? ` - ${item.translationWord}` : ''}
+                                            </Typography>
+                                            {item.context || item.translationContext ? (
+                                                <Box component="ul">
+                                                    {item.context ? <Box component="li">{item.context}</Box> : null}
+                                                    {item.translationContext ? (
+                                                        <Box component="li">{item.translationContext}</Box>
+                                                    ) : null}
+                                                </Box>
                                             ) : null}
                                         </Box>
-                                    ) : null}
+                                    ))}
                                 </Box>
-                            ))}
-                        </Box>
-                    ) : null}
+                            ) : null}
 
-                    {wordsData.items.length > 0 ? (
-                        <Box sx={{ mt: 2 }}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 4,
-                                    mb: 1,
-                                    mt: 5,
-                                }}
-                            >
-                                <Typography variant="h5">{t('collections.wordsImport.title')}</Typography>
-                                <ButtonColor
-                                    variant="contained"
-                                    onClick={handleImport}
-                                    style={{ width: 'fit-content', flexShrink: 0, padding: '8px 30px' }}
-                                    disabled={isImporting || selectedItems.length === 0}
-                                    startIcon={isImporting ? <CircularProgress size={18} /> : undefined}
-                                >
-                                    {t('collections.wordsImport.takeButton')}
-                                </ButtonColor>
-                            </Box>
-
-                            {showGuestPrompt ? (
-                                <Alert
-                                    severity="warning"
-                                    sx={{ mb: 1 }}
-                                    action={
-                                        <Button
-                                            color="inherit"
-                                            size="small"
-                                            onClick={handleCreateGuestAndImport}
-                                            disabled={isImporting}
+                            {wordsData.items.length > 0 ? (
+                                <Box sx={{ mt: 2 }}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                            mb: 1,
+                                            mt: 5,
+                                        }}
+                                    >
+                                        <Typography variant="h5">
+                                            {t('collections.wordsImport.title')}
+                                        </Typography>
+                                        <ButtonColor
+                                            variant="contained"
+                                            onClick={handleImport}
+                                            style={{
+                                                width: 'fit-content',
+                                                flexShrink: 0,
+                                                padding: '8px 30px',
+                                            }}
+                                            disabled={isImporting || selectedItems.length === 0}
+                                            startIcon={
+                                                isImporting ? <CircularProgress size={18} /> : undefined
+                                            }
                                         >
-                                            {t('collections.wordsImport.createGuestButton')}
-                                        </Button>
-                                    }
-                                >
-                                    {t('collections.wordsImport.guestPrompt')}
-                                </Alert>
-                            ) : null}
+                                            {t('collections.wordsImport.takeButton')}
+                                        </ButtonColor>
+                                    </Box>
 
-                            {importError ? (
-                                <Alert severity="error" sx={{ mb: 1 }}>
-                                    {importError}
-                                </Alert>
-                            ) : null}
-                            {importSuccess ? (
-                                <Alert
-                                    severity="success"
-                                    sx={{ mb: 1 }}
-                                    action={
-                                        createdFolderId && user?.id ? (
-                                            <Button
-                                                color="inherit"
-                                                size="small"
-                                                onClick={() => navigate(`/learn/${user.id}/${createdFolderId}`)}
-                                            >
-                                                {t('collections.wordsImport.goToFolder')}
-                                            </Button>
-                                        ) : null
-                                    }
-                                >
-                                    {importSuccess}
-                                </Alert>
-                            ) : null}
+                                    {showGuestPrompt ? (
+                                        <Alert
+                                            severity="warning"
+                                            sx={{ mb: 1 }}
+                                            action={
+                                                <Button
+                                                    color="inherit"
+                                                    size="small"
+                                                    onClick={handleCreateGuestAndImport}
+                                                    disabled={isImporting}
+                                                >
+                                                    {t('collections.wordsImport.createGuestButton')}
+                                                </Button>
+                                            }
+                                        >
+                                            {t('collections.wordsImport.guestPrompt')}
+                                        </Alert>
+                                    ) : null}
 
-                            <FormGroup sx={{ alignItems: 'flex-start' }}>
-                                {wordsData.items.map((item, idx) => (
-                                    <FormControlLabel
-                                        sx={{ pt: 2, pl: 3, width: 'fit-content' }}
-                                        key={`${item.word}-${idx}`}
-                                        control={
-                                            <CheckboxUI
-                                                sx={{ pr: 1}}
-                                                checked={Boolean(checked[String(idx)])}
-                                                onChange={(e) =>
-                                                    setChecked((prev) => ({
-                                                        ...prev,
-                                                        [String(idx)]: e.target.checked,
-                                                    }))
+                                    {importError ? (
+                                        <Alert severity="error" sx={{ mb: 1 }}>
+                                            {importError}
+                                        </Alert>
+                                    ) : null}
+                                    {importSuccess ? (
+                                        <Alert
+                                            severity="success"
+                                            sx={{ mb: 1 }}
+                                            action={
+                                                createdFolderId && user?.id ? (
+                                                    <Button
+                                                        color="inherit"
+                                                        size="small"
+                                                        onClick={() =>
+                                                            navigate(`/learn/${user.id}/${createdFolderId}`)
+                                                        }
+                                                    >
+                                                        {t('collections.wordsImport.goToFolder')}
+                                                    </Button>
+                                                ) : null
+                                            }
+                                        >
+                                            {importSuccess}
+                                        </Alert>
+                                    ) : null}
+
+                                    <FormGroup sx={{ alignItems: 'flex-start' }}>
+                                        {wordsData.items.map((item, idx) => (
+                                            <FormControlLabel
+                                                sx={{ pt: 2, pl: 3, width: 'fit-content' }}
+                                                key={`${item.word}-${idx}`}
+                                                control={
+                                                    <CheckboxUI
+                                                        sx={{ pr: 1 }}
+                                                        checked={Boolean(checked[String(idx)])}
+                                                        onChange={(e) =>
+                                                            setChecked((prev) => ({
+                                                                ...prev,
+                                                                [String(idx)]: e.target.checked,
+                                                            }))
+                                                        }
+                                                    />
                                                 }
+                                                label={item.word}
                                             />
-                                        }
-                                        label={item.word}
-                                    />
-                                ))}
-                            </FormGroup>
+                                        ))}
+                                    </FormGroup>
+                                </Box>
+                            ) : null}
                         </Box>
-                    ) : null}
-                </Box>
-                }
-                backTo="/collections"
-            />
-            <Box sx={{ mt: 5}}>
-            <Footer />
+                    }
+                    backTo="/collections"
+                />
             </Box>
-        </>
+            <Box sx={{ mt: 'auto', pt: 5 }}>
+                <Footer />
+            </Box>
+        </Box>
     );
 }

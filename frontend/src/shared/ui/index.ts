@@ -1,4 +1,5 @@
 export * from './header';
+export * from './header-collection';
 export * from './logo';
 export * from './page-loader';
 export * from './mobile-menu-icon';

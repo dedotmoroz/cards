@@ -13,6 +13,7 @@ import {
     StyledCover,
 } from '@/entities';
 import { Footer } from '@/widgets/landing/footer.tsx';
+import { HeaderCollection } from '@/shared/ui';
 
 function getCoverUrl(item: CollectionListItem): string {
     const url = item.cover?.data?.attributes?.url ?? item.cover?.url ?? '';
@@ -43,7 +44,16 @@ export function CollectionsListPage() {
     if (loading) return <PageLoader />;
 
     return (
-        <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Box
+            sx={{
+                minHeight: '100vh',
+                boxSizing: 'border-box',
+                pt: { xs: '56px', sm: '64px' },
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            <HeaderCollection />
             <Box sx={{ flex: '1 1 auto' }}>
                 <CollectionsListLayout title={t('footer.vocabularyCollections')}>
                     {collections.length === 0 ? (
