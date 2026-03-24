@@ -125,7 +125,15 @@ export function EcosystemDetailPage() {
                             ) : null}
 
                             {item.contentBlock ? (
-                                <Box sx={{ '& img': { maxWidth: '100%', height: 'auto' } }}>
+                                <Box
+                                    sx={{
+                                        '& img': {
+                                            maxWidth: 'min(500px, 100%)',
+                                            height: 'auto',
+                                            display: 'block',
+                                        },
+                                    }}
+                                >
                                     <BlocksRenderer content={item.contentBlock as BlocksContent} />
                                 </Box>
                             ) : null}
