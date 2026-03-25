@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Box } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { getCollections, type CollectionListItem } from '@/shared/api/collectionsApi';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
@@ -23,11 +24,21 @@ function getCoverUrl(item: CollectionListItem): string {
 
 export function CollectionsListPage() {
     const { i18n, t } = useTranslation();
+    const { lang } = useParams<{ lang?: string }>();
     const locale = i18n.language || 'en';
     const [collections, setCollections] = useState<CollectionListItem[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!lang) return;
+        const supported = ['en', 'ru', 'uk', 'de', 'es', 'fr', 'pl', 'pt', 'zh'];
+        if (supported.includes(lang) && i18n.language !== lang) {
+            i18n.changeLanguage(lang);
+        }
+    }, [lang, i18n]);
+
+    useEffect(() => {
+        setLoading(true);
         getCollections(locale)
             .then(setCollections)
             .catch(() => setCollections([]))
@@ -37,7 +48,7 @@ export function CollectionsListPage() {
     useSEO({
         title: t('seo.collections.title', 'Vocabulary Collections - KotCat'),
         description: t('seo.collections.description', 'Thematic word collections for vocabulary learning'),
-        canonical: `${SITE_BASE_URL}/collections`,
+        canonical: `${SITE_BASE_URL}${locale === 'en' ? '/collections' : `/${locale}/collections`}`,
         lang: locale,
     });
 

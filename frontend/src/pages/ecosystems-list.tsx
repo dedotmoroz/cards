@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
+import { useParams } from 'react-router-dom';
 import { getEcosystems, type EcosystemListItem } from '@/shared/api/ecosystemsApi';
 import { STRAPI_URL } from '@/shared/api/strapiBase';
 import { useSEO } from '@/shared/hooks/useSEO';
@@ -27,11 +28,21 @@ function getImageUrl(item: EcosystemListItem): string {
 
 export function EcosystemsListPage() {
     const { i18n, t } = useTranslation();
+    const { lang } = useParams<{ lang?: string }>();
     const locale = i18n.language || 'en';
     const [items, setItems] = useState<EcosystemListItem[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!lang) return;
+        const supported = ['en', 'ru', 'uk', 'de', 'es', 'fr', 'pl', 'pt', 'zh'];
+        if (supported.includes(lang) && i18n.language !== lang) {
+            i18n.changeLanguage(lang);
+        }
+    }, [lang, i18n]);
+
+    useEffect(() => {
+        setLoading(true);
         getEcosystems(locale)
             .then(setItems)
             .catch(() => setItems([]))
@@ -41,7 +52,7 @@ export function EcosystemsListPage() {
     useSEO({
         title: t('seo.ecosystem.title', 'Ecosystem - KotCat'),
         description: t('seo.ecosystem.description', 'Ecosystem pages'),
-        canonical: `${SITE_BASE_URL}/ecosystem`,
+        canonical: `${SITE_BASE_URL}${locale === 'en' ? '/ecosystem' : `/${locale}/ecosystem`}`,
         lang: locale,
     });
 
@@ -71,7 +82,7 @@ export function EcosystemsListPage() {
                                         <StyledLink to={`/ecosystem/${locale}/${item.slug}`}>
                                             {imageUrl ? <StyledCover src={imageUrl} alt="" /> : null}
                                             <Box sx={{ minWidth: 0 }}>
-                                                <Typography variant="h6" noWrap>
+                                                <Typography variant="h6">
                                                     {item.title ?? ''}
                                                 </Typography>
                                                 {item.prevText ? (

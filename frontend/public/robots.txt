@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kotcat.com/sitemap.xml
+

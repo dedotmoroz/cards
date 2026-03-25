@@ -7,6 +7,7 @@ const config: Core.Config.Middlewares = [
   'strapi::cors',
   'strapi::poweredBy',
   'strapi::query',
+  'global::sitemap',
   'strapi::body',
   'strapi::session',
   'strapi::favicon',

@@ -75,8 +75,10 @@ export default function App() {
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/collections" element={<CollectionsListPage />} />
+                            <Route path="/:lang/collections" element={<CollectionsListPage />} />
                             <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
                             <Route path="/ecosystem" element={<EcosystemsListPage />} />
+                            <Route path="/:lang/ecosystem" element={<EcosystemsListPage />} />
                             <Route path="/ecosystem/:locale/:slug" element={<EcosystemDetailPage />} />
                             <Route path="/p/:locale/:slug" element={<StrapiPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
@@ -89,8 +91,10 @@ export default function App() {
                             <Route path="/signin" element={<SignInPage />} />
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/collections" element={<CollectionsListPage />} />
+                            <Route path="/:lang/collections" element={<CollectionsListPage />} />
                             <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
                             <Route path="/ecosystem" element={<EcosystemsListPage />} />
+                            <Route path="/:lang/ecosystem" element={<EcosystemsListPage />} />
                             <Route path="/ecosystem/:locale/:slug" element={<EcosystemDetailPage />} />
                             <Route path="/p/:locale/:slug" element={<StrapiPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />

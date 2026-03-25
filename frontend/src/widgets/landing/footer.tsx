@@ -44,14 +44,14 @@ export const Footer = () => {
             {!loading && (
                 <StyledFooterLinks>
                     {collections.length > 0 && (
-                        <Link to="/collections">
+                        <Link to={locale === 'en' ? '/collections' : `/${locale}/collections`}>
                             <Typography component="span" variant="body2">
                                 {t('footer.vocabularyCollections')}
                             </Typography>
                         </Link>
                     )}
                     {ecosystems.length > 0 && (
-                        <Link to="/ecosystem">
+                        <Link to={locale === 'en' ? '/ecosystem' : `/${locale}/ecosystem`}>
                             <Typography component="span" variant="body2">
                                 {t('footer.ecosystem', 'Ecosystem')}
                             </Typography>
