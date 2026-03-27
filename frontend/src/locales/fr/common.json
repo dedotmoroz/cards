@@ -36,12 +36,12 @@
       },
       "chrome": {
         "title": "Extension Chrome",
-        "subtitle": "Ajoutez des mots directement depuis les sites web.",
-        "description": "Vous lisez des articles, de la documentation ou des actualités ? Avec l'extension Chrome, vous pouvez :",
-        "item1": "— Mettre en surbrillance un mot ou une phrase sur la page",
-        "item2": "— L'ajouter à votre dictionnaire en un clic",
-        "item3": "— Enregistrer la source et le contexte",
-        "accent": "Pas de copie dans les notes et \"pour plus tard\"."
+        "subtitle": "Transforme le texte sélectionné sur les sites en cartes.",
+        "description": "Comment ça marche :",
+        "item1": "— Sélectionnez un mot ou une expression sur la page",
+        "item2": "— Ajoutez-le au dictionnaire via le menu contextuel du navigateur",
+        "item3": "Une carte sera créée automatiquement dans le dossier choisi.",
+        "accent": "En savoir plus sur l’extension et l’installation…"
       },
       "importExport": {
         "title": "Importer / Exporter",

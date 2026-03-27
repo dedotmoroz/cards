@@ -36,12 +36,12 @@
       },
       "chrome": {
         "title": "Rozszerzenie Chrome",
-        "subtitle": "Dodawaj słowa bezpośrednio ze stron internetowych.",
-        "description": "Czytasz artykuły, dokumentację lub wiadomości? Za pomocą rozszerzenia Chrome możesz:",
-        "item1": "— Podświetlić słowo lub frazę na stronie",
-        "item2": "— Dodać je do słownika jednym kliknięciem",
-        "item3": "— Zapisać źródło i kontekst",
-        "accent": "Bez kopiowania do notatek i \"na później\"."
+        "subtitle": "Zamienia zaznaczony tekst na stronach w fiszki.",
+        "description": "Jak to działa:",
+        "item1": "— Zaznacz słowo lub frazę na stronie",
+        "item2": "— Dodaj ją do słownika z menu kontekstowego przeglądarki",
+        "item3": "Fiszka utworzy się automatycznie w wybranym folderze.",
+        "accent": "Więcej o rozszerzeniu i instalacji…"
       },
       "importExport": {
         "title": "Import / Eksport",

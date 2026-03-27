@@ -22,6 +22,7 @@ export const StyledBox = styled(Box)`
 export const StyledHeader = styled(Box)`
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 16px;
     color: #101828;
     // font-family: Inter;
@@ -30,7 +31,15 @@ export const StyledHeader = styled(Box)`
     font-weight: 400;
     line-height: 36px; /* 120% */
     letter-spacing: 0.396px;
+    flex-wrap: wrap;
 `
+
+export const StyledTitle = styled(Box)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+`;
 
 export const StyledDescription = styled(Box)`
     color: #4A5565;
@@ -41,6 +50,19 @@ export const StyledDescription = styled(Box)`
     line-height: 28px; /* 155.556% */
     letter-spacing: -0.439px;
     white-space: pre-line;
+`
+
+export const StyledAccentLink = styled('a')`
+    && {
+        color: #9810fa;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    &&:hover {
+        text-decoration: none;
+        opacity: 0.9;
+    }
 `
 
 export const StyledWhiteCard = styled(Card)(({ theme }) => ({

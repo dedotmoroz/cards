@@ -36,12 +36,12 @@
       },
       "chrome": {
         "title": "Extensión de Chrome",
-        "subtitle": "Añade palabras directamente desde sitios web.",
-        "description": "¿Lees artículos, documentación o noticias? Con la extensión de Chrome puedes:",
-        "item1": "— Resaltar una palabra o frase en la página",
-        "item2": "— Añadirla a tu diccionario con un clic",
-        "item3": "— Guardar fuente y contexto",
-        "accent": "Sin copiar a notas y \"para después\"."
+        "subtitle": "Convierte el texto seleccionado en sitios web en tarjetas.",
+        "description": "Cómo funciona:",
+        "item1": "— Selecciona una palabra o frase en la página",
+        "item2": "— Añádela al diccionario desde el menú contextual del navegador",
+        "item3": "La tarjeta se creará automáticamente en la carpeta elegida.",
+        "accent": "Más sobre la extensión y la instalación…"
       },
       "importExport": {
         "title": "Importar / Exportar",

@@ -7,12 +7,16 @@ import {
     StyledHeader,
     StyledAIIcon,
     StyledChromeIcon,
-    StyledExcelIcon, StyledMonitorIcon
+    StyledExcelIcon,
+    StyledMonitorIcon,
+    StyledAccentLink,
+    StyledTitle,
 } from './styled-components.ts'
 
 export const FeaturesBox = () => {
 
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const locale = (i18n.resolvedLanguage ?? i18n.language ?? 'en').split('-')[0];
 
     const features = [
         {
@@ -21,7 +25,7 @@ export const FeaturesBox = () => {
         },
         {
             title: t('landing.features.chrome.title'),
-            text: `${t('landing.features.chrome.subtitle')}\n${t('landing.features.chrome.description')}\n\n${t('landing.features.chrome.item1')}\n${t('landing.features.chrome.item2')}\n${t('landing.features.chrome.item3')}\n\n${t('landing.features.chrome.accent')}`,
+            text: `${t('landing.features.chrome.subtitle')}\n\n${t('landing.features.chrome.description')}\n${t('landing.features.chrome.item1')}\n${t('landing.features.chrome.item2')}\n${t('landing.features.chrome.item3')}\n\n`,
         },
         {
             title: t('landing.features.importExport.title'),
@@ -42,7 +46,7 @@ export const FeaturesBox = () => {
                     <StyledAIIcon>
                         <AlIcon color={'#fff'} />
                     </StyledAIIcon>
-                    {features[0].title}
+                    <StyledTitle>{features[0].title}</StyledTitle>
                 </StyledHeader>
                 <StyledDescription>
                     {features[0].text}
@@ -55,10 +59,13 @@ export const FeaturesBox = () => {
                     <StyledChromeIcon>
                         <ChromeIcon color={'#fff'} />
                     </StyledChromeIcon>
-                    {features[1].title}
+                    <StyledTitle>{features[1].title}</StyledTitle>
                 </StyledHeader>
                 <StyledDescription>
                     {features[1].text}
+                    <StyledAccentLink href={`/ecosystem/${locale}/chrome_extension`}>
+                        {t('landing.features.chrome.accent')}
+                    </StyledAccentLink>
                 </StyledDescription>
             </StyledBox>
             <StyledBox
@@ -68,7 +75,7 @@ export const FeaturesBox = () => {
                     <StyledExcelIcon>
                         <ExcelIcon color={'#fff'} />
                     </StyledExcelIcon>
-                    {features[2].title}
+                    <StyledTitle>{features[2].title}</StyledTitle>
                 </StyledHeader>
                 <StyledDescription>
                     {features[2].text}
@@ -81,7 +88,7 @@ export const FeaturesBox = () => {
                     <StyledMonitorIcon>
                         <MonitorIcon color={'#fff'} />
                     </StyledMonitorIcon>
-                    {features[3].title}
+                    <StyledTitle>{features[3].title}</StyledTitle>
                 </StyledHeader>
                 <StyledDescription>
                     {features[3].text}

@@ -36,12 +36,12 @@
       },
       "chrome": {
         "title": "Chrome-Erweiterung",
-        "subtitle": "Wörter direkt von Websites hinzufügen.",
-        "description": "Lesen Sie Artikel, Dokumentation oder Nachrichten? Mit der Chrome-Erweiterung können Sie:",
-        "item1": "— Ein Wort oder eine Phrase auf der Seite hervorheben",
-        "item2": "— Es mit einem Klick zu Ihrem Wörterbuch hinzufügen",
-        "item3": "— Quelle und Kontext speichern",
-        "accent": "Kein Kopieren in Notizen und \"für später\"."
+        "subtitle": "Macht markierten Text auf Websites zu Karten.",
+        "description": "So funktioniert es:",
+        "item1": "— Markieren Sie ein Wort oder eine Phrase auf der Seite",
+        "item2": "— Fügen Sie es über das Kontextmenü des Browsers zum Wörterbuch hinzu",
+        "item3": "Die Karte wird automatisch im ausgewählten Ordner erstellt.",
+        "accent": "Mehr über die Erweiterung und Installation…"
       },
       "importExport": {
         "title": "Import / Export",

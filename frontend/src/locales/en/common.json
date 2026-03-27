@@ -36,12 +36,12 @@
       },
       "chrome": {
         "title": "Chrome Extension",
-        "subtitle": "Add words directly from websites.",
-        "description": "Reading articles, documentation, or news? With the Chrome extension you can:",
+        "subtitle": "Turns selected text on websites into cards.",
+        "description": "How it works:",
         "item1": "— Highlight a word or phrase on the page",
-        "item2": "— Add it to your dictionary in one click",
-        "item3": "— Save source and context",
-        "accent": "No copying to notes and \"for later\"."
+        "item2": "— Add it to your dictionary via the browser context menu",
+        "item3": "A card will be created automatically in the selected folder.",
+        "accent": "Learn more about the extension and installation…"
       },
       "importExport": {
         "title": "Import / Export",
