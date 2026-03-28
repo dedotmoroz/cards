@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {ListItemText} from '@mui/material';
 import MoreVerticalIcon from '@mui/icons-material/MoreHoriz';
@@ -33,6 +33,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
     const { userId } = useParams<{ userId?: string }>();
     const { user } = useAuthStore();
     const currentUserId = userId || user?.id;
+    const orderedFolders = useMemo(() => [...folders].reverse(), [folders]);
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, folderId: string) => {
         event.stopPropagation();
@@ -61,7 +62,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
     return (
         <>
             <StyledList>
-                {folders.map((folder) => (
+                {orderedFolders.map((folder) => (
                     <StyledListItemButton
                         disableRipple
                         key={folder.id}
@@ -102,7 +103,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                 }}
             >
                 {selectedFolderId && (() => {
-                    const folder = folders.find(f => f.id === selectedFolderId);
+                    const folder = folders.find((f) => f.id === selectedFolderId);
                     if (!folder) return null;
                     return (
                         <>

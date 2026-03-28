@@ -12,7 +12,10 @@ export const StyledCaptionBox = styled(Box)`
     align-items: center;
     margin-bottom: 12px;
 `
-export const StyledTypography = styled(Typography)``
+export const StyledTypography = styled(Typography)`
+   position: relative;
+   display: flex;
+`
 
 export const StyledListItemButton = styled(ListItemButton)`
     border-radius: 8px;
@@ -41,5 +44,12 @@ export const StyledFolderCounter = styled(Box)`
     left: 12px;
     top: -4px;
     position: absolute;
+    color: rgba(0, 0, 0, 0.42);
+`
+
+export const StyledFoldersCounter = styled(Box)`
+display: inline-block;
+    font-size: 9px;
+    margin-left: 4px;
     color: rgba(0, 0, 0, 0.42);
 `
