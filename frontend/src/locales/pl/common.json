@@ -209,7 +209,11 @@
     "title": "Foldery",
     "create": "Utwórz folder",
     "edit": "Edytuj folder",
-    "delete": "Usuń folder"
+    "delete": "Usuń folder",
+    "virtual": {
+      "remember": "Przypomnij",
+      "hard": "Trudne"
+    }
   },
   "errors": {
     "generic": "Wystąpił błąd",

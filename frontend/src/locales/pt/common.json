@@ -209,7 +209,11 @@
     "title": "Pastas",
     "create": "Criar pasta",
     "edit": "Editar pasta",
-    "delete": "Excluir pasta"
+    "delete": "Excluir pasta",
+    "virtual": {
+      "remember": "Relembrar",
+      "hard": "Difícil"
+    }
   },
   "errors": {
     "generic": "Ocorreu um erro",

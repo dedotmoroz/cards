@@ -209,7 +209,11 @@
     "title": "Dossiers",
     "create": "Créer un dossier",
     "edit": "Modifier le dossier",
-    "delete": "Supprimer le dossier"
+    "delete": "Supprimer le dossier",
+    "virtual": {
+      "remember": "Rappelle-toi",
+      "hard": "Difficile"
+    }
   },
   "errors": {
     "generic": "Une erreur s'est produite",

@@ -388,7 +388,8 @@ describe('authStore', () => {
         email: 'user@example.com',
         password: 'password123',
         name: 'Test User',
-        language: 'ru'
+        language: 'ru',
+        turnstileToken: ''
       })
       expect(result.current.user?.isGuest).toBe(false)
       expect(result.current.user?.email).toBe('user@example.com')

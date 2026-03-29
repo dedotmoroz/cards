@@ -2,8 +2,11 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useCardsStore } from '@/shared/store/cardsStore';
 import type { Card } from '@/shared/types/cards';
 
-export const useCardLearning = (folderId: string | undefined, initialSideFromUrl?: 'question' | 'answer') => {
-  const { cards, fetchCards, updateCardLearnStatus, isLoading, error } = useCardsStore();
+const isVirtualSourceId = (id: string | undefined) => Boolean(id && id.startsWith('virtual:'));
+const virtualKindFromSourceId = (id: string) => id.replace(/^virtual:/, '') as 'remember' | 'hard';
+
+export const useCardLearning = (sourceId: string | undefined, initialSideFromUrl?: 'question' | 'answer') => {
+  const { cards, fetchCards, fetchVirtualCards, reviewCard, isLoading, error } = useCardsStore();
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
@@ -29,11 +32,15 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
 
   // Загружаем карточки при монтировании
   useEffect(() => {
-    if (folderId && folderId !== lastFetchedFolderId.current) {
-      lastFetchedFolderId.current = folderId;
-      fetchCards(folderId);
+    if (sourceId && sourceId !== lastFetchedFolderId.current) {
+      lastFetchedFolderId.current = sourceId;
+      if (isVirtualSourceId(sourceId)) {
+        fetchVirtualCards(virtualKindFromSourceId(sourceId), 10);
+      } else {
+        fetchCards(sourceId);
+      }
     }
-  }, [folderId]); // Загружаем только если папка изменилась
+  }, [sourceId]); // Загружаем только если источник изменился
 
   // Сбрасываем индекс и счётчики только при изменении showOnlyUnlearned (режим «только невыученные»).
   // При переключении phrasesMode (слово/контекст) прогресс не сбрасываем — текущая карточка сохраняется.
@@ -52,12 +59,12 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
 
   // Сбрасываем счетчики при смене папки
   useEffect(() => {
-    if (folderId && folderId !== lastFetchedFolderId.current) {
+    if (sourceId && sourceId !== lastFetchedFolderId.current) {
       setLearnedCount(0);
       setUnlearnedCount(0);
       setUnlearnedCards([]);
     }
-  }, [folderId]);
+  }, [sourceId]);
 
   // Обновляем unlearnedCards при изменении cards
   // НЕ сбрасываем счетчики при обновлении unlearnedCards
@@ -146,8 +153,7 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
       // Просто увеличиваем индекс - защита от выхода за границы есть через safeIndex
       setCurrentIndex(nextIndex);
       setShowAnswer(initialSideRef.current === 'question');
-      // Обновляем статус карточки
-      await updateCardLearnStatus(currentCardId, true);
+      await reviewCard(currentCardId, 'know');
       
       // Увеличиваем счетчик
       setLearnedCount(prev => prev + 1);
@@ -178,8 +184,7 @@ export const useCardLearning = (folderId: string | undefined, initialSideFromUrl
       // Просто увеличиваем индекс - защита от выхода за границы есть через safeIndex
       setCurrentIndex(nextIndex);
       setShowAnswer(initialSideRef.current === 'question');
-      // Обновляем статус карточки
-      await updateCardLearnStatus(currentCardId, false);
+      await reviewCard(currentCardId, 'dontknow');
       
       // Увеличиваем счетчик
       setUnlearnedCount(prev => prev + 1);

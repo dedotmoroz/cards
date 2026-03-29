@@ -26,7 +26,12 @@ export const LearnPhrasesButton = () => {
     const handleStartLearningPhrases = () => {
         if (selectedFolderId) {
             if (currentUserId) {
-                navigate(`/learn/${currentUserId}/${selectedFolderId}/study?mode=phrases&initialSide=${initialSide}`);
+                if (selectedFolderId.startsWith('virtual:')) {
+                    const kind = selectedFolderId.replace(/^virtual:/, '');
+                    navigate(`/learn/${currentUserId}/virtual/${kind}/study?mode=phrases&initialSide=${initialSide}`);
+                } else {
+                    navigate(`/learn/${currentUserId}/${selectedFolderId}/study?mode=phrases&initialSide=${initialSide}`);
+                }
             } else {
                 navigate(`/learn/${selectedFolderId}/study?mode=phrases&initialSide=${initialSide}`);
             }

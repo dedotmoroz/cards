@@ -70,7 +70,9 @@ export default function App() {
                             <Route path="/learn" element={<HomePage />} />
                             <Route path="/learn/:userId" element={<HomePage />} />
                             <Route path="/learn/:userId/:folderId" element={<HomePage />} />
+                            <Route path="/learn/:userId/virtual/:kind" element={<HomePage />} />
                             <Route path="/learn/:userId/:folderId/study" element={<PageContainer><LearnPage /></PageContainer>} />
+                            <Route path="/learn/:userId/virtual/:kind/study" element={<PageContainer><LearnPage /></PageContainer>} />
                             <Route path="/learn/:userId/:folderId/context-reading" element={<PageContainer><ContextReadingPage /></PageContainer>} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />

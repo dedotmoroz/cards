@@ -5,13 +5,15 @@ import ExcelJS from 'exceljs';
 import { CardService } from '../../../application/card-service';
 import { FolderRepository } from '../../../ports/folder-repository';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
-import { CreateCardDTO, CardDTO, UpdateCardDTO } from '../dto';
+import { CreateCardDTO, CardDTO, UpdateCardDTO, ReviewCardDTO } from '../dto';
 import { CreateCardInput } from './types';
+import type { CardRepository } from '../../../ports/card-repository';
 
 export function registerCardsRoutes(
     fastify: FastifyInstance,
     cardService: CardService,
     folderRepo: FolderRepository,
+    cardRepo: CardRepository,
     googleSheetsService?: GoogleSheetsService
 ) {
     /**
@@ -155,6 +157,132 @@ export function registerCardsRoutes(
                 await cardService.markAsUnlearned(id);
             }
             return reply.send({ status: 'ok' });
+        }
+    );
+
+    /**
+     * Ответ пользователя в обучении (заполняет статистику + SM-2)
+     */
+    fastify.post(
+        '/cards/:id/review',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                params: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'string', format: 'uuid' },
+                    },
+                    required: ['id'],
+                },
+                body: zodToJsonSchema(ReviewCardDTO),
+                response: {
+                    200: zodToJsonSchema(CardDTO),
+                    403: {
+                        type: 'object',
+                        properties: { message: { type: 'string' } },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: { message: { type: 'string' } },
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Review a card (know/dontknow)',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Params: { id: string }; Body: z.infer<typeof ReviewCardDTO> }>,
+            reply: FastifyReply
+        ) => {
+            const { id } = req.params;
+            const authUserId = (req.user as any).userId as string | undefined;
+
+            const card = await cardService.getById(id);
+            if (!card) return reply.code(404).send({ message: 'Card not found' });
+
+            const folder = await folderRepo.findById(card.folderId);
+            if (!folder || !authUserId || folder.userId !== authUserId) {
+                return reply.code(403).send({ message: 'Access denied' });
+            }
+
+            const updated = await cardService.reviewCard(id, req.body.outcome);
+            if (!updated) return reply.code(404).send({ message: 'Card not found' });
+            return reply.send(updated.toPublicDTO());
+        }
+    );
+
+    /**
+     * Виртуальная папка: Вспомни (10 самых давно изученных)
+     */
+    fastify.get(
+        '/cards/virtual/remember',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    properties: { limit: { type: 'number', minimum: 1, maximum: 50 } },
+                },
+                response: {
+                    200: {
+                        type: 'array',
+                        items: zodToJsonSchema(CardDTO),
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Virtual folder: remember (oldest learned)',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Querystring: { limit?: number } }>,
+            reply: FastifyReply
+        ) => {
+            const authUserId = (req.user as any).userId as string | undefined;
+            const limit = Math.max(1, Math.min(50, Number(req.query.limit ?? 10)));
+            if (!authUserId) return reply.send([]);
+
+            const userFolders = await folderRepo.findAll(authUserId);
+            const folderIds = userFolders.map((f) => f.id);
+            const cards = await cardRepo.findRememberCardsByFolderIds(folderIds, limit);
+            return reply.send(cards.map((c) => c.toPublicDTO()));
+        }
+    );
+
+    /**
+     * Виртуальная папка: Сложно (10 самых сложных, reviewCount>=3)
+     */
+    fastify.get(
+        '/cards/virtual/hard',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    properties: { limit: { type: 'number', minimum: 1, maximum: 50 } },
+                },
+                response: {
+                    200: {
+                        type: 'array',
+                        items: zodToJsonSchema(CardDTO),
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Virtual folder: hard (most difficult)',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Querystring: { limit?: number } }>,
+            reply: FastifyReply
+        ) => {
+            const authUserId = (req.user as any).userId as string | undefined;
+            const limit = Math.max(1, Math.min(50, Number(req.query.limit ?? 10)));
+            if (!authUserId) return reply.send([]);
+
+            const userFolders = await folderRepo.findAll(authUserId);
+            const folderIds = userFolders.map((f) => f.id);
+            const cards = await cardRepo.findHardCardsByFolderIds(folderIds, limit);
+            return reply.send(cards.map((c) => c.toPublicDTO()));
         }
     );
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Card, CardGenerationRequest } from '../types/cards'
+import type { Card, CardGenerationRequest, ReviewOutcome } from '../types/cards'
 import { cardsApi } from '../api/cardsApi'
 import { useFoldersStore } from './foldersStore'
 
@@ -49,9 +49,11 @@ interface CardsState {
 
     // API calls
     fetchCards: (folderId: string) => Promise<void>
+    fetchVirtualCards: (kind: 'remember' | 'hard', limit?: number) => Promise<void>
     createCard: (folderId: string, question: string, answer: string) => Promise<void>
     updateCardApi: (id: string, updates: { question?: string; answer?: string; questionSentences?: string | null; answerSentences?: string | null }) => Promise<void>
     updateCardLearnStatus: (id: string, isLearned: boolean) => Promise<void>
+    reviewCard: (id: string, outcome: ReviewOutcome) => Promise<void>
     deleteCard: (id: string) => Promise<void>
     moveCardToFolder: (cardId: string, targetFolderId: string) => Promise<void>
     generateCardSentences: (id: string, options?: CardGenerationRequest) => Promise<void>
@@ -126,6 +128,22 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         }
     },
 
+    fetchVirtualCards: async (kind: 'remember' | 'hard', limit?: number) => {
+        set({ error: null, isLoading: true })
+        try {
+            const cards =
+                kind === 'remember'
+                    ? await cardsApi.getVirtualRemember({ limit })
+                    : await cardsApi.getVirtualHard({ limit })
+            get().setCards(cards)
+        } catch (error) {
+            console.error('Error fetching virtual cards:', error)
+            set({ error: 'Failed to fetch cards' })
+        } finally {
+            set({ isLoading: false })
+        }
+    },
+
     createCard: async (folderId: string, question: string, answer: string) => {
         set({ error: null })
         try {
@@ -162,6 +180,24 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         } catch (error) {
             console.error('Error updating card learn status:', error)
             set({ error: 'Failed to update card learn status' })
+        }
+    },
+
+    reviewCard: async (id: string, outcome: ReviewOutcome) => {
+        set({ error: null })
+        try {
+            const updated = await cardsApi.reviewCard(id, { outcome })
+            get().updateCard(id, {
+                question: updated.question,
+                answer: updated.answer,
+                questionSentences: updated.questionSentences,
+                answerSentences: updated.answerSentences,
+                isLearned: updated.isLearned,
+                folderId: updated.folderId,
+            })
+        } catch (error) {
+            console.error('Error reviewing card:', error)
+            set({ error: 'Failed to review card' })
         }
     },
 

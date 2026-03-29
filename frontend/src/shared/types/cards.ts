@@ -34,6 +34,12 @@ export interface UpdateCardLearnStatusData {
   isLearned: boolean;
 }
 
+export type ReviewOutcome = 'know' | 'dontknow';
+
+export interface ReviewCardData {
+  outcome: ReviewOutcome;
+}
+
 export interface CardGenerationRequest {
   lang?: string;
   level?: string;

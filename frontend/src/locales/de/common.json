@@ -209,7 +209,11 @@
     "title": "Ordner",
     "create": "Ordner erstellen",
     "edit": "Ordner bearbeiten",
-    "delete": "Ordner löschen"
+    "delete": "Ordner löschen",
+    "virtual": {
+      "remember": "Wiederholen",
+      "hard": "Schwierig"
+    }
   },
   "errors": {
     "generic": "Ein Fehler ist aufgetreten",

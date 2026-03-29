@@ -4,6 +4,7 @@ import type {
   CreateCardData,
   UpdateCardData,
   UpdateCardLearnStatusData,
+  ReviewCardData,
   CardGenerationRequest,
   CardGenerationTriggerResponse,
   CardGenerationStatusResponse,
@@ -43,6 +44,27 @@ export const cardsApi = {
    */
   updateCardLearnStatus: async (id: string, data: UpdateCardLearnStatusData): Promise<Card> => {
     const response = await axios.patch(`${API_BASE_URL}/cards/${id}/learn-status`, data);
+    return response.data;
+  },
+
+  /**
+   * Ответ в обучении (заполняет статистику/SM-2 на backend)
+   */
+  reviewCard: async (id: string, data: ReviewCardData): Promise<Card> => {
+    const response = await axios.post(`${API_BASE_URL}/cards/${id}/review`, data);
+    return response.data;
+  },
+
+  /**
+   * Виртуальные папки
+   */
+  getVirtualRemember: async (params?: { limit?: number }): Promise<Card[]> => {
+    const response = await axios.get(`${API_BASE_URL}/cards/virtual/remember`, { params });
+    return response.data;
+  },
+
+  getVirtualHard: async (params?: { limit?: number }): Promise<Card[]> => {
+    const response = await axios.get(`${API_BASE_URL}/cards/virtual/hard`, { params });
     return response.data;
   },
 

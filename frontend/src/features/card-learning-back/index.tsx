@@ -7,15 +7,20 @@ import { ButtonLink } from '@/shared/ui/button-link';
 export const CardLearningBack = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
+  const { userId, folderId, kind } = useParams<{ userId?: string; folderId?: string; kind?: string }>();
   const { selectedFolderId } = useFoldersStore();
 
   // Используем folderId из URL, если он есть, иначе используем selectedFolderId из store
-  const currentFolderId = folderId || selectedFolderId;
+  const currentFolderId = kind ? `virtual:${kind}` : (folderId || selectedFolderId);
 
   const handleBack = () => {
     if (userId && currentFolderId) {
-      navigate(`/learn/${userId}/${currentFolderId}`);
+      if (currentFolderId.startsWith('virtual:')) {
+        const k = currentFolderId.replace(/^virtual:/, '');
+        navigate(`/learn/${userId}/virtual/${k}`);
+      } else {
+        navigate(`/learn/${userId}/${currentFolderId}`);
+      }
     } else if (currentFolderId) {
       navigate(`/learn/${currentFolderId}`);
     } else {

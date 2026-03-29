@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {ListItemText} from '@mui/material';
 import MoreVerticalIcon from '@mui/icons-material/MoreHoriz';
@@ -33,7 +33,9 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
     const { userId } = useParams<{ userId?: string }>();
     const { user } = useAuthStore();
     const currentUserId = userId || user?.id;
-    const orderedFolders = useMemo(() => [...folders].reverse(), [folders]);
+
+    const isVirtualFolderId = (id: string) => id.startsWith('virtual:');
+    const virtualKind = (id: string) => id.replace(/^virtual:/, '');
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, folderId: string) => {
         event.stopPropagation();
@@ -48,6 +50,18 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
 
     const handleFolderClick = (folderId: string) => {
         onSelect(folderId);
+        if (isVirtualFolderId(folderId)) {
+            const kind = virtualKind(folderId);
+            if (currentUserId) {
+                navigate(`/learn/${currentUserId}/virtual/${kind}`);
+            } else {
+                navigate(`/learn/virtual/${kind}`);
+            }
+            if (onFolderSelect) {
+                onFolderSelect();
+            }
+            return;
+        }
         if (currentUserId) {
             navigate(`/learn/${currentUserId}/${folderId}`);
         } else {
@@ -62,7 +76,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
     return (
         <>
             <StyledList>
-                {orderedFolders.map((folder) => (
+                {folders.map((folder) => (
                     <StyledListItemButton
                         disableRipple
                         key={folder.id}
@@ -74,16 +88,20 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                                 ? <FolderOpenOutlinedIcon sx={{mr: 1}}/>
                                 : <FolderOutlinedIcon sx={{mr: 1}}/>}
                             {folderCardCounts && (
-                                <StyledFolderCounter>{folderCardCounts[folder.id] ?? 0}</StyledFolderCounter>
+                                <StyledFolderCounter>
+                                    {isVirtualFolderId(folder.id) ? 10 : (folderCardCounts[folder.id] ?? 0)}
+                                </StyledFolderCounter>
                             )}
                             <ListItemText primary={folder.name} />
-                            <StyledIconButton
-                                edge="end"
-                                size="small"
-                                onClick={(e) => handleMenuOpen(e, folder.id)}
-                            >
-                                <MoreVerticalIcon />
-                            </StyledIconButton>
+                            {!isVirtualFolderId(folder.id) ? (
+                                <StyledIconButton
+                                    edge="end"
+                                    size="small"
+                                    onClick={(e) => handleMenuOpen(e, folder.id)}
+                                >
+                                    <MoreVerticalIcon />
+                                </StyledIconButton>
+                            ) : null}
                         </StyledMenuBox>
                     </StyledListItemButton>
                 ))}
@@ -105,6 +123,7 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                 {selectedFolderId && (() => {
                     const folder = folders.find((f) => f.id === selectedFolderId);
                     if (!folder) return null;
+                    if (isVirtualFolderId(folder.id)) return null;
                     return (
                         <>
                             {onRename && (

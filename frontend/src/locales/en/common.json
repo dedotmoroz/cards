@@ -211,7 +211,11 @@
     "title": "Folders",
     "create": "Create Folder",
     "edit": "Edit Folder",
-    "delete": "Delete Folder"
+    "delete": "Delete Folder",
+    "virtual": {
+      "remember": "Remember",
+      "hard": "Hard"
+    }
   },
   "errors": {
     "generic": "An error occurred",

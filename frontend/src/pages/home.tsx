@@ -23,12 +23,12 @@ export const HomePage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
-    const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
+    const { userId, folderId, kind } = useParams<{ userId?: string; folderId?: string; kind?: string }>();
     const navigate = useNavigate();
     const { user } = useAuthStore();
     const currentUserId = user?.id;
 
-    const { fetchCards, isLoading: cardsLoading } = useCardsStore();
+    const { fetchCards, fetchVirtualCards, isLoading: cardsLoading } = useCardsStore();
     const {
         folders,
         selectedFolderId,
@@ -38,13 +38,15 @@ export const HomePage = () => {
 
     // Получаем название папки для title
     const folderName = useMemo(() => {
-        const currentFolderId = folderId || selectedFolderId;
+        const currentFolderId = kind ? `virtual:${kind}` : (folderId || selectedFolderId);
         if (!currentFolderId) {
             return null;
         }
+        if (currentFolderId === 'virtual:remember') return t('folders.virtual.remember', 'Вспомни');
+        if (currentFolderId === 'virtual:hard') return t('folders.virtual.hard', 'Сложно');
         const folder = folders.find((item) => item.id === currentFolderId);
         return folder?.name ?? null;
-    }, [folderId, selectedFolderId, folders]);
+    }, [folderId, selectedFolderId, folders, kind, t]);
 
     // Формируем title страницы
     const pageTitle = useMemo(() => {
@@ -63,18 +65,28 @@ export const HomePage = () => {
 
     // Синхронизируем store с URL (userId и folderId - источники истины)
     useEffect(() => {
-        if (userId && folderId) {
+        if (userId && kind) {
+            const virtualId = `virtual:${kind}`;
+            if (virtualId !== selectedFolderId) {
+                setSelectedFolder(virtualId);
+            }
+        } else if (userId && folderId) {
             // Если в URL есть userId и folderId, устанавливаем folderId как выбранную папку
             if (folderId !== selectedFolderId) {
                 setSelectedFolder(folderId);
             }
-        } else if (userId && !folderId && folders.length > 0) {
+        } else if (userId && !folderId && !kind && folders.length > 0) {
             // Если в URL есть userId, но нет folderId, редиректим на первую папку
             navigate(`/learn/${userId}/${folders[0].id}`, { replace: true });
         } else if (!userId && currentUserId && folders.length > 0) {
             // Если в URL нет userId, но есть текущий пользователь, добавляем userId в URL
             if (selectedFolderId) {
-                navigate(`/learn/${currentUserId}/${selectedFolderId}`, { replace: true });
+                if (selectedFolderId.startsWith('virtual:')) {
+                    const k = selectedFolderId.replace(/^virtual:/, '');
+                    navigate(`/learn/${currentUserId}/virtual/${k}`, { replace: true });
+                } else {
+                    navigate(`/learn/${currentUserId}/${selectedFolderId}`, { replace: true });
+                }
             } else {
                 navigate(`/learn/${currentUserId}/${folders[0].id}`, { replace: true });
             }
@@ -82,15 +94,25 @@ export const HomePage = () => {
             // Если нет ни userId, ни текущего пользователя, редиректим на /learn
             navigate('/learn', { replace: true });
         }
-    }, [userId, folderId, folders, selectedFolderId, setSelectedFolder, navigate, currentUserId]);
+    }, [userId, folderId, kind, folders, selectedFolderId, setSelectedFolder, navigate, currentUserId]);
 
     // Отдельный useEffect для загрузки карточек, зависит только от folderId
     useEffect(() => {
+        if (userId && kind) {
+            const virtualId = `virtual:${kind}`;
+            if (virtualId !== lastFetchedFolderId.current) {
+                lastFetchedFolderId.current = virtualId;
+                if (kind === 'remember' || kind === 'hard') {
+                    fetchVirtualCards(kind, 10);
+                }
+            }
+            return;
+        }
         if (userId && folderId && folderId !== lastFetchedFolderId.current) {
             lastFetchedFolderId.current = folderId;
             fetchCards(folderId);
         }
-    }, [userId, folderId, fetchCards]);
+    }, [userId, folderId, kind, fetchCards, fetchVirtualCards]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);

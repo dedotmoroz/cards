@@ -15,8 +15,15 @@ export class InMemoryCardRepository implements CardRepository {
         return card ?? null;
     }
 
-    async findAll(folderId: string): Promise<Card[]> {
-        return this.cards.filter(card => card.folderId === folderId);
+    async findAll(folderId?: string, filter?: { isLearned?: boolean }): Promise<Card[]> {
+        let result = this.cards;
+        if (folderId) {
+            result = result.filter((card) => card.folderId === folderId);
+        }
+        if (filter?.isLearned !== undefined) {
+            result = result.filter((card) => card.isLearned === filter.isLearned);
+        }
+        return result;
     }
 
     async delete(id: string): Promise<void> {
@@ -34,5 +41,36 @@ export class InMemoryCardRepository implements CardRepository {
             }
         }
         return result;
+    }
+
+    async findRememberCardsByFolderIds(folderIds: string[], limit: number): Promise<Card[]> {
+        return this.cards
+            .filter((c) => folderIds.includes(c.folderId))
+            .filter((c) => c.isLearned)
+            .sort((a, b) => {
+                const aKey = (a.lastLearnedAt ?? a.createdAt).getTime();
+                const bKey = (b.lastLearnedAt ?? b.createdAt).getTime();
+                return aKey - bKey;
+            })
+            .slice(0, limit);
+    }
+
+    async findHardCardsByFolderIds(folderIds: string[], limit: number): Promise<Card[]> {
+        const errorRate = (c: Card) => {
+            const denom = c.reviewCount || 0;
+            return denom > 0 ? c.incorrectCount / denom : 0;
+        };
+        return this.cards
+            .filter((c) => folderIds.includes(c.folderId))
+            .filter((c) => c.isLearned)
+            .filter((c) => c.reviewCount >= 3)
+            .sort((a, b) => {
+                const byRate = errorRate(b) - errorRate(a);
+                if (byRate !== 0) return byRate;
+                const byAvg = a.averageRating - b.averageRating;
+                if (byAvg !== 0) return byAvg;
+                return b.reviewCount - a.reviewCount;
+            })
+            .slice(0, limit);
     }
 }

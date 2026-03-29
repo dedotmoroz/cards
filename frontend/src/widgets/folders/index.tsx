@@ -25,6 +25,15 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
         [folderCardCounts]
     );
 
+    const foldersForUi = useMemo(() => {
+        const ordered = [...folders].reverse();
+        return [
+            ...ordered,
+            { id: 'virtual:remember', name: t('folders.virtual.remember', 'Вспомни') },
+            { id: 'virtual:hard', name: t('folders.virtual.hard', 'Сложно') },
+        ];
+    }, [folders, t]);
+
     return (
         <StyledWrappedBox>
             <StyledCaptionBox>
@@ -37,7 +46,7 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
                 <CreateFolder/>
             </StyledCaptionBox>
             <FolderList
-                folders={folders}
+                folders={foldersForUi}
                 selectedId={selectedFolderId}
                 onSelect={setSelectedFolder}
                 onRename={updateFolderName}

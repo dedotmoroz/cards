@@ -209,7 +209,11 @@
     "title": "文件夹",
     "create": "创建文件夹",
     "edit": "编辑文件夹",
-    "delete": "删除文件夹"
+    "delete": "删除文件夹",
+    "virtual": {
+      "remember": "回忆",
+      "hard": "困难"
+    }
   },
   "errors": {
     "generic": "发生错误",

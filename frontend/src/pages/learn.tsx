@@ -13,21 +13,24 @@ import { useSEO } from '@/shared/hooks/useSEO';
 
 export const LearnPage = () => {
     const { t, i18n } = useTranslation();
-    const { folderId } = useParams<{ userId?: string; folderId?: string }>();
+    const { folderId, kind } = useParams<{ userId?: string; folderId?: string; kind?: string }>();
     const [searchParams] = useSearchParams();
     const { folders } = useFoldersStore();
     
     // Получаем initialSide из URL сразу, до создания хука
     const initialSideFromUrl = (searchParams.get('initialSide') || 'question') as 'question' | 'answer';
-    const learning = useCardLearning(folderId, initialSideFromUrl);
+    const sourceId = kind ? `virtual:${kind}` : folderId;
+    const learning = useCardLearning(sourceId, initialSideFromUrl);
 
     const folderName = useMemo(() => {
+        if (kind === 'remember') return t('folders.virtual.remember', 'Вспомни');
+        if (kind === 'hard') return t('folders.virtual.hard', 'Сложно');
         if (!folderId) {
             return null;
         }
         const folder = folders.find((item) => item.id === folderId);
         return folder?.name ?? null;
-    }, [folderId, folders]);
+    }, [folderId, folders, kind, t]);
 
     const pageTitle = useMemo(() => {
         const baseTitle = t('seo.learn.title');

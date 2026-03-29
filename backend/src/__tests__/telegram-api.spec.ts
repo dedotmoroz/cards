@@ -6,6 +6,11 @@ import { eq } from 'drizzle-orm';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 
+const mockVerifyTurnstileToken = jest.fn().mockResolvedValue(true);
+jest.mock('../lib/turnstile', () => ({
+    verifyTurnstileToken: (token: string) => mockVerifyTurnstileToken(token),
+}));
+
 describe('Telegram API (e2e)', () => {
     let fastify: FastifyInstance;
     let botToken: string;
@@ -40,7 +45,7 @@ describe('Telegram API (e2e)', () => {
         // Регистрация пользователя для тестов bind
         await request(fastify.server)
             .post('/auth/register')
-            .send({ email: testEmail, password: testPassword });
+            .send({ email: testEmail, password: testPassword, turnstileToken: 'test-captcha-token' });
 
         // Логин и получение куки
         const loginRes = await request(fastify.server)

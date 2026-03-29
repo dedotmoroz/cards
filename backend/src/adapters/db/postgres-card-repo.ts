@@ -1,4 +1,4 @@
-import { eq, desc, inArray, sql } from 'drizzle-orm';
+import { eq, desc, and, inArray, sql } from 'drizzle-orm';
 import { db } from '../../db/db';
 import { Card } from '../../domain/card';
 import { CardRepository } from '../../ports/card-repository';
@@ -68,11 +68,17 @@ export class PostgresCardRepository implements CardRepository {
         return result ? toCard(result) : null;
     }
 
-    async findAll(folderId: string): Promise<Card[]> {
+    async findAll(folderId?: string, filter?: { isLearned?: boolean }): Promise<Card[]> {
+        const whereParts = [];
+        if (folderId) whereParts.push(eq(cards.folderId, folderId));
+        if (filter?.isLearned !== undefined) whereParts.push(eq(cards.isLearned, filter.isLearned));
+
+        const whereClause = whereParts.length ? and(...whereParts) : undefined;
+
         const rows = await db
             .select()
             .from(cards)
-            .where(eq(cards.folderId, folderId))
+            .where(whereClause)
             .orderBy(desc(cards.createdAt));
         return rows.map(toCard);
     }
@@ -92,5 +98,35 @@ export class PostgresCardRepository implements CardRepository {
             .where(inArray(cards.folderId, folderIds))
             .groupBy(cards.folderId);
         return Object.fromEntries(rows.map((r) => [r.folderId, r.count]));
+    }
+
+    async findRememberCardsByFolderIds(folderIds: string[], limit: number): Promise<Card[]> {
+        if (folderIds.length === 0) return [];
+        const orderKey = sql<Date>`coalesce(${cards.lastLearnedAt}, ${cards.createdAt})`;
+        const rows = await db
+            .select()
+            .from(cards)
+            .where(and(inArray(cards.folderId, folderIds), eq(cards.isLearned, true)))
+            .orderBy(orderKey)
+            .limit(limit);
+        return rows.map(toCard);
+    }
+
+    async findHardCardsByFolderIds(folderIds: string[], limit: number): Promise<Card[]> {
+        if (folderIds.length === 0) return [];
+        const rate = sql<number>`(${cards.incorrectCount}::float / nullif(${cards.reviewCount}, 0))`;
+        const rows = await db
+            .select()
+            .from(cards)
+            .where(
+                and(
+                    inArray(cards.folderId, folderIds),
+                    eq(cards.isLearned, true),
+                    sql`${cards.reviewCount} >= 3`
+                )
+            )
+            .orderBy(sql`${rate} DESC`, cards.averageRating, desc(cards.reviewCount))
+            .limit(limit);
+        return rows.map(toCard);
     }
 }

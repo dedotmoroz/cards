@@ -209,7 +209,11 @@
     "title": "Carpetas",
     "create": "Crear carpeta",
     "edit": "Editar carpeta",
-    "delete": "Eliminar carpeta"
+    "delete": "Eliminar carpeta",
+    "virtual": {
+      "remember": "Recordar",
+      "hard": "Difícil"
+    }
   },
   "errors": {
     "generic": "Ocurrió un error",

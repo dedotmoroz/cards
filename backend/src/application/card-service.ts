@@ -92,6 +92,14 @@ export class CardService {
     return card;
   }
 
+  async reviewCard(id: string, outcome: 'know' | 'dontknow'): Promise<Card | null> {
+    const card = await this.cardRepo.findById(id);
+    if (!card) return null;
+    card.review(outcome);
+    await this.cardRepo.save(card);
+    return card;
+  }
+
   async getAll(folderId?: string) {
     return this.cardRepo.findAll(folderId);
   }

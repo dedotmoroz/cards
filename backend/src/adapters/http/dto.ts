@@ -28,6 +28,10 @@ export const UpdateCardDTO = z.object({
 
 export const MarkAsLearnedDTO = z.object({}).describe('MarkAsLearnedDTO'); // пустая схема
 
+export const ReviewCardDTO = z.object({
+  outcome: z.enum(['know', 'dontknow']),
+}).describe('ReviewCardDTO');
+
 export const CreateFolderDTO = z.object({
   userId: z.string().uuid().describe('ID пользователя'),
   name: z.string().min(1).describe('Название папки'),
@@ -57,5 +61,6 @@ export const GoogleLoginDTO = z.object({
 export type CreateCardDTO = z.infer<typeof CreateCardDTO>;
 export type CardDTO = z.infer<typeof CardDTO>;
 export type UpdateCardDTO = z.infer<typeof UpdateCardDTO>;
+export type ReviewCardDTO = z.infer<typeof ReviewCardDTO>;
 export type CreateFolderDTO = z.infer<typeof CreateFolderDTO>;
 export type FolderDTO = z.infer<typeof FolderDTO>;
