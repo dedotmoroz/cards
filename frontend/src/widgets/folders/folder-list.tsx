@@ -11,6 +11,8 @@ import { useAuthStore } from '@/shared/store/authStore';
 
 import { StyledListItemButton, StyledIconButton, StyledMenuBox, StyledList, StyledFolderCounter } from "./styled-components.ts"
 
+const VIRTUAL_FOLDER_COLOR = '#9810fa';
+
 export interface Folder {
     id: string;
     name: string;
@@ -76,7 +78,12 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
     return (
         <>
             <StyledList>
-                {folders.map((folder) => (
+                {folders.map((folder) => {
+                    const isVirtual = isVirtualFolderId(folder.id);
+                    const folderIconSx = isVirtual
+                        ? { mr: 1, color: VIRTUAL_FOLDER_COLOR }
+                        : { mr: 1 };
+                    return (
                     <StyledListItemButton
                         disableRipple
                         key={folder.id}
@@ -85,15 +92,15 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                     >
                         <StyledMenuBox>
                             {selectedId === folder.id
-                                ? <FolderOpenOutlinedIcon sx={{mr: 1}}/>
-                                : <FolderOutlinedIcon sx={{mr: 1}}/>}
+                                ? <FolderOpenOutlinedIcon sx={folderIconSx}/>
+                                : <FolderOutlinedIcon sx={folderIconSx}/>}
                             {folderCardCounts && (
                                 <StyledFolderCounter>
-                                    {isVirtualFolderId(folder.id) ? 10 : (folderCardCounts[folder.id] ?? 0)}
+                                    {isVirtual ? 10 : (folderCardCounts[folder.id] ?? 0)}
                                 </StyledFolderCounter>
                             )}
                             <ListItemText primary={folder.name} />
-                            {!isVirtualFolderId(folder.id) ? (
+                            {!isVirtual ? (
                                 <StyledIconButton
                                     edge="end"
                                     size="small"
@@ -104,7 +111,8 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                             ) : null}
                         </StyledMenuBox>
                     </StyledListItemButton>
-                ))}
+                    );
+                })}
             </StyledList>
 
             <MenuUI
