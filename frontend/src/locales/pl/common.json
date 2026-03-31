@@ -27,12 +27,12 @@
     },
     "features": {
       "contextAI": {
-        "title": "Kontekst + AI",
-        "subtitle": "Ucz się słów w zdaniach — automatycznie.",
-        "item1": "— Twórz przykładowe zdania za pomocą AI",
-        "item2": "— Zobacz słowo w różnych kontekstach",
-        "item3": "— Lepiej rozumiej niuanse znaczenia i użycia",
-        "accent": "Karta to nie tylko tłumaczenie, ale kompletny blok semantyczny."
+        "title": "Kontekst AI",
+        "subtitle": "Opanuj słowa w kontekście zdań.",
+        "item1": "— AI dopasuje najbardziej trafny kontekst",
+        "item2": "— Idealne do phrasal verbs, idiomów i stałych związków",
+        "item3": "— Zrozum logikę żywej mowy",
+        "accent": "Zapamiętuj gotowe zwroty i brzmij naturalnie."
       },
       "chrome": {
         "title": "Rozszerzenie Chrome",
@@ -44,13 +44,13 @@
         "accent": "Więcej o rozszerzeniu i instalacji…"
       },
       "importExport": {
-        "title": "Import / Eksport",
-        "subtitle": "Pełna kontrola nad słownikiem.",
-        "description": "Nie jesteś przywiązany do platformy.",
-        "item1": "— Importuj słowa z Excela",
-        "item2": "— Eksportuj słownik do kopii zapasowej",
-        "item3": "— Wygodna praca z dużymi listami",
-        "accent": "Odpowiednie zarówno do nauki osobistej, jak i systematycznej pracy ze słownikiem."
+        "title": "Import i eksport",
+        "subtitle": "Pełna kontrola nad słownictwem.",
+        "description": "",
+        "item1": "— Import gotowych list słów",
+        "item2": "— Wgrywanie i pobieranie plików w formacie Excel",
+        "item3": "— Synchronizacja danych z Arkuszami Google",
+        "accent": "Nie jesteś przywiązany do jednej platformy."
       },
       "adaptive": {
         "title": "Adaptacyjność",

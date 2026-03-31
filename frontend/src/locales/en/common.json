@@ -27,12 +27,12 @@
     },
     "features": {
       "contextAI": {
-        "title": "Context + AI",
-        "subtitle": "Learn words in sentences — automatically.",
-        "item1": "— Create example sentences with AI",
-        "item2": "— See the word in different contexts",
-        "item3": "— Better understand nuances of meaning and usage",
-        "accent": "A card is not just a translation, but a complete semantic block."
+        "title": "AI context",
+        "subtitle": "Master words in the context of sentences.",
+        "item1": "— AI picks the most relevant context",
+        "item2": "— Ideal for phrasal verbs, idioms, and fixed expressions",
+        "item3": "— Grasp how real speech works",
+        "accent": "Memorize ready-made phrases and sound natural."
       },
       "chrome": {
         "title": "Chrome Extension",
@@ -44,13 +44,13 @@
         "accent": "Learn more about the extension and installation…"
       },
       "importExport": {
-        "title": "Import / Export",
-        "subtitle": "Full control over your dictionary.",
-        "description": "You are not tied to the platform.",
-        "item1": "— Import words from Excel",
-        "item2": "— Export dictionary for backup",
-        "item3": "— Convenient to work with large lists",
-        "accent": "Suitable for both personal learning and systematic work with a dictionary."
+        "title": "Import and export",
+        "subtitle": "Full control over your vocabulary.",
+        "description": "",
+        "item1": "— Import ready-made word lists",
+        "item2": "— Upload and download files in Excel format",
+        "item3": "— Sync data with Google Sheets",
+        "accent": "You're not locked into one platform."
       },
       "adaptive": {
         "title": "Adaptability",

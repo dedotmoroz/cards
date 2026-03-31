@@ -27,12 +27,12 @@
     },
     "features": {
       "contextAI": {
-        "title": "Contexto + IA",
-        "subtitle": "Aprenda palavras em frases — automaticamente.",
-        "item1": "— Crie frases de exemplo com IA",
-        "item2": "— Veja a palavra em diferentes contextos",
-        "item3": "— Entenda melhor os nuances de significado e uso",
-        "accent": "Um cartão não é apenas uma tradução, mas um bloco semântico completo."
+        "title": "Contexto com IA",
+        "subtitle": "Domine palavras no contexto de frases.",
+        "item1": "— A IA escolhe o contexto mais relevante",
+        "item2": "— Ideal para phrasal verbs, expressões idiomáticas e colocações",
+        "item3": "— Entenda a lógica da fala real",
+        "accent": "Memorize frases prontas e soe natural."
       },
       "chrome": {
         "title": "Extensão Chrome",
@@ -44,13 +44,13 @@
         "accent": "Saiba mais sobre a extensão e a instalação…"
       },
       "importExport": {
-        "title": "Importar / Exportar",
-        "subtitle": "Controle total sobre seu dicionário.",
-        "description": "Você não está preso à plataforma.",
-        "item1": "— Importe palavras do Excel",
-        "item2": "— Exporte dicionário para backup",
-        "item3": "— Conveniente para trabalhar com listas grandes",
-        "accent": "Adequado tanto para aprendizado pessoal quanto para trabalho sistemático com um dicionário."
+        "title": "Importar e exportar",
+        "subtitle": "Controle total do seu vocabulário.",
+        "description": "",
+        "item1": "— Importe listas de palavras prontas",
+        "item2": "— Envio e download de arquivos em formato Excel",
+        "item3": "— Sincronize dados com o Google Sheets",
+        "accent": "Você não fica preso a uma única plataforma."
       },
       "adaptive": {
         "title": "Adaptabilidade",

@@ -27,12 +27,12 @@
     },
     "features": {
       "contextAI": {
-        "title": "Kontext + KI",
-        "subtitle": "Wörter in Sätzen lernen — automatisch.",
-        "item1": "— Beispielsätze mit KI erstellen",
-        "item2": "— Das Wort in verschiedenen Kontexten sehen",
-        "item3": "— Nuancen von Bedeutung und Verwendung besser verstehen",
-        "accent": "Eine Karte ist nicht nur eine Übersetzung, sondern ein vollständiger semantischer Block."
+        "title": "KI-Kontext",
+        "subtitle": "Erlernen Sie Wörter im Kontext von Sätzen.",
+        "item1": "— Die KI wählt den passendsten Kontext",
+        "item2": "— Ideal für Phrasal Verbs, Redewendungen und feste Wendungen",
+        "item3": "— Verstehen Sie die Logik der lebendigen Sprache",
+        "accent": "Merken Sie fertige Wendungen und klingen Sie natürlich."
       },
       "chrome": {
         "title": "Chrome-Erweiterung",
@@ -44,13 +44,13 @@
         "accent": "Mehr über die Erweiterung und Installation…"
       },
       "importExport": {
-        "title": "Import / Export",
-        "subtitle": "Volle Kontrolle über Ihr Wörterbuch.",
-        "description": "Sie sind nicht an die Plattform gebunden.",
-        "item1": "— Wörter aus Excel importieren",
-        "item2": "— Wörterbuch für Backup exportieren",
-        "item3": "— Bequem mit großen Listen arbeiten",
-        "accent": "Geeignet sowohl für persönliches Lernen als auch für systematische Arbeit mit einem Wörterbuch."
+        "title": "Import und Export",
+        "subtitle": "Volle Kontrolle über Ihr Vokabular.",
+        "description": "",
+        "item1": "— Import fertiger Wortlisten",
+        "item2": "— Hoch- und Herunterladen von Dateien im Excel-Format",
+        "item3": "— Daten mit Google Tabellen synchronisieren",
+        "accent": "Sie sind nicht an eine einzige Plattform gebunden."
       },
       "adaptive": {
         "title": "Anpassungsfähigkeit",
