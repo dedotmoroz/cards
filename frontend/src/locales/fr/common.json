@@ -10,7 +10,7 @@
       "title1": "Mémorisez",
       "title2": "les mots en contexte,",
       "title3": "pas par listes",
-      "description": "Cartes d'apprentissage des langues qui vous aident à comprendre, pas seulement à mémoriser. Créez des exemples avec l'IA, enregistrez des mots directement depuis votre navigateur et apprenez-les à votre rythme.",
+      "description": "Créez des exemples vivants avec l’IA, enregistrez des phrases depuis le navigateur et apprenez la langue dans des situations réelles.",
       "button1": "Commencer à apprendre",
       "button2": "Comment ça marche"
     },
@@ -21,9 +21,15 @@
     },
     "context": {
       "title": "Pourquoi le contexte est plus important que la mémorisation",
-      "subtitle1": "Les mots individuels sont rapidement oubliés.",
-      "subtitle2": "Les mots dans les phrases — restent.",
-      "description": "Nous avons créé un service où vous apprenez les mots comme ils sont utilisés dans la vie réelle : dans les phrases, les situations et le contexte vivant. Cela réduit la charge sur la mémoire et rend l'apprentissage naturel."
+      "subtitle": "La recherche en psychologie cognitive le confirme : le contexte est le plus court chemin vers la parole fluide.",
+      "subtitleBold1": "+35 % à la mémorisation.",
+      "subtitle1": "Les mots appris dans des phrases restent en mémoire à long terme un tiers plus longtemps que les listes",
+      "subtitleBold2": "2 fois plus vite.",
+      "subtitle2": "Le cerveau dépense moins d’énergie pour intégrer un mot s’il le voit dans une situation réelle.",
+      "subtitleBold3": "0 % de récitation par cœur.",
+      "subtitle3": "Vous n’apprenez pas une traduction par cœur : vous créez des connexions neuronales naturelles, comme les locuteurs natifs.",
+      "description": "Fondé sur la théorie des « niveaux de traitement » de Craik et Lockhart.",
+      "link": "En savoir plus sur la théorie de la mémoire…"
     },
     "features": {
       "contextAI": {

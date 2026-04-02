@@ -10,7 +10,7 @@
       "title1": "Memorize",
       "title2": "palavras no contexto,",
       "title3": "não por listas",
-      "description": "Cartões para aprender idiomas que ajudam você a entender, não apenas memorizar. Crie exemplos com IA, salve palavras diretamente do seu navegador e aprenda-as no seu próprio ritmo.",
+      "description": "Crie exemplos vivos com IA, salve frases direto do navegador e aprenda o idioma em situações reais.",
       "button1": "Começar a aprender",
       "button2": "Como funciona"
     },
@@ -21,9 +21,15 @@
     },
     "context": {
       "title": "Por que o contexto é mais importante do que memorizar",
-      "subtitle1": "Palavras individuais são rapidamente esquecidas.",
-      "subtitle2": "Palavras em frases — permanecem.",
-      "description": "Criamos um serviço onde você aprende palavras como elas são usadas na vida real: em frases, situações e contexto vivo. Isso reduz a carga na memória e torna o aprendizado natural."
+      "subtitle": "A pesquisa em psicologia cognitiva confirma: o contexto é o caminho mais curto para a fala fluente.",
+      "subtitleBold1": "+35% na retenção.",
+      "subtitle1": "Palavras aprendidas em frases permanecem na memória de longo prazo um terço mais do que listas",
+      "subtitleBold2": "2× mais rápido.",
+      "subtitle2": "O cérebro gasta menos energia para assimilar uma palavra se a vê numa situação real.",
+      "subtitleBold3": "0% de decoreba.",
+      "subtitle3": "Você não decora uma tradução — cria conexões neurais naturais como falantes nativos.",
+      "description": "Com base na teoria dos «níveis de processamento» de Craik e Lockhart.",
+      "link": "Saiba mais sobre a teoria da memória…"
     },
     "features": {
       "contextAI": {

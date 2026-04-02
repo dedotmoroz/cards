@@ -10,7 +10,7 @@
       "title1": "Zapamiętuj",
       "title2": "słowa w kontekście,",
       "title3": "nie z list",
-      "description": "Karty do nauki języków, które pomagają rozumieć, a nie tylko zapamiętywać. Twórz przykłady za pomocą AI, zapisuj słowa bezpośrednio z przeglądarki i ucz się ich we własnym tempie.",
+      "description": "Twórz żywe przykłady z AI, zapisuj zwroty prosto z przeglądarki i ucz się języka na realnych sytuacjach.",
       "button1": "Rozpocznij naukę",
       "button2": "Jak to działa"
     },
@@ -21,9 +21,15 @@
     },
     "context": {
       "title": "Dlaczego kontekst jest ważniejszy niż zapamiętywanie",
-      "subtitle1": "Pojedyncze słowa szybko się zapomina.",
-      "subtitle2": "Słowa w zdaniach — pozostają.",
-      "description": "Stworzyliśmy serwis, w którym uczysz się słów tak, jak są używane w prawdziwym życiu: w zdaniach, sytuacjach i żywym kontekście. To zmniejsza obciążenie pamięci i sprawia, że nauka jest naturalna."
+      "subtitle": "Badania psychologii poznawczej potwierdzają: kontekst to najkrótsza droga do płynnej mowy.",
+      "subtitleBold1": "+35% do zapamiętywania.",
+      "subtitle1": "Słów nauczonych w zdaniach pamięta się w pamięci długotrwałej o jedną trzecią dłużej niż listy",
+      "subtitleBold2": "2× szybciej.",
+      "subtitle2": "Mózg zużywa mniej energii na przyswojenie słowa, gdy widzi je w realnej sytuacji.",
+      "subtitleBold3": "0% wkuwania.",
+      "subtitle3": "Nie wykuwasz tłumaczenia — budujesz naturalne połączenia neuronowe jak native speakerzy.",
+      "description": "Oparte na teorii „poziomów przetwarzania” Craika i Lockharta.",
+      "link": "Więcej o teorii zapamiętywania…"
     },
     "features": {
       "contextAI": {

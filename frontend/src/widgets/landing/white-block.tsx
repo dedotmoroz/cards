@@ -1,16 +1,17 @@
-import {
-    Lightbulb
-} from '@mui/icons-material';
+// import {
+//     Lightbulb
+// } from '@mui/icons-material';
 import {useTranslation} from "react-i18next";
 
 import {
-    StyledLampIcon,
+    // StyledLampIcon,
     StyledWhiteCard,
     StyledWhiteHeader,
-    StyledWhiteText,
-    StyledTypographyCrossed,
+    // StyledWhiteText,
     StyledTypographyStressed,
+    StyledTypographyOrdinary,
     StyledWhiteCardContainer,
+    StyledTypographyBold,
 } from './styled-components.ts'
 
 export const WhiteBlock = () => {
@@ -18,22 +19,37 @@ export const WhiteBlock = () => {
 
     return (
         <StyledWhiteCard>
-                <StyledLampIcon>
-                    <Lightbulb sx={{color: 'white'}}/>
-                </StyledLampIcon>
+                {/*<StyledLampIcon>*/}
+                {/*    <Lightbulb sx={{color: 'white'}}/>*/}
+                {/*</StyledLampIcon>*/}
                 <StyledWhiteHeader>
                     {t('landing.context.title')}
                 </StyledWhiteHeader>
             <StyledWhiteCardContainer>
-                <StyledTypographyCrossed>
-                    {t('landing.context.subtitle1')}
-                </StyledTypographyCrossed>
                 <StyledTypographyStressed>
-                    {t('landing.context.subtitle2')}
+                    {t('landing.context.subtitle')}
                 </StyledTypographyStressed>
-                <StyledWhiteText>
-                    {t('landing.context.description')}
-                </StyledWhiteText>
+                <StyledTypographyOrdinary>
+                    <StyledTypographyBold>
+                        {t('landing.context.subtitleBold1')}
+                    </StyledTypographyBold>
+                    {t('landing.context.subtitle1')}
+                </StyledTypographyOrdinary>
+                <StyledTypographyOrdinary>
+                    <StyledTypographyBold>
+                        {t('landing.context.subtitleBold2')}
+                    </StyledTypographyBold>
+                    {t('landing.context.subtitle2')}
+                </StyledTypographyOrdinary>
+                <StyledTypographyOrdinary>
+                    <StyledTypographyBold>
+                        {t('landing.context.subtitleBold3')}
+                    </StyledTypographyBold>
+                    {t('landing.context.subtitle3')}
+                </StyledTypographyOrdinary>
+                {/*<StyledWhiteText>*/}
+                {/*    {t('landing.context.description')}*/}
+                {/*</StyledWhiteText>*/}
             </StyledWhiteCardContainer>
         </StyledWhiteCard>
     )

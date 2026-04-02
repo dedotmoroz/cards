@@ -10,7 +10,7 @@
       "title1": "Lerne",
       "title2": "Wörter im Kontext,",
       "title3": "nicht aus Listen",
-      "description": "Sprachlernkarten, die Ihnen helfen zu verstehen, nicht nur auswendig zu lernen. Erstellen Sie Beispiele mit KI, speichern Sie Wörter direkt aus dem Browser und lernen Sie sie in Ihrem eigenen Tempo.",
+      "description": "Erstellen Sie lebendige Beispiele mit KI, speichern Sie Sätze direkt aus dem Browser und lernen Sie die Sprache anhand echter Situationen.",
       "button1": "Lernen beginnen",
       "button2": "So funktioniert's"
     },
@@ -21,9 +21,15 @@
     },
     "context": {
       "title": "Warum Kontext wichtiger ist als Auswendiglernen",
-      "subtitle1": "Einzelne Wörter werden schnell vergessen.",
-      "subtitle2": "Wörter in Sätzen bleiben erhalten.",
-      "description": "Wir haben einen Service geschaffen, in dem Sie Wörter so lernen, wie sie im echten Leben verwendet werden: in Sätzen, Situationen und lebendigem Kontext. Dies reduziert die Belastung des Gedächtnisses und macht das Lernen natürlich."
+      "subtitle": "Die kognitivpsychologische Forschung bestätigt: Kontext ist der kürzeste Weg zur freien Rede.",
+      "subtitleBold1": "+35 % beim Behalten.",
+      "subtitle1": "In Sätzen gelernte Wörter bleiben im Langzeitgedächtnis ein Drittel länger als Listen",
+      "subtitleBold2": "Doppelt so schnell.",
+      "subtitle2": "Das Gehirn braucht weniger Energie, um ein Wort aufzunehmen, wenn es in einer realen Situation erscheint.",
+      "subtitleBold3": "0 % Auswendiglernen.",
+      "subtitle3": "Sie pauken keine Übersetzung aus, sondern bilden natürliche neuronale Verbindungen wie Muttersprachler.",
+      "description": "Gestützt auf die Theorie der „Verarbeitungstiefe“ von Craik und Lockhart.",
+      "link": "Mehr zur Gedächtnistheorie…"
     },
     "features": {
       "contextAI": {

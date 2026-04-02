@@ -10,7 +10,7 @@
       "title1": "Memorize",
       "title2": "words in context,",
       "title3": "not by lists",
-      "description": "Language learning cards that help you understand, not just memorize. Create examples with AI, save words directly from your browser, and learn them at your own pace.",
+      "description": "Create natural examples with AI, save phrases right from your browser, and learn the language through real-life situations.",
       "button1": "Start Learning",
       "button2": "How it works"
     },
@@ -21,9 +21,15 @@
     },
     "context": {
       "title": "Why context is more important than memorization",
-      "subtitle1": "Individual words are quickly forgotten.",
-      "subtitle2": "Words in sentences — remain.",
-      "description": "We have created a service where you learn words as they are used in real life: in sentences, situations, and live context. This reduces the load on memory and makes learning natural."
+      "subtitle": "Cognitive psychology research confirms: context is the shortest path to fluent speech.",
+      "subtitleBold1": "+35% to retention.",
+      "subtitle1": "Words learned in sentences stay in long-term memory a third longer than lists",
+      "subtitleBold2": "2× faster.",
+      "subtitle2": "The brain spends less energy absorbing a word when it sees it in a real situation.",
+      "subtitleBold3": "0% rote cramming.",
+      "subtitle3": "You don't memorize a translation—you build natural neural connections like native speakers do.",
+      "description": "Based on Craik and Lockhart's levels-of-processing theory.",
+      "link": "Learn more about the memory theory..."
     },
     "features": {
       "contextAI": {

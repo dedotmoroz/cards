@@ -2,22 +2,22 @@ import { styled } from "@mui/material/styles";
 import {Box, Button, Card, Chip} from "@mui/material";
 import kotcatImg from '@/shared/images/kotcat.png';
 
-export const StyledBox = styled(Box)`
-    display: flex;
-    padding: 41px 41px 41px 41px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-    align-self: stretch;
-    //grid-row: 1 / span 1;
-    //grid-column: 1 / span 1;
-    justify-self: stretch;
-    
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.40);
-    background: rgba(255, 255, 255, 0.40);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.10);
-`
+export const StyledBox = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    padding: '41px',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '24px',
+    alignSelf: 'stretch',
+    justifySelf: 'stretch',
+    borderRadius: '24px',
+    border: '1px solid rgba(255, 255, 255, 0.40)',
+    background: 'rgba(255, 255, 255, 0.40)',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.10)',
+    [theme.breakpoints.down('sm')]: {
+        padding: '20px',
+    },
+}));
 
 export const StyledHeader = styled(Box)`
     display: flex;
@@ -67,7 +67,7 @@ export const StyledAccentLink = styled('a')`
 
 export const StyledWhiteCard = styled(Card)(({ theme }) => ({
     display: 'flex',
-    padding: '65px',
+    padding: '45px',
     flexDirection: 'column',
     alignItems: 'center',
     borderRadius: '24px',
@@ -76,6 +76,9 @@ export const StyledWhiteCard = styled(Card)(({ theme }) => ({
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     [theme.breakpoints.down('md')]: {
         padding: '40px',
+    },
+    [theme.breakpoints.down('sm')]: {
+        padding: '20px',
     },
 }));
 
@@ -271,7 +274,6 @@ export const StyledWhiteHeader = styled(Box)(({ theme }) => ({
     fontWeight: 400,
     lineHeight: '48px',
     letterSpacing: '0.35px',
-    marginTop: '16px',
     marginBottom: '24px',
     [theme.breakpoints.down('md')]: {
         fontSize: '30px',
@@ -301,17 +303,39 @@ export const StyledTypographyCrossed = styled(Box)`
     text-decoration-line: line-through;
 `
 
-export const StyledTypographyStressed = styled(Box)`
-    text-align: center;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 29.25px; /* 162.5% */
-    letter-spacing: -0.439px;
-    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+export const StyledTypographyStressed = styled(Box)(({ theme }) => ({
+    fontSize: '26px',
+    fontStyle: 'normal',
+    textAlign: 'center',
+    lineHeight: '130%',
+    letterSpacing: '-0.439px',
+    background: 'linear-gradient(90deg, #4F39F6 0%, #9810FA 100%)',
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    marginBottom: '30px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '20px',
+    },
+}));
+
+export const StyledTypographyOrdinary = styled(Box)(({ theme }) => ({
+    fontSize: '22px',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    lineHeight: '29.25px',
+    letterSpacing: '-0.439px',
+    marginBottom: '20px',
+    color: 'rgb(74, 85, 101)',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '18px',
+        lineHeight: '28px',
+    },
+}));
+
+export const StyledTypographyBold = styled(Box)`
+    font-weight: 600;
+    color: rgb(0, 0, 0);
 `
 
 export const StyledRedHeader = styled(Box)(({ theme }) => ({
@@ -382,7 +406,7 @@ export const StyledFS = styled(Box)`
 
 export const StyledFirstScreenTitle = styled(Box)(({ theme }) => ({
     color: '#101828',
-    fontSize: '60px',
+    fontSize: '54px',
     fontStyle: 'normal',
     fontWeight: 400,
     lineHeight: '60px',
