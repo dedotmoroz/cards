@@ -4,6 +4,7 @@ import kotcatImg from '@/shared/images/kotcat.png';
 
 export const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
+    width: '100%',
     padding: '41px',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -21,24 +22,25 @@ export const StyledBox = styled(Box)(({ theme }) => ({
 
 export const StyledHeader = styled(Box)`
     display: flex;
+    width: 100%;
     align-items: center;
     justify-content: center;
     gap: 16px;
-    color: #101828;
-    // font-family: Inter;
-    font-size: 30px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 36px; /* 120% */
-    letter-spacing: 0.396px;
     flex-wrap: wrap;
 `
 
 export const StyledTitle = styled(Box)`
+    color: #101828;
+    font-size: 30px;
+    line-height: 35px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.396px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    margin-bottom: 5px;
 `;
 
 export const StyledDescription = styled(Box)`
@@ -50,13 +52,16 @@ export const StyledDescription = styled(Box)`
     line-height: 28px; /* 155.556% */
     letter-spacing: -0.439px;
     white-space: pre-line;
+    width: 100%;
 `
 
 export const StyledAccentLink = styled('a')`
+    display: block;
+    font-weight: bold;
+    margin-top: 12px;
     && {
-        color: #9810fa;
+        color: #000;
         text-decoration: none;
-        font-weight: 500;
     }
 
     &&:hover {
@@ -519,4 +524,46 @@ export const StyledFooterLinks = styled(Box)`
     }
 `
 
+export const StyledHeight = styled(Box)`
+    display: block;
+    color: #9810FA;
+    font-size: 20px;
+    margin-top: 12px;
+    margin-bottom: 22px;
+    // font-weight: bold;
+    text-align: center;
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`
 
+export const StyledLinkButton = styled(Button)`
+    text-transform: none;
+    display: flex;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #615FFF 0%, #F6339A 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10);
+    //width: 100%;
+
+    &:hover {
+        box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.3), 0 4px 6px -4px rgba(17, 24, 39, 0.3);
+    }
+
+    &:disabled {
+        outline: 1px dashed rgba(0, 0, 0, 0.8);
+        background: #fff;
+        opacity: 0.5;
+    }
+
+    & .MuiButton-startIcon {
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+`
