@@ -39,6 +39,7 @@ import { registerContextReadingRoutes } from './routes/context-reading-routes';
 import { registerAuthRoutes } from './routes/auth-routes';
 import { registerTelegramRoutes } from './routes/telegram-routes';
 import { registerTranslateRoutes } from './routes/translate-routes';
+import { registerPublishRoutes } from './routes/publish-routes';
 import { registerGoogleSheetsRoutes } from './routes/google-sheets-routes';
 import { GoogleSheetsService } from '../../application/google-sheets-service';
 import { PostgresGoogleSheetsTokensRepository } from '../db/postgres-google-sheets-tokens-repo';
@@ -201,6 +202,13 @@ export async function buildServer() {
         resetContextReadingUseCase
     );
     registerTranslateRoutes(fastify);
+
+    if (process.env.STRAPI_API_TOKEN) {
+        registerPublishRoutes(fastify);
+    } else {
+        fastify.log.warn('Publish to Strapi not configured: STRAPI_API_TOKEN missing');
+    }
+
     if (googleSheetsService) {
         registerGoogleSheetsRoutes(fastify, googleSheetsService, googleSheetsTokensRepo);
     }

@@ -20,3 +20,23 @@ export const CardGenerateStatusQueryDTO = z
     })
     .describe('CardGenerateStatusQueryDTO');
 export type CardGenerateStatusQuery = z.infer<typeof CardGenerateStatusQueryDTO>;
+
+export const PublishPageDTO = z
+    .object({
+        title: z.string().min(1).max(500),
+        content: z.string().min(1).max(100_000),
+        locale: z.string().min(2).max(10).optional(),
+    })
+    .describe('PublishPageDTO');
+export type PublishPageBody = z.infer<typeof PublishPageDTO>;
+
+/** Matches Strapi collection type `words` (JSON) — array or object payload */
+export const PublishCollectionDTO = z
+    .object({
+        title: z.string().min(1).max(500),
+        slug: z.string().min(1).max(300),
+        words: z.union([z.array(z.unknown()), z.record(z.unknown())]),
+        locale: z.string().min(2).max(10).optional(),
+    })
+    .describe('PublishCollectionDTO');
+export type PublishCollectionBody = z.infer<typeof PublishCollectionDTO>;
