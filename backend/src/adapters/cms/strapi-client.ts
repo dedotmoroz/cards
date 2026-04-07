@@ -83,7 +83,11 @@ function parseCreateResponse(json: unknown, fallbackSlug: string): StrapiCreateR
     return { id, slug };
 }
 
-async function postStrapi(apiPath: string, payload: { data: Record<string, unknown> }): Promise<StrapiCreateResult> {
+async function postStrapi(
+    apiPath: string,
+    payload: { data: Record<string, unknown> },
+    options?: { locale?: string },
+): Promise<StrapiCreateResult> {
     const token = process.env.STRAPI_API_TOKEN;
     if (!token) {
         throw new Error('STRAPI_API_TOKEN is not configured');
@@ -91,6 +95,10 @@ async function postStrapi(apiPath: string, payload: { data: Record<string, unkno
 
     const base = process.env.STRAPI_CMS_URL ?? DEFAULT_STRAPI_CMS_URL;
     const url = new URL(apiPath.startsWith('/') ? apiPath : `/${apiPath}`, base.endsWith('/') ? base : `${base}/`);
+
+    if (options?.locale) {
+        url.searchParams.set('locale', options.locale);
+    }
 
     const response = await fetch(url, {
         method: 'POST',
@@ -121,10 +129,12 @@ async function postStrapi(apiPath: string, payload: { data: Record<string, unkno
 
 export async function publishPage(input: PublishPageInput): Promise<StrapiCreateResult> {
     const payload = buildPagePayload(input);
-    return postStrapi('/api/pages', payload);
+    const locale = input.locale ?? 'en';
+    return postStrapi('/api/pages', payload, { locale });
 }
 
 export async function publishCollection(input: PublishCollectionInput): Promise<StrapiCreateResult> {
     const payload = buildCollectionPayload(input);
-    return postStrapi('/api/collections', payload);
+    const locale = input.locale ?? 'en';
+    return postStrapi('/api/collections', payload, { locale });
 }

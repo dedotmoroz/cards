@@ -57,7 +57,7 @@ describe('POST /publish/page (e2e)', () => {
 
         expect(mockFetch).toHaveBeenCalledTimes(1);
         const [url, init] = mockFetch.mock.calls[0];
-        expect(String(url)).toBe('https://cms.example.com/api/pages');
+        expect(String(url)).toBe('https://cms.example.com/api/pages?locale=en');
         expect(init?.method).toBe('POST');
         const sent = JSON.parse((init?.body as string) ?? '{}');
         expect(sent.data.title).toBe('My Title');
@@ -87,6 +87,21 @@ describe('POST /publish/page (e2e)', () => {
 
         expect(res.status).toBe(502);
         expect(res.body.message).toBe('Failed to publish page to CMS');
+    });
+
+    it('передаёт locale в query для Strapi i18n', async () => {
+        mockFetch.mockResolvedValue(
+            new Response(JSON.stringify({ data: { id: 1, attributes: { slug: 'x' } } }), { status: 201 }),
+        );
+
+        const res = await request(fastify.server).post('/publish/page').send({
+            title: 'Título',
+            content: 'Hola',
+            locale: 'es',
+        });
+
+        expect(res.status).toBe(201);
+        expect(String(mockFetch.mock.calls[0][0])).toBe('https://cms.example.com/api/pages?locale=es');
     });
 });
 
@@ -151,7 +166,7 @@ describe('POST /publish/collection (e2e)', () => {
 
         expect(mockFetch).toHaveBeenCalledTimes(1);
         const [url, init] = mockFetch.mock.calls[0];
-        expect(String(url)).toBe('https://cms.example.com/api/collections');
+        expect(String(url)).toBe('https://cms.example.com/api/collections?locale=en');
         const sent = JSON.parse((init?.body as string) ?? '{}');
         expect(sent.data.title).toBe('My deck');
         expect(sent.data.slug).toBe('my-deck');
@@ -177,8 +192,29 @@ describe('POST /publish/collection (e2e)', () => {
         });
 
         expect(res.status).toBe(201);
+        expect(String(mockFetch.mock.calls[0][0])).toBe(
+            'https://cms.example.com/api/collections?locale=en',
+        );
         const sent = JSON.parse((mockFetch.mock.calls[0][1]?.body as string) ?? '{}');
         expect(sent.data.words).toEqual(['cat', 'dog']);
+    });
+
+    it('передаёт locale в query для Strapi i18n', async () => {
+        mockFetch.mockResolvedValue(
+            new Response(JSON.stringify({ data: { id: 1, attributes: { slug: 'x' } } }), { status: 201 }),
+        );
+
+        const res = await request(fastify.server).post('/publish/collection').send({
+            title: 'T',
+            slug: 'x',
+            words: [],
+            locale: 'es',
+        });
+
+        expect(res.status).toBe(201);
+        expect(String(mockFetch.mock.calls[0][0])).toBe(
+            'https://cms.example.com/api/collections?locale=es',
+        );
     });
 
     it('возвращает 502 при ошибке Strapi', async () => {
