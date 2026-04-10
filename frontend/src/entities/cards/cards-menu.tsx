@@ -1,10 +1,5 @@
 import {MenuItem} from "@mui/material";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import DriveFolderUpload from '@mui/icons-material/DriveFolderUpload';
-
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
-import TableChartIcon from '@mui/icons-material/TableChart';
 import CloudIcon from '@mui/icons-material/Cloud';
 import { useTranslation } from 'react-i18next';
 import {useState, useRef, useEffect} from "react";
@@ -18,6 +13,14 @@ import { API_BASE_URL } from '@/shared/config/api';
 import {useNavigate, useParams} from "react-router-dom";
 import {useAuthStore} from "@/shared/store/authStore.ts";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
+import {
+    CloudArrowLeftIcon,
+    CloudArrowRightIcon,
+    CloudInIcon,
+    CloudOutIcon,
+    FileReplaceOutlineIcon,
+    AiContentIcon,
+} from '@/shared/icons'
 
 export const CardsMenu = () => {
     const { t } = useTranslation();
@@ -166,17 +169,18 @@ export const CardsMenu = () => {
                 }}
             >
                 <MenuItem onClick={handleImportClick} disabled={!selectedFolderId}>
-                    <DriveFolderUpload sx={{mr: 1}}/>
+                    <FileReplaceOutlineIcon style={{marginRight: '10px'}}/>
                     {t('import.import')}
                 </MenuItem>
-                <MenuItem onClick={handleExportClick} disabled={!selectedFolderId || isExporting}>
-                    <FileDownloadIcon sx={{mr: 1}}/>
-                    {isExporting ? t('export.exporting') : t('export.export')}
-                </MenuItem>
                 <MenuItem onClick={handleImportExcelClick} disabled={!selectedFolderId || isImportingExcel}>
-                    <TableChartIcon sx={{mr: 1}}/>
+                    <CloudInIcon style={{marginRight: '10px'}} />
                     {isImportingExcel ? t('import.importing') : t('import.excelImport')}
                 </MenuItem>
+                <MenuItem onClick={handleExportClick} disabled={!selectedFolderId || isExporting}>
+                    <CloudOutIcon style={{marginRight: '10px'}} />
+                    {isExporting ? t('export.exporting') : t('export.export')}
+                </MenuItem>
+
                 {!sheetsConnected && (
                     <MenuItem onClick={handleConnectSheets}>
                         <CloudIcon sx={{mr: 1}}/>
@@ -186,17 +190,17 @@ export const CardsMenu = () => {
                 {sheetsConnected && (
                     <>
                         <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
-                            <CloudIcon sx={{mr: 1}}/>
+                            <CloudArrowLeftIcon style={{marginRight: '10px'}} />
                             {t('googleSheets.importFromSheets')}
                         </MenuItem>
                         <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId || isExportingSheets}>
-                            <CloudIcon sx={{mr: 1}}/>
+                            <CloudArrowRightIcon style={{marginRight: '10px'}} />
                             {isExportingSheets ? t('googleSheets.exportingToSheets') : t('googleSheets.exportToSheets')}
                         </MenuItem>
                     </>
                 )}
                 <MenuItem onClick={handleGoToContent} disabled={!selectedFolderId}>
-                    <AutoStoriesOutlinedIcon sx={{mr: 1}}/>
+                    <AiContentIcon style={{marginRight: '12px', marginLeft: '3px'}} />
                     {t('cards.context')}
                 </MenuItem>
             </MenuUI>

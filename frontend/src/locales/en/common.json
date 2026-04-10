@@ -200,7 +200,7 @@
     "front": "Front",
     "back": "Back",
     "create": "Add Card",
-    "context": "Context",
+    "context": "Create AI content",
     "edit": "Edit Card",
     "move": "Move",
     "moveToFolder": "Move card to folder",
@@ -267,7 +267,7 @@
   "import": {
     "title": "Import Cards",
     "selectFile": "Select File",
-    "import": "Import",
+    "import": "Import list",
     "importing": "Importing...",
     "format": "CSV Format: question,answer",
     "textImport": "Text Import",

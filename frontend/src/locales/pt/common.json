@@ -200,7 +200,7 @@
     "front": "Frente",
     "back": "Verso",
     "create": "Adicionar cartão",
-    "context": "Contexto",
+    "context": "Criar conteúdo com IA",
     "edit": "Editar cartão",
     "move": "Mover",
     "moveToFolder": "Mover cartão para pasta",
@@ -265,7 +265,7 @@
   "import": {
     "title": "Importar cartões",
     "selectFile": "Selecionar arquivo",
-    "import": "Importar",
+    "import": "Importar lista",
     "importing": "Importando...",
     "format": "Formato CSV: pergunta, resposta",
     "textImport": "Importar texto",

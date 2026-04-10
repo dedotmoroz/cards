@@ -200,7 +200,7 @@
     "front": "Recto",
     "back": "Verso",
     "create": "Ajouter une carte",
-    "context": "Contexte",
+    "context": "Créer du contenu IA",
     "edit": "Modifier la carte",
     "move": "Déplacer",
     "moveToFolder": "Déplacer la carte vers un dossier",
@@ -265,7 +265,7 @@
   "import": {
     "title": "Importer des cartes",
     "selectFile": "Sélectionner un fichier",
-    "import": "Importer",
+    "import": "Importer la liste",
     "importing": "Importation...",
     "format": "Format CSV : question, réponse",
     "textImport": "Importation de texte",

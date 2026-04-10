@@ -200,7 +200,7 @@
     "front": "Vorderseite",
     "back": "Rückseite",
     "create": "Karte hinzufügen",
-    "context": "Kontext",
+    "context": "KI-Inhalt erstellen",
     "edit": "Karte bearbeiten",
     "move": "Verschieben",
     "moveToFolder": "Karte in Ordner verschieben",
@@ -265,7 +265,7 @@
   "import": {
     "title": "Karten importieren",
     "selectFile": "Datei auswählen",
-    "import": "Importieren",
+    "import": "Liste importieren",
     "importing": "Importiere...",
     "format": "CSV-Format: Frage, Antwort",
     "textImport": "Textimport",

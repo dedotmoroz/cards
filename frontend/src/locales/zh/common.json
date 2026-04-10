@@ -200,7 +200,7 @@
     "front": "正面",
     "back": "背面",
     "create": "添加卡片",
-    "context": "上下文",
+    "context": "创建 AI 内容",
     "edit": "编辑卡片",
     "move": "移动",
     "moveToFolder": "将卡片移动到文件夹",
@@ -265,7 +265,7 @@
   "import": {
     "title": "导入卡片",
     "selectFile": "选择文件",
-    "import": "导入",
+    "import": "导入列表",
     "importing": "导入中...",
     "format": "CSV格式：问题，答案",
     "textImport": "文本导入",
