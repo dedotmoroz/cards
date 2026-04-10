@@ -257,9 +257,10 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
+                alignItems: 'center',
+                height: '40px',
                 mt: 3,
                 px: 3,
-                pb: 1,
                 opacity: isGoogleLoading ? 0.6 : 1,
               }}
             >
