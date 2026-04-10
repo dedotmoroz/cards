@@ -35,17 +35,17 @@
       "contextAI": {
         "title": "AI context",
         "subtitle": "Master words in the context of sentences.",
-        "item1": "— AI picks the most relevant context",
-        "item2": "— Ideal for phrasal verbs, idioms, and fixed expressions",
-        "item3": "— Grasp how real speech works",
+        "item1": "▪ AI picks the most relevant context",
+        "item2": "▪ Ideal for phrasal verbs, idioms, and fixed expressions",
+        "item3": "▪ Grasp how real speech works",
         "accent": "Memorize ready-made phrases and sound natural."
       },
       "chrome": {
         "title": "Chrome Extension",
         "subtitle": "Turns selected text on websites into cards.",
         "description": "How it works:",
-        "item1": "— Highlight a word or phrase on the page",
-        "item2": "— Add it to your dictionary via the browser context menu",
+        "item1": "▪ Highlight a word or phrase on the page",
+        "item2": "▪ Add it to your dictionary via the browser context menu",
         "item3": "A card will be created automatically in the selected folder.",
         "accent": "Learn more about the extension and installation…"
       },
@@ -53,18 +53,18 @@
         "title": "Import and export",
         "subtitle": "Full control over your vocabulary.",
         "description": "",
-        "item1": "— Import ready-made word lists",
-        "item2": "— Upload and download files in Excel format",
-        "item3": "— Sync data with Google Sheets",
+        "item1": "▪ Import ready-made word lists",
+        "item2": "▪ Upload and download files in Excel format",
+        "item3": "▪ Sync data with Google Sheets",
         "accent": "You're not locked into one platform."
       },
       "adaptive": {
         "title": "Adaptability",
         "subtitle": "Convenient on any screen.",
         "description": "Service is adapted for:",
-        "item1": "— Mobile devices",
-        "item2": "— Laptops",
-        "item3": "— Large monitors",
+        "item1": "▪ Mobile devices",
+        "item2": "▪ Laptops",
+        "item3": "▪ Large monitors",
         "accent": "The interface is simple, light, and uncluttered — nothing distracts from learning."
       }
     },

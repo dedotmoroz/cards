@@ -35,17 +35,17 @@
       "contextAI": {
         "title": "Contexto con IA",
         "subtitle": "Domina palabras en el contexto de oraciones.",
-        "item1": "— La IA elige el contexto más relevante",
-        "item2": "— Ideal para phrasal verbs, modismos y expresiones fijas",
-        "item3": "— Comprende la lógica del habla real",
+        "item1": "▪ La IA elige el contexto más relevante",
+        "item2": "▪ Ideal para phrasal verbs, modismos y expresiones fijas",
+        "item3": "▪ Comprende la lógica del habla real",
         "accent": "Memoriza frases hechas y suena natural."
       },
       "chrome": {
         "title": "Extensión de Chrome",
         "subtitle": "Convierte el texto seleccionado en sitios web en tarjetas.",
         "description": "Cómo funciona:",
-        "item1": "— Selecciona una palabra o frase en la página",
-        "item2": "— Añádela al diccionario desde el menú contextual del navegador",
+        "item1": "▪ Selecciona una palabra o frase en la página",
+        "item2": "▪ Añádela al diccionario desde el menú contextual del navegador",
         "item3": "La tarjeta se creará automáticamente en la carpeta elegida.",
         "accent": "Más sobre la extensión y la instalación…"
       },
@@ -53,18 +53,18 @@
         "title": "Importar y exportar",
         "subtitle": "Control total de tu vocabulario.",
         "description": "",
-        "item1": "— Importa listas de palabras listas para usar",
-        "item2": "— Carga y descarga archivos en formato Excel",
-        "item3": "— Sincroniza datos con Google Sheets",
+        "item1": "▪ Importa listas de palabras listas para usar",
+        "item2": "▪ Carga y descarga archivos en formato Excel",
+        "item3": "▪ Sincroniza datos con Google Sheets",
         "accent": "No quedas atado a una sola plataforma."
       },
       "adaptive": {
         "title": "Adaptabilidad",
         "subtitle": "Cómodo en cualquier pantalla.",
         "description": "El servicio está adaptado para:",
-        "item1": "— Dispositivos móviles",
-        "item2": "— Portátiles",
-        "item3": "— Monitores grandes",
+        "item1": "▪ Dispositivos móviles",
+        "item2": "▪ Portátiles",
+        "item3": "▪ Monitores grandes",
         "accent": "La interfaz es simple, ligera y ordenada — nada distrae del aprendizaje."
       }
     },

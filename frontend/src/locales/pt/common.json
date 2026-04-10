@@ -35,17 +35,17 @@
       "contextAI": {
         "title": "Contexto com IA",
         "subtitle": "Domine palavras no contexto de frases.",
-        "item1": "— A IA escolhe o contexto mais relevante",
-        "item2": "— Ideal para phrasal verbs, expressões idiomáticas e colocações",
-        "item3": "— Entenda a lógica da fala real",
+        "item1": "▪ A IA escolhe o contexto mais relevante",
+        "item2": "▪ Ideal para phrasal verbs, expressões idiomáticas e colocações",
+        "item3": "▪ Entenda a lógica da fala real",
         "accent": "Memorize frases prontas e soe natural."
       },
       "chrome": {
         "title": "Extensão Chrome",
         "subtitle": "Transforma o texto selecionado em sites em cartões.",
         "description": "Como funciona:",
-        "item1": "— Selecione uma palavra ou frase na página",
-        "item2": "— Pelo menu de contexto do navegador, adicione ao dicionário",
+        "item1": "▪ Selecione uma palavra ou frase na página",
+        "item2": "▪ Pelo menu de contexto do navegador, adicione ao dicionário",
         "item3": "Um cartão será criado automaticamente na pasta escolhida.",
         "accent": "Saiba mais sobre a extensão e a instalação…"
       },
@@ -53,18 +53,18 @@
         "title": "Importar e exportar",
         "subtitle": "Controle total do seu vocabulário.",
         "description": "",
-        "item1": "— Importe listas de palavras prontas",
-        "item2": "— Envio e download de arquivos em formato Excel",
-        "item3": "— Sincronize dados com o Google Sheets",
+        "item1": "▪ Importe listas de palavras prontas",
+        "item2": "▪ Envio e download de arquivos em formato Excel",
+        "item3": "▪ Sincronize dados com o Google Sheets",
         "accent": "Você não fica preso a uma única plataforma."
       },
       "adaptive": {
         "title": "Adaptabilidade",
         "subtitle": "Confortável em qualquer tela.",
         "description": "O serviço é adaptado para:",
-        "item1": "— Dispositivos móveis",
-        "item2": "— Laptops",
-        "item3": "— Monitores grandes",
+        "item1": "▪ Dispositivos móveis",
+        "item2": "▪ Laptops",
+        "item3": "▪ Monitores grandes",
         "accent": "A interface é simples, leve e desordenada — nada distrai do aprendizado."
       }
     },

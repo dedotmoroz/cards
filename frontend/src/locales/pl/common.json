@@ -35,17 +35,17 @@
       "contextAI": {
         "title": "Kontekst AI",
         "subtitle": "Opanuj słowa w kontekście zdań.",
-        "item1": "— AI dopasuje najbardziej trafny kontekst",
-        "item2": "— Idealne do phrasal verbs, idiomów i stałych związków",
-        "item3": "— Zrozum logikę żywej mowy",
+        "item1": "▪ AI dopasuje najbardziej trafny kontekst",
+        "item2": "▪ Idealne do phrasal verbs, idiomów i stałych związków",
+        "item3": "▪ Zrozum logikę żywej mowy",
         "accent": "Zapamiętuj gotowe zwroty i brzmij naturalnie."
       },
       "chrome": {
         "title": "Rozszerzenie Chrome",
         "subtitle": "Zamienia zaznaczony tekst na stronach w fiszki.",
         "description": "Jak to działa:",
-        "item1": "— Zaznacz słowo lub frazę na stronie",
-        "item2": "— Dodaj ją do słownika z menu kontekstowego przeglądarki",
+        "item1": "▪ Zaznacz słowo lub frazę na stronie",
+        "item2": "▪ Dodaj ją do słownika z menu kontekstowego przeglądarki",
         "item3": "Fiszka utworzy się automatycznie w wybranym folderze.",
         "accent": "Więcej o rozszerzeniu i instalacji…"
       },
@@ -53,18 +53,18 @@
         "title": "Import i eksport",
         "subtitle": "Pełna kontrola nad słownictwem.",
         "description": "",
-        "item1": "— Import gotowych list słów",
-        "item2": "— Wgrywanie i pobieranie plików w formacie Excel",
-        "item3": "— Synchronizacja danych z Arkuszami Google",
+        "item1": "▪ Import gotowych list słów",
+        "item2": "▪ Wgrywanie i pobieranie plików w formacie Excel",
+        "item3": "▪ Synchronizacja danych z Arkuszami Google",
         "accent": "Nie jesteś przywiązany do jednej platformy."
       },
       "adaptive": {
         "title": "Adaptacyjność",
         "subtitle": "Wygodne na każdym ekranie.",
         "description": "Serwis jest dostosowany do:",
-        "item1": "— Urządzeń mobilnych",
-        "item2": "— Laptopów",
-        "item3": "— Dużych monitorów",
+        "item1": "▪ Urządzeń mobilnych",
+        "item2": "▪ Laptopów",
+        "item3": "▪ Dużych monitorów",
         "accent": "Interfejs jest prosty, lekki i przejrzysty — nic nie rozprasza od nauki."
       }
     },

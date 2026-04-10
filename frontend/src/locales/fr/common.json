@@ -35,17 +35,17 @@
       "contextAI": {
         "title": "Contexte IA",
         "subtitle": "Maîtrisez les mots dans le contexte des phrases.",
-        "item1": "— L’IA choisit le contexte le plus pertinent",
-        "item2": "— Idéal pour les verbes à particule, les idiomes et les expressions figées",
-        "item3": "— Comprenez la logique de la parole réelle",
+        "item1": "▪ L’IA choisit le contexte le plus pertinent",
+        "item2": "▪ Idéal pour les verbes à particule, les idiomes et les expressions figées",
+        "item3": "▪ Comprenez la logique de la parole réelle",
         "accent": "Mémorisez des phrases toutes faites et parlez naturellement."
       },
       "chrome": {
         "title": "Extension Chrome",
         "subtitle": "Transforme le texte sélectionné sur les sites en cartes.",
         "description": "Comment ça marche :",
-        "item1": "— Sélectionnez un mot ou une expression sur la page",
-        "item2": "— Ajoutez-le au dictionnaire via le menu contextuel du navigateur",
+        "item1": "▪ Sélectionnez un mot ou une expression sur la page",
+        "item2": "▪ Ajoutez-le au dictionnaire via le menu contextuel du navigateur",
         "item3": "Une carte sera créée automatiquement dans le dossier choisi.",
         "accent": "En savoir plus sur l’extension et l’installation…"
       },
@@ -53,18 +53,18 @@
         "title": "Import et export",
         "subtitle": "Contrôle total sur votre vocabulaire.",
         "description": "",
-        "item1": "— Import de listes de mots prêtes à l’emploi",
-        "item2": "— Téléversement et téléchargement de fichiers au format Excel",
-        "item3": "— Synchronisation des données avec Google Sheets",
+        "item1": "▪ Import de listes de mots prêtes à l’emploi",
+        "item2": "▪ Téléversement et téléchargement de fichiers au format Excel",
+        "item3": "▪ Synchronisation des données avec Google Sheets",
         "accent": "Vous n’êtes pas enfermé dans une seule plateforme."
       },
       "adaptive": {
         "title": "Adaptabilité",
         "subtitle": "Confortable sur n'importe quel écran.",
         "description": "Le service est adapté pour :",
-        "item1": "— Appareils mobiles",
-        "item2": "— Ordinateurs portables",
-        "item3": "— Grands moniteurs",
+        "item1": "▪ Appareils mobiles",
+        "item2": "▪ Ordinateurs portables",
+        "item3": "▪ Grands moniteurs",
         "accent": "L'interface est simple, légère et épurée — rien ne distrait de l'apprentissage."
       }
     },

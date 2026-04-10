@@ -35,17 +35,17 @@
       "contextAI": {
         "title": "KI-Kontext",
         "subtitle": "Erlernen Sie Wörter im Kontext von Sätzen.",
-        "item1": "— Die KI wählt den passendsten Kontext",
-        "item2": "— Ideal für Phrasal Verbs, Redewendungen und feste Wendungen",
-        "item3": "— Verstehen Sie die Logik der lebendigen Sprache",
+        "item1": "▪ Die KI wählt den passendsten Kontext",
+        "item2": "▪ Ideal für Phrasal Verbs, Redewendungen und feste Wendungen",
+        "item3": "▪ Verstehen Sie die Logik der lebendigen Sprache",
         "accent": "Merken Sie fertige Wendungen und klingen Sie natürlich."
       },
       "chrome": {
         "title": "Chrome-Erweiterung",
         "subtitle": "Macht markierten Text auf Websites zu Karten.",
         "description": "So funktioniert es:",
-        "item1": "— Markieren Sie ein Wort oder eine Phrase auf der Seite",
-        "item2": "— Fügen Sie es über das Kontextmenü des Browsers zum Wörterbuch hinzu",
+        "item1": "▪ Markieren Sie ein Wort oder eine Phrase auf der Seite",
+        "item2": "▪ Fügen Sie es über das Kontextmenü des Browsers zum Wörterbuch hinzu",
         "item3": "Die Karte wird automatisch im ausgewählten Ordner erstellt.",
         "accent": "Mehr über die Erweiterung und Installation…"
       },
@@ -53,18 +53,18 @@
         "title": "Import und Export",
         "subtitle": "Volle Kontrolle über Ihr Vokabular.",
         "description": "",
-        "item1": "— Import fertiger Wortlisten",
-        "item2": "— Hoch- und Herunterladen von Dateien im Excel-Format",
-        "item3": "— Daten mit Google Tabellen synchronisieren",
+        "item1": "▪ Import fertiger Wortlisten",
+        "item2": "▪ Hoch- und Herunterladen von Dateien im Excel-Format",
+        "item3": "▪ Daten mit Google Tabellen synchronisieren",
         "accent": "Sie sind nicht an eine einzige Plattform gebunden."
       },
       "adaptive": {
         "title": "Anpassungsfähigkeit",
         "subtitle": "Bequem auf jedem Bildschirm.",
         "description": "Der Service ist angepasst für:",
-        "item1": "— Mobile Geräte",
-        "item2": "— Laptops",
-        "item3": "— Große Monitore",
+        "item1": "▪ Mobile Geräte",
+        "item2": "▪ Laptops",
+        "item3": "▪ Große Monitore",
         "accent": "Die Oberfläche ist einfach, leicht und übersichtlich — nichts lenkt vom Lernen ab."
       }
     },
