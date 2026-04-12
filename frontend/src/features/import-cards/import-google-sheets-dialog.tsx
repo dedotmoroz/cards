@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Autocomplete,
-  Box,
   CircularProgress,
   FormControl,
   InputLabel,
@@ -36,6 +35,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   );
   const [nextPageToken, setNextPageToken] = useState<string | undefined>();
   const [loadingSpreadsheets, setLoadingSpreadsheets] = useState(false);
+  const [loadingMoreSpreadsheets, setLoadingMoreSpreadsheets] = useState(false);
   const [selectedSpreadsheet, setSelectedSpreadsheet] = useState<{
     id: string;
     name: string;
@@ -43,7 +43,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   const [inputValue, setInputValue] = useState('');
   const [sheetTitles, setSheetTitles] = useState<string[]>([]);
   const [loadingSheetTitles, setLoadingSheetTitles] = useState(false);
-  const [selectedSheet, setSelectedSheet] = useState('Sheet1');
+  const [selectedSheet, setSelectedSheet] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [listError, setListError] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
@@ -52,8 +52,10 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
 
   const loadSpreadsheets = useCallback(
     async (q: string, pageToken: string | undefined, append: boolean) => {
-      setLoadingSpreadsheets(true);
-      if (!append) {
+      if (append) {
+        setLoadingMoreSpreadsheets(true);
+      } else {
+        setLoadingSpreadsheets(true);
         setListError(null);
       }
       try {
@@ -74,7 +76,11 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
           setNextPageToken(undefined);
         }
       } finally {
-        setLoadingSpreadsheets(false);
+        if (append) {
+          setLoadingMoreSpreadsheets(false);
+        } else {
+          setLoadingSpreadsheets(false);
+        }
       }
     },
     [t]
@@ -89,7 +95,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
     setSelectedSpreadsheet(null);
     setInputValue('');
     setSheetTitles([]);
-    setSelectedSheet('Sheet1');
+    setSelectedSheet('');
     setError(null);
     setListError(null);
     if (searchDebounceRef.current) {
@@ -102,10 +108,11 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   useEffect(() => {
     if (!selectedSpreadsheet) {
       setSheetTitles([]);
-      setSelectedSheet('Sheet1');
+      setSelectedSheet('');
       return;
     }
     let cancelled = false;
+    setSheetTitles([]);
     setLoadingSheetTitles(true);
     cardsApi
       .getGoogleSpreadsheetSheetTitles(selectedSpreadsheet.id)
@@ -113,12 +120,12 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
         if (cancelled) return;
         const titles = res.titles;
         setSheetTitles(titles);
-        setSelectedSheet(titles[0] ?? 'Sheet1');
+        setSelectedSheet(titles[0] ?? '');
       })
       .catch(() => {
         if (cancelled) return;
         setSheetTitles([]);
-        setSelectedSheet('Sheet1');
+        setSelectedSheet('');
       })
       .finally(() => {
         if (!cancelled) {
@@ -159,8 +166,17 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
     }, 400);
   };
 
-  const handleLoadMore = () => {
-    if (!nextPageToken || loadingSpreadsheets) {
+  const handleSpreadsheetListScroll = (event: React.UIEvent<HTMLUListElement>) => {
+    const el = event.currentTarget;
+    const threshold = 48;
+    const nearBottom =
+      el.scrollTop + el.clientHeight >= el.scrollHeight - threshold;
+    if (
+      !nearBottom ||
+      !nextPageToken ||
+      loadingSpreadsheets ||
+      loadingMoreSpreadsheets
+    ) {
       return;
     }
     loadSpreadsheets(inputValue.trim(), nextPageToken, true);
@@ -177,7 +193,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       setIsImporting(true);
       const result = await cardsApi.importFromGoogleSheets(folderId, {
         spreadsheetId: selectedSpreadsheet.id,
-        sheetName: selectedSheet.trim() || 'Sheet1',
+        sheetName: selectedSheet.trim(),
       });
       if (result.successCount > 0) {
         onSuccess();
@@ -205,6 +221,8 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
     selectedSheet.trim().length > 0 &&
     !loadingSheetTitles;
 
+  const sheetFieldDisabled = !selectedSpreadsheet || loadingSheetTitles;
+
   return (
     <DialogUI
       open={open}
@@ -218,6 +236,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
             {t('googleSheets.importDescription')}
           </Typography>
           <Autocomplete
+            disabled={loadingSpreadsheets}
             options={spreadsheetOptions}
             loading={loadingSpreadsheets}
             getOptionLabel={(o) => o.name}
@@ -227,6 +246,10 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
             inputValue={inputValue}
             onInputChange={handleSpreadsheetInputChange}
             filterOptions={(opts) => opts}
+            ListboxProps={{
+              onScroll: handleSpreadsheetListScroll,
+              sx: { maxHeight: 280 },
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -236,7 +259,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
                   ...params.InputProps,
                   endAdornment: (
                     <>
-                      {loadingSpreadsheets ? (
+                      {loadingSpreadsheets || loadingMoreSpreadsheets ? (
                         <CircularProgress color="inherit" size={20} />
                       ) : null}
                       {params.InputProps.endAdornment}
@@ -247,32 +270,13 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
             )}
             sx={{ mb: 2 }}
           />
-          {nextPageToken ? (
-            <Box sx={{ mb: 2 }}>
-              <ButtonUI
-                size="small"
-                variant="outlined"
-                onClick={handleLoadMore}
-                disabled={loadingSpreadsheets}
-              >
-                {t('googleSheets.loadMoreSpreadsheets')}
-              </ButtonUI>
-            </Box>
-          ) : null}
           {listError ? (
             <Alert severity="warning" sx={{ mb: 2 }}>
               {listError}
             </Alert>
           ) : null}
-          {loadingSheetTitles && selectedSpreadsheet ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <CircularProgress size={22} />
-              <Typography variant="body2" color="text.secondary">
-                {t('googleSheets.loadingSheetTabs')}
-              </Typography>
-            </Box>
-          ) : sheetTitles.length > 0 ? (
-            <FormControl fullWidth sx={{ mb: 2 }}>
+          {sheetTitles.length > 0 ? (
+            <FormControl fullWidth sx={{ mb: 2 }} disabled={sheetFieldDisabled}>
               <InputLabel id="gs-sheet-tab-label">{t('googleSheets.sheetTabLabel')}</InputLabel>
               <Select
                 labelId="gs-sheet-tab-label"
@@ -294,6 +298,18 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
               value={selectedSheet}
               onChange={(e) => setSelectedSheet(e.target.value)}
               variant="outlined"
+              disabled={sheetFieldDisabled}
+              placeholder={
+                loadingSheetTitles && selectedSpreadsheet
+                  ? t('googleSheets.loadingSheetTabs')
+                  : undefined
+              }
+              InputProps={{
+                endAdornment:
+                  loadingSheetTitles && selectedSpreadsheet ? (
+                    <CircularProgress color="inherit" size={20} sx={{ mr: 1 }} />
+                  ) : undefined,
+              }}
               sx={{ mb: 2 }}
             />
           )}
