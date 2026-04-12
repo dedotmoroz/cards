@@ -22,8 +22,8 @@ export const StyledButtonBlack = styled(Button)`
     }
     
     &:disabled {
-        background: #030213;
-        opacity: 0.5;
+        background: #fff;
+        border: 1px dashed rgba(17, 24, 39, 0.3);
     }
     
     & .MuiButton-startIcon {

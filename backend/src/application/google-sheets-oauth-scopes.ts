@@ -1,0 +1,5 @@
+/** Scopes for Google Sheets OAuth (must match generateAuthUrl in google-sheets-routes). */
+export const GOOGLE_SHEETS_OAUTH_SCOPES = [
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive.metadata.readonly',
+] as const;

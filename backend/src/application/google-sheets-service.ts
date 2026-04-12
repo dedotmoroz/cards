@@ -8,7 +8,11 @@ function createSheetsAuth(clientId: string, clientSecret: string, accessToken: s
     return auth;
 }
 
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+/** Escape single quotes for Drive API `q` string literals. */
+function escapeDriveQueryLiteral(value: string): string {
+    return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 const QUESTION_HEADERS = ['Сторона A', 'Side A', 'Question', 'question'];
 const ANSWER_HEADERS = ['Сторона B', 'Side B', 'Answer', 'answer'];
 
@@ -76,6 +80,53 @@ export class GoogleSheetsService {
 
         const rows = (response.data.values || []) as string[][];
         return rows;
+    }
+
+    async listSpreadsheets(
+        userId: string,
+        opts?: { q?: string; pageToken?: string; pageSize?: number },
+    ): Promise<{ files: { id: string; name: string }[]; nextPageToken?: string }> {
+        const accessToken = await this.getValidAccessToken(userId);
+        const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
+        const drive = google.drive({ version: 'v3', auth });
+
+        let q = "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false";
+        const nameQuery = opts?.q?.trim().slice(0, 200);
+        if (nameQuery) {
+            q += ` and name contains '${escapeDriveQueryLiteral(nameQuery)}'`;
+        }
+
+        const pageSize = Math.min(Math.max(opts?.pageSize ?? 50, 1), 100);
+        const res = await drive.files.list({
+            q,
+            fields: 'nextPageToken, files(id, name)',
+            pageSize,
+            pageToken: opts?.pageToken,
+            orderBy: 'modifiedTime desc',
+        });
+
+        const files = (res.data.files ?? [])
+            .filter((f): f is { id: string; name: string } => typeof f.id === 'string' && typeof f.name === 'string')
+            .map((f) => ({ id: f.id!, name: f.name! }));
+
+        return {
+            files,
+            nextPageToken: res.data.nextPageToken ?? undefined,
+        };
+    }
+
+    async getSpreadsheetSheetTitles(userId: string, spreadsheetId: string): Promise<string[]> {
+        const accessToken = await this.getValidAccessToken(userId);
+        const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
+        const sheets = google.sheets({ version: 'v4', auth });
+        const res = await sheets.spreadsheets.get({
+            spreadsheetId,
+            fields: 'sheets.properties.title',
+        });
+        const titles = (res.data.sheets ?? [])
+            .map((s) => s.properties?.title)
+            .filter((t): t is string => typeof t === 'string' && t.length > 0);
+        return titles;
     }
 
     findQuestionAndAnswerColumnIndexes(headerRow: string[]): { question: number; answer: number } | null {

@@ -11,7 +11,15 @@ jest.mock('googleapis', () => {
     const valuesGet = jest.fn();
     const create = jest.fn();
     const valuesUpdate = jest.fn();
-    (global as any).__googleSheetsTestMocks = { valuesGet, create, valuesUpdate };
+    const spreadsheetsGet = jest.fn();
+    const filesList = jest.fn();
+    (global as any).__googleSheetsTestMocks = {
+        valuesGet,
+        create,
+        valuesUpdate,
+        spreadsheetsGet,
+        filesList,
+    };
     return {
         google: {
             auth: {
@@ -23,7 +31,11 @@ jest.mock('googleapis', () => {
                 spreadsheets: {
                     values: { get: valuesGet, update: valuesUpdate },
                     create,
+                    get: spreadsheetsGet,
                 },
+            }),
+            drive: jest.fn().mockReturnValue({
+                files: { list: filesList },
             }),
         },
     };
@@ -33,6 +45,8 @@ const getSheetsMocks = () => (global as any).__googleSheetsTestMocks as {
     valuesGet: jest.Mock;
     create: jest.Mock;
     valuesUpdate: jest.Mock;
+    spreadsheetsGet: jest.Mock;
+    filesList: jest.Mock;
 };
 
 describe('GoogleSheetsService', () => {
@@ -244,6 +258,89 @@ describe('GoogleSheetsService', () => {
                     { question: 'Q', answer: 'A' },
                 ])
             ).rejects.toThrow('Failed to create spreadsheet');
+        });
+    });
+
+    describe('listSpreadsheets', () => {
+        beforeEach(() => {
+            const futureExpiry = new Date(Date.now() + 3600 * 1000);
+            tokensRepo.findByUserId.mockResolvedValue({
+                userId: 'user-1',
+                accessToken: 'valid-token',
+                refreshToken: 'refresh',
+                expiresAt: futureExpiry,
+            });
+        });
+
+        it('возвращает список таблиц из Drive', async () => {
+            getSheetsMocks().filesList.mockResolvedValue({
+                data: {
+                    files: [
+                        { id: 'id1', name: 'Table One' },
+                        { id: 'id2', name: 'Table Two' },
+                    ],
+                    nextPageToken: 'next',
+                },
+            });
+
+            const result = await service.listSpreadsheets('user-1');
+
+            expect(result).toEqual({
+                files: [
+                    { id: 'id1', name: 'Table One' },
+                    { id: 'id2', name: 'Table Two' },
+                ],
+                nextPageToken: 'next',
+            });
+            expect(getSheetsMocks().filesList).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    q: expect.stringContaining("mimeType='application/vnd.google-apps.spreadsheet'"),
+                    fields: 'nextPageToken, files(id, name)',
+                }),
+            );
+        });
+
+        it('добавляет фильтр name contains при поиске', async () => {
+            getSheetsMocks().filesList.mockResolvedValue({ data: { files: [] } });
+
+            await service.listSpreadsheets('user-1', { q: "Test's" });
+
+            expect(getSheetsMocks().filesList).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    q: expect.stringContaining("name contains 'Test\\'s'"),
+                }),
+            );
+        });
+    });
+
+    describe('getSpreadsheetSheetTitles', () => {
+        beforeEach(() => {
+            const futureExpiry = new Date(Date.now() + 3600 * 1000);
+            tokensRepo.findByUserId.mockResolvedValue({
+                userId: 'user-1',
+                accessToken: 'valid-token',
+                refreshToken: 'refresh',
+                expiresAt: futureExpiry,
+            });
+        });
+
+        it('возвращает названия листов', async () => {
+            getSheetsMocks().spreadsheetsGet.mockResolvedValue({
+                data: {
+                    sheets: [
+                        { properties: { title: 'Sheet1' } },
+                        { properties: { title: 'Cards' } },
+                    ],
+                },
+            });
+
+            const titles = await service.getSpreadsheetSheetTitles('user-1', 'abc123_x');
+
+            expect(titles).toEqual(['Sheet1', 'Cards']);
+            expect(getSheetsMocks().spreadsheetsGet).toHaveBeenCalledWith({
+                spreadsheetId: 'abc123_x',
+                fields: 'sheets.properties.title',
+            });
         });
     });
 });

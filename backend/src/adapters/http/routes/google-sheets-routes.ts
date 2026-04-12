@@ -2,8 +2,7 @@ import { Buffer } from 'node:buffer';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
-
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+import { GOOGLE_SHEETS_OAUTH_SCOPES } from '../../../application/google-sheets-oauth-scopes';
 
 /** Разрешены только относительные пути вида /learn/... */
 function validateLearnPath(path: string): string | null {
@@ -99,7 +98,7 @@ export function registerGoogleSheetsRoutes(
             const oauth2Client = new OAuth2Client(clientId, clientSecret, redirectUri);
             const url = oauth2Client.generateAuthUrl({
                 access_type: 'offline',
-                scope: SCOPES,
+                scope: [...GOOGLE_SHEETS_OAUTH_SCOPES],
                 prompt: 'consent',
                 state: encodeOAuthState(userId, returnPath),
             });
@@ -186,5 +185,79 @@ export function registerGoogleSheetsRoutes(
             const connected = await googleSheetsService.hasTokens(userId);
             return reply.send({ connected });
         }
+    );
+
+    /**
+     * Список таблиц Google (Drive API) — для выбора при импорте
+     */
+    fastify.get(
+        '/auth/google/sheets/spreadsheets',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    properties: {
+                        q: { type: 'string' },
+                        pageToken: { type: 'string' },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'List user Google Spreadsheets (Drive)',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Querystring: { q?: string; pageToken?: string } }>,
+            reply: FastifyReply,
+        ) => {
+            const userId = (req.user as any).userId;
+            const { q, pageToken } = req.query;
+            try {
+                const result = await googleSheetsService.listSpreadsheets(userId, { q, pageToken });
+                return reply.send(result);
+            } catch (err) {
+                req.log.error({ err }, 'Google Sheets: listSpreadsheets failed');
+                return reply.code(502).send({
+                    message: err instanceof Error ? err.message : 'Failed to list spreadsheets',
+                });
+            }
+        },
+    );
+
+    /**
+     * Названия листов внутри таблицы — для выбора листа при импорте
+     */
+    fastify.get(
+        '/auth/google/sheets/spreadsheet/:spreadsheetId/sheet-titles',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                params: {
+                    type: 'object',
+                    required: ['spreadsheetId'],
+                    properties: {
+                        spreadsheetId: { type: 'string', pattern: '^[a-zA-Z0-9_-]+$' },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'List sheet tab titles in a spreadsheet',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Params: { spreadsheetId: string } }>,
+            reply: FastifyReply,
+        ) => {
+            const userId = (req.user as any).userId;
+            const { spreadsheetId } = req.params;
+            try {
+                const titles = await googleSheetsService.getSpreadsheetSheetTitles(userId, spreadsheetId);
+                return reply.send({ titles });
+            } catch (err) {
+                req.log.error({ err, spreadsheetId }, 'Google Sheets: getSpreadsheetSheetTitles failed');
+                return reply.code(502).send({
+                    message: err instanceof Error ? err.message : 'Failed to load sheet titles',
+                });
+            }
+        },
     );
 }

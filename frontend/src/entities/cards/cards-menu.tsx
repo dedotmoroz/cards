@@ -30,7 +30,7 @@ export const CardsMenu = () => {
     const { user } = useAuthStore();
     const currentUserId = user?.id;
 
-    const { selectedFolderId } = useFoldersStore();
+    const { selectedFolderId, fetchFolders } = useFoldersStore();
     const { fetchCards } = useCardsStore();
 
     const [isImportingCards, setIsImportingCards] = useState(false);
@@ -237,7 +237,10 @@ export const CardsMenu = () => {
                     open={importSheetsDialogOpen}
                     folderId={selectedFolderId}
                     onClose={() => setImportSheetsDialogOpen(false)}
-                    onSuccess={() => fetchCards(selectedFolderId)}
+                    onSuccess={() => {
+                        void fetchCards(selectedFolderId);
+                        void fetchFolders();
+                    }}
                 />
             )}
         </>

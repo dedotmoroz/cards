@@ -172,6 +172,31 @@ export const cardsApi = {
   },
 
   /**
+   * Список таблиц Google (Drive) для выбора при импорте
+   */
+  listGoogleSpreadsheets: async (params?: {
+    q?: string;
+    pageToken?: string;
+  }): Promise<{ files: { id: string; name: string }[]; nextPageToken?: string }> => {
+    const response = await axios.get(`${API_BASE_URL}/auth/google/sheets/spreadsheets`, {
+      params,
+    });
+    return response.data;
+  },
+
+  /**
+   * Названия листов выбранной таблицы
+   */
+  getGoogleSpreadsheetSheetTitles: async (
+    spreadsheetId: string
+  ): Promise<{ titles: string[] }> => {
+    const response = await axios.get(
+      `${API_BASE_URL}/auth/google/sheets/spreadsheet/${encodeURIComponent(spreadsheetId)}/sheet-titles`
+    );
+    return response.data;
+  },
+
+  /**
    * Импорт карточек из Google Sheets
    */
   importFromGoogleSheets: async (
