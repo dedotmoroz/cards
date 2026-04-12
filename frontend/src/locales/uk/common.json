@@ -282,6 +282,7 @@
   "googleSheets": {
     "connect": "Підключити Google Sheets",
     "connected": "Google Sheets підключено",
+    "connectSuccessMessage": "Google Sheets успішно підключено. Відкрийте меню «⋯» і оберіть «Імпорт з Google Sheets», щоб вказати таблицю.",
     "importTitle": "Імпорт з Google Sheets",
     "importDescription": "Вставте посилання або ID таблиці. Колонки: Сторона A та Сторона B (або Question/Answer).",
     "spreadsheetUrlOrId": "Посилання або ID таблиці",

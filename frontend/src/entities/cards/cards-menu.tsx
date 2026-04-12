@@ -1,4 +1,4 @@
-import {MenuItem} from "@mui/material";
+import { Alert, MenuItem, Snackbar } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CloudIcon from '@mui/icons-material/Cloud';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +39,7 @@ export const CardsMenu = () => {
     const [isExportingSheets, setIsExportingSheets] = useState(false);
     const [sheetsConnected, setSheetsConnected] = useState(false);
     const [importSheetsDialogOpen, setImportSheetsDialogOpen] = useState(false);
+    const [sheetsConnectSuccessOpen, setSheetsConnectSuccessOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,6 +54,7 @@ export const CardsMenu = () => {
     useEffect(() => {
         if (searchParams.get('google_sheets') === 'connected') {
             refreshSheetsStatus();
+            setSheetsConnectSuccessOpen(true);
             const next = new URLSearchParams(searchParams);
             next.delete('google_sheets');
             setSearchParams(next, { replace: true });
@@ -66,6 +68,10 @@ export const CardsMenu = () => {
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleSheetsConnectSuccessClose = () => {
+        setSheetsConnectSuccessOpen(false);
     };
 
     const handleImportClick = () => {
@@ -122,7 +128,8 @@ export const CardsMenu = () => {
 
     const handleConnectSheets = () => {
         handleMenuClose();
-        window.location.href = `${API_BASE_URL}/auth/google/sheets`;
+        const returnTo = encodeURIComponent(`${window.location.pathname}${window.location.search}`);
+        window.location.href = `${API_BASE_URL}/auth/google/sheets?return_to=${returnTo}`;
     };
 
     const handleImportSheetsClick = () => {
@@ -146,6 +153,16 @@ export const CardsMenu = () => {
 
     return (
         <>
+            <Snackbar
+                open={sheetsConnectSuccessOpen}
+                autoHideDuration={7000}
+                onClose={handleSheetsConnectSuccessClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSheetsConnectSuccessClose} severity="success" sx={{ width: '100%' }}>
+                    {t('googleSheets.connectSuccessMessage')}
+                </Alert>
+            </Snackbar>
             <StyledIconButton
                 onClick={handleMenuClick}
                 size="small"

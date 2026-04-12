@@ -282,6 +282,7 @@
   "googleSheets": {
     "connect": "Połącz Google Sheets",
     "connected": "Google Sheets połączone",
+    "connectSuccessMessage": "Google Sheets zostało połączone. Otwórz menu ⋯ i wybierz „Import z Google Sheets”, aby wybrać arkusz.",
     "importTitle": "Import z Google Sheets",
     "importDescription": "Wklej link lub ID arkusza. Kolumny: Strona A i Strona B (lub Question/Answer).",
     "spreadsheetUrlOrId": "URL lub ID arkusza",

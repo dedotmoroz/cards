@@ -284,6 +284,7 @@
   "googleSheets": {
     "connect": "Connect Google Sheets",
     "connected": "Google Sheets connected",
+    "connectSuccessMessage": "Google Sheets connected successfully. Open the ⋯ menu and choose Import from Google Sheets to select a spreadsheet.",
     "importTitle": "Import from Google Sheets",
     "importDescription": "Paste the spreadsheet URL or ID. Columns: Side A and Side B (or Question / Answer).",
     "spreadsheetUrlOrId": "Spreadsheet URL or ID",

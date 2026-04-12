@@ -282,6 +282,7 @@
   "googleSheets": {
     "connect": "Connecter Google Sheets",
     "connected": "Google Sheets connecté",
+    "connectSuccessMessage": "Google Sheets connecté avec succès. Ouvrez le menu ⋯ puis «Importer depuis Google Sheets» pour choisir un tableur.",
     "importTitle": "Importer depuis Google Sheets",
     "importDescription": "Collez l'URL ou l'ID du tableau. Colonnes : Face A et Face B (ou Question/Answer).",
     "spreadsheetUrlOrId": "URL ou ID du tableau",

@@ -282,6 +282,7 @@
   "googleSheets": {
     "connect": "Conectar Google Sheets",
     "connected": "Google Sheets conectado",
+    "connectSuccessMessage": "Google Sheets conectado com sucesso. Abra o menu ⋯ e escolha «Importar do Google Sheets» para selecionar a planilha.",
     "importTitle": "Importar do Google Sheets",
     "importDescription": "Cole o URL ou ID da folha. Colunas: Lado A e Lado B (ou Question/Answer).",
     "spreadsheetUrlOrId": "URL ou ID da folha",

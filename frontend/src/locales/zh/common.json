@@ -282,6 +282,7 @@
   "googleSheets": {
     "connect": "连接 Google Sheets",
     "connected": "已连接 Google Sheets",
+    "connectSuccessMessage": "Google Sheets 已成功连接。请打开 ⋯ 菜单，选择「从 Google Sheets 导入」以选择表格。",
     "importTitle": "从 Google Sheets 导入",
     "importDescription": "粘贴表格链接或 ID。列：A 面和 B 面（或 Question/Answer）。",
     "spreadsheetUrlOrId": "表格链接或 ID",

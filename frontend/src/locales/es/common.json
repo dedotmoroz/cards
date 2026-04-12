@@ -282,6 +282,7 @@
   "googleSheets": {
     "connect": "Conectar Google Sheets",
     "connected": "Google Sheets conectado",
+    "connectSuccessMessage": "Google Sheets conectado correctamente. Abre el menú ⋯ y elige «Importar desde Google Sheets» para seleccionar una hoja de cálculo.",
     "importTitle": "Importar desde Google Sheets",
     "importDescription": "Pega la URL o ID de la hoja. Columnas: Lado A y Lado B (o Question/Answer).",
     "spreadsheetUrlOrId": "URL o ID de la hoja",
