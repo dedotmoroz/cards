@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Grid, Drawer, useMediaQuery, useTheme } from '@mui/material';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
-import { useFoldersStore } from '@/shared/store/foldersStore';
+import { useFoldersStore, REMEMBER_VIRTUAL_MIN_TOTAL_CARDS } from '@/shared/store/foldersStore';
 import { useAuthStore } from '@/shared/store/authStore';
 import {Folders} from "@/widgets/folders";
 import {Cards} from "@/widgets/cards";
@@ -31,6 +31,8 @@ export const HomePage = () => {
     const { fetchCards, fetchVirtualCards, isLoading: cardsLoading } = useCardsStore();
     const {
         folders,
+        rememberEligibleCount,
+        hardEligibleCount,
         selectedFolderId,
         setSelectedFolder,
         fetchFolders,
@@ -95,6 +97,22 @@ export const HomePage = () => {
             navigate('/learn', { replace: true });
         }
     }, [userId, folderId, kind, folders, selectedFolderId, setSelectedFolder, navigate, currentUserId]);
+
+    // «Вспомни» скрываем при <10 карточек всего; уводим с URL, если папка недоступна
+    useEffect(() => {
+        if (kind !== 'remember' || !userId || folders.length === 0) return;
+        if (rememberEligibleCount === null) return;
+        if (rememberEligibleCount >= REMEMBER_VIRTUAL_MIN_TOTAL_CARDS) return;
+        navigate(`/learn/${userId}/${folders[0].id}`, { replace: true });
+    }, [kind, userId, folders, rememberEligibleCount, navigate]);
+
+    // «Сложно» скрываем при 0 карточках в выборке
+    useEffect(() => {
+        if (kind !== 'hard' || !userId || folders.length === 0) return;
+        if (hardEligibleCount === null) return;
+        if (hardEligibleCount > 0) return;
+        navigate(`/learn/${userId}/${folders[0].id}`, { replace: true });
+    }, [kind, userId, folders, hardEligibleCount, navigate]);
 
     // Отдельный useEffect для загрузки карточек, зависит только от folderId
     useEffect(() => {

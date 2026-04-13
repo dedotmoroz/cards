@@ -10,6 +10,7 @@ const createMockRepo = (): jest.Mocked<CardRepository> => ({
     countByFolderIds: jest.fn().mockResolvedValue({}),
     findRememberCardsByFolderIds: jest.fn().mockResolvedValue([]),
     findHardCardsByFolderIds: jest.fn().mockResolvedValue([]),
+    countHardCardsByFolderIds: jest.fn().mockResolvedValue(0),
 });
 
 describe('CardService', () => {

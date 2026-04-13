@@ -69,8 +69,8 @@ export class Card {
 
   /**
    * Review карточки: единая точка, которая обновляет показ/статистику/SM-2.
-   * Важно: `lastLearnedAt` используем как "момент первого изучения" для подборки «Вспомни».
-   * Поэтому на повторных `know`, если карточка уже была выучена, `lastLearnedAt` не меняем.
+   * При каждом `know` обновляем `lastLearnedAt`, чтобы виртуальная папка «Вспомни»
+   * (сортировка по давности) не застревала на одних и тех же карточках.
    */
   review(outcome: 'know' | 'dontknow', now: Date = new Date()): void {
     // Показ + счетчик повторов
@@ -81,10 +81,8 @@ export class Card {
     if (outcome === 'know') {
       this.correctCount += 1;
       this.updateAverageRating(rating);
-      if (!this.isLearned) {
-        this.isLearned = true;
-        this.lastLearnedAt = now;
-      }
+      this.isLearned = true;
+      this.lastLearnedAt = now;
     } else {
       this.incorrectCount += 1;
       this.updateAverageRating(rating);

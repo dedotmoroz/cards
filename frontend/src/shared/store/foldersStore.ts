@@ -1,12 +1,19 @@
 import { create } from 'zustand'
 import type { Folder } from '../types/cards'
 import { foldersApi } from '../api/foldersApi'
+import { cardsApi } from '../api/cardsApi'
 
+/** Папку «Вспомни» показываем только если всего карточек не меньше этого числа. */
+export const REMEMBER_VIRTUAL_MIN_TOTAL_CARDS = 10
 
 interface FoldersState {
     // State
     folders: Folder[]
     folderCardCounts: Record<string, number>
+    /** null — ещё не загружали с API */
+    rememberEligibleCount: number | null
+    /** null — ещё не загружали; карточки «Сложно» (выученные, reviewCount >= 2). */
+    hardEligibleCount: number | null
     selectedFolderId: string | null
     isLoading: boolean
     error: string | null
@@ -29,6 +36,9 @@ interface FoldersState {
 
     // API calls
     fetchFolders: () => Promise<void>
+    fetchRememberEligibleCount: () => Promise<void>
+    fetchHardEligibleCount: () => Promise<void>
+    refreshVirtualFolderCounts: () => Promise<void>
     createFolder: (name: string) => Promise<void>
     updateFolderName: (id: string, name: string) => Promise<void>
     deleteFolder: (id: string) => Promise<void>
@@ -39,6 +49,8 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
     // Initial state
     folders: [],
     folderCardCounts: {},
+    rememberEligibleCount: null,
+    hardEligibleCount: null,
     selectedFolderId: null,
     isLoading: false,
     error: null,
@@ -99,10 +111,38 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
                 folders.map((f) => [f.id, f.cardCount ?? 0])
             )
             set({ folders, folderCardCounts })
+            await get().refreshVirtualFolderCounts()
         } catch (error) {
             console.error('Error fetching folders:', error)
             set({ error: 'Failed to fetch folders' })
         }
+    },
+
+    fetchRememberEligibleCount: async () => {
+        try {
+            const count = await cardsApi.getRememberEligibleCount()
+            set({ rememberEligibleCount: count })
+        } catch (error) {
+            console.error('Error fetching remember eligible count:', error)
+            set({ rememberEligibleCount: null })
+        }
+    },
+
+    fetchHardEligibleCount: async () => {
+        try {
+            const count = await cardsApi.getHardEligibleCount()
+            set({ hardEligibleCount: count })
+        } catch (error) {
+            console.error('Error fetching hard eligible count:', error)
+            set({ hardEligibleCount: null })
+        }
+    },
+
+    refreshVirtualFolderCounts: async () => {
+        await Promise.all([
+            get().fetchRememberEligibleCount(),
+            get().fetchHardEligibleCount(),
+        ])
     },
 
     createFolder: async (name: string) => {
@@ -135,6 +175,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         try {
             await foldersApi.deleteFolder(id)
             get().removeFolder(id)
+            await get().refreshVirtualFolderCounts()
         } catch (error) {
             console.error('Error deleting folder:', error)
             set({ error: 'Failed to delete folder' })

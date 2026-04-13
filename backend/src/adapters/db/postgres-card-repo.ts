@@ -106,7 +106,7 @@ export class PostgresCardRepository implements CardRepository {
         const rows = await db
             .select()
             .from(cards)
-            .where(and(inArray(cards.folderId, folderIds), eq(cards.isLearned, true)))
+            .where(inArray(cards.folderId, folderIds))
             .orderBy(orderKey)
             .limit(limit);
         return rows.map(toCard);
@@ -122,11 +122,26 @@ export class PostgresCardRepository implements CardRepository {
                 and(
                     inArray(cards.folderId, folderIds),
                     eq(cards.isLearned, true),
-                    sql`${cards.reviewCount} >= 3`
+                    sql`${cards.reviewCount} >= 2`
                 )
             )
             .orderBy(sql`${rate} DESC`, cards.averageRating, desc(cards.reviewCount))
             .limit(limit);
         return rows.map(toCard);
+    }
+
+    async countHardCardsByFolderIds(folderIds: string[]): Promise<number> {
+        if (folderIds.length === 0) return 0;
+        const rows = await db
+            .select({ count: sql<number>`count(*)::int` })
+            .from(cards)
+            .where(
+                and(
+                    inArray(cards.folderId, folderIds),
+                    eq(cards.isLearned, true),
+                    sql`${cards.reviewCount} >= 2`
+                )
+            );
+        return rows[0]?.count ?? 0;
     }
 }

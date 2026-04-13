@@ -213,7 +213,40 @@ export function registerCardsRoutes(
     );
 
     /**
-     * Виртуальная папка: Вспомни (10 самых давно изученных)
+     * Сколько всего карточек у пользователя (все папки) — для скрытия «Вспомни» в UI, если меньше 10.
+     */
+    fastify.get(
+        '/cards/virtual/remember/eligible-count',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                response: {
+                    200: {
+                        type: 'object',
+                        required: ['count'],
+                        properties: { count: { type: 'number' } },
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Total card count for Remember virtual folder visibility',
+            },
+        },
+        async (req: FastifyRequest, reply: FastifyReply) => {
+            const authUserId = (req.user as any).userId as string | undefined;
+            if (!authUserId) return reply.send({ count: 0 });
+
+            const userFolders = await folderRepo.findAll(authUserId);
+            const folderIds = userFolders.map((f) => f.id);
+            if (folderIds.length === 0) return reply.send({ count: 0 });
+
+            const perFolder = await cardRepo.countByFolderIds(folderIds);
+            const count = Object.values(perFolder).reduce((sum, n) => sum + (n ?? 0), 0);
+            return reply.send({ count });
+        }
+    );
+
+    /**
+     * Виртуальная папка: Вспомни (самые «давние» по coalesce(lastLearnedAt, createdAt), все карточки)
      */
     fastify.get(
         '/cards/virtual/remember',
@@ -231,7 +264,7 @@ export function registerCardsRoutes(
                     },
                 },
                 tags: ['cards'],
-                summary: 'Virtual folder: remember (oldest learned)',
+                summary: 'Virtual folder: remember (oldest by lastLearnedAt/createdAt)',
             },
         },
         async (
@@ -250,7 +283,37 @@ export function registerCardsRoutes(
     );
 
     /**
-     * Виртуальная папка: Сложно (10 самых сложных, reviewCount>=3)
+     * Сколько карточек попадает в «Сложно» (выученные, reviewCount >= 2) — для счётчика и скрытия папки.
+     */
+    fastify.get(
+        '/cards/virtual/hard/eligible-count',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                response: {
+                    200: {
+                        type: 'object',
+                        required: ['count'],
+                        properties: { count: { type: 'number' } },
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Count of cards in Hard virtual folder',
+            },
+        },
+        async (req: FastifyRequest, reply: FastifyReply) => {
+            const authUserId = (req.user as any).userId as string | undefined;
+            if (!authUserId) return reply.send({ count: 0 });
+
+            const userFolders = await folderRepo.findAll(authUserId);
+            const folderIds = userFolders.map((f) => f.id);
+            const count = await cardRepo.countHardCardsByFolderIds(folderIds);
+            return reply.send({ count });
+        }
+    );
+
+    /**
+     * Виртуальная папка: Сложно (до 10 самых сложных среди выученных с reviewCount >= 2)
      */
     fastify.get(
         '/cards/virtual/hard',

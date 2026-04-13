@@ -63,9 +63,25 @@ export const cardsApi = {
     return response.data;
   },
 
+  /** Всего карточек у пользователя (порог показа папки «Вспомни»). */
+  getRememberEligibleCount: async (): Promise<number> => {
+    const response = await axios.get<{ count: number }>(
+      `${API_BASE_URL}/cards/virtual/remember/eligible-count`
+    );
+    return response.data.count;
+  },
+
   getVirtualHard: async (params?: { limit?: number }): Promise<Card[]> => {
     const response = await axios.get(`${API_BASE_URL}/cards/virtual/hard`, { params });
     return response.data;
+  },
+
+  /** Сколько карточек в выборке «Сложно» (выученные, reviewCount >= 2). */
+  getHardEligibleCount: async (): Promise<number> => {
+    const response = await axios.get<{ count: number }>(
+      `${API_BASE_URL}/cards/virtual/hard/eligible-count`
+    );
+    return response.data.count;
   },
 
   /**

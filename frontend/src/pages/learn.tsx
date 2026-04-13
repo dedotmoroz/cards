@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Container } from '@mui/material';
 
 import { useCardLearning } from '@/features/card-learning/model/useCardLearning';
@@ -7,15 +7,16 @@ import { LearnProcess } from '@/widgets/learn';
 import { ErrorBlock,
     // MessageBlock
 } from '@/entities';
-import { useFoldersStore } from '@/shared/store/foldersStore';
+import { useFoldersStore, REMEMBER_VIRTUAL_MIN_TOTAL_CARDS } from '@/shared/store/foldersStore';
 import { useTranslation } from 'react-i18next';
 import { useSEO } from '@/shared/hooks/useSEO';
 
 export const LearnPage = () => {
     const { t, i18n } = useTranslation();
-    const { folderId, kind } = useParams<{ userId?: string; folderId?: string; kind?: string }>();
+    const navigate = useNavigate();
+    const { userId, folderId, kind } = useParams<{ userId?: string; folderId?: string; kind?: string }>();
     const [searchParams] = useSearchParams();
-    const { folders } = useFoldersStore();
+    const { folders, rememberEligibleCount, hardEligibleCount, fetchFolders } = useFoldersStore();
     
     // Получаем initialSide из URL сразу, до создания хука
     const initialSideFromUrl = (searchParams.get('initialSide') || 'question') as 'question' | 'answer';
@@ -43,6 +44,29 @@ export const LearnPage = () => {
         keywords: t('seo.keywords'),
         lang: i18n.language
     });
+
+    useEffect(() => {
+        if (kind !== 'remember' && kind !== 'hard') return;
+        void fetchFolders();
+    }, [kind, fetchFolders]);
+
+    useEffect(() => {
+        if (kind !== 'remember' || !userId || folders.length === 0) return;
+        if (rememberEligibleCount === null) return;
+        if (rememberEligibleCount >= REMEMBER_VIRTUAL_MIN_TOTAL_CARDS) return;
+        const qs = searchParams.toString();
+        const target = `/learn/${userId}/${folders[0].id}/study${qs ? `?${qs}` : ''}`;
+        navigate(target, { replace: true });
+    }, [kind, userId, folders, rememberEligibleCount, navigate, searchParams]);
+
+    useEffect(() => {
+        if (kind !== 'hard' || !userId || folders.length === 0) return;
+        if (hardEligibleCount === null) return;
+        if (hardEligibleCount > 0) return;
+        const qs = searchParams.toString();
+        const target = `/learn/${userId}/${folders[0].id}/study${qs ? `?${qs}` : ''}`;
+        navigate(target, { replace: true });
+    }, [kind, userId, folders, hardEligibleCount, navigate, searchParams]);
 
     // Инициализируем режим и начальную сторону из URL параметров
     // Используем ref для отслеживания, был ли уже установлен режим

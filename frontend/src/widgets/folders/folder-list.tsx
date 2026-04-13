@@ -26,9 +26,20 @@ interface FolderListProps {
     onDelete?: (id: string) => void;
     onFolderSelect?: () => void;
     folderCardCounts?: Record<string, number>;
+    /** Реальное число карточек в «Сложно» (из API). */
+    hardVirtualCount?: number | null;
 }
 
-export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, onFolderSelect, folderCardCounts }: FolderListProps) => {
+export const FolderList = ({
+    folders,
+    selectedId,
+    onSelect,
+    onRename,
+    onDelete,
+    onFolderSelect,
+    folderCardCounts,
+    hardVirtualCount,
+}: FolderListProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -96,7 +107,11 @@ export const FolderList = ({ folders, selectedId, onSelect, onRename, onDelete, 
                                 : <FolderOutlinedIcon sx={folderIconSx}/>}
                             {folderCardCounts && (
                                 <StyledFolderCounter>
-                                    {isVirtual ? 10 : (folderCardCounts[folder.id] ?? 0)}
+                                    {isVirtual
+                                        ? folder.id === 'virtual:hard'
+                                            ? (hardVirtualCount ?? 0)
+                                            : 10
+                                        : (folderCardCounts[folder.id] ?? 0)}
                                 </StyledFolderCounter>
                             )}
                             <ListItemText primary={folder.name} />

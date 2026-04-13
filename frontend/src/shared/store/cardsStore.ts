@@ -177,6 +177,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         try {
             await cardsApi.updateCardLearnStatus(id, { isLearned })
             get().updateCard(id, { isLearned })
+            await useFoldersStore.getState().refreshVirtualFolderCounts()
         } catch (error) {
             console.error('Error updating card learn status:', error)
             set({ error: 'Failed to update card learn status' })
@@ -195,6 +196,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
                 isLearned: updated.isLearned,
                 folderId: updated.folderId,
             })
+            await useFoldersStore.getState().refreshVirtualFolderCounts()
         } catch (error) {
             console.error('Error reviewing card:', error)
             set({ error: 'Failed to review card' })
@@ -210,6 +212,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
             if (card?.folderId) {
                 useFoldersStore.getState().decrementFolderCount(card.folderId)
             }
+            await useFoldersStore.getState().refreshVirtualFolderCounts()
         } catch (error) {
             console.error('Error deleting card:', error)
             set({ error: 'Failed to delete card' })

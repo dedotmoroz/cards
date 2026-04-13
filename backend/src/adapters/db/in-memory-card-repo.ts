@@ -46,7 +46,6 @@ export class InMemoryCardRepository implements CardRepository {
     async findRememberCardsByFolderIds(folderIds: string[], limit: number): Promise<Card[]> {
         return this.cards
             .filter((c) => folderIds.includes(c.folderId))
-            .filter((c) => c.isLearned)
             .sort((a, b) => {
                 const aKey = (a.lastLearnedAt ?? a.createdAt).getTime();
                 const bKey = (b.lastLearnedAt ?? b.createdAt).getTime();
@@ -63,7 +62,7 @@ export class InMemoryCardRepository implements CardRepository {
         return this.cards
             .filter((c) => folderIds.includes(c.folderId))
             .filter((c) => c.isLearned)
-            .filter((c) => c.reviewCount >= 3)
+            .filter((c) => c.reviewCount >= 2)
             .sort((a, b) => {
                 const byRate = errorRate(b) - errorRate(a);
                 if (byRate !== 0) return byRate;
@@ -72,5 +71,15 @@ export class InMemoryCardRepository implements CardRepository {
                 return b.reviewCount - a.reviewCount;
             })
             .slice(0, limit);
+    }
+
+    async countHardCardsByFolderIds(folderIds: string[]): Promise<number> {
+        if (folderIds.length === 0) return 0;
+        return this.cards.filter(
+            (c) =>
+                folderIds.includes(c.folderId) &&
+                c.isLearned &&
+                c.reviewCount >= 2
+        ).length;
     }
 }
