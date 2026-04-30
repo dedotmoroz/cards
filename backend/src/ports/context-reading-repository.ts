@@ -15,6 +15,7 @@ export interface ContextReadingStateRepository {
     ): Promise<ContextReadingState | null>;
     save(state: ContextReadingState): Promise<void>;
     reset(userId: string, folderId: string): Promise<void>;
+    deleteByUserId(userId: string, executor?: any): Promise<void>;
 }
 
 /**
@@ -64,5 +65,13 @@ export class InMemoryContextReadingStateRepository
 
     async reset(userId: string, folderId: string): Promise<void> {
         this.states.delete(this.key(userId, folderId))
+    }
+
+    async deleteByUserId(userId: string): Promise<void> {
+        for (const key of this.states.keys()) {
+            if (key.startsWith(`${userId}:`)) {
+                this.states.delete(key)
+            }
+        }
     }
 }

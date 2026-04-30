@@ -40,4 +40,8 @@ export class PostgresFolderRepository implements FolderRepository {
     async delete(id: string): Promise<void> {
         await db.delete(folders).where(eq(folders.id, id));
     }
+
+    async deleteByUserId(userId: string, executor: any = db): Promise<void> {
+        await executor.delete(folders).where(eq(folders.userId, userId));
+    }
 }

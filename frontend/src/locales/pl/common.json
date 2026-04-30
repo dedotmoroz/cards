@@ -332,7 +332,13 @@
     "creatingToken": "Tworzenie tokenu...",
     "copyToken": "Kopiuj",
     "tokenError": "Błąd pobierania tokenu",
-    "tokenNotCreated": "Token jeszcze nie został utworzony"
+    "tokenNotCreated": "Token jeszcze nie został utworzony",
+    "deleteAccountTitle": "Usuń konto",
+    "deleteAccountDescription": "Usunięcie konta bezpowrotnie usunie wszystkie Twoje dane.",
+    "deleteAccountButton": "Usuń konto",
+    "deletingAccount": "Usuwanie konta...",
+    "deleteAccountConfirmTitle": "Potwierdzenie usunięcia konta",
+    "deleteAccountConfirmText": "Czy na pewno chcesz usunąć konto? Wszystkie dane zostaną bezpowrotnie usunięte."
   },
   "telegram": {
     "connect": {

@@ -456,6 +456,38 @@ export function registerAuthRoutes(
         }
     );
 
+    fastify.delete('/auth/me',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                security: [{ cookieAuth: [] }],
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            ok: { type: 'boolean' },
+                        },
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Delete current user account',
+            },
+        },
+        async (req, reply) => {
+            const userId = (req.user as any).userId;
+            await userService.deleteCurrentUser(userId);
+            return reply
+                .clearCookie('token', { path: '/' })
+                .send({ ok: true });
+        }
+    );
+
     /**
      * Перевод гостевого пользователя в постоянные
      */

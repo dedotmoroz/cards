@@ -7,6 +7,7 @@ const createMockRepo = (): jest.Mocked<FolderRepository> => ({
     findById: jest.fn(),
     findAll: jest.fn(),
     delete: jest.fn(),
+    deleteByUserId: jest.fn(),
 });
 
 describe('FolderService', () => {

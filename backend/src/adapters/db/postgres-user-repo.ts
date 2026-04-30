@@ -131,4 +131,8 @@ export class PostgresUserRepository implements UserRepository {
 
         return updatedUser;
     }
+
+    async deleteById(id: string, executor: any = db): Promise<void> {
+        await executor.delete(users).where(eq(users.id, id));
+    }
 }

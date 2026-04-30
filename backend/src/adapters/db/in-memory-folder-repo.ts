@@ -22,4 +22,8 @@ export class InMemoryFolderRepository implements FolderRepository {
     async delete(id: string): Promise<void> {
         this.folders = this.folders.filter(folder => folder.id !== id);
     }
+
+    async deleteByUserId(userId: string): Promise<void> {
+        this.folders = this.folders.filter(folder => folder.userId !== userId);
+    }
 }

@@ -332,7 +332,13 @@
     "creatingToken": "创建令牌中...",
     "copyToken": "复制",
     "tokenError": "获取令牌错误",
-    "tokenNotCreated": "令牌尚未创建"
+    "tokenNotCreated": "令牌尚未创建",
+    "deleteAccountTitle": "删除账户",
+    "deleteAccountDescription": "删除账户将永久移除您的所有数据。",
+    "deleteAccountButton": "删除账户",
+    "deletingAccount": "正在删除账户...",
+    "deleteAccountConfirmTitle": "确认删除账户",
+    "deleteAccountConfirmText": "您确定要删除账户吗？所有数据都将被永久删除。"
   },
   "telegram": {
     "connect": {

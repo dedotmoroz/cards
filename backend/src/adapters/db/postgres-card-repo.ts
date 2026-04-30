@@ -87,6 +87,11 @@ export class PostgresCardRepository implements CardRepository {
         await db.delete(cards).where(eq(cards.id, id));
     }
 
+    async deleteByFolderIds(folderIds: string[], executor: any = db): Promise<void> {
+        if (folderIds.length === 0) return;
+        await executor.delete(cards).where(inArray(cards.folderId, folderIds));
+    }
+
     async countByFolderIds(folderIds: string[]): Promise<Record<string, number>> {
         if (folderIds.length === 0) return {};
         const rows = await db

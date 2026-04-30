@@ -8,6 +8,7 @@ import {
     LanguageSection,
     PasswordSection,
     TokenSection,
+    DeleteAccountSection,
     GuestRegistrationForm,
     StyledProfileWrapper,
     StyledProfileContainer,
@@ -94,6 +95,9 @@ export const ProfilePage = () => {
                         userId={user.id}
                         isGuest={user.isGuest ?? false}
                     />
+
+                    <DeleteAccountSection />
+                    
                 </StyledFormPaper>
             </StyledProfileContainer>
         </StyledProfileWrapper>

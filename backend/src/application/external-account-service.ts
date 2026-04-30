@@ -17,6 +17,7 @@ export interface ExternalAccountRepository {
     ): Promise<ExternalAccount | null>;
 
     save(account: ExternalAccount): Promise<void>;
+    deleteByUserId(userId: string, executor?: any): Promise<void>;
 }
 
 export class ExternalAccountService {

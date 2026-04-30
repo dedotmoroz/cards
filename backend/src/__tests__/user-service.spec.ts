@@ -26,6 +26,7 @@ describe('UserService', () => {
             findById: jest.fn(),
             findByOAuth: jest.fn(),
             update: jest.fn(),
+            deleteById: jest.fn(),
         };
         userService = new UserService(userRepo);
     });

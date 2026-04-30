@@ -82,4 +82,10 @@ export class PostgresContextReadingStateRepository
                 )
             );
     }
+
+    async deleteByUserId(userId: string, executor: any = db): Promise<void> {
+        await executor
+            .delete(contextReadingStates)
+            .where(eq(contextReadingStates.userId, userId));
+    }
 }

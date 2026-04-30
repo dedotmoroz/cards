@@ -5,6 +5,7 @@ export interface CardRepository {
   findById(id: string): Promise<Card | null>;
   findAll(folderId?: string, filter?: { isLearned?: boolean }): Promise<Card[]>;
   delete(id: string): Promise<void>;
+  deleteByFolderIds(folderIds: string[], executor?: any): Promise<void>;
   countByFolderIds(folderIds: string[]): Promise<Record<string, number>>;
 
   /**

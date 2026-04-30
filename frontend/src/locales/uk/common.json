@@ -332,7 +332,13 @@
     "creatingToken": "Створення токена...",
     "copyToken": "Копіювати",
     "tokenError": "Помилка отримання токена",
-    "tokenNotCreated": "Токен ще не створено"
+    "tokenNotCreated": "Токен ще не створено",
+    "deleteAccountTitle": "Видалення акаунта",
+    "deleteAccountDescription": "Видалення акаунта безповоротно видалить усі ваші дані.",
+    "deleteAccountButton": "Видалити акаунт",
+    "deletingAccount": "Видалення акаунта...",
+    "deleteAccountConfirmTitle": "Підтвердження видалення акаунта",
+    "deleteAccountConfirmText": "Ви впевнені, що хочете видалити акаунт? Усі дані буде безповоротно видалено."
   },
   "telegram": {
     "connect": {

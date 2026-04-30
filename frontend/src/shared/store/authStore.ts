@@ -18,6 +18,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: (idToken: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   checkAuth: () => Promise<void>;
   updateProfile: (data: UpdateProfileData) => Promise<void>;
   changePassword: (data: ChangePasswordData) => Promise<void>;
@@ -114,6 +115,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: null, 
         isAuthenticated: false,
       });
+    }
+  },
+
+  deleteAccount: async () => {
+    set({ error: null });
+    try {
+      await authApi.deleteAccount();
+      set({
+        user: null,
+        isAuthenticated: false,
+      });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error ?? error.response?.data?.message ?? 'Failed to delete account';
+      set({ error: errorMessage });
+      throw error;
     }
   },
 

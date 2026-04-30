@@ -5,4 +5,5 @@ export interface FolderRepository {
   findById(id: string): Promise<Folder | null>;
   findAll(userId: string): Promise<Folder[]>;
   delete(id: string): Promise<void>;
+  deleteByUserId(userId: string, executor?: any): Promise<void>;
 }

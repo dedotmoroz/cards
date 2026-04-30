@@ -5,6 +5,7 @@ const createMockRepo = (): jest.Mocked<ExternalAccountRepository> => ({
     findByProviderAndExternalId: jest.fn(),
     findByProviderAndUserId: jest.fn(),
     save: jest.fn(),
+    deleteByUserId: jest.fn(),
 });
 
 describe('ExternalAccountService', () => {

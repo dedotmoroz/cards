@@ -7,6 +7,7 @@ const createMockRepo = (): jest.Mocked<CardRepository> => ({
     findById: jest.fn(),
     findAll: jest.fn(),
     delete: jest.fn(),
+    deleteByFolderIds: jest.fn(),
     countByFolderIds: jest.fn().mockResolvedValue({}),
     findRememberCardsByFolderIds: jest.fn().mockResolvedValue([]),
     findHardCardsByFolderIds: jest.fn().mockResolvedValue([]),

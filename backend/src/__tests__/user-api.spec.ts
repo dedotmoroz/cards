@@ -813,6 +813,44 @@ describe('User API', () => {
         expect(res.body.ok).toBe(true);
     });
 
+    it('удаляет текущий аккаунт и очищает cookie', async () => {
+        const registerRes = await request(fastify.server)
+            .post('/auth/register')
+            .send(registerBody({ name: testName }));
+
+        expect(registerRes.status).toBe(201);
+        const setCookieHeader = registerRes.headers['set-cookie'];
+        const tokenCookie = Array.isArray(setCookieHeader)
+            ? setCookieHeader.find(cookie => cookie.startsWith('token='))
+            : setCookieHeader?.startsWith('token=') ? setCookieHeader : undefined;
+        const cookieValue = tokenCookie?.split(';')[0] || '';
+
+        const deleteRes = await request(fastify.server)
+            .delete('/auth/me')
+            .set('Cookie', cookieValue);
+
+        expect(deleteRes.status).toBe(200);
+        expect(deleteRes.body.ok).toBe(true);
+        expect(deleteRes.headers['set-cookie']).toBeDefined();
+
+        const meAfterDelete = await request(fastify.server)
+            .get('/auth/me')
+            .set('Cookie', cookieValue);
+        expect([401, 404]).toContain(meAfterDelete.status);
+
+        const loginAfterDelete = await request(fastify.server)
+            .post('/auth/login')
+            .send({ email: testEmail, password: testPassword });
+        expect(loginAfterDelete.status).toBe(401);
+    });
+
+    it('не удаляет аккаунт без токена', async () => {
+        const res = await request(fastify.server)
+            .delete('/auth/me');
+
+        expect(res.status).toBe(401);
+    });
+
     it('требует idToken для Google авторизации', async () => {
         const res = await request(fastify.server)
             .post('/auth/google')

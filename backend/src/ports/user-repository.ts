@@ -6,4 +6,5 @@ export interface UserRepository {
     findById(id: string): Promise<User | null>;
     findByOAuth(provider: string, oauthId: string): Promise<User | null>;
     update(id: string, updates: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User>;
+    deleteById(id: string, executor?: any): Promise<void>;
 }

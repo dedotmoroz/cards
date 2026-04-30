@@ -334,7 +334,13 @@
     "creatingToken": "Creating token...",
     "copyToken": "Copy",
     "tokenError": "Error getting token",
-    "tokenNotCreated": "Token not created yet"
+    "tokenNotCreated": "Token not created yet",
+    "deleteAccountTitle": "Delete account",
+    "deleteAccountDescription": "Deleting the account will permanently remove all your data.",
+    "deleteAccountButton": "Delete account",
+    "deletingAccount": "Deleting account...",
+    "deleteAccountConfirmTitle": "Confirm account deletion",
+    "deleteAccountConfirmText": "Are you sure you want to delete your account? All data will be permanently deleted."
   },
   "contextReading": {
     "title": "Context Reading",

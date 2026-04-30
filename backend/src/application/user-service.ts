@@ -1,14 +1,27 @@
 import { randomUUID } from 'crypto';
 import { User } from '../domain/user';
 import { UserRepository } from '../ports/user-repository';
+import { FolderRepository } from '../ports/folder-repository';
+import { CardRepository } from '../ports/card-repository';
+import { ContextReadingStateRepository } from '../ports/context-reading-repository';
+import { GoogleSheetsTokensRepository } from '../ports/google-sheets-tokens-repository';
+import { ExternalAccountRepository } from './external-account-service';
 import { hash, compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
+import { db } from '../db/db';
 
 export class UserService {
     private readonly jwtSecret: string;
 
-    constructor(private userRepo: UserRepository) {
+    constructor(
+        private userRepo: UserRepository,
+        private folderRepo?: FolderRepository,
+        private cardRepo?: CardRepository,
+        private contextReadingStateRepo?: ContextReadingStateRepository,
+        private googleSheetsTokensRepo?: GoogleSheetsTokensRepository,
+        private externalAccountRepo?: ExternalAccountRepository
+    ) {
         const JWT_SECRET = process.env.JWT_SECRET;
         if (!JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined in environment variables');
@@ -121,6 +134,30 @@ export class UserService {
         }
 
         return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '90d' });
+    }
+
+    async deleteCurrentUser(userId: string): Promise<void> {
+        if (
+            !this.folderRepo ||
+            !this.cardRepo ||
+            !this.contextReadingStateRepo ||
+            !this.googleSheetsTokensRepo ||
+            !this.externalAccountRepo
+        ) {
+            throw new Error('Delete account dependencies are not configured');
+        }
+
+        await db.transaction(async (tx) => {
+            const userFolders = await this.folderRepo!.findAll(userId);
+            const folderIds = userFolders.map((folder) => folder.id);
+
+            await this.contextReadingStateRepo!.deleteByUserId(userId, tx);
+            await this.googleSheetsTokensRepo!.deleteByUserId(userId, tx);
+            await this.externalAccountRepo!.deleteByUserId(userId, tx);
+            await this.cardRepo!.deleteByFolderIds(folderIds, tx);
+            await this.folderRepo!.deleteByUserId(userId, tx);
+            await this.userRepo.deleteById(userId, tx);
+        });
     }
 
     private async verifyGoogleToken(

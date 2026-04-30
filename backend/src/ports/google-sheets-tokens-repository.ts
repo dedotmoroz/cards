@@ -8,5 +8,5 @@ export interface GoogleSheetsTokenRow {
 export interface GoogleSheetsTokensRepository {
     findByUserId(userId: string): Promise<GoogleSheetsTokenRow | null>;
     save(row: GoogleSheetsTokenRow): Promise<void>;
-    deleteByUserId(userId: string): Promise<void>;
+    deleteByUserId(userId: string, executor?: any): Promise<void>;
 }

@@ -30,6 +30,10 @@ export class InMemoryCardRepository implements CardRepository {
         this.cards = this.cards.filter(card => card.id !== id);
     }
 
+    async deleteByFolderIds(folderIds: string[]): Promise<void> {
+        this.cards = this.cards.filter((card) => !folderIds.includes(card.folderId));
+    }
+
     async countByFolderIds(folderIds: string[]): Promise<Record<string, number>> {
         const result: Record<string, number> = {};
         for (const fid of folderIds) {

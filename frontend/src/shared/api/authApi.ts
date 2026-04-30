@@ -68,6 +68,15 @@ export const authApi = {
   },
 
   /**
+   * Удаление текущего аккаунта пользователя
+   */
+  deleteAccount: async (): Promise<void> => {
+    await axios.delete(`${API_BASE_URL}/auth/me`, {
+      withCredentials: true
+    });
+  },
+
+  /**
    * Обновление языка пользователя
    */
   updateLanguage: async (language: string): Promise<void> => {

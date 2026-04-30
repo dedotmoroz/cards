@@ -57,4 +57,8 @@ export class PostgresExternalAccountRepository
             createdAt: account.createdAt,
         });
     }
+
+    async deleteByUserId(userId: string, executor: any = db): Promise<void> {
+        await executor.delete(externalAccounts).where(eq(externalAccounts.userId, userId as any));
+    }
 }

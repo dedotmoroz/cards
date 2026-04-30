@@ -135,7 +135,6 @@ export async function buildServer() {
     const folderService = new FolderService(folderRepo);
 
     const userRepo = new PostgresUserRepository();
-    const userService = new UserService(userRepo);
 
     // Репозиторий карточек (ТОЛЬКО для context-reading)
     const contextReadingCardRepo =
@@ -174,6 +173,14 @@ export async function buildServer() {
     );
 
     const googleSheetsTokensRepo = new PostgresGoogleSheetsTokensRepository();
+    const userService = new UserService(
+        userRepo,
+        folderRepo,
+        cardRepo,
+        contextReadingStateRepo,
+        googleSheetsTokensRepo,
+        externalAccountRepo
+    );
     const googleClientId = process.env.GOOGLE_CLIENT_ID;
     const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
     const googleSheetsService =

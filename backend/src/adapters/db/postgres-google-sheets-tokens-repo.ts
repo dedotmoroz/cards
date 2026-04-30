@@ -38,7 +38,7 @@ export class PostgresGoogleSheetsTokensRepository implements GoogleSheetsTokensR
             });
     }
 
-    async deleteByUserId(userId: string): Promise<void> {
-        await db.delete(googleSheetsTokens).where(eq(googleSheetsTokens.user_id, userId));
+    async deleteByUserId(userId: string, executor: any = db): Promise<void> {
+        await executor.delete(googleSheetsTokens).where(eq(googleSheetsTokens.user_id, userId));
     }
 }
