@@ -108,9 +108,10 @@ export class UserService {
         });
     }
 
-    async loginWithGoogle(googleIdToken: string): Promise<string> {
+    async loginWithGoogle(googleIdToken: string): Promise<{ token: string; isNewUser: boolean }> {
         const payload = await this.verifyGoogleToken(googleIdToken);
         const { sub, email, name } = payload;
+        let isNewUser = false;
 
         let user = await this.userRepo.findByOAuth('google', sub);
 
@@ -130,10 +131,14 @@ export class UserService {
                     oauthProvider: 'google',
                     oauthId: sub,
                 });
+                isNewUser = true;
             }
         }
 
-        return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '90d' });
+        return {
+            token: jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '90d' }),
+            isNewUser,
+        };
     }
 
     async deleteCurrentUser(userId: string): Promise<void> {

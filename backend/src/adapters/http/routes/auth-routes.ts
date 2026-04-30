@@ -14,6 +14,17 @@ export function registerAuthRoutes(
     cardService: CardService,
     folderService: FolderService
 ) {
+    const createDefaultFolderAndCards = async (userId: string) => {
+        if (!defaultSetting.createFolder) return;
+        const folders = await folderService.getAll(userId);
+        if (folders.length > 0) return;
+
+        const folder = await folderService.createFolder(userId, defaultSetting.folderName);
+        for (const cardData of [...defaultSetting.card]) {
+            await cardService.createCard(folder.id, cardData.question, cardData.answer);
+        }
+    };
+
     /**
      * Регистрация и аутентификация
      */
@@ -74,15 +85,10 @@ export function registerAuthRoutes(
 
             const user = await userService.register(body.email, body.password, body.name, body.language, false);
 
-            if (defaultSetting.createFolder) {
-                try {
-                    const folder = await folderService.createFolder(user.id, defaultSetting.folderName);
-                    for (const cardData of [...defaultSetting.card]) {
-                        await cardService.createCard(folder.id, cardData.question, cardData.answer);
-                    }
-                } catch (error) {
-                    console.error('Failed to create default folder and cards:', error);
-                }
+            try {
+                await createDefaultFolderAndCards(user.id);
+            } catch (error) {
+                console.error('Failed to create default folder and cards:', error);
             }
 
             const token = await userService.login(body.email, body.password);
@@ -166,15 +172,10 @@ export function registerAuthRoutes(
                 throw error;
             }
 
-            if (defaultSetting.createFolder) {
-                try {
-                    const folder = await folderService.createFolder(user.id, defaultSetting.folderName);
-                    for (const cardData of [...defaultSetting.card]) {
-                        await cardService.createCard(folder.id, cardData.question, cardData.answer);
-                    }
-                } catch (error) {
-                    console.error('Failed to create default folder and cards:', error);
-                }
+            try {
+                await createDefaultFolderAndCards(user.id);
+            } catch (error) {
+                console.error('Failed to create default folder and cards:', error);
             }
 
             const token = await userService.login(user.email, password);
@@ -720,7 +721,16 @@ export function registerAuthRoutes(
         async (req, reply) => {
             try {
                 const body = z.object({ idToken: z.string() }).parse(req.body);
-                const token = await userService.loginWithGoogle(body.idToken);
+                const { token, isNewUser } = await userService.loginWithGoogle(body.idToken);
+
+                if (isNewUser) {
+                    try {
+                        const decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET!) as { userId: string };
+                        await createDefaultFolderAndCards(decoded.userId);
+                    } catch (error) {
+                        console.error('Failed to create default folder and cards for Google user:', error);
+                    }
+                }
 
                 return reply
                     .setCookie('token', token, {
