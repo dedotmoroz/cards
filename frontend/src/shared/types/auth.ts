@@ -4,6 +4,8 @@ export interface User {
   email: string;
   language?: string;
   isGuest?: boolean;
+  isAdmin?: boolean;
+  impersonatedBy?: string | null;
 }
 
 export interface RegisterData {

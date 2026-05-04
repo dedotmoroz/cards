@@ -41,6 +41,7 @@ export class PostgresUserRepository implements UserRepository {
             oauthId: row.oauth_id ?? undefined,
             language: row.language ?? undefined,
             isGuest: row.is_guest ?? undefined,
+            lastLoginAt: row.last_login_at ?? undefined,
         };
     }
 
@@ -64,6 +65,7 @@ export class PostgresUserRepository implements UserRepository {
             oauthId: row.oauth_id ?? undefined,
             language: row.language ?? undefined,
             isGuest: row.is_guest ?? undefined,
+            lastLoginAt: row.last_login_at ?? undefined,
         };
     }
 
@@ -91,6 +93,7 @@ export class PostgresUserRepository implements UserRepository {
             oauthId: row.oauth_id ?? undefined,
             language: row.language ?? undefined,
             isGuest: row.is_guest ?? undefined,
+            lastLoginAt: row.last_login_at ?? undefined,
         };
     }
 
@@ -134,5 +137,12 @@ export class PostgresUserRepository implements UserRepository {
 
     async deleteById(id: string, executor: any = db): Promise<void> {
         await executor.delete(users).where(eq(users.id, id));
+    }
+
+    async updateLastLogin(id: string, when: Date = new Date()): Promise<void> {
+        await db
+            .update(users)
+            .set({ last_login_at: when })
+            .where(eq(users.id, id));
     }
 }

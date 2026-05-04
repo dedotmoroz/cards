@@ -41,8 +41,11 @@ import { registerTelegramRoutes } from './routes/telegram-routes';
 import { registerTranslateRoutes } from './routes/translate-routes';
 import { registerPublishRoutes } from './routes/publish-routes';
 import { registerGoogleSheetsRoutes } from './routes/google-sheets-routes';
+import { registerAdminRoutes } from './routes/admin-routes';
 import { GoogleSheetsService } from '../../application/google-sheets-service';
 import { PostgresGoogleSheetsTokensRepository } from '../db/postgres-google-sheets-tokens-repo';
+import { PostgresAdminRepository } from '../db/postgres-admin-repo';
+import { AdminService } from '../../application/admin-service';
 
 export async function buildServer() {
     const fastify = Fastify({ logger: true });
@@ -63,8 +66,11 @@ export async function buildServer() {
         },
     });
 
+    // ✅ Репозиторий админов нужен раньше всего, чтобы повесить декоратор requireAdmin
+    const adminRepo = new PostgresAdminRepository();
+
     // ✅ Регистрируем декораторы аутентификации
-    registerAuthDecorators(fastify);
+    registerAuthDecorators(fastify, adminRepo);
 
     // ✅ Регистрируем CORS
     await fastify.register(cors, {
@@ -198,7 +204,10 @@ export async function buildServer() {
         resetContextReadingUseCase,
         generateContextTextUseCase
     );
-    registerAuthRoutes(fastify, userService, cardService, folderService);
+    const adminService = new AdminService(adminRepo, userService);
+
+    registerAuthRoutes(fastify, userService, cardService, folderService, adminRepo);
+    registerAdminRoutes(fastify, adminService);
     registerTelegramRoutes(
         fastify,
         telegramAuthService,

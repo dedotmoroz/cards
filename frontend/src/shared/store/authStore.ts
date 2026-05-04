@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { ChangePasswordData, UpdateProfileData, User } from '../types/auth';
 import { authApi } from '../api/authApi';
+import { adminApi } from '../api/adminApi';
 
 interface AuthState {
   user: User | null;
@@ -25,6 +26,10 @@ interface AuthState {
   updateLanguage: (language: string) => Promise<void>;
   createGuest: (language: string) => Promise<void>;
   registerGuest: (email: string, password: string, name: string, language: string, turnstileToken?: string) => Promise<void>;
+
+  // Admin / impersonation
+  impersonate: (userId: string) => Promise<void>;
+  stopImpersonation: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -242,6 +247,42 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const errorMessage = error.response?.data?.message;
       set({ error: errorMessage});
       throw new Error(errorMessage);
+    }
+  },
+
+  impersonate: async (userId: string) => {
+    set({ error: null });
+    try {
+      await adminApi.impersonate(userId);
+      const userData = await authApi.getMe();
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username,
+      };
+      set({ user, isAuthenticated: true });
+      window.location.assign('/learn');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error ?? error.response?.data?.message ?? 'Failed to impersonate';
+      set({ error: errorMessage });
+      throw error;
+    }
+  },
+
+  stopImpersonation: async () => {
+    set({ error: null });
+    try {
+      await adminApi.stopImpersonation();
+      const userData = await authApi.getMe();
+      const user: User = {
+        ...userData,
+        username: (userData as any).name || userData.username,
+      };
+      set({ user, isAuthenticated: true });
+      window.location.assign('/admin');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error ?? error.response?.data?.message ?? 'Failed to stop impersonation';
+      set({ error: errorMessage });
+      throw error;
     }
   },
 

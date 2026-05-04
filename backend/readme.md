@@ -66,6 +66,46 @@ npm test
 
 ---
 
+## 🛠️ Админка
+
+Админка живёт в основном backend и frontend как набор маршрутов `/admin/*` и SPA-страниц `/admin`, `/admin/users/:id`. Доступ выдаётся через таблицу `admin_users`.
+
+### Применение миграции
+
+Миграция `drizzle/0005_admin.sql` добавляет колонку `users.last_login_at` и таблицы `admin_users`, `admin_audit_log`. Если используете `drizzle-kit push`, схема применится автоматически. Иначе примените SQL вручную:
+
+```bash
+psql "$DATABASE_URL" -f drizzle/0005_admin.sql
+```
+
+### Назначение первого админа
+
+Список админов хранится в `admin_users`. Чтобы выдать роль админа существующему пользователю:
+
+```sql
+INSERT INTO admin_users (user_id) VALUES ('<USER_UUID>');
+```
+
+Узнать `user_id` можно по email:
+
+```sql
+SELECT id, email FROM users WHERE email = 'you@example.com';
+```
+
+После этого пользователь увидит маршрут `/admin` в SPA, а его cookie `token` будет проходить декоратор `requireAdmin` на роутах `/admin/*`.
+
+### Что умеет админка
+
+- `GET /admin/users` — список всех пользователей со счётчиками папок и карточек, датой регистрации и последнего входа.
+- `GET /admin/users/:id/stats` — детальная статистика по пользователю (папки, карточки, выученные карточки).
+- `DELETE /admin/users/:id` — каскадное удаление пользователя со всеми его данными. Запрещено удалять самого себя и других админов.
+- `POST /admin/users/:id/impersonate` — выдаёт отдельный cookie `impersonation_token` (TTL 1 час, JWT с полями `userId`, `impersonatedBy`, `type=impersonation`). Декоратор `authenticate` приоритетно использует этот токен — все остальные роуты видят запросы как от пользователя-жертвы. Запрещено impersonate-ить себя или другого админа.
+- `POST /admin/impersonate/stop` — очищает `impersonation_token`, возвращая админа к собственной сессии.
+
+Все мутации (`delete_user`, `impersonate_start`, `impersonate_stop`) пишутся в `admin_audit_log`.
+
+---
+
 ## 📌 Принцип
 
 - Ядро (`domain`, `application`, `ports`) **не зависит от фреймворков**

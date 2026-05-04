@@ -8,4 +8,5 @@ export type User = {
     oauthId?: string;
     language?: string;
     isGuest?: boolean;
+    lastLoginAt?: Date;
 };

@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey, bigint } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey, bigint, jsonb } from 'drizzle-orm/pg-core';
 
 export const cards = pgTable('cards', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -46,6 +46,22 @@ export const users = pgTable('users', {
   oauth_id: text('oauth_id'),
   language: text('language'),
   is_guest: boolean('is_guest'),
+  last_login_at: timestamp('last_login_at', { withTimezone: true }),
+});
+
+export const adminUsers = pgTable('admin_users', {
+  userId: text('user_id').primaryKey(),
+  role: text('role').notNull().default('admin'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const adminAuditLog = pgTable('admin_audit_log', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  adminUserId: text('admin_user_id').notNull(),
+  action: text('action').notNull(),
+  targetUserId: text('target_user_id'),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const contextReadingStates = pgTable(

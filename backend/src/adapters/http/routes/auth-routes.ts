@@ -7,12 +7,14 @@ import { CardService } from '../../../application/card-service';
 import { FolderService } from '../../../application/folder-service';
 import { defaultSetting } from '../../../config/app-config';
 import { verifyTurnstileToken } from '../../../lib/turnstile';
+import { AdminRepository } from '../../../ports/admin-repository';
 
 export function registerAuthRoutes(
     fastify: FastifyInstance,
     userService: UserService,
     cardService: CardService,
-    folderService: FolderService
+    folderService: FolderService,
+    adminRepo?: AdminRepository
 ) {
     const createDefaultFolderAndCards = async (userId: string) => {
         if (!defaultSetting.createFolder) return;
@@ -266,6 +268,8 @@ export function registerAuthRoutes(
                             createdAt: { type: 'string', format: 'date-time' },
                             language: { type: 'string' },
                             isGuest: { type: 'boolean' },
+                            isAdmin: { type: 'boolean' },
+                            impersonatedBy: { type: ['string', 'null'] },
                         },
                     },
                     404: {
@@ -280,12 +284,21 @@ export function registerAuthRoutes(
             },
         },
         async (req, reply) => {
-            const userId = (req.user as any).userId;
+            const payload = req.user as any;
+            const userId = payload.userId;
+            const impersonatedBy: string | null = payload.impersonatedBy ?? null;
+
             const user = await userService.getById(userId);
             if (!user) {
                 return reply.code(404).send({ error: 'User not found' });
             }
             const userName = (user.name && user.name.trim() !== '') ? user.name.trim() : null;
+
+            // Под impersonation сам "user" — не админ. Реальный админ виден через impersonatedBy.
+            const isAdmin = !impersonatedBy && adminRepo
+                ? await adminRepo.isAdmin(userId)
+                : false;
+
             return reply.send({
                 id: user.id,
                 email: user.email,
@@ -293,6 +306,8 @@ export function registerAuthRoutes(
                 createdAt: user.createdAt,
                 language: user.language ?? null,
                 isGuest: user.isGuest ?? false,
+                isAdmin,
+                impersonatedBy,
             });
         }
     );

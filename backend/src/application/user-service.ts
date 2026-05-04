@@ -42,6 +42,10 @@ export class UserService {
         const isMatch = await compare(password, user.passwordHash);
         if (!isMatch) return null;
 
+        this.userRepo.updateLastLogin(user.id).catch((err) => {
+            console.error('Failed to update last_login_at', err);
+        });
+
         return jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '90d' });
     }
 
@@ -135,13 +139,17 @@ export class UserService {
             }
         }
 
+        this.userRepo.updateLastLogin(user.id).catch((err) => {
+            console.error('Failed to update last_login_at', err);
+        });
+
         return {
             token: jwt.sign({ userId: user.id }, this.jwtSecret, { expiresIn: '90d' }),
             isNewUser,
         };
     }
 
-    async deleteCurrentUser(userId: string): Promise<void> {
+    async deleteUserById(userId: string): Promise<void> {
         if (
             !this.folderRepo ||
             !this.cardRepo ||
@@ -163,6 +171,13 @@ export class UserService {
             await this.folderRepo!.deleteByUserId(userId, tx);
             await this.userRepo.deleteById(userId, tx);
         });
+    }
+
+    /**
+     * @deprecated use deleteUserById instead
+     */
+    async deleteCurrentUser(userId: string): Promise<void> {
+        return this.deleteUserById(userId);
     }
 
     private async verifyGoogleToken(

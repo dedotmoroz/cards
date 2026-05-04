@@ -27,6 +27,7 @@ describe('UserService', () => {
             findByOAuth: jest.fn(),
             update: jest.fn(),
             deleteById: jest.fn(),
+            updateLastLogin: jest.fn().mockResolvedValue(undefined),
         };
         userService = new UserService(userRepo);
     });

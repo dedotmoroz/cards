@@ -4,6 +4,7 @@ import { CssBaseline, CircularProgress, Box } from '@mui/material';
 import { LandingPage } from '@/pages/landing';
 import { useAuthStore } from '@/shared/store/authStore';
 import { PageContainer } from '@/shared/ui/page-container';
+import { ImpersonationBanner } from '@/widgets/admin';
 
 const HomePage = lazy(() => import('@/pages/home').then(m => ({ default: m.HomePage })));
 const LearnPage = lazy(() => import('@/pages/learn').then(m => ({ default: m.LearnPage })));
@@ -19,13 +20,16 @@ const CollectionsListPage = lazy(() => import('@/pages/collections-list').then(m
 const CollectionDetailPage = lazy(() => import('@/pages/collection').then(m => ({ default: m.CollectionDetailPage })));
 const EcosystemsListPage = lazy(() => import('@/pages/ecosystems-list').then(m => ({ default: m.EcosystemsListPage })));
 const EcosystemDetailPage = lazy(() => import('@/pages/ecosystem').then(m => ({ default: m.EcosystemDetailPage })));
+const AdminUsersPage = lazy(() => import('@/pages/admin-users').then(m => ({ default: m.AdminUsersPage })));
+const AdminUserDetailPage = lazy(() => import('@/pages/admin-user-detail').then(m => ({ default: m.AdminUserDetailPage })));
 
 // Поддерживаемые языки для hreflang
 const supportedLanguages = ['en', 'ru', 'uk', 'de', 'es', 'fr', 'pl', 'pt', 'zh'];
 const BASE_URL = 'https://kotcat.com';
 
 export default function App() {
-    const { checkAuth, isAuthenticated } = useAuthStore();
+    const { checkAuth, isAuthenticated, user } = useAuthStore();
+    const isAdmin = Boolean(user?.isAdmin);
 
     useEffect(() => {
         // Проверяем аутентификацию только один раз при загрузке приложения
@@ -62,6 +66,7 @@ export default function App() {
     return (
             <BrowserRouter>
                 <CssBaseline />
+                <ImpersonationBanner />
                 <Suspense fallback={<Box display="flex" justifyContent="center" alignItems="center" height="100vh"><CircularProgress /></Box>}>
                 <Routes>
                     {isAuthenticated ? (
@@ -83,6 +88,12 @@ export default function App() {
                             <Route path="/:lang/ecosystem" element={<EcosystemsListPage />} />
                             <Route path="/ecosystem/:locale/:slug" element={<EcosystemDetailPage />} />
                             <Route path="/p/:locale/:slug" element={<StrapiPage />} />
+                            {isAdmin && (
+                                <>
+                                    <Route path="/admin" element={<AdminUsersPage />} />
+                                    <Route path="/admin/users/:id" element={<AdminUserDetailPage />} />
+                                </>
+                            )}
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<NotFoundPage />} />
                         </>
