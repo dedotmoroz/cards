@@ -164,7 +164,6 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       const picker = new google.picker.PickerBuilder()
         .setDeveloperKey(GOOGLE_API_KEY)
         .setOAuthToken(accessToken)
-        .setOrigin(window.location.origin)
         .addView(view)
         .setCallback((data: google.picker.ResponseObject) => {
           if (data.action === google.picker.Action.CANCEL) {

@@ -29,6 +29,9 @@ declare namespace google {
     enum ViewId {
       SPREADSHEETS = 'SPREADSHEETS',
     }
+    enum DocsViewMode {
+      LIST = 'LIST',
+    }
     enum Action {
       PICKED = 'picked',
       CANCEL = 'cancel',
@@ -45,6 +48,7 @@ declare namespace google {
       constructor(viewId?: ViewId);
       setIncludeFolders(value: boolean): DocsView;
       setSelectFolderEnabled(value: boolean): DocsView;
+      setMode(mode: DocsViewMode): DocsView;
     }
     class PickerBuilder {
       setDeveloperKey(key: string): PickerBuilder;
