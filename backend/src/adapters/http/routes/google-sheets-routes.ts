@@ -3,6 +3,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
 import { GOOGLE_SHEETS_OAUTH_SCOPES } from '../../../application/google-sheets-oauth-scopes';
+import { googlePickerAccessTokenFromRequest } from '../google-picker-access-token';
 
 /** Разрешены только относительные пути вида /learn/... */
 function validateLearnPath(path: string): string | null {
@@ -188,43 +189,6 @@ export function registerGoogleSheetsRoutes(
     );
 
     /**
-     * Список таблиц Google (Drive API) — для выбора при импорте
-     */
-    fastify.get(
-        '/auth/google/sheets/spreadsheets',
-        {
-            preHandler: [fastify.authenticate],
-            schema: {
-                querystring: {
-                    type: 'object',
-                    properties: {
-                        q: { type: 'string' },
-                        pageToken: { type: 'string' },
-                    },
-                },
-                tags: ['auth'],
-                summary: 'List user Google Spreadsheets (Drive)',
-            },
-        },
-        async (
-            req: FastifyRequest<{ Querystring: { q?: string; pageToken?: string } }>,
-            reply: FastifyReply,
-        ) => {
-            const userId = (req.user as any).userId;
-            const { q, pageToken } = req.query;
-            try {
-                const result = await googleSheetsService.listSpreadsheets(userId, { q, pageToken });
-                return reply.send(result);
-            } catch (err) {
-                req.log.error({ err }, 'Google Sheets: listSpreadsheets failed');
-                return reply.code(502).send({
-                    message: err instanceof Error ? err.message : 'Failed to list spreadsheets',
-                });
-            }
-        },
-    );
-
-    /**
      * Названия листов внутри таблицы — для выбора листа при импорте
      */
     fastify.get(
@@ -249,8 +213,13 @@ export function registerGoogleSheetsRoutes(
         ) => {
             const userId = (req.user as any).userId;
             const { spreadsheetId } = req.params;
+            const googlePickerAccessToken = googlePickerAccessTokenFromRequest(req);
             try {
-                const titles = await googleSheetsService.getSpreadsheetSheetTitles(userId, spreadsheetId);
+                const titles = await googleSheetsService.getSpreadsheetSheetTitles(
+                    userId,
+                    spreadsheetId,
+                    googlePickerAccessToken ? { googlePickerAccessToken } : undefined,
+                );
                 return reply.send({ titles });
             } catch (err) {
                 req.log.error({ err, spreadsheetId }, 'Google Sheets: getSpreadsheetSheetTitles failed');

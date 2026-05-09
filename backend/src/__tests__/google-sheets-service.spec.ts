@@ -12,13 +12,11 @@ jest.mock('googleapis', () => {
     const create = jest.fn();
     const valuesUpdate = jest.fn();
     const spreadsheetsGet = jest.fn();
-    const filesList = jest.fn();
     (global as any).__googleSheetsTestMocks = {
         valuesGet,
         create,
         valuesUpdate,
         spreadsheetsGet,
-        filesList,
     };
     return {
         google: {
@@ -34,9 +32,6 @@ jest.mock('googleapis', () => {
                     get: spreadsheetsGet,
                 },
             }),
-            drive: jest.fn().mockReturnValue({
-                files: { list: filesList },
-            }),
         },
     };
 });
@@ -46,7 +41,6 @@ const getSheetsMocks = () => (global as any).__googleSheetsTestMocks as {
     create: jest.Mock;
     valuesUpdate: jest.Mock;
     spreadsheetsGet: jest.Mock;
-    filesList: jest.Mock;
 };
 
 describe('GoogleSheetsService', () => {
@@ -168,11 +162,9 @@ describe('GoogleSheetsService', () => {
                 },
             });
 
-            const result = await service.getSpreadsheetData(
-                'user-1',
-                'spreadsheet-id',
-                'Sheet1'
-            );
+            const result = await service.getSpreadsheetData('user-1', 'spreadsheet-id', {
+                sheetName: 'Sheet1',
+            });
 
             expect(result).toEqual([
                 ['Сторона A', 'Сторона B'],
@@ -188,12 +180,22 @@ describe('GoogleSheetsService', () => {
         it('возвращает пустой массив при отсутствии данных', async () => {
             getSheetsMocks().valuesGet.mockResolvedValue({ data: {} });
 
-            const result = await service.getSpreadsheetData(
-                'user-1',
-                'spreadsheet-id'
-            );
+            const result = await service.getSpreadsheetData('user-1', 'spreadsheet-id');
 
             expect(result).toEqual([]);
+        });
+
+        it('при googlePickerAccessToken не обращается к tokensRepo', async () => {
+            getSheetsMocks().valuesGet.mockResolvedValue({
+                data: { values: [['Сторона A', 'Сторона B'], ['q', 'a']] },
+            });
+
+            await service.getSpreadsheetData('user-1', 'spreadsheet-id', {
+                sheetName: 'Sheet1',
+                googlePickerAccessToken: 'picker-access-token',
+            });
+
+            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
         });
     });
 
@@ -261,58 +263,6 @@ describe('GoogleSheetsService', () => {
         });
     });
 
-    describe('listSpreadsheets', () => {
-        beforeEach(() => {
-            const futureExpiry = new Date(Date.now() + 3600 * 1000);
-            tokensRepo.findByUserId.mockResolvedValue({
-                userId: 'user-1',
-                accessToken: 'valid-token',
-                refreshToken: 'refresh',
-                expiresAt: futureExpiry,
-            });
-        });
-
-        it('возвращает список таблиц из Drive', async () => {
-            getSheetsMocks().filesList.mockResolvedValue({
-                data: {
-                    files: [
-                        { id: 'id1', name: 'Table One' },
-                        { id: 'id2', name: 'Table Two' },
-                    ],
-                    nextPageToken: 'next',
-                },
-            });
-
-            const result = await service.listSpreadsheets('user-1');
-
-            expect(result).toEqual({
-                files: [
-                    { id: 'id1', name: 'Table One' },
-                    { id: 'id2', name: 'Table Two' },
-                ],
-                nextPageToken: 'next',
-            });
-            expect(getSheetsMocks().filesList).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    q: expect.stringContaining("mimeType='application/vnd.google-apps.spreadsheet'"),
-                    fields: 'nextPageToken, files(id, name)',
-                }),
-            );
-        });
-
-        it('добавляет фильтр name contains при поиске', async () => {
-            getSheetsMocks().filesList.mockResolvedValue({ data: { files: [] } });
-
-            await service.listSpreadsheets('user-1', { q: "Test's" });
-
-            expect(getSheetsMocks().filesList).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    q: expect.stringContaining("name contains 'Test\\'s'"),
-                }),
-            );
-        });
-    });
-
     describe('getSpreadsheetSheetTitles', () => {
         beforeEach(() => {
             const futureExpiry = new Date(Date.now() + 3600 * 1000);
@@ -337,6 +287,22 @@ describe('GoogleSheetsService', () => {
             const titles = await service.getSpreadsheetSheetTitles('user-1', 'abc123_x');
 
             expect(titles).toEqual(['Sheet1', 'Cards']);
+            expect(getSheetsMocks().spreadsheetsGet).toHaveBeenCalledWith({
+                spreadsheetId: 'abc123_x',
+                fields: 'sheets.properties.title',
+            });
+        });
+
+        it('при googlePickerAccessToken не обращается к tokensRepo', async () => {
+            getSheetsMocks().spreadsheetsGet.mockResolvedValue({
+                data: { sheets: [{ properties: { title: 'Only' } }] },
+            });
+
+            await service.getSpreadsheetSheetTitles('user-1', 'abc123_x', {
+                googlePickerAccessToken: 'picker-token',
+            });
+
+            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
             expect(getSheetsMocks().spreadsheetsGet).toHaveBeenCalledWith({
                 spreadsheetId: 'abc123_x',
                 fields: 'sheets.properties.title',

@@ -41,6 +41,7 @@ import { registerTelegramRoutes } from './routes/telegram-routes';
 import { registerTranslateRoutes } from './routes/translate-routes';
 import { registerPublishRoutes } from './routes/publish-routes';
 import { registerGoogleSheetsRoutes } from './routes/google-sheets-routes';
+import { GOOGLE_PICKER_ACCESS_TOKEN_HEADER } from './google-picker-access-token';
 import { registerAdminRoutes } from './routes/admin-routes';
 import { GoogleSheetsService } from '../../application/google-sheets-service';
 import { PostgresGoogleSheetsTokensRepository } from '../db/postgres-google-sheets-tokens-repo';
@@ -100,7 +101,7 @@ export async function buildServer() {
         },
         credentials: true, // ВАЖНО: куки продолжают работать для SPA
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        allowedHeaders: ['Content-Type', 'Authorization', GOOGLE_PICKER_ACCESS_TOKEN_HEADER],
     });
 
 

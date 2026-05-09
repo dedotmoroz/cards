@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  Autocomplete,
+  Backdrop,
+  Box,
   CircularProgress,
   FormControl,
   InputLabel,
@@ -14,7 +16,10 @@ import {
 import { DialogUI } from '@/shared/ui/dialog-ui';
 import { ButtonUI } from '@/shared/ui/button-ui';
 import { cardsApi } from '@/shared/api/cardsApi';
-import {ButtonBlack} from "@/shared/ui";
+import { ButtonBlack } from '@/shared/ui';
+import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from '@/shared/config/api';
+
+type Phase = 'closed' | 'picking' | 'form';
 
 interface ImportGoogleSheetsDialogProps {
   open: boolean;
@@ -30,80 +35,61 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   onSuccess,
 }) => {
   const { t } = useTranslation();
-  const [spreadsheetOptions, setSpreadsheetOptions] = useState<{ id: string; name: string }[]>(
-    []
+  const [phase, setPhase] = useState<Phase>('closed');
+  /** Увеличивается при каждом новом открытии диалога (flow с Picker). */
+  const [importSessionId, setImportSessionId] = useState(0);
+  const [pickerAttemptId, setPickerAttemptId] = useState(0);
+  const [selectedSpreadsheet, setSelectedSpreadsheet] = useState<{ id: string; name: string } | null>(
+    null,
   );
-  const [nextPageToken, setNextPageToken] = useState<string | undefined>();
-  const [loadingSpreadsheets, setLoadingSpreadsheets] = useState(false);
-  const [loadingMoreSpreadsheets, setLoadingMoreSpreadsheets] = useState(false);
-  const [selectedSpreadsheet, setSelectedSpreadsheet] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
-  const [inputValue, setInputValue] = useState('');
   const [sheetTitles, setSheetTitles] = useState<string[]>([]);
   const [loadingSheetTitles, setLoadingSheetTitles] = useState(false);
+  const [pickerLoading, setPickerLoading] = useState(false);
+  /** Только пока грузятся скрифты/token; перед setVisible(false) чтобы не перекрывать окно Google. */
+  const [showPickingBackdrop, setShowPickingBackdrop] = useState(false);
   const [selectedSheet, setSelectedSheet] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [listError, setListError] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
+  const pickerTokenClientRef = useRef<google.accounts.oauth2.TokenClient | null>(null);
+  const pickerScriptPromiseRef = useRef<Promise<void> | null>(null);
+  const gisScriptPromiseRef = useRef<Promise<void> | null>(null);
+  const lastPickerLaunchSigRef = useRef('');
+  /** GIS access_token used for Picker (drive.file) — same token must reach backend for sheet-titles/import. */
+  const pickerGsAccessTokenRef = useRef('');
 
-  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const loadSpreadsheets = useCallback(
-    async (q: string, pageToken: string | undefined, append: boolean) => {
-      if (append) {
-        setLoadingMoreSpreadsheets(true);
-      } else {
-        setLoadingSpreadsheets(true);
-        setListError(null);
+  const loadScript = (src: string) =>
+    new Promise<void>((resolve, reject) => {
+      const existing = document.querySelector(`script[src="${src}"]`);
+      if (existing) {
+        resolve();
+        return;
       }
-      try {
-        const res = await cardsApi.listGoogleSpreadsheets({
-          q: q || undefined,
-          pageToken,
-        });
-        if (append) {
-          setSpreadsheetOptions((prev) => [...prev, ...res.files]);
-        } else {
-          setSpreadsheetOptions(res.files);
-        }
-        setNextPageToken(res.nextPageToken);
-      } catch {
-        if (!append) {
-          setListError(t('googleSheets.listSpreadsheetsError'));
-          setSpreadsheetOptions([]);
-          setNextPageToken(undefined);
-        }
-      } finally {
-        if (append) {
-          setLoadingMoreSpreadsheets(false);
-        } else {
-          setLoadingSpreadsheets(false);
-        }
-      }
-    },
-    [t]
-  );
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.body.appendChild(script);
+    });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) {
+      setPhase('closed');
+      setPickerAttemptId(0);
+      lastPickerLaunchSigRef.current = '';
+      pickerGsAccessTokenRef.current = '';
       return;
     }
-    setSpreadsheetOptions([]);
-    setNextPageToken(undefined);
+
+    setImportSessionId((id) => id + 1);
     setSelectedSpreadsheet(null);
-    setInputValue('');
     setSheetTitles([]);
     setSelectedSheet('');
     setError(null);
-    setListError(null);
-    if (searchDebounceRef.current) {
-      clearTimeout(searchDebounceRef.current);
-      searchDebounceRef.current = null;
-    }
-    loadSpreadsheets('', undefined, false);
-  }, [open, loadSpreadsheets]);
+    setShowPickingBackdrop(true);
+    setPhase('picking');
+  }, [open]);
 
   useEffect(() => {
     if (!selectedSpreadsheet) {
@@ -115,17 +101,25 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
     setSheetTitles([]);
     setLoadingSheetTitles(true);
     cardsApi
-      .getGoogleSpreadsheetSheetTitles(selectedSpreadsheet.id)
+      .getGoogleSpreadsheetSheetTitles(selectedSpreadsheet.id, {
+        pickerAccessToken: pickerGsAccessTokenRef.current || undefined,
+      })
       .then((res) => {
         if (cancelled) return;
         const titles = res.titles;
         setSheetTitles(titles);
         setSelectedSheet(titles[0] ?? '');
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (cancelled) return;
         setSheetTitles([]);
         setSelectedSheet('');
+        const ax = err as { response?: { data?: { message?: string } }; message?: string };
+        setError(
+          ax.response?.data?.message ||
+            ax.message ||
+            t('googleSheets.sheetTabsLoadError'),
+        );
       })
       .finally(() => {
         if (!cancelled) {
@@ -135,51 +129,129 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
     return () => {
       cancelled = true;
     };
-  }, [selectedSpreadsheet]);
+  }, [selectedSpreadsheet, t]);
 
-  const handleSpreadsheetInputChange = (
-    _: unknown,
-    newInputValue: string,
-    reason: string
-  ) => {
-    if (reason === 'reset') {
-      setInputValue(newInputValue);
-      return;
+  const ensurePickerReady = useCallback(async () => {
+    if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY) {
+      throw new Error(t('googleSheets.pickerMissingConfig'));
     }
-    setInputValue(newInputValue);
-    if (reason === 'clear') {
-      if (searchDebounceRef.current) {
-        clearTimeout(searchDebounceRef.current);
-        searchDebounceRef.current = null;
+    if (!pickerScriptPromiseRef.current) {
+      pickerScriptPromiseRef.current = loadScript('https://apis.google.com/js/api.js').then(
+        () =>
+          new Promise<void>((resolve) => {
+            const gapiClient = (
+              window as Window & { gapi?: { load: (apiName: string, callback: () => void) => void } }
+            ).gapi;
+            if (!gapiClient) {
+              throw new Error(t('googleSheets.pickerLoadError'));
+            }
+            gapiClient.load('picker', () => resolve());
+          }),
+      );
+    }
+    if (!gisScriptPromiseRef.current) {
+      gisScriptPromiseRef.current = loadScript('https://accounts.google.com/gsi/client');
+    }
+    await Promise.all([pickerScriptPromiseRef.current, gisScriptPromiseRef.current]);
+  }, [t]);
+
+  const openPickerOverlay = useCallback(
+    (accessToken: string) => {
+      const view = new google.picker.DocsView(google.picker.ViewId.SPREADSHEETS)
+        .setIncludeFolders(false)
+        .setSelectFolderEnabled(false)
+        .setMode(google.picker.DocsViewMode.LIST);
+      const picker = new google.picker.PickerBuilder()
+        .setDeveloperKey(GOOGLE_API_KEY)
+        .setOAuthToken(accessToken)
+        .setOrigin(window.location.origin)
+        .addView(view)
+        .setCallback((data: google.picker.ResponseObject) => {
+          if (data.action === google.picker.Action.CANCEL) {
+            setPickerLoading(false);
+            onClose();
+            return;
+          }
+          if (data.action !== google.picker.Action.PICKED) {
+            return;
+          }
+          const doc = data.docs?.[0];
+          if (!doc?.id) {
+            setPickerLoading(false);
+            return;
+          }
+          setSelectedSpreadsheet({
+            id: doc.id,
+            name: doc.name || t('googleSheets.unknownSpreadsheetName'),
+          });
+          setError(null);
+          setPhase('form');
+          setPickerLoading(false);
+        })
+        .build();
+      flushSync(() => {
+        setShowPickingBackdrop(false);
+        setPickerLoading(false);
+      });
+      picker.setVisible(true);
+    },
+    [onClose, t],
+  );
+
+  const runPickerFlow = useCallback(async () => {
+    try {
+      setPickerLoading(true);
+      setError(null);
+      await ensurePickerReady();
+      const googleClient = (window as Window & { google?: typeof google }).google;
+      if (!googleClient?.accounts?.oauth2) {
+        throw new Error(t('googleSheets.pickerLoadError'));
       }
-      loadSpreadsheets('', undefined, false);
-      return;
+      if (!pickerTokenClientRef.current) {
+        pickerTokenClientRef.current = googleClient.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'https://www.googleapis.com/auth/drive.file',
+          callback: () => {},
+        });
+      }
+      pickerTokenClientRef.current.callback = (response) => {
+        if (response.error || !response.access_token) {
+          setError(t('googleSheets.pickerAuthError'));
+          setPhase('form');
+          setPickerLoading(false);
+          return;
+        }
+        pickerGsAccessTokenRef.current = response.access_token;
+        openPickerOverlay(response.access_token);
+      };
+      pickerTokenClientRef.current.requestAccessToken({ prompt: '' });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('googleSheets.pickerLoadError'));
+      setPhase('form');
+      setPickerLoading(false);
     }
-    if (reason !== 'input') {
-      return;
-    }
-    if (searchDebounceRef.current) {
-      clearTimeout(searchDebounceRef.current);
-    }
-    searchDebounceRef.current = setTimeout(() => {
-      loadSpreadsheets(newInputValue.trim(), undefined, false);
-    }, 400);
-  };
+  }, [ensurePickerReady, openPickerOverlay, t]);
 
-  const handleSpreadsheetListScroll = (event: React.UIEvent<HTMLUListElement>) => {
-    const el = event.currentTarget;
-    const threshold = 48;
-    const nearBottom =
-      el.scrollTop + el.clientHeight >= el.scrollHeight - threshold;
-    if (
-      !nearBottom ||
-      !nextPageToken ||
-      loadingSpreadsheets ||
-      loadingMoreSpreadsheets
-    ) {
+  useEffect(() => {
+    if (!open || phase !== 'picking') {
       return;
     }
-    loadSpreadsheets(inputValue.trim(), nextPageToken, true);
+    const sig = `${importSessionId}:${pickerAttemptId}`;
+    if (lastPickerLaunchSigRef.current === sig) {
+      return;
+    }
+    lastPickerLaunchSigRef.current = sig;
+    void runPickerFlow();
+  }, [open, phase, pickerAttemptId, importSessionId, runPickerFlow]);
+
+  const handlePickAnotherSpreadsheet = () => {
+    setSelectedSpreadsheet(null);
+    setSheetTitles([]);
+    setSelectedSheet('');
+    setError(null);
+    setShowPickingBackdrop(true);
+    setPickerAttemptId((id) => id + 1);
+    setPhase('picking');
   };
 
   const handleImport = async () => {
@@ -194,6 +266,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       const result = await cardsApi.importFromGoogleSheets(folderId, {
         spreadsheetId: selectedSpreadsheet.id,
         sheetName: selectedSheet.trim(),
+        pickerAccessToken: pickerGsAccessTokenRef.current || undefined,
       });
       if (result.successCount > 0) {
         onSuccess();
@@ -212,7 +285,6 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
 
   const handleClose = () => {
     setError(null);
-    setListError(null);
     onClose();
   };
 
@@ -223,9 +295,34 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
 
   const sheetFieldDisabled = !selectedSpreadsheet || loadingSheetTitles;
 
+  if (!open) {
+    return null;
+  }
+
+  if (phase === 'picking' && showPickingBackdrop) {
+    return (
+      <Backdrop
+        open
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          color: '#fff',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        <CircularProgress color="inherit" />
+        <Typography variant="body2">{t('googleSheets.pickerLoading')}</Typography>
+      </Backdrop>
+    );
+  }
+
+  if (phase === 'picking' && !showPickingBackdrop) {
+    return null;
+  }
+
   return (
     <DialogUI
-      open={open}
+      open={open && phase === 'form'}
       onClose={handleClose}
       title={t('googleSheets.importTitle')}
       maxWidth="sm"
@@ -235,46 +332,18 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             {t('googleSheets.importDescription')}
           </Typography>
-          <Autocomplete
-            disabled={loadingSpreadsheets}
-            options={spreadsheetOptions}
-            loading={loadingSpreadsheets}
-            getOptionLabel={(o) => o.name}
-            isOptionEqualToValue={(a, b) => a.id === b.id}
-            value={selectedSpreadsheet}
-            onChange={(_, v) => setSelectedSpreadsheet(v)}
-            inputValue={inputValue}
-            onInputChange={handleSpreadsheetInputChange}
-            filterOptions={(opts) => opts}
-            ListboxProps={{
-              onScroll: handleSpreadsheetListScroll,
-              sx: { maxHeight: 280 },
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={t('googleSheets.spreadsheetPickerLabel')}
-                placeholder={t('googleSheets.spreadsheetSearchPlaceholder')}
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <>
-                      {loadingSpreadsheets || loadingMoreSpreadsheets ? (
-                        <CircularProgress color="inherit" size={20} />
-                      ) : null}
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
-                }}
-              />
-            )}
-            sx={{ mb: 2 }}
-          />
-          {listError ? (
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              {listError}
-            </Alert>
-          ) : null}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, alignItems: 'center', mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ flex: '1 1 auto' }}>
+              {selectedSpreadsheet
+                ? selectedSpreadsheet.name
+                : t('googleSheets.noSpreadsheetSelected')}
+            </Typography>
+            {selectedSpreadsheet ? (
+              <ButtonUI onClick={handlePickAnotherSpreadsheet} disabled={pickerLoading} size="small">
+                {t('googleSheets.pickAnotherSpreadsheet')}
+              </ButtonUI>
+            ) : null}
+          </Box>
           {sheetTitles.length > 0 ? (
             <FormControl fullWidth sx={{ mb: 2 }} disabled={sheetFieldDisabled}>
               <InputLabel id="gs-sheet-tab-label">{t('googleSheets.sheetTabLabel')}</InputLabel>
@@ -322,9 +391,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       }
       actions={
         <>
-          <ButtonUI onClick={handleClose} >
-            {t('auth.cancel')}
-          </ButtonUI>
+          <ButtonUI onClick={handleClose}>{t('auth.cancel')}</ButtonUI>
           <ButtonBlack
             onClick={handleImport}
             disabled={isImporting || !canImport}

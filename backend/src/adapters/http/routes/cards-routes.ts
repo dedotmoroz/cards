@@ -5,6 +5,7 @@ import ExcelJS from 'exceljs';
 import { CardService } from '../../../application/card-service';
 import { FolderRepository } from '../../../ports/folder-repository';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
+import { googlePickerAccessTokenFromRequest } from '../google-picker-access-token';
 import { CreateCardDTO, CardDTO, UpdateCardDTO, ReviewCardDTO } from '../dto';
 import { CreateCardInput } from './types';
 import type { CardRepository } from '../../../ports/card-repository';
@@ -721,6 +722,7 @@ export function registerCardsRoutes(
                         properties: {
                             spreadsheetId: { type: 'string' },
                             sheetName: { type: 'string' },
+                            googlePickerAccessToken: { type: 'string' },
                         },
                     },
                     response: {
@@ -740,18 +742,23 @@ export function registerCardsRoutes(
             },
             async (req: FastifyRequest<{
                 Params: { folderId: string };
-                Body: { spreadsheetId: string; sheetName?: string };
+                Body: { spreadsheetId: string; sheetName?: string; googlePickerAccessToken?: string };
             }>, reply: FastifyReply) => {
                 const userId = (req.user as any).userId;
                 const { folderId } = req.params;
-                const { spreadsheetId, sheetName = 'Sheet1' } = req.body;
+                const { spreadsheetId, sheetName = 'Sheet1', googlePickerAccessToken: bodyPickerToken } =
+                    req.body;
+                const googlePickerAccessToken = googlePickerAccessTokenFromRequest(req, bodyPickerToken);
 
                 const folder = await folderRepo.findById(folderId);
                 if (!folder) return reply.code(404).send({ message: 'Folder not found' });
                 if (folder.userId !== userId) return reply.code(403).send({ message: 'Access denied' });
 
                 try {
-                    const rows = await googleSheetsService.getSpreadsheetData(userId, spreadsheetId, sheetName);
+                    const rows = await googleSheetsService.getSpreadsheetData(userId, spreadsheetId, {
+                        sheetName,
+                        ...(googlePickerAccessToken ? { googlePickerAccessToken } : {}),
+                    });
                     if (rows.length < 2) {
                         return reply.code(400).send({ message: 'Sheet is empty or has no data rows' });
                     }

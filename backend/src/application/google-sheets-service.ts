@@ -8,13 +8,15 @@ function createSheetsAuth(clientId: string, clientSecret: string, accessToken: s
     return auth;
 }
 
-/** Escape single quotes for Drive API `q` string literals. */
-function escapeDriveQueryLiteral(value: string): string {
-    return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-}
-
 const QUESTION_HEADERS = ['Сторона A', 'Side A', 'Question', 'question'];
 const ANSWER_HEADERS = ['Сторона B', 'Side B', 'Answer', 'answer'];
+
+/** GIS/Picker token from browser — max reasonable OAuth access_token length */
+const MAX_PICKER_ACCESS_TOKEN_CHARS = 4096;
+
+export interface GooglePickerSheetsOptions {
+    googlePickerAccessToken?: string | undefined;
+}
 
 export class GoogleSheetsService {
     constructor(
@@ -64,12 +66,22 @@ export class GoogleSheetsService {
         return credentials.access_token;
     }
 
+    /** Use short-lived GIS token after Picker (drive.file) when provided; otherwise stored OAuth token. */
+    private async resolveSheetsAccessToken(userId: string, opts?: GooglePickerSheetsOptions): Promise<string> {
+        const trimmed = opts?.googlePickerAccessToken?.trim();
+        if (trimmed && trimmed.length > 0 && trimmed.length <= MAX_PICKER_ACCESS_TOKEN_CHARS) {
+            return trimmed;
+        }
+        return this.getValidAccessToken(userId);
+    }
+
     async getSpreadsheetData(
         userId: string,
         spreadsheetId: string,
-        sheetName: string = 'Sheet1'
+        opts?: { sheetName?: string } & GooglePickerSheetsOptions
     ): Promise<string[][]> {
-        const accessToken = await this.getValidAccessToken(userId);
+        const sheetName = opts?.sheetName ?? 'Sheet1';
+        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
         const range = `${sheetName}!A:Z`;
@@ -82,41 +94,12 @@ export class GoogleSheetsService {
         return rows;
     }
 
-    async listSpreadsheets(
+    async getSpreadsheetSheetTitles(
         userId: string,
-        opts?: { q?: string; pageToken?: string; pageSize?: number },
-    ): Promise<{ files: { id: string; name: string }[]; nextPageToken?: string }> {
-        const accessToken = await this.getValidAccessToken(userId);
-        const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
-        const drive = google.drive({ version: 'v3', auth });
-
-        let q = "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false";
-        const nameQuery = opts?.q?.trim().slice(0, 200);
-        if (nameQuery) {
-            q += ` and name contains '${escapeDriveQueryLiteral(nameQuery)}'`;
-        }
-
-        const pageSize = Math.min(Math.max(opts?.pageSize ?? 50, 1), 100);
-        const res = await drive.files.list({
-            q,
-            fields: 'nextPageToken, files(id, name)',
-            pageSize,
-            pageToken: opts?.pageToken,
-            orderBy: 'modifiedTime desc',
-        });
-
-        const files = (res.data.files ?? [])
-            .filter((f): f is { id: string; name: string } => typeof f.id === 'string' && typeof f.name === 'string')
-            .map((f) => ({ id: f.id!, name: f.name! }));
-
-        return {
-            files,
-            nextPageToken: res.data.nextPageToken ?? undefined,
-        };
-    }
-
-    async getSpreadsheetSheetTitles(userId: string, spreadsheetId: string): Promise<string[]> {
-        const accessToken = await this.getValidAccessToken(userId);
+        spreadsheetId: string,
+        opts?: GooglePickerSheetsOptions
+    ): Promise<string[]> {
+        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
         const res = await sheets.spreadsheets.get({

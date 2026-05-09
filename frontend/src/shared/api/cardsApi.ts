@@ -9,7 +9,7 @@ import type {
   CardGenerationTriggerResponse,
   CardGenerationStatusResponse,
 } from '../types/cards';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, GOOGLE_PICKER_ACCESS_TOKEN_HEADER } from '../config/api';
 
 // Настраиваем axios для работы с httpOnly cookies
 axios.defaults.withCredentials = true;
@@ -188,26 +188,19 @@ export const cardsApi = {
   },
 
   /**
-   * Список таблиц Google (Drive) для выбора при импорте
-   */
-  listGoogleSpreadsheets: async (params?: {
-    q?: string;
-    pageToken?: string;
-  }): Promise<{ files: { id: string; name: string }[]; nextPageToken?: string }> => {
-    const response = await axios.get(`${API_BASE_URL}/auth/google/sheets/spreadsheets`, {
-      params,
-    });
-    return response.data;
-  },
-
-  /**
    * Названия листов выбранной таблицы
    */
   getGoogleSpreadsheetSheetTitles: async (
-    spreadsheetId: string
+    spreadsheetId: string,
+    options?: { pickerAccessToken?: string },
   ): Promise<{ titles: string[] }> => {
+    const headers =
+      options?.pickerAccessToken && options.pickerAccessToken.trim().length > 0
+        ? { [GOOGLE_PICKER_ACCESS_TOKEN_HEADER]: options.pickerAccessToken.trim() }
+        : undefined;
     const response = await axios.get(
-      `${API_BASE_URL}/auth/google/sheets/spreadsheet/${encodeURIComponent(spreadsheetId)}/sheet-titles`
+      `${API_BASE_URL}/auth/google/sheets/spreadsheet/${encodeURIComponent(spreadsheetId)}/sheet-titles`,
+      { headers },
     );
     return response.data;
   },
@@ -217,11 +210,18 @@ export const cardsApi = {
    */
   importFromGoogleSheets: async (
     folderId: string,
-    params: { spreadsheetId: string; sheetName?: string }
+    params: { spreadsheetId: string; sheetName?: string; pickerAccessToken?: string },
   ): Promise<{ message: string; successCount: number; errorCount: number; errors?: string[] }> => {
+    const { pickerAccessToken, ...body } = params;
+    const trimmedPicker = pickerAccessToken?.trim();
+    const headers =
+      trimmedPicker && trimmedPicker.length > 0
+        ? { [GOOGLE_PICKER_ACCESS_TOKEN_HEADER]: trimmedPicker }
+        : undefined;
     const response = await axios.post(
       `${API_BASE_URL}/cards/folder/${folderId}/import/google`,
-      params
+      body,
+      { headers },
     );
     return response.data;
   },

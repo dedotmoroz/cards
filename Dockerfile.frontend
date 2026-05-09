@@ -7,8 +7,10 @@ COPY frontend ./
 
 # 🔑 build-time переменные для Vite
 ARG VITE_GOOGLE_CLIENT_ID
+ARG VITE_GOOGLE_API_KEY
 # пробрасываем ARG → ENV, чтобы Vite их увидел
 ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+ENV VITE_GOOGLE_API_KEY=$VITE_GOOGLE_API_KEY
 
 RUN npm run build
 

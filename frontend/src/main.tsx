@@ -19,6 +19,13 @@ createRoot(document.getElementById('root')!).render(
             backgroundAttachment: 'fixed',
             minHeight: '100vh',
           },
+          '.picker-dialog': {
+            position: 'fixed !important',
+            top: '50% !important',
+            left: '50% !important',
+            transform: 'translate(-50%, -50%) !important',
+            zIndex: '20000 !important',
+          },
         }}
       />
       <App />

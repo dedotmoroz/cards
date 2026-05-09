@@ -8,6 +8,10 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ||
 
 // Google OAuth Client ID для Sign-in
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+export const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY || '';
+
+/** Backend reads the same lowercase name (GIS token after Google Picker, drive.file). */
+export const GOOGLE_PICKER_ACCESS_TOKEN_HEADER = 'x-google-picker-access-token';
 
 // Базовый URL сайта для canonical и hreflang (SEO)
 export const SITE_BASE_URL = import.meta.env.VITE_SITE_BASE_URL || 'https://kotcat.com';
