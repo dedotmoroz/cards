@@ -6,9 +6,10 @@ import { StyledNavigationBox, StyledNavigationInner } from './styled-components'
 
 interface ProfileHeaderProps {
     navigateTo?: string;
+    disabled?: boolean;
 }
 
-export const ProfileHeader = ({ navigateTo }: ProfileHeaderProps) => {
+export const ProfileHeader = ({ navigateTo, disabled = false }: ProfileHeaderProps) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ export const ProfileHeader = ({ navigateTo }: ProfileHeaderProps) => {
                 <ButtonLink
                     startIcon={<ArrowBack />}
                     onClick={handleClick}
+                    disabled={disabled}
                 >
                     {t('forms.back')}
                 </ButtonLink>

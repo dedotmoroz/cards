@@ -1,17 +1,34 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Typography, Box, CircularProgress, Alert, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { useParams } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  Box,
+  CircularProgress,
+  Alert,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip,
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { contextReadingApi, type ContextReadingGenerateStatusResponse } from '@/shared/api/contextReadingApi';
 import { useSEO } from '@/shared/hooks/useSEO';
+import { ProfileHeader } from '@/entities/user';
+import { ButtonColor, ButtonLink } from '@/shared/ui';
 
 const POLLING_INTERVAL = 2000; // 2 seconds
 
 export const ContextReadingPage = () => {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
   const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
+  const learnFolderPath = userId && folderId ? `/learn/${userId}/${folderId}` : undefined;
+  const languageLevelAriaLabel = t('contextReading.languageLevel', { defaultValue: 'Language level' });
   
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -203,28 +220,15 @@ export const ContextReadingPage = () => {
   if (loading) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
+        {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {userId && folderId && (
-              <Button
-                variant="outlined"
-                startIcon={<ArrowBack />}
-                onClick={() => navigate(`/learn/${userId}/${folderId}`)}
-                disabled={true}
-                sx={{ minWidth: 'auto' }}
-              >
-                {t('contextReading.back', { defaultValue: 'Назад' })}
-              </Button>
-            )}
-            <Typography variant="h4">
-              {t('contextReading.title', { defaultValue: 'Context Reading' })}
-            </Typography>
-          </Box>
+          <Typography variant="h4">
+            {t('contextReading.title', { defaultValue: 'Context Reading' })}
+          </Typography>
           <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>{t('contextReading.languageLevel', { defaultValue: 'Уровень' })}</InputLabel>
             <Select
               value={languageLevel}
-              label={t('contextReading.languageLevel', { defaultValue: 'Уровень' })}
+              inputProps={{ 'aria-label': languageLevelAriaLabel }}
               onChange={(e) => setLanguageLevel(e.target.value)}
               disabled={true}
             >
@@ -248,27 +252,15 @@ export const ContextReadingPage = () => {
     const isNoCardsError = error === 'No cards available for context reading';
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
+        {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {userId && folderId && (
-              <Button
-                variant="outlined"
-                startIcon={<ArrowBack />}
-                onClick={() => navigate(`/learn/${userId}/${folderId}`)}
-                sx={{ minWidth: 'auto' }}
-              >
-                {t('contextReading.back', { defaultValue: 'Назад' })}
-              </Button>
-            )}
-            <Typography variant="h4">
-              {t('contextReading.title', { defaultValue: 'Context Reading' })}
-            </Typography>
-          </Box>
+          <Typography variant="h4">
+            {t('contextReading.title', { defaultValue: 'Context Reading' })}
+          </Typography>
           <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>{t('contextReading.languageLevel', { defaultValue: 'Уровень' })}</InputLabel>
             <Select
               value={languageLevel}
-              label={t('contextReading.languageLevel', { defaultValue: 'Уровень' })}
+              inputProps={{ 'aria-label': languageLevelAriaLabel }}
               onChange={(e) => setLanguageLevel(e.target.value)}
               disabled={loading || generating}
             >
@@ -302,28 +294,15 @@ export const ContextReadingPage = () => {
   if (generating && status && status.state !== 'completed') {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
+        {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {userId && folderId && (
-              <Button
-                variant="outlined"
-                startIcon={<ArrowBack />}
-                onClick={() => navigate(`/learn/${userId}/${folderId}`)}
-                disabled={true}
-                sx={{ minWidth: 'auto' }}
-              >
-                {t('contextReading.back', { defaultValue: 'Назад' })}
-              </Button>
-            )}
-            <Typography variant="h4">
-              {t('contextReading.title', { defaultValue: 'Context Reading' })}
-            </Typography>
-          </Box>
+          <Typography variant="h4">
+            {t('contextReading.title', { defaultValue: 'Context Reading' })}
+          </Typography>
           <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>{t('contextReading.languageLevel', { defaultValue: 'Уровень' })}</InputLabel>
             <Select
               value={languageLevel}
-              label={t('contextReading.languageLevel', { defaultValue: 'Уровень' })}
+              inputProps={{ 'aria-label': languageLevelAriaLabel }}
               onChange={(e) => setLanguageLevel(e.target.value)}
               disabled={true}
             >
@@ -336,7 +315,18 @@ export const ContextReadingPage = () => {
             </Select>
           </FormControl>
         </Box>
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            minHeight: 'calc(100dvh - 200px)',
+            px: 2,
+            pb: 4,
+          }}
+        >
           <CircularProgress sx={{ mb: 2 }} />
           <Typography variant="body1">
             {t('contextReading.generating', { defaultValue: 'Generating text...' })} ({status.progress}%)
@@ -350,52 +340,26 @@ export const ContextReadingPage = () => {
   if (status?.state === 'completed' && status.result) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
+        {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {userId && folderId && (
-              <Button
-                variant="outlined"
-                startIcon={<ArrowBack />}
-                onClick={() => navigate(`/learn/${userId}/${folderId}`)}
-                sx={{ minWidth: 'auto' }}
-              >
-                {t('contextReading.back', { defaultValue: 'Назад' })}
-              </Button>
-            )}
-            <Typography variant="h4">
-              {t('contextReading.title', { defaultValue: 'Context Reading' })}
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-            {/* Выбор уровня языка */}
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>{t('contextReading.languageLevel', { defaultValue: 'Уровень' })}</InputLabel>
-              <Select
-                value={languageLevel}
-                label={t('contextReading.languageLevel', { defaultValue: 'Уровень' })}
-                onChange={(e) => setLanguageLevel(e.target.value)}
-                disabled={loading || generating}
-              >
-                <MenuItem value="A1">A1</MenuItem>
-                <MenuItem value="A2">A2</MenuItem>
-                <MenuItem value="B1">B1</MenuItem>
-                <MenuItem value="B2">B2</MenuItem>
-                <MenuItem value="C1">C1</MenuItem>
-                <MenuItem value="C2">C2</MenuItem>
-              </Select>
-            </FormControl>
-            {/* Счетчик прогресса */}
-            {progress && (
-              <Typography variant="body2" color="text.secondary">
-                {t('contextReading.progress', { 
-                  used: progress.used, 
-                  total: progress.total,
-                  remaining: progress.total - progress.used,
-                  defaultValue: `${progress.used}/${progress.total} (осталось: ${progress.total - progress.used})`
-                })}
-              </Typography>
-            )}
-          </Box>
+          <Typography variant="h4" sx={{ ml: 4 }}>
+            {t('contextReading.title', { defaultValue: 'Context Reading' })}
+          </Typography>
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <Select
+              value={languageLevel}
+              inputProps={{ 'aria-label': languageLevelAriaLabel }}
+              onChange={(e) => setLanguageLevel(e.target.value)}
+              disabled={loading || generating}
+            >
+              <MenuItem value="A1">A1</MenuItem>
+              <MenuItem value="A2">A2</MenuItem>
+              <MenuItem value="B1">B1</MenuItem>
+              <MenuItem value="B2">B2</MenuItem>
+              <MenuItem value="C1">C1</MenuItem>
+              <MenuItem value="C2">C2</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
         
         {/* Список слов */}
@@ -406,90 +370,132 @@ export const ContextReadingPage = () => {
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {currentCards.map((card, index) => (
-                <Box
+                <Chip
                   key={index}
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    px: 1.5,
-                    py: 0.5,
-                    bgcolor: 'background.paper',
-                    borderRadius: 1,
-                    border: 1,
-                    borderColor: 'divider',
-                    fontSize: '0.875rem',
-                  }}
-                >
-                  <Typography variant="body2" component="span" fontWeight="medium">
-                    {card.question}
-                  </Typography>
-                  <Typography variant="body2" component="span" color="text.secondary">
-                    ({card.answer})
-                  </Typography>
-                </Box>
+                  size="small"
+                  variant="outlined"
+                  label={
+                    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'baseline', gap: 0.5 }}>
+                      <Typography variant="body2" component="span" fontWeight="medium">
+                        {card.question}
+                      </Typography>
+                      <Typography variant="body2" component="span" color="text.secondary">
+                        ({card.answer})
+                      </Typography>
+                    </Box>
+                  }
+                />
               ))}
             </Box>
           </Box>
         )}
         
-        <Box sx={{ mt: 4, mb: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            {t('contextReading.text', { defaultValue: 'Text' })}
-          </Typography>
-          <Typography
-            variant="body1"
+        <Box sx={{ mt: 4, mb: 4, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Accordion
+            defaultExpanded
+            disableGutters
+            elevation={0}
             sx={{
-              whiteSpace: 'pre-wrap',
-              lineHeight: 1.8,
-              mb: 4,
-              p: 2,
-              bgcolor: 'background.paper',
-              borderRadius: 1,
               border: 1,
               borderColor: 'divider',
+              borderRadius: 1,
+              '&:before': { display: 'none' },
             }}
           >
-            {status.result.text}
-          </Typography>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h6" component="span" sx={{ ml: 2 }}>
+                {t('contextReading.text', { defaultValue: 'Text' })}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography
+                variant="body1"
+                sx={{
+                  whiteSpace: 'pre-wrap',
+                  lineHeight: 1.8,
+                  p: 2,
+                  bgcolor: 'background.paper',
+                  borderRadius: 1,
+                  width: '100%',
+                  boxSizing: 'border-box',
+                }}
+              >
+                {status.result.text}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
 
-          <Typography variant="h6" gutterBottom>
-            {t('contextReading.translation', { defaultValue: 'Translation' })}
-          </Typography>
-          <Typography
-            variant="body1"
+          <Accordion
+            disableGutters
+            elevation={0}
             sx={{
-              whiteSpace: 'pre-wrap',
-              lineHeight: 1.8,
-              p: 2,
-              bgcolor: 'background.paper',
-              borderRadius: 1,
               border: 1,
               borderColor: 'divider',
+              borderRadius: 1,
+              '&:before': { display: 'none' },
             }}
           >
-            {status.result.translation}
-          </Typography>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h6" component="span" sx={{ ml: 2 }}>
+                {t('contextReading.translation', { defaultValue: 'Translation' })}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography
+                variant="body1"
+                sx={{
+                  whiteSpace: 'pre-wrap',
+                  lineHeight: 1.8,
+                  p: 2,
+                  bgcolor: 'background.paper',
+                  borderRadius: 1,
+                  width: '100%',
+                  boxSizing: 'border-box',
+                }}
+              >
+                {status.result.translation}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
         </Box>
 
-        {/* Кнопки управления */}
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-          <Button
-            variant="outlined"
-            onClick={handleReset}
-            disabled={loading || generating}
-            sx={{ minWidth: 120 }}
-          >
-            {t('contextReading.reset', { defaultValue: 'Сброс' })}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleNext}
-            disabled={loading || generating}
-            sx={{ minWidth: 120 }}
-          >
-            {t('contextReading.next', { defaultValue: 'Вперед' })}
-          </Button>
+        {/* Прогресс и кнопки управления */}
+        <Box
+          sx={{
+            mt: 4,
+            mb: 4,
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
+          {progress && (
+            <Typography variant="body1" color="text.secondary" sx={{ ml: 4 }}>
+              {t('contextReading.progress', {
+                used: progress.used,
+                total: progress.total,
+                remaining: progress.total - progress.used,
+                defaultValue: `${progress.used}/${progress.total} (осталось: ${progress.total - progress.used})`,
+              })}
+            </Typography>
+          )}
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', ml: 'auto' }}>
+            <ButtonLink
+              onClick={handleReset}
+              disabled={loading || generating}
+              sx={{ width: 120 }}
+            >
+              {t('contextReading.reset', { defaultValue: 'Сброс' })}
+            </ButtonLink>
+            <ButtonColor
+              onClick={handleNext}
+              disabled={loading || generating}
+              sx={{ width: 160 }}
+            >
+              {t('contextReading.next', { defaultValue: 'Вперед' })}
+            </ButtonColor>
+          </Box>
         </Box>
       </Container>
     );
@@ -497,27 +503,15 @@ export const ContextReadingPage = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
+      {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {userId && folderId && (
-            <Button
-              variant="outlined"
-              startIcon={<ArrowBack />}
-              onClick={() => navigate(`/learn/${userId}/${folderId}`)}
-              sx={{ minWidth: 'auto' }}
-            >
-              {t('contextReading.back', { defaultValue: 'Назад' })}
-            </Button>
-          )}
-          <Typography variant="h4">
-            {t('contextReading.title', { defaultValue: 'Context Reading' })}
-          </Typography>
-        </Box>
+        <Typography variant="h4">
+          {t('contextReading.title', { defaultValue: 'Context Reading' })}
+        </Typography>
         <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>{t('contextReading.languageLevel', { defaultValue: 'Уровень' })}</InputLabel>
           <Select
             value={languageLevel}
-            label={t('contextReading.languageLevel', { defaultValue: 'Уровень' })}
+            inputProps={{ 'aria-label': languageLevelAriaLabel }}
             onChange={(e) => setLanguageLevel(e.target.value)}
             disabled={loading || generating}
           >
