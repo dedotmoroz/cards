@@ -18,9 +18,13 @@ export function registerAuthDecorators(
                 const impersonationToken = request.cookies?.[IMPERSONATION_COOKIE];
                 if (impersonationToken) {
                     try {
-                        const payload: any = await request.jwtVerify({
-                            token: impersonationToken,
+                        // jwtVerify({ token }) is ignored — must use verify.extractToken
+                        await request.jwtVerify({
+                            verify: {
+                                extractToken: () => impersonationToken,
+                            },
                         });
+                        const payload: any = request.user as any;
                         if (payload?.type === 'impersonation' && payload?.userId) {
                             return;
                         }
