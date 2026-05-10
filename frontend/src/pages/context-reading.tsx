@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, type ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Container,
@@ -23,6 +23,67 @@ import { ProfileHeader } from '@/entities/user';
 import { ButtonColor, ButtonLink } from '@/shared/ui';
 
 const POLLING_INTERVAL = 2000; // 2 seconds
+const CONTEXT_READING_ACTIVE_CHIP_BG = '#3900ff26';
+const CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX = { fontSize: { xs: '28px' } };
+
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const highlightPhraseInText = (source: string, phrase: string | null): ReactNode => {
+  const trimmed = phrase?.trim();
+  if (!trimmed) {
+    return source;
+  }
+  try {
+    const re = new RegExp(escapeRegExp(trimmed), 'gi');
+    const fragments: ReactNode[] = [];
+    let lastAppend = 0;
+    let key = 0;
+    let firstHitMarked = false;
+    let match: RegExpExecArray | null;
+
+    while ((match = re.exec(source)) !== null) {
+      const token = match[0];
+      if (token.length === 0 || match.index < lastAppend) {
+        break;
+      }
+      if (lastAppend < match.index) {
+        fragments.push(source.slice(lastAppend, match.index));
+      }
+
+      const isFirst = !firstHitMarked;
+      firstHitMarked = true;
+      fragments.push(
+        <Box
+          component="mark"
+          key={`hl-${match.index}-${key}`}
+          data-context-reading-hit={isFirst ? 'true' : undefined}
+          sx={{
+              bgcolor: 'transparent',
+              color: 'text.primary',
+              px: 0.25,
+              borderRadius: 0.5,
+              ml: '-2px',
+              mr: '-2px',
+              borderBottom: '4px solid #3900ff47',
+          }}
+        >
+          {token}
+        </Box>,
+      );
+
+      lastAppend = match.index + token.length;
+      key += 1;
+    }
+
+    if (lastAppend < source.length) {
+      fragments.push(source.slice(lastAppend));
+    }
+
+    return fragments.length === 1 && typeof fragments[0] === 'string' ? fragments[0] : fragments;
+  } catch {
+    return source;
+  }
+};
 
 export const ContextReadingPage = () => {
   const { t, i18n } = useTranslation();
@@ -37,7 +98,10 @@ export const ContextReadingPage = () => {
   const [currentCards, setCurrentCards] = useState<Array<{ question: string; answer: string }>>([]);
   const [progress, setProgress] = useState<{ used: number; total: number } | null>(null);
   const [languageLevel, setLanguageLevel] = useState<string>('B1');
-  
+  const [highlightedChipIndex, setHighlightedChipIndex] = useState<number | null>(null);
+
+  const generatedTextBlockRef = useRef<HTMLDivElement>(null);
+
   // Используем ref для предотвращения повторных вызовов
   const lastProcessedKeyRef = useRef<string | null>(null);
   const pollingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -61,6 +125,7 @@ export const ContextReadingPage = () => {
       setLoading(true);
       setError(null);
       setStatus(null);
+      setHighlightedChipIndex(null);
 
       // 1. Получаем карточки
       const nextCardsResponse = await contextReadingApi.getNextCards(folderId, 5);
@@ -217,12 +282,25 @@ export const ContextReadingPage = () => {
     };
   }, [folderId, i18n.language]);
 
+  useEffect(() => {
+    if (highlightedChipIndex === null) {
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      generatedTextBlockRef.current?.querySelector<HTMLElement>('[data-context-reading-hit="true"]')?.scrollIntoView({
+        block: 'center',
+        behavior: 'smooth',
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [highlightedChipIndex]);
+
   if (loading) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4">
+          <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
           <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -254,7 +332,7 @@ export const ContextReadingPage = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4">
+          <Typography variant="h4" sx={{ ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
           <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -296,24 +374,9 @@ export const ContextReadingPage = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4">
+          <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <Select
-              value={languageLevel}
-              inputProps={{ 'aria-label': languageLevelAriaLabel }}
-              onChange={(e) => setLanguageLevel(e.target.value)}
-              disabled={true}
-            >
-              <MenuItem value="A1">A1</MenuItem>
-              <MenuItem value="A2">A2</MenuItem>
-              <MenuItem value="B1">B1</MenuItem>
-              <MenuItem value="B2">B2</MenuItem>
-              <MenuItem value="C1">C1</MenuItem>
-              <MenuItem value="C2">C2</MenuItem>
-            </Select>
-          </FormControl>
         </Box>
         <Box
           sx={{
@@ -329,7 +392,7 @@ export const ContextReadingPage = () => {
         >
           <CircularProgress sx={{ mb: 2 }} />
           <Typography variant="body1">
-            {t('contextReading.generating', { defaultValue: 'Generating text...' })} ({status.progress}%)
+            {t('contextReading.generating', { defaultValue: 'Generating text...' })}
           </Typography>
         </Box>
       </Container>
@@ -342,7 +405,7 @@ export const ContextReadingPage = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4" sx={{ ml: 4 }}>
+          <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
           <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -364,22 +427,34 @@ export const ContextReadingPage = () => {
         
         {/* Список слов */}
         {currentCards.length > 0 && (
-          <Box sx={{ mt: 2, mb: 3 }}>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              {t('contextReading.words', { defaultValue: 'Слова из контента' })}:
-            </Typography>
+          <Box sx={{ mt: 2, mb: 3, pl: { xs: 0, sm: 4 } }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {currentCards.map((card, index) => (
                 <Chip
                   key={index}
                   size="small"
-                  variant="outlined"
+                  clickable
+                  aria-pressed={highlightedChipIndex === index}
+                  color="default"
+                  variant={highlightedChipIndex === index ? 'filled' : 'outlined'}
+                  sx={
+                    highlightedChipIndex === index
+                      ? {
+                          bgcolor: CONTEXT_READING_ACTIVE_CHIP_BG,
+                          '&:hover': { bgcolor: CONTEXT_READING_ACTIVE_CHIP_BG },
+                          '&:active': { bgcolor: CONTEXT_READING_ACTIVE_CHIP_BG },
+                        }
+                      : undefined
+                  }
+                  onClick={() =>
+                    setHighlightedChipIndex(prev => (prev === index ? null : index))
+                  }
                   label={
                     <Box component="span" sx={{ display: 'inline-flex', alignItems: 'baseline', gap: 0.5 }}>
                       <Typography variant="body2" component="span" fontWeight="medium">
                         {card.question}
                       </Typography>
-                      <Typography variant="body2" component="span" color="text.secondary">
+                      <Typography variant="body2" component="span">
                         ({card.answer})
                       </Typography>
                     </Box>
@@ -409,6 +484,8 @@ export const ContextReadingPage = () => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography
+                ref={generatedTextBlockRef}
+                component="div"
                 variant="body1"
                 sx={{
                   whiteSpace: 'pre-wrap',
@@ -420,7 +497,12 @@ export const ContextReadingPage = () => {
                   boxSizing: 'border-box',
                 }}
               >
-                {status.result.text}
+                {highlightPhraseInText(
+                  status.result.text,
+                  highlightedChipIndex === null
+                    ? null
+                    : (currentCards[highlightedChipIndex]?.question ?? null),
+                )}
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -505,24 +587,9 @@ export const ContextReadingPage = () => {
     <Container maxWidth="md" sx={{ mt: 4 }}>
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-        <Typography variant="h4">
+        <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
           {t('contextReading.title', { defaultValue: 'Context Reading' })}
         </Typography>
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <Select
-            value={languageLevel}
-            inputProps={{ 'aria-label': languageLevelAriaLabel }}
-            onChange={(e) => setLanguageLevel(e.target.value)}
-            disabled={loading || generating}
-          >
-            <MenuItem value="A1">A1</MenuItem>
-            <MenuItem value="A2">A2</MenuItem>
-            <MenuItem value="B1">B1</MenuItem>
-            <MenuItem value="B2">B2</MenuItem>
-            <MenuItem value="C1">C1</MenuItem>
-            <MenuItem value="C2">C2</MenuItem>
-          </Select>
-        </FormControl>
       </Box>
       <Alert severity="info">
         {t('contextReading.waiting', { defaultValue: 'Waiting for generation to start...' })}
