@@ -359,7 +359,11 @@
     "back": "Back",
     "words": "Words from content",
     "progress": "{{used}}/{{total}} (remaining: {{remaining}})",
-    "languageLevel": "Language Level"
+    "languageLevel": "Language Level",
+    "createContent": "Create content",
+    "folderRequired": "Folder ID is required",
+    "noWordsLeft": "There are no more words in this folder to build context reading content.",
+    "backToFolder": "Back to folder"
   },
   "telegram": {
     "connect": {

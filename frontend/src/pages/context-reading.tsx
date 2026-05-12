@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef, type ReactNode } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
   Box,
   CircularProgress,
   Alert,
-  Button,
   Select,
   MenuItem,
   FormControl,
@@ -88,10 +87,11 @@ const highlightPhraseInText = (source: string, phrase: string | null): ReactNode
 export const ContextReadingPage = () => {
   const { t, i18n } = useTranslation();
   const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
+  const navigate = useNavigate();
   const learnFolderPath = userId && folderId ? `/learn/${userId}/${folderId}` : undefined;
   const languageLevelAriaLabel = t('contextReading.languageLevel', { defaultValue: 'Language level' });
   
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<ContextReadingGenerateStatusResponse | null>(null);
@@ -201,32 +201,27 @@ export const ContextReadingPage = () => {
     }
   };
 
-  // Обработчик кнопки "Сброс"
+  // Обработчик кнопки "Сброс" — сброс прогресса и возврат к форме выбора уровня / создания контента
   const handleReset = async () => {
     if (!folderId) return;
 
     try {
-      // Очищаем предыдущий таймер polling, если он есть
       if (pollingTimeoutRef.current) {
         clearTimeout(pollingTimeoutRef.current);
         pollingTimeoutRef.current = null;
       }
-      
+
       setLoading(true);
+      setGenerating(false);
       setError(null);
       setStatus(null);
       setCurrentCards([]);
       setProgress(null);
-      
-      // Сбрасываем прогресс
+      setHighlightedChipIndex(null);
+      lastProcessedKeyRef.current = null;
+
       await contextReadingApi.resetProgress(folderId);
-      
-      // Обновляем ключ, чтобы разрешить новую генерацию
-      const currentKey = `${folderId}-${i18n.language}`;
-      lastProcessedKeyRef.current = currentKey;
-      
-      // Запускаем генерацию заново
-      await startGeneration();
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       setError(err instanceof Error ? err.message : 'Failed to reset progress');
@@ -256,24 +251,32 @@ export const ContextReadingPage = () => {
   };
 
   useEffect(() => {
+    if (pollingTimeoutRef.current) {
+      clearTimeout(pollingTimeoutRef.current);
+      pollingTimeoutRef.current = null;
+    }
+
     if (!folderId) {
-      setError('Folder ID is required');
       setLoading(false);
+      setGenerating(false);
+      setError(null);
+      setStatus(null);
+      setCurrentCards([]);
+      setProgress(null);
+      setHighlightedChipIndex(null);
+      lastProcessedKeyRef.current = null;
       return;
     }
 
-    // Создаем уникальный ключ для этой комбинации folderId и language
-    const currentKey = `${folderId}-${i18n.language}`;
-    
-    // Предотвращаем повторные вызовы для той же комбинации
-    if (lastProcessedKeyRef.current === currentKey) {
-      return;
-    }
+    setLoading(false);
+    setGenerating(false);
+    setError(null);
+    setStatus(null);
+    setCurrentCards([]);
+    setProgress(null);
+    setHighlightedChipIndex(null);
+    lastProcessedKeyRef.current = null;
 
-    lastProcessedKeyRef.current = currentKey;
-    startGeneration();
-
-    // Cleanup функция для отмены опроса при размонтировании или изменении зависимостей
     return () => {
       if (pollingTimeoutRef.current) {
         clearTimeout(pollingTimeoutRef.current);
@@ -281,6 +284,26 @@ export const ContextReadingPage = () => {
       }
     };
   }, [folderId, i18n.language]);
+
+  const handleCreateContent = async () => {
+    if (!folderId) return;
+
+    if (pollingTimeoutRef.current) {
+      clearTimeout(pollingTimeoutRef.current);
+      pollingTimeoutRef.current = null;
+    }
+
+    try {
+      await contextReadingApi.resetProgress(folderId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reset progress');
+      return;
+    }
+
+    const currentKey = `${folderId}-${i18n.language}`;
+    lastProcessedKeyRef.current = currentKey;
+    await startGeneration();
+  };
 
   useEffect(() => {
     if (highlightedChipIndex === null) {
@@ -295,29 +318,25 @@ export const ContextReadingPage = () => {
     return () => cancelAnimationFrame(frame);
   }, [highlightedChipIndex]);
 
+  if (!folderId) {
+    return (
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Typography variant="h4" sx={{ mb: 2, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
+          {t('contextReading.title', { defaultValue: 'Context Reading' })}
+        </Typography>
+        <Alert severity="error">{t('contextReading.folderRequired', { defaultValue: 'Folder ID is required' })}</Alert>
+      </Container>
+    );
+  }
+
   if (loading) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
+          <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <Select
-              value={languageLevel}
-              inputProps={{ 'aria-label': languageLevelAriaLabel }}
-              onChange={(e) => setLanguageLevel(e.target.value)}
-              disabled={true}
-            >
-              <MenuItem value="A1">A1</MenuItem>
-              <MenuItem value="A2">A2</MenuItem>
-              <MenuItem value="B1">B1</MenuItem>
-              <MenuItem value="B2">B2</MenuItem>
-              <MenuItem value="C1">C1</MenuItem>
-              <MenuItem value="C2">C2</MenuItem>
-            </Select>
-          </FormControl>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
           <CircularProgress />
@@ -335,46 +354,71 @@ export const ContextReadingPage = () => {
           <Typography variant="h4" sx={{ ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <Select
-              value={languageLevel}
-              inputProps={{ 'aria-label': languageLevelAriaLabel }}
-              onChange={(e) => setLanguageLevel(e.target.value)}
-              disabled={loading || generating}
-            >
-              <MenuItem value="A1">A1</MenuItem>
-              <MenuItem value="A2">A2</MenuItem>
-              <MenuItem value="B1">B1</MenuItem>
-              <MenuItem value="B2">B2</MenuItem>
-              <MenuItem value="C1">C1</MenuItem>
-              <MenuItem value="C2">C2</MenuItem>
-            </Select>
-          </FormControl>
         </Box>
-        <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
-        {isNoCardsError && folderId && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button
-              variant="contained"
-              onClick={handleReset}
-              disabled={loading || generating}
-              sx={{ minWidth: 120 }}
-            >
-              {t('contextReading.reset', { defaultValue: 'Сброс' })}
-            </Button>
+        {isNoCardsError ? (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 3, color: 'text.primary' }}>
+              {t('contextReading.noWordsLeft', {
+                defaultValue: 'Слова для создания контента в этой папке закончились.',
+              })}
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 4 }}>
+
+                <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
+                    <FormControl size="small" sx={{ minWidth: 120 }}>
+                        <Select
+                            value={languageLevel}
+                            inputProps={{ 'aria-label': languageLevelAriaLabel }}
+                            onChange={(e) => setLanguageLevel(e.target.value)}
+                            disabled={loading || generating}
+                        >
+                            <MenuItem value="A1">A1</MenuItem>
+                            <MenuItem value="A2">A2</MenuItem>
+                            <MenuItem value="B1">B1</MenuItem>
+                            <MenuItem value="B2">B2</MenuItem>
+                            <MenuItem value="C1">C1</MenuItem>
+                            <MenuItem value="C2">C2</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <ButtonColor onClick={handleCreateContent} disabled={loading || generating} sx={{minWidth: 200}}>
+                        {t('contextReading.createContent', {defaultValue: 'Create content'})}
+                    </ButtonColor>
+                </Box>
+                {learnFolderPath && (
+                    <ButtonLink
+                        onClick={() => navigate(learnFolderPath)}
+                        disabled={loading || generating}
+                        sx={{ minWidth: 200 }}
+                    >
+                        {t('contextReading.backToFolder', { defaultValue: 'Вернуться в папку' })}
+                    </ButtonLink>
+                )}
+            </Box>
           </Box>
+        ) : (
+          <>
+            <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+            {folderId && (
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <ButtonColor onClick={handleCreateContent} disabled={loading || generating} sx={{ minWidth: 220 }}>
+                  {t('contextReading.createContent', { defaultValue: 'Create content' })}
+                </ButtonColor>
+              </Box>
+            )}
+          </>
         )}
       </Container>
     );
   }
 
-  // Показываем процесс генерации
-  if (generating && status && status.state !== 'completed') {
+  // Показываем процесс генерации (первый ответ статуса может прийти с задержкой)
+  if (generating) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
+          <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
         </Box>
@@ -405,24 +449,9 @@ export const ContextReadingPage = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
+          <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
             {t('contextReading.title', { defaultValue: 'Context Reading' })}
           </Typography>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <Select
-              value={languageLevel}
-              inputProps={{ 'aria-label': languageLevelAriaLabel }}
-              onChange={(e) => setLanguageLevel(e.target.value)}
-              disabled={loading || generating}
-            >
-              <MenuItem value="A1">A1</MenuItem>
-              <MenuItem value="A2">A2</MenuItem>
-              <MenuItem value="B1">B1</MenuItem>
-              <MenuItem value="B2">B2</MenuItem>
-              <MenuItem value="C1">C1</MenuItem>
-              <MenuItem value="C2">C2</MenuItem>
-            </Select>
-          </FormControl>
         </Box>
         
         {/* Список слов */}
@@ -478,7 +507,7 @@ export const ContextReadingPage = () => {
             }}
           >
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h6" component="span" sx={{ ml: 2 }}>
+              <Typography variant="h6" component="span" sx={{ ml: { xs: 0, sm: 2 } }}>
                 {t('contextReading.text', { defaultValue: 'Text' })}
               </Typography>
             </AccordionSummary>
@@ -490,11 +519,12 @@ export const ContextReadingPage = () => {
                 sx={{
                   whiteSpace: 'pre-wrap',
                   lineHeight: 1.8,
-                  p: 2,
+                  p: { xs: 0, sm: 2 },
                   bgcolor: 'background.paper',
                   borderRadius: 1,
                   width: '100%',
                   boxSizing: 'border-box',
+                  mt: { xs: -1, sm: -3 },
                 }}
               >
                 {highlightPhraseInText(
@@ -518,7 +548,7 @@ export const ContextReadingPage = () => {
             }}
           >
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h6" component="span" sx={{ ml: 2 }}>
+              <Typography variant="h6" component="span" sx={{ ml: { xs: 0, sm: 2 } }}>
                 {t('contextReading.translation', { defaultValue: 'Translation' })}
               </Typography>
             </AccordionSummary>
@@ -528,11 +558,12 @@ export const ContextReadingPage = () => {
                 sx={{
                   whiteSpace: 'pre-wrap',
                   lineHeight: 1.8,
-                  p: 2,
+                  p: { xs: 0, sm: 2 },
                   bgcolor: 'background.paper',
                   borderRadius: 1,
                   width: '100%',
                   boxSizing: 'border-box',
+                  mt: { xs: -1, sm: -3 },
                 }}
               >
                 {status.result.translation}
@@ -553,7 +584,7 @@ export const ContextReadingPage = () => {
           }}
         >
           {progress && (
-            <Typography variant="body1" color="text.secondary" sx={{ ml: 4 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ ml: { xs: 2, sm: 4 } }}>
               {t('contextReading.progress', {
                 used: progress.used,
                 total: progress.total,
@@ -587,13 +618,38 @@ export const ContextReadingPage = () => {
     <Container maxWidth="md" sx={{ mt: 4 }}>
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-        <Typography variant="h4" sx={{ ml: 4, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
+        <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
           {t('contextReading.title', { defaultValue: 'Context Reading' })}
         </Typography>
       </Box>
-      <Alert severity="info">
-        {t('contextReading.waiting', { defaultValue: 'Waiting for generation to start...' })}
-      </Alert>
+      <Box
+        sx={{
+          display: 'flex',
+            ml: { xs: 2, sm: 4 },
+            mt: 4,
+        }}
+      >
+          <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
+              <FormControl size="small" sx={{ minWidth: 120 }}>
+                  <Select
+                      value={languageLevel}
+                      inputProps={{ 'aria-label': languageLevelAriaLabel }}
+                      onChange={(e) => setLanguageLevel(e.target.value)}
+                      disabled={loading || generating}
+                  >
+                      <MenuItem value="A1">A1</MenuItem>
+                      <MenuItem value="A2">A2</MenuItem>
+                      <MenuItem value="B1">B1</MenuItem>
+                      <MenuItem value="B2">B2</MenuItem>
+                      <MenuItem value="C1">C1</MenuItem>
+                      <MenuItem value="C2">C2</MenuItem>
+                  </Select>
+              </FormControl>
+              <ButtonColor onClick={handleCreateContent} disabled={loading || generating} sx={{minWidth: 220}}>
+                  {t('contextReading.createContent', {defaultValue: 'Create content'})}
+              </ButtonColor>
+          </Box>
+      </Box>
     </Container>
   );
 };

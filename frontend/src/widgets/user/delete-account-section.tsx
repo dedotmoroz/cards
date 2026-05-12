@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { ButtonColor } from '@/shared/ui';
+import {ButtonDangerous} from '@/shared/ui';
 import { DialogUI } from '@/shared/ui/dialog-ui';
 import { useAuthStore } from '@/shared/store/authStore';
-import { StyledGroupBox, StyledButtonBox } from './styled-components';
+import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel} from './styled-components';
 
 export const DeleteAccountSection = () => {
     const { t } = useTranslation();
@@ -41,22 +41,25 @@ export const DeleteAccountSection = () => {
 
     return (
         <Box>
+
+            <StyledTypography>
+                {t('profile.deleteAccountTitle')}
+            </StyledTypography>
+
             <StyledGroupBox>
-                <Typography variant="h6">
-                    {t('profile.deleteAccountTitle')}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {t('profile.deleteAccountDescription')}
-                </Typography>
                 {error && <Alert severity="error">{error}</Alert>}
+
+                <StyledLabel>
+                    {t('profile.deleteAccountDescription')}
+                </StyledLabel>
+
                 <StyledButtonBox>
-                    <ButtonColor
-                        sx={{ mt: 2, background: '#d32f2f' }}
+                    <ButtonDangerous
                         variant="contained"
                         onClick={handleDeleteClick}
                     >
                         {t('profile.deleteAccountButton')}
-                    </ButtonColor>
+                    </ButtonDangerous>
                 </StyledButtonBox>
             </StyledGroupBox>
 

@@ -359,7 +359,11 @@
     "back": "Назад",
     "words": "Слова из контента",
     "progress": "{{used}}/{{total}} (осталось: {{remaining}})",
-    "languageLevel": "Уровень языка"
+    "languageLevel": "Уровень языка",
+    "createContent": "Создать контент",
+    "folderRequired": "Не указана папка",
+    "noWordsLeft": "Слова для создания контента в этой папке закончились.",
+    "backToFolder": "Вернуться в папку"
   },
   "telegram": {
     "connect": {
