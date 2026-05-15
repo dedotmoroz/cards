@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Container,
@@ -9,12 +9,16 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { contextReadingApi, type ContextReadingGenerateStatusResponse } from '@/shared/api/contextReadingApi';
+import { cardsApi } from '@/shared/api/cardsApi';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { ProfileHeader } from '@/entities/user';
 import { ContextReadingContextLoading } from '@/widgets/context-reading/context-loading';
 import { ContextReadingContextError } from '@/widgets/context-reading/context-error';
 import { ContextReadingContentOutput } from '@/widgets/context-reading/content-output';
-import { ContextReadingContentStart } from '@/widgets/context-reading/content-start';
+import {
+  ContextReadingContentStart,
+  type ContextReadingFolderCard,
+} from '@/widgets/context-reading/content-start';
 
 const POLLING_INTERVAL = 2000; // 2 seconds
 const CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX = { fontSize: { xs: '28px' } };
@@ -32,6 +36,8 @@ export const ContextReadingPage = () => {
   const [progress, setProgress] = useState<{ used: number; total: number } | null>(null);
   const [languageLevel, setLanguageLevel] = useState<string>('B1');
   const [highlightedChipIndex, setHighlightedChipIndex] = useState<number | null>(null);
+  const [folderCards, setFolderCards] = useState<ContextReadingFolderCard[]>([]);
+  const [folderCardsLoading, setFolderCardsLoading] = useState(false);
 
   const generatedTextBlockRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +51,40 @@ export const ContextReadingPage = () => {
     keywords: t('seo.keywords'),
     lang: i18n.language,
   });
+
+  const loadFolderCards = useCallback(async () => {
+    if (!folderId) {
+      setFolderCards([]);
+      return;
+    }
+
+    setFolderCardsLoading(true);
+    try {
+      const cards = await cardsApi.getCards(folderId);
+      const sorted = [...cards].sort((a, b) => {
+        if (a.isLearned !== b.isLearned) {
+          return a.isLearned ? 1 : -1;
+        }
+        return a.question.localeCompare(b.question, undefined, { sensitivity: 'base' });
+      });
+      setFolderCards(
+        sorted.map(card => ({
+          id: card.id,
+          question: card.question,
+          answer: card.answer,
+          isLearned: card.isLearned,
+        })),
+      );
+    } catch {
+      setFolderCards([]);
+    } finally {
+      setFolderCardsLoading(false);
+    }
+  }, [folderId]);
+
+  useEffect(() => {
+    void loadFolderCards();
+  }, [loadFolderCards]);
 
   // Функция для запуска генерации текста
   const startGeneration = async () => {
@@ -155,6 +195,7 @@ export const ContextReadingPage = () => {
 
       await contextReadingApi.resetProgress(folderId);
       setLoading(false);
+      void loadFolderCards();
     } catch (err) {
       setLoading(false);
       setError(err instanceof Error ? err.message : 'Failed to reset progress');
@@ -321,6 +362,8 @@ export const ContextReadingPage = () => {
   return (
     <ContextReadingContentStart
       learnFolderPath={learnFolderPath}
+      folderCards={folderCards}
+      folderCardsLoading={folderCardsLoading}
       languageLevel={languageLevel}
       onLanguageLevelChange={setLanguageLevel}
       onCreateContent={handleCreateContent}

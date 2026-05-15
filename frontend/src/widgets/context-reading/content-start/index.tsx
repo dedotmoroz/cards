@@ -1,13 +1,33 @@
-import { Container, Typography, Box } from '@mui/material';
+import { Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
 import { SetLanguageLevel } from '@/features/set-language-level';
 import { CreateContentButton } from '@/features/create-content';
+import {
+  StyledContainerWrapper,
+  StyledHeaderRow,
+  StyledPageTitle,
+  StyledChipsSection,
+  StyledChipsRow,
+  StyledPoolWordChip,
+  StyledLearnedWordChip,
+  StyledChipLabelRow,
+  StyledControlsBlock,
+  StyledControlsRow,
+  StyledChipsLoading,
+} from './styled-components';
 
-const CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX = { fontSize: { xs: '28px' } };
+export type ContextReadingFolderCard = {
+  id: string;
+  question: string;
+  answer: string;
+  isLearned: boolean;
+};
 
 export type ContextReadingContentStartProps = {
   learnFolderPath?: string;
+  folderCards: ContextReadingFolderCard[];
+  folderCardsLoading: boolean;
   languageLevel: string;
   onLanguageLevelChange: (level: string) => void;
   onCreateContent: () => void | Promise<void>;
@@ -17,6 +37,8 @@ export type ContextReadingContentStartProps = {
 
 export const ContextReadingContentStart = ({
   learnFolderPath,
+  folderCards,
+  folderCardsLoading,
   languageLevel,
   onLanguageLevelChange,
   onCreateContent,
@@ -25,30 +47,63 @@ export const ContextReadingContentStart = ({
 }: ContextReadingContentStartProps) => {
   const { t } = useTranslation();
 
+  const chipLabel = (card: ContextReadingFolderCard) => (
+    <StyledChipLabelRow component="span">
+      <Typography variant="body2" component="span" fontWeight="medium">
+        {card.question}
+      </Typography>
+      <Typography variant="body2" component="span">
+        ({card.answer})
+      </Typography>
+    </StyledChipLabelRow>
+  );
+
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
+    <StyledContainerWrapper maxWidth="md">
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-        <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
+      <StyledHeaderRow>
+        <StyledPageTitle variant="h4">
           {t('contextReading.title', { defaultValue: 'Context' })}
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          ml: { xs: 2, sm: 4 },
-          mt: 4,
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
+        </StyledPageTitle>
+      </StyledHeaderRow>
+
+      {folderCardsLoading ? (
+        <StyledChipsLoading>
+          <CircularProgress size={28} />
+        </StyledChipsLoading>
+      ) : (
+        folderCards.length > 0 && (
+          <StyledChipsSection>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+              {t('contextReading.words', { defaultValue: 'Words from content' })}
+            </Typography>
+            <StyledChipsRow>
+              {folderCards.map(card => {
+                const ChipComponent = card.isLearned ? StyledLearnedWordChip : StyledPoolWordChip;
+                return (
+                  <ChipComponent
+                    key={card.id}
+                    size="small"
+                    variant="outlined"
+                    label={chipLabel(card)}
+                  />
+                );
+              })}
+            </StyledChipsRow>
+          </StyledChipsSection>
+        )
+      )}
+
+      <StyledControlsBlock>
+        <StyledControlsRow>
           <SetLanguageLevel
             value={languageLevel}
             onChange={onLanguageLevelChange}
             disabled={loading || generating}
           />
           <CreateContentButton onClick={onCreateContent} disabled={loading || generating} sx={{ minWidth: 220 }} />
-        </Box>
-      </Box>
-    </Container>
+        </StyledControlsRow>
+      </StyledControlsBlock>
+    </StyledContainerWrapper>
   );
 };
