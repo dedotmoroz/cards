@@ -15,13 +15,13 @@ export const StyledContainerWrapper = styled(Container)(() => `
     padding: 10px;
 `);
 
-export const StyledHeaderRow = styled(Box)(({ theme }) => `
+export const StyledHeaderRow = styled(Box)(() => `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: ${theme.spacing(2)};
+    margin-top: 10px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
-    gap: ${theme.spacing(2)};
 `);
 
 export const StyledPageTitle = styled(Typography)<TypographyProps>(({ theme }) => `
@@ -104,30 +104,42 @@ export const StyledFooterRow = styled(Box)(({ theme }) => `
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
+    flex-direction: column-reverse;
     gap: ${theme.spacing(2)};
+    ${theme.breakpoints.up('sm')} {
+    flex-direction: row;
+    }
 `);
 
-export const StyledProgressText = styled(Typography)(({ theme }) => `
-    margin-left: ${theme.spacing(2)};
+export const StyledProgressText = styled(Box)(({ theme }) => `
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: ${theme.spacing(2)};
     color: ${theme.palette.text.secondary};
-    ${theme.breakpoints.up('sm')} {
-        margin-left: ${theme.spacing(4)};
-    }
 `);
 
 export const StyledFooterActions = styled(Box)(({ theme }) => `
     display: flex;
-    gap: ${theme.spacing(2)};
-    flex-wrap: wrap;
-    margin-left: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    ${theme.breakpoints.up('sm')} {
+     flex-grow: 1;
+     width: auto;
+    }
 `);
 
 export const StyledResetButton = styled(ButtonLink)(() => `
     width: 120px;
 `);
 
-export const StyledNextButton = styled(ButtonColor)(() => `
-    width: 160px;
+export const StyledNextButton = styled(ButtonColor)(({ theme }) => `
+    width: 100%;
+    ${theme.breakpoints.up('sm')} {
+     width: 160px;
+    }
 `);
 
 export const StyledHighlightMark = styled('mark')(({ theme }) => `

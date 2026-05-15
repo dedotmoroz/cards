@@ -349,6 +349,23 @@
     "deleteAccountConfirmTitle": "Löschen bestätigen",
     "deleteAccountConfirmText": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Alle Daten werden unwiderruflich gelöscht."
   },
+  "contextReading": {
+    "title": "Kontext",
+    "text": "Text",
+    "translation": "Übersetzung",
+    "generating": "Text wird generiert...",
+    "waiting": "Warten auf Start der Generierung...",
+    "reset": "Zurücksetzen",
+    "next": "Weiter",
+    "back": "Zurück",
+    "words": "Wörter aus dem Inhalt",
+    "progress": "{{used}}/{{total}} (verbleibend: {{remaining}})",
+    "languageLevel": "Sprachniveau",
+    "createContent": "Inhalt erstellen",
+    "folderRequired": "Ordner-ID ist erforderlich",
+    "noWordsLeft": "In diesem Ordner sind keine Wörter mehr zum Erstellen von Kontextlese-Inhalten vorhanden.",
+    "backToFolder": "Zurück zum Ordner"
+  },
   "telegram": {
     "connect": {
       "title": "Telegram verbinden",

@@ -110,7 +110,7 @@ export const ContextReadingContentOutput = ({
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
       <StyledHeaderRow>
         <StyledPageTitle>
-          {t('contextReading.title', { defaultValue: 'Context Reading' })}
+          {t('contextReading.title')}
         </StyledPageTitle>
       </StyledHeaderRow>
 
@@ -146,7 +146,7 @@ export const ContextReadingContentOutput = ({
         <StyledContentAccordion defaultExpanded disableGutters elevation={0}>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <StyledAccordionSectionTitle variant="h6" component="span">
-              {t('contextReading.text', { defaultValue: 'Text' })}
+              {t('contextReading.text')}
             </StyledAccordionSectionTitle>
           </AccordionSummary>
           <AccordionDetails>
@@ -165,7 +165,7 @@ export const ContextReadingContentOutput = ({
         <StyledContentAccordion disableGutters elevation={0}>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <StyledAccordionSectionTitle variant="h6" component="span">
-              {t('contextReading.translation', { defaultValue: 'Translation' })}
+              {t('contextReading.translation')}
             </StyledAccordionSectionTitle>
           </AccordionSummary>
           <AccordionDetails>
@@ -175,25 +175,25 @@ export const ContextReadingContentOutput = ({
       </StyledAccordionsStack>
 
       <StyledFooterRow>
-        {progress && (
-          <StyledProgressText variant="body1">
-            {t('contextReading.progress', {
-              used: progress.used,
-              total: progress.total,
-              remaining: progress.total - progress.used,
-              defaultValue: `${progress.used}/${progress.total} (осталось: ${progress.total - progress.used})`,
-            })}
-          </StyledProgressText>
-        )}
         <StyledFooterActions>
-          <StyledResetButton onClick={onReset} disabled={loading || generating}>
-            {t('contextReading.reset', { defaultValue: 'Сброс' })}
-          </StyledResetButton>
-          <StyledNextButton onClick={onNext} disabled={loading || generating}>
-            {t('contextReading.next', { defaultValue: 'Вперед' })}
-          </StyledNextButton>
+            <StyledResetButton onClick={onReset} disabled={loading || generating}>
+                {t('contextReading.reset')}
+            </StyledResetButton>
+            {progress && (
+                <StyledProgressText>
+                    {t('contextReading.progress', {
+                        used: progress.used,
+                        total: progress.total,
+                        remaining: progress.total - progress.used,
+                    })}
+                </StyledProgressText>
+            )}
         </StyledFooterActions>
+          <StyledNextButton onClick={onNext} disabled={loading || generating}>
+            {t('contextReading.next')}
+          </StyledNextButton>
       </StyledFooterRow>
+
     </StyledContainerWrapper>
   );
 };

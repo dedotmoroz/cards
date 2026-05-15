@@ -349,6 +349,23 @@
     "deleteAccountConfirmTitle": "确认删除账户",
     "deleteAccountConfirmText": "您确定要删除账户吗？所有数据都将被永久删除。"
   },
+  "contextReading": {
+    "title": "语境",
+    "text": "文本",
+    "translation": "翻译",
+    "generating": "正在生成文本...",
+    "waiting": "等待开始生成...",
+    "reset": "重置",
+    "next": "下一步",
+    "back": "返回",
+    "words": "内容中的单词",
+    "progress": "{{used}}/{{total}}（剩余：{{remaining}}）",
+    "languageLevel": "语言水平",
+    "createContent": "创建内容",
+    "folderRequired": "需要文件夹 ID",
+    "noWordsLeft": "此文件夹中已没有可用于创建语境阅读内容的单词。",
+    "backToFolder": "返回文件夹"
+  },
   "telegram": {
     "connect": {
       "title": "连接 Telegram",

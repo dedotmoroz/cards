@@ -349,7 +349,7 @@
     "deleteAccountConfirmText": "Are you sure you want to delete your account? All data will be permanently deleted."
   },
   "contextReading": {
-    "title": "Context Reading",
+    "title": "Context",
     "text": "Text",
     "translation": "Translation",
     "generating": "Generating text...",

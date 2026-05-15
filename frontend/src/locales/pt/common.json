@@ -349,6 +349,23 @@
     "deleteAccountConfirmTitle": "Confirmar exclusão da conta",
     "deleteAccountConfirmText": "Tem certeza de que deseja excluir sua conta? Todos os dados serão removidos permanentemente."
   },
+  "contextReading": {
+    "title": "Contexto",
+    "text": "Texto",
+    "translation": "Tradução",
+    "generating": "A gerar texto...",
+    "waiting": "À espera do início da geração...",
+    "reset": "Repor",
+    "next": "Seguinte",
+    "back": "Voltar",
+    "words": "Palavras do conteúdo",
+    "progress": "{{used}}/{{total}} (restantes: {{remaining}})",
+    "languageLevel": "Nível de idioma",
+    "createContent": "Criar conteúdo",
+    "folderRequired": "É necessário o ID da pasta",
+    "noWordsLeft": "Já não há mais palavras nesta pasta para criar conteúdo de leitura contextual.",
+    "backToFolder": "Voltar à pasta"
+  },
   "telegram": {
     "connect": {
       "title": "Conectar Telegram",

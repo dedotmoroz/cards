@@ -349,6 +349,23 @@
     "deleteAccountConfirmTitle": "Підтвердження видалення акаунта",
     "deleteAccountConfirmText": "Ви впевнені, що хочете видалити акаунт? Усі дані буде безповоротно видалено."
   },
+  "contextReading": {
+    "title": "Контекст",
+    "text": "Текст",
+    "translation": "Переклад",
+    "generating": "Генерація тексту...",
+    "waiting": "Очікування початку генерації...",
+    "reset": "Скинути",
+    "next": "Далі",
+    "back": "Назад",
+    "words": "Слова з контенту",
+    "progress": "{{used}}/{{total}} (залишилось: {{remaining}})",
+    "languageLevel": "Рівень мови",
+    "createContent": "Створити контент",
+    "folderRequired": "Не вказано папку",
+    "noWordsLeft": "Слова для створення контенту в цій папці закінчились.",
+    "backToFolder": "Повернутися в папку"
+  },
   "telegram": {
     "connect": {
       "title": "Підключення Telegram",

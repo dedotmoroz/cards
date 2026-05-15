@@ -40,7 +40,7 @@ export const ContextReadingPage = () => {
   const pollingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useSEO({
-    title: t('seo.contextReading.title', { defaultValue: 'Context Reading' }),
+    title: t('seo.contextReading.title', { defaultValue: 'Context' }),
     description: t('seo.contextReading.description', { defaultValue: 'Read context with cards' }),
     keywords: t('seo.keywords'),
     lang: i18n.language,
@@ -255,7 +255,7 @@ export const ContextReadingPage = () => {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Typography variant="h4" sx={{ mb: 2, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
-          {t('contextReading.title', { defaultValue: 'Context Reading' })}
+          {t('contextReading.title', { defaultValue: 'Context' })}
         </Typography>
         <Alert severity="error">{t('contextReading.folderRequired', { defaultValue: 'Folder ID is required' })}</Alert>
       </Container>
@@ -268,7 +268,7 @@ export const ContextReadingPage = () => {
         {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
           <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
-            {t('contextReading.title', { defaultValue: 'Context Reading' })}
+            {t('contextReading.title', { defaultValue: 'Context' })}
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>

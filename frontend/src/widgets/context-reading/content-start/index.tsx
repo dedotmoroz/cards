@@ -30,7 +30,7 @@ export const ContextReadingContentStart = ({
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
         <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
-          {t('contextReading.title', { defaultValue: 'Context Reading' })}
+          {t('contextReading.title', { defaultValue: 'Context' })}
         </Typography>
       </Box>
       <Box

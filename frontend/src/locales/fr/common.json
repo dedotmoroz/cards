@@ -349,6 +349,23 @@
     "deleteAccountConfirmTitle": "Confirmer la suppression du compte",
     "deleteAccountConfirmText": "Êtes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront supprimées définitivement."
   },
+  "contextReading": {
+    "title": "Contexte",
+    "text": "Texte",
+    "translation": "Traduction",
+    "generating": "Génération du texte...",
+    "waiting": "En attente du début de la génération...",
+    "reset": "Réinitialiser",
+    "next": "Suivant",
+    "back": "Retour",
+    "words": "Mots du contenu",
+    "progress": "{{used}}/{{total}} (restants : {{remaining}})",
+    "languageLevel": "Niveau de langue",
+    "createContent": "Créer du contenu",
+    "folderRequired": "L'identifiant du dossier est requis",
+    "noWordsLeft": "Il ne reste plus de mots dans ce dossier pour créer du contenu de lecture contextuelle.",
+    "backToFolder": "Retour au dossier"
+  },
   "telegram": {
     "connect": {
       "title": "Connecter Telegram",
