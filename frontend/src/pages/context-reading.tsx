@@ -38,6 +38,8 @@ export const ContextReadingPage = () => {
   const [highlightedChipIndex, setHighlightedChipIndex] = useState<number | null>(null);
   const [folderCards, setFolderCards] = useState<ContextReadingFolderCard[]>([]);
   const [folderCardsLoading, setFolderCardsLoading] = useState(false);
+  /** false = все карточки папки; true = только невыученные (режим фиксируется до сброса). */
+  const [onlyUnlearnedWords, setOnlyUnlearnedWords] = useState(false);
 
   const generatedTextBlockRef = useRef<HTMLDivElement>(null);
 
@@ -101,7 +103,7 @@ export const ContextReadingPage = () => {
       setHighlightedChipIndex(null);
 
       // 1. Получаем карточки
-      const nextCardsResponse = await contextReadingApi.getNextCards(folderId, 5);
+      const nextCardsResponse = await contextReadingApi.getNextCards(folderId, 5, onlyUnlearnedWords);
       
       if (nextCardsResponse.completed || nextCardsResponse.cards.length === 0) {
         setError('No cards available for context reading');
@@ -135,7 +137,7 @@ export const ContextReadingPage = () => {
       const pollStatus = async (jobId: string) => {
         const poll = async (): Promise<void> => {
           // Проверяем, не изменился ли ключ (folderId или language)
-          const currentKey = `${folderId}-${i18n.language}`;
+          const currentKey = `${folderId}-${i18n.language}-${onlyUnlearnedWords}`;
           if (lastProcessedKeyRef.current !== currentKey) {
             return;
           }
@@ -214,7 +216,7 @@ export const ContextReadingPage = () => {
       }
       
       // Обновляем ключ, чтобы разрешить новую генерацию
-      const currentKey = `${folderId}-${i18n.language}`;
+      const currentKey = `${folderId}-${i18n.language}-${onlyUnlearnedWords}`;
       lastProcessedKeyRef.current = currentKey;
       
       // Запускаем генерацию следующей порции
@@ -239,6 +241,7 @@ export const ContextReadingPage = () => {
       setProgress(null);
       setHighlightedChipIndex(null);
       lastProcessedKeyRef.current = null;
+      setOnlyUnlearnedWords(false);
       return;
     }
 
@@ -250,6 +253,7 @@ export const ContextReadingPage = () => {
     setProgress(null);
     setHighlightedChipIndex(null);
     lastProcessedKeyRef.current = null;
+    setOnlyUnlearnedWords(false);
 
     return () => {
       if (pollingTimeoutRef.current) {
@@ -274,7 +278,7 @@ export const ContextReadingPage = () => {
       return;
     }
 
-    const currentKey = `${folderId}-${i18n.language}`;
+    const currentKey = `${folderId}-${i18n.language}-${onlyUnlearnedWords}`;
     lastProcessedKeyRef.current = currentKey;
     await startGeneration();
   };
@@ -327,6 +331,8 @@ export const ContextReadingPage = () => {
         folderId={folderId}
         languageLevel={languageLevel}
         onLanguageLevelChange={setLanguageLevel}
+        onlyUnlearnedWords={onlyUnlearnedWords}
+        onOnlyUnlearnedWordsChange={setOnlyUnlearnedWords}
         onCreateContent={handleCreateContent}
         loading={loading}
         generating={generating}
@@ -364,6 +370,8 @@ export const ContextReadingPage = () => {
       learnFolderPath={learnFolderPath}
       folderCards={folderCards}
       folderCardsLoading={folderCardsLoading}
+      onlyUnlearnedWords={onlyUnlearnedWords}
+      onOnlyUnlearnedWordsChange={setOnlyUnlearnedWords}
       languageLevel={languageLevel}
       onLanguageLevelChange={setLanguageLevel}
       onCreateContent={handleCreateContent}

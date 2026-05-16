@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { ContextReadingState } from '../domain/context-reading'
+import { ContextReadingState, CONTEXT_READING_POOL_MODE_MISMATCH } from '../domain/context-reading'
 import { CardRepository as ContextReadingCardRepository, ContextReadingStateRepository } from '../ports/context-reading-repository'
 import { CardRepository } from '../ports/card-repository'
 import { UserRepository } from '../ports/user-repository'
@@ -20,25 +20,33 @@ export class GetNextContextCardsUseCase {
         userId: string
         folderId: string
         limit: number
+        /** Если не передан — считается `true` (обратная совместимость). */
+        onlyUnlearned?: boolean
     }): Promise<{
         cards: Card[]
         progress: { used: number; total: number }
         completed: boolean
     }> {
         const { userId, folderId, limit } = params
-
-        const allCards =
-            await this.cardRepo.findUnlearnedByFolder(userId, folderId)
+        const onlyUnlearned = params.onlyUnlearned ?? true
 
         let state =
             await this.stateRepo.findByUserAndFolder(userId, folderId)
+
+        if (state && state.onlyUnlearned !== onlyUnlearned) {
+            throw new Error(CONTEXT_READING_POOL_MODE_MISMATCH)
+        }
+
+        const allCards =
+            await this.cardRepo.findByFolderForContext(userId, folderId, onlyUnlearned)
 
         if (!state) {
             state = new ContextReadingState(
                 userId,
                 folderId,
                 [],
-                new Date()
+                new Date(),
+                onlyUnlearned
             )
         }
 

@@ -212,6 +212,34 @@ describe('📖 Context Reading API (e2e)', () => {
             expect(secondRes.body.progress.total).toBe(5);
         });
 
+        it('returns 400 when onlyUnlearned conflicts with active session', async () => {
+            await request(fastify.server)
+                .post('/context-reading/reset')
+                .set('Cookie', authCookie)
+                .send({ folderId });
+
+            await request(fastify.server)
+                .post('/context-reading/next')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    limit: 1,
+                    onlyUnlearned: true,
+                });
+
+            const bad = await request(fastify.server)
+                .post('/context-reading/next')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    limit: 1,
+                    onlyUnlearned: false,
+                });
+
+            expect(bad.status).toBe(400);
+            expect(bad.body.message).toBeDefined();
+        });
+
         it('использует дефолтный limit=3 если limit не указан', async () => {
             // Сбрасываем прогресс
             await request(fastify.server)

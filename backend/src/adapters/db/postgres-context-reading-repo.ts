@@ -9,19 +9,16 @@ import { CardRepository, ContextReadingStateRepository } from '../../ports/conte
 export class PostgresContextReadingCardRepository
     implements CardRepository {
 
-    async findUnlearnedByFolder(
-        userId: string,
-        folderId: string
+    async findByFolderForContext(
+        _userId: string,
+        folderId: string,
+        onlyUnlearned: boolean
     ): Promise<Card[]> {
-        const rows = await db
-            .select()
-            .from(cards)
-            .where(
-                and(
-                    eq(cards.folderId, folderId),
-                    eq(cards.isLearned, false)
-                )
-            );
+        const condition = onlyUnlearned
+            ? and(eq(cards.folderId, folderId), eq(cards.isLearned, false))
+            : eq(cards.folderId, folderId);
+
+        const rows = await db.select().from(cards).where(condition);
         return rows.map(toCard);
     }
 }
@@ -47,7 +44,8 @@ export class PostgresContextReadingStateRepository
             row.userId,
             row.folderId,
             row.usedCardIds,
-            row.updatedAt
+            row.updatedAt,
+            row.onlyUnlearned
         );
     }
 
@@ -59,6 +57,7 @@ export class PostgresContextReadingStateRepository
                 folderId: state.folderId,
                 usedCardIds: state.usedCardIds,
                 updatedAt: state.updatedAt,
+                onlyUnlearned: state.onlyUnlearned,
             })
             .onConflictDoUpdate({
                 target: [
@@ -68,6 +67,7 @@ export class PostgresContextReadingStateRepository
                 set: {
                     usedCardIds: state.usedCardIds,
                     updatedAt: state.updatedAt,
+                    onlyUnlearned: state.onlyUnlearned,
                 },
             });
     }

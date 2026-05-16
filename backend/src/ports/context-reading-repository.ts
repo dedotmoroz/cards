@@ -2,9 +2,10 @@ import { Card } from '../domain/card';
 import { ContextReadingState } from '../domain/context-reading';
 
 export interface CardRepository {
-    findUnlearnedByFolder(
+    findByFolderForContext(
         userId: string,
-        folderId: string
+        folderId: string,
+        onlyUnlearned: boolean
     ): Promise<Card[]>
 }
 
@@ -26,17 +27,14 @@ export interface ContextReadingStateRepository {
 export class InMemoryCardRepository implements CardRepository {
     constructor(private readonly cards: Card[]) {}
 
-    async findUnlearnedByFolder(
-        userId: string,
-        folderId: string
+    async findByFolderForContext(
+        _userId: string,
+        folderId: string,
+        onlyUnlearned: boolean
     ): Promise<Card[]> {
-        // return this.cards.filter(
-        //     c => c.folderId === folderId && !c.isLearned
-        // )
-        /**
-         * Отключаем пока фильтр
-         */
-        return this.cards
+        return this.cards.filter(
+            c => c.folderId === folderId && (!onlyUnlearned || !c.isLearned)
+        )
     }
 }
 

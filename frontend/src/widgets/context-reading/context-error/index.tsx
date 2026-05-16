@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Container, Typography, Box, Alert } from '@mui/material';
+import { Container, Typography, Box, Alert, FormControlLabel, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
 import { ButtonLink } from '@/shared/ui';
@@ -16,6 +16,8 @@ export type ContextReadingContextErrorProps = {
   folderId: string;
   languageLevel: string;
   onLanguageLevelChange: (level: string) => void;
+  onlyUnlearnedWords: boolean;
+  onOnlyUnlearnedWordsChange: (value: boolean) => void;
   onCreateContent: () => void | Promise<void>;
   loading: boolean;
   generating: boolean;
@@ -27,6 +29,8 @@ export const ContextReadingContextError = ({
   folderId,
   languageLevel,
   onLanguageLevelChange,
+  onlyUnlearnedWords,
+  onOnlyUnlearnedWordsChange,
   onCreateContent,
   loading,
   generating,
@@ -51,13 +55,25 @@ export const ContextReadingContextError = ({
             })}
           </Typography>
           <Box sx={{ display: 'flex', gap: 4 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={onlyUnlearnedWords}
+                    onChange={(_, checked) => onOnlyUnlearnedWordsChange(checked)}
+                    disabled={loading || generating}
+                  />
+                }
+                label={t('contextReading.onlyUnlearned', { defaultValue: 'Only unlearned words' })}
+              />
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
               <SetLanguageLevel
                 value={languageLevel}
                 onChange={onLanguageLevelChange}
                 disabled={loading || generating}
               />
               <CreateContentButton onClick={onCreateContent} disabled={loading || generating} sx={{ minWidth: 200 }} />
+            </Box>
             </Box>
             {learnFolderPath && (
               <ButtonLink
@@ -74,7 +90,17 @@ export const ContextReadingContextError = ({
         <>
           <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
           {folderId && (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={onlyUnlearnedWords}
+                    onChange={(_, checked) => onOnlyUnlearnedWordsChange(checked)}
+                    disabled={loading || generating}
+                  />
+                }
+                label={t('contextReading.onlyUnlearned', { defaultValue: 'Only unlearned words' })}
+              />
               <CreateContentButton onClick={onCreateContent} disabled={loading || generating} sx={{ minWidth: 220 }} />
             </Box>
           )}

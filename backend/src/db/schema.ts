@@ -71,6 +71,7 @@ export const contextReadingStates = pgTable(
         folderId: text('folder_id').notNull(),
         usedCardIds: text('used_card_ids').array().notNull(),
         updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+        onlyUnlearned: boolean('only_unlearned').notNull().default(true),
     },
     (table) => ({
         pk: primaryKey({ columns: [table.userId, table.folderId] }),

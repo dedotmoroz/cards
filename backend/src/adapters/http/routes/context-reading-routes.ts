@@ -3,6 +3,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase } from '../../../application/context-reading-service';
 import { fetchContextGenerationStatus } from '../../ai/ai-service-client';
 import { CardDTO } from '../dto';
+import { CONTEXT_READING_POOL_MODE_MISMATCH } from '../../../domain/context-reading';
 
 export function registerContextReadingRoutes(
     fastify: FastifyInstance,
@@ -24,6 +25,7 @@ export function registerContextReadingRoutes(
                     properties: {
                         folderId: { type: 'string', format: 'uuid' },
                         limit: { type: 'number', minimum: 1, maximum: 5 },
+                        onlyUnlearned: { type: 'boolean' },
                     },
                 },
                 response: {
@@ -44,6 +46,12 @@ export function registerContextReadingRoutes(
                             completed: { type: 'boolean' },
                         },
                     },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
                 },
                 tags: ['context-reading'],
                 summary: 'Get next cards for context reading',
@@ -51,24 +59,38 @@ export function registerContextReadingRoutes(
         },
         async (
             req: FastifyRequest<{
-                Body: { folderId: string; limit?: number };
+                Body: { folderId: string; limit?: number; onlyUnlearned?: boolean };
             }>,
             reply: FastifyReply
         ) => {
             const userId = (req.user as any).userId;
-            const { folderId, limit = 3 } = req.body;
+            const { folderId, limit = 3, onlyUnlearned } = req.body;
 
-            const result = await getNextContextCardsUseCase.execute({
-                userId,
-                folderId,
-                limit,
-            });
+            try {
+                const result = await getNextContextCardsUseCase.execute({
+                    userId,
+                    folderId,
+                    limit,
+                    onlyUnlearned,
+                });
 
-            return reply.send({
-                cards: result.cards.map(c => c.toPublicDTO()),
-                progress: result.progress,
-                completed: result.completed,
-            });
+                return reply.send({
+                    cards: result.cards.map(c => c.toPublicDTO()),
+                    progress: result.progress,
+                    completed: result.completed,
+                });
+            } catch (error) {
+                if (
+                    error instanceof Error &&
+                    error.message === CONTEXT_READING_POOL_MODE_MISMATCH
+                ) {
+                    return reply.code(400).send({
+                        message:
+                            'Context reading pool mode does not match the active session. Reset progress before switching.',
+                    });
+                }
+                throw error;
+            }
         }
     );
 

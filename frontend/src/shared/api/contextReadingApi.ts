@@ -47,10 +47,15 @@ export const contextReadingApi = {
   /**
    * Получить следующие карточки для контекстного чтения
    */
-  getNextCards: async (folderId: string, limit?: number): Promise<ContextReadingNextResponse> => {
+  getNextCards: async (
+    folderId: string,
+    limit?: number,
+    onlyUnlearned?: boolean,
+  ): Promise<ContextReadingNextResponse> => {
     const response = await axios.post(`${API_BASE_URL}/context-reading/next`, {
       folderId,
       limit: limit ?? 3,
+      ...(onlyUnlearned !== undefined ? { onlyUnlearned } : {}),
     });
     return response.data;
   },

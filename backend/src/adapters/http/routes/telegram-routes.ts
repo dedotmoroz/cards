@@ -351,6 +351,7 @@ export function registerTelegramRoutes(
                 userId,
                 folderId,
                 limit: 3,
+                onlyUnlearned: true,
             });
 
             if (result.cards.length === 0) {

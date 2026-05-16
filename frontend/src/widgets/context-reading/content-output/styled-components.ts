@@ -36,9 +36,6 @@ export const StyledChipsSection = styled(Box)(({ theme }) => `
     margin-top: ${theme.spacing(2)};
     margin-bottom: ${theme.spacing(3)};
     padding-left: ${theme.spacing(2)};
-    // ${theme.breakpoints.up('sm')} {
-    //     padding-left: ${theme.spacing(4)};
-    // }
 `);
 
 export const StyledChipsRow = styled(Box)(({ theme }) => `

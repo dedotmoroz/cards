@@ -1,4 +1,4 @@
-import { Typography, CircularProgress } from '@mui/material';
+import { Typography, CircularProgress, FormControlLabel, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
 import { SetLanguageLevel } from '@/features/set-language-level';
@@ -11,10 +11,13 @@ import {
   StyledChipsRow,
   StyledPoolWordChip,
   StyledLearnedWordChip,
+  StyledUnactiveWordChip,
   StyledChipLabelRow,
+  StyledChipLearnedMark,
   StyledControlsBlock,
   StyledControlsRow,
   StyledChipsLoading,
+    StyledButtonContainer,
 } from './styled-components';
 
 export type ContextReadingFolderCard = {
@@ -28,6 +31,8 @@ export type ContextReadingContentStartProps = {
   learnFolderPath?: string;
   folderCards: ContextReadingFolderCard[];
   folderCardsLoading: boolean;
+  onlyUnlearnedWords: boolean;
+  onOnlyUnlearnedWordsChange: (value: boolean) => void;
   languageLevel: string;
   onLanguageLevelChange: (level: string) => void;
   onCreateContent: () => void | Promise<void>;
@@ -39,6 +44,8 @@ export const ContextReadingContentStart = ({
   learnFolderPath,
   folderCards,
   folderCardsLoading,
+  onlyUnlearnedWords,
+  onOnlyUnlearnedWordsChange,
   languageLevel,
   onLanguageLevelChange,
   onCreateContent,
@@ -46,6 +53,20 @@ export const ContextReadingContentStart = ({
   generating,
 }: ContextReadingContentStartProps) => {
   const { t } = useTranslation();
+
+  const poolCount = onlyUnlearnedWords
+    ? folderCards.filter(card => !card.isLearned).length
+    : folderCards.length;
+
+  const getChipComponent = (card: ContextReadingFolderCard) => {
+    if (onlyUnlearnedWords && card.isLearned) {
+      return StyledUnactiveWordChip;
+    }
+    if (card.isLearned) {
+      return StyledLearnedWordChip;
+    }
+    return StyledPoolWordChip;
+  };
 
   const chipLabel = (card: ContextReadingFolderCard) => (
     <StyledChipLabelRow component="span">
@@ -55,14 +76,16 @@ export const ContextReadingContentStart = ({
       <Typography variant="body2" component="span">
         ({card.answer})
       </Typography>
+      {card.isLearned && <StyledChipLearnedMark aria-hidden />}
     </StyledChipLabelRow>
   );
 
   return (
     <StyledContainerWrapper maxWidth="md">
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
+
       <StyledHeaderRow>
-        <StyledPageTitle variant="h4">
+        <StyledPageTitle>
           {t('contextReading.title', { defaultValue: 'Context' })}
         </StyledPageTitle>
       </StyledHeaderRow>
@@ -75,11 +98,14 @@ export const ContextReadingContentStart = ({
         folderCards.length > 0 && (
           <StyledChipsSection>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-              {t('contextReading.words', { defaultValue: 'Words from content' })}
+              {t('contextReading.words', {
+                count: poolCount,
+                defaultValue: 'Words for context: {{count}}',
+              })}
             </Typography>
             <StyledChipsRow>
               {folderCards.map(card => {
-                const ChipComponent = card.isLearned ? StyledLearnedWordChip : StyledPoolWordChip;
+                const ChipComponent = getChipComponent(card);
                 return (
                   <ChipComponent
                     key={card.id}
@@ -95,15 +121,31 @@ export const ContextReadingContentStart = ({
       )}
 
       <StyledControlsBlock>
-        <StyledControlsRow>
-          <SetLanguageLevel
-            value={languageLevel}
-            onChange={onLanguageLevelChange}
-            disabled={loading || generating}
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={onlyUnlearnedWords}
+                onChange={(_, checked) => onOnlyUnlearnedWordsChange(checked)}
+                disabled={loading || generating}
+              />
+            }
+            label={t('contextReading.onlyUnlearned', { defaultValue: 'Only unlearned words' })}
           />
-          <CreateContentButton onClick={onCreateContent} disabled={loading || generating} sx={{ minWidth: 220 }} />
-        </StyledControlsRow>
+          <StyledControlsRow>
+            <SetLanguageLevel
+              value={languageLevel}
+              onChange={onLanguageLevelChange}
+              disabled={loading || generating}
+            />
+          </StyledControlsRow>
+          <StyledButtonContainer>
+            <CreateContentButton
+                onClick={onCreateContent}
+                disabled={loading || generating}
+            />
+          </StyledButtonContainer>
       </StyledControlsBlock>
+
     </StyledContainerWrapper>
   );
 };
