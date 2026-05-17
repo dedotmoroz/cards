@@ -1,8 +1,11 @@
-import { Container, Typography, Box, CircularProgress } from '@mui/material';
+import { Typography, Box, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
-
-const CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX = { fontSize: { xs: '28px' } };
+import {
+    StyledHeaderRow,
+    StyledPageTitle,
+    StyledContainerWrapper,
+} from "./styled-components.ts";
 
 export type ContextReadingContextLoadingProps = {
   learnFolderPath?: string;
@@ -12,13 +15,15 @@ export const ContextReadingContextLoading = ({ learnFolderPath }: ContextReading
   const { t } = useTranslation();
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-        <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
-          {t('contextReading.title', { defaultValue: 'Context' })}
-        </Typography>
-      </Box>
+      <StyledContainerWrapper maxWidth="md">
+          {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
+
+        <StyledHeaderRow>
+            <StyledPageTitle>
+                {t('contextReading.title', { defaultValue: 'Context' })}
+            </StyledPageTitle>
+        </StyledHeaderRow>
+
       <Box
         sx={{
           display: 'flex',
@@ -33,9 +38,9 @@ export const ContextReadingContextLoading = ({ learnFolderPath }: ContextReading
       >
         <CircularProgress sx={{ mb: 2 }} />
         <Typography variant="body1">
-          {t('contextReading.generating', { defaultValue: 'Generating text...' })}
+          {t('contextReading.generating')}
         </Typography>
       </Box>
-    </Container>
+    </StyledContainerWrapper>
   );
 };

@@ -3,15 +3,12 @@ import { useParams } from 'react-router-dom';
 import {
   Container,
   Typography,
-  Box,
-  CircularProgress,
   Alert,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { contextReadingApi, type ContextReadingGenerateStatusResponse } from '@/shared/api/contextReadingApi';
 import { cardsApi } from '@/shared/api/cardsApi';
 import { useSEO } from '@/shared/hooks/useSEO';
-import { ProfileHeader } from '@/entities/user';
 import { ContextReadingContextLoading } from '@/widgets/context-reading/context-loading';
 import { ContextReadingContextError } from '@/widgets/context-reading/context-error';
 import { ContextReadingContentOutput } from '@/widgets/context-reading/content-output';
@@ -307,22 +304,6 @@ export const ContextReadingPage = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} disabled />}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4" sx={{ ml: { xs: 2, sm: 4 }, ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
-            {t('contextReading.title', { defaultValue: 'Context' })}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
-
   if (error) {
     return (
       <ContextReadingContextError
@@ -341,7 +322,7 @@ export const ContextReadingPage = () => {
   }
 
   // Показываем процесс генерации (первый ответ статуса может прийти с задержкой)
-  if (generating) {
+  if (generating || loading) {
     return <ContextReadingContextLoading learnFolderPath={learnFolderPath} />;
   }
 

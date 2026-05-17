@@ -1,12 +1,16 @@
 import { useNavigate } from 'react-router-dom';
-import { Container, Typography, Box, Alert, FormControlLabel, Checkbox } from '@mui/material';
+import { Typography, Box, Alert, FormControlLabel, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
 import { ButtonLink } from '@/shared/ui';
 import { SetLanguageLevel } from '@/features/set-language-level';
 import { CreateContentButton } from '@/features/create-content';
+import {
+    StyledHeaderRow,
+    StyledPageTitle,
+    StyledContainerWrapper
+} from "./styled-components.ts";
 
-const CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX = { fontSize: { xs: '28px' } };
 
 const NO_CARDS_ERROR = 'No cards available for context reading';
 
@@ -40,13 +44,15 @@ export const ContextReadingContextError = ({
   const isNoCardsError = error === NO_CARDS_ERROR;
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <StyledContainerWrapper maxWidth="md">
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
-        <Typography variant="h4" sx={{ ...CONTEXT_READING_TITLE_MOBILE_FONTSIZE_SX }}>
-          {t('contextReading.title', { defaultValue: 'Context' })}
-        </Typography>
-      </Box>
+
+        <StyledHeaderRow>
+            <StyledPageTitle>
+                {t('contextReading.title', { defaultValue: 'Context' })}
+            </StyledPageTitle>
+        </StyledHeaderRow>
+
       {isNoCardsError ? (
         <Box sx={{ mb: 2 }}>
           <Typography variant="body1" sx={{ mb: 3, color: 'text.primary' }}>
@@ -106,6 +112,6 @@ export const ContextReadingContextError = ({
           )}
         </>
       )}
-    </Container>
+    </StyledContainerWrapper>
   );
 };
