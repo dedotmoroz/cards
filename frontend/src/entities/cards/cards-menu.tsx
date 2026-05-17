@@ -15,7 +15,7 @@ import {useAuthStore} from "@/shared/store/authStore.ts";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
 import {
     CloudArrowLeftIcon,
-    CloudArrowRightIcon,
+    // CloudArrowRightIcon,
     CloudInIcon,
     CloudOutIcon,
     FileReplaceOutlineIcon,
@@ -36,7 +36,7 @@ export const CardsMenu = () => {
     const [isImportingCards, setIsImportingCards] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [isImportingExcel, setIsImportingExcel] = useState(false);
-    const [isExportingSheets, setIsExportingSheets] = useState(false);
+    // const [isExportingSheets, setIsExportingSheets] = useState(false);
     const [sheetsConnected, setSheetsConnected] = useState(false);
     const [importSheetsDialogOpen, setImportSheetsDialogOpen] = useState(false);
     const [sheetsConnectSuccessOpen, setSheetsConnectSuccessOpen] = useState(false);
@@ -137,19 +137,19 @@ export const CardsMenu = () => {
         handleMenuClose();
     };
 
-    const handleExportSheetsClick = async () => {
-        if (!selectedFolderId) return;
-        handleMenuClose();
-        setIsExportingSheets(true);
-        try {
-            const result = await cardsApi.exportToGoogleSheets(selectedFolderId);
-            window.open(result.spreadsheetUrl, '_blank');
-        } catch (error) {
-            console.error('Google Sheets export error:', error);
-        } finally {
-            setIsExportingSheets(false);
-        }
-    };
+    // const handleExportSheetsClick = async () => {
+    //     if (!selectedFolderId) return;
+    //     handleMenuClose();
+    //     setIsExportingSheets(true);
+    //     try {
+    //         const result = await cardsApi.exportToGoogleSheets(selectedFolderId);
+    //         window.open(result.spreadsheetUrl, '_blank');
+    //     } catch (error) {
+    //         console.error('Google Sheets export error:', error);
+    //     } finally {
+    //         setIsExportingSheets(false);
+    //     }
+    // };
 
     return (
         <>
@@ -210,10 +210,10 @@ export const CardsMenu = () => {
                             <CloudArrowLeftIcon style={{marginRight: '10px'}} />
                             {t('googleSheets.importFromSheets')}
                         </MenuItem>
-                        <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId || isExportingSheets}>
+  {/*                      <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId || isExportingSheets}>
                             <CloudArrowRightIcon style={{marginRight: '10px'}} />
                             {isExportingSheets ? t('googleSheets.exportingToSheets') : t('googleSheets.exportToSheets')}
-                        </MenuItem>
+                        </MenuItem>*/}
                     </>
                 )}
                 <MenuItem onClick={handleGoToContent} disabled={!selectedFolderId}>
