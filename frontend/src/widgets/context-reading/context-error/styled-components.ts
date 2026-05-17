@@ -75,12 +75,11 @@ export const StyledChipLearnedMark = styled(CheckIcon)(({ theme }) => `
 
 export const StyledControlsBlock = styled(Box)(({ theme }) => `
     display: flex;
-    margin-left: ${theme.spacing(2)};
     margin-right: ${theme.spacing(2)};
     margin-top: ${theme.spacing(4)};
     flex-direction: column;
     justify-content: left;
-    gap: 10px;
+    gap: 20px;
     ${theme.breakpoints.up('sm')} {
         flex-direction: row;
         justify-content: space-between;

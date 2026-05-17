@@ -1,28 +1,23 @@
-import { useNavigate } from 'react-router-dom';
-import { Typography, Box, Alert, FormControlLabel, Checkbox } from '@mui/material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Typography, Alert } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
-import { ButtonLink } from '@/shared/ui';
-import { SetLanguageLevel } from '@/features/set-language-level';
-import { CreateContentButton } from '@/features/create-content';
+import { ButtonColor, ButtonWhite } from '@/shared/ui';
 import {
-    StyledHeaderRow,
-    StyledPageTitle,
-    StyledContainerWrapper
-} from "./styled-components.ts";
-
+  StyledHeaderRow,
+  StyledPageTitle,
+  StyledContainerWrapper,
+  StyledChipsSection,
+  StyledControlsBlock,
+} from './styled-components';
 
 const NO_CARDS_ERROR = 'No cards available for context reading';
 
 export type ContextReadingContextErrorProps = {
   error: string;
   learnFolderPath?: string;
-  folderId: string;
-  languageLevel: string;
-  onLanguageLevelChange: (level: string) => void;
-  onlyUnlearnedWords: boolean;
-  onOnlyUnlearnedWordsChange: (value: boolean) => void;
-  onCreateContent: () => void | Promise<void>;
+  contextReadingPath?: string;
+  onBackToStart: () => void | Promise<void>;
   loading: boolean;
   generating: boolean;
 };
@@ -30,18 +25,53 @@ export type ContextReadingContextErrorProps = {
 export const ContextReadingContextError = ({
   error,
   learnFolderPath,
-  folderId,
-  languageLevel,
-  onLanguageLevelChange,
-  onlyUnlearnedWords,
-  onOnlyUnlearnedWordsChange,
-  onCreateContent,
+  contextReadingPath,
+  onBackToStart,
   loading,
   generating,
 }: ContextReadingContextErrorProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const isNoCardsError = error === NO_CARDS_ERROR;
+
+  const actionButtons = (
+    <StyledControlsBlock>
+      {learnFolderPath && (
+        <ButtonWhite
+          onClick={() => navigate(learnFolderPath)}
+          disabled={loading || generating}
+          sx={{ borderRadius: '8px' }}
+        >
+          {t('contextReading.backToFolder')}
+        </ButtonWhite>
+      )}
+      {contextReadingPath && (
+        <RouterLink
+          to={contextReadingPath}
+          style={{
+            textDecoration: 'none',
+            pointerEvents: loading || generating ? 'none' : undefined,
+          }}
+          onClick={e => {
+            if (loading || generating) {
+              e.preventDefault();
+              return;
+            }
+            void onBackToStart();
+          }}
+          aria-disabled={loading || generating}
+        >
+          <ButtonColor
+            component="span"
+            disabled={loading || generating}
+            sx={{ borderRadius: '8px' }}
+          >
+            {t('contextReading.createContentAgain', { defaultValue: 'Create content again' })}
+          </ButtonColor>
+        </RouterLink>
+      )}
+    </StyledControlsBlock>
+  );
 
   return (
       <StyledContainerWrapper maxWidth="md">
@@ -54,63 +84,22 @@ export const ContextReadingContextError = ({
         </StyledHeaderRow>
 
       {isNoCardsError ? (
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="body1" sx={{ mb: 3, color: 'text.primary' }}>
+        <StyledChipsSection>
+          <Typography variant="body1" sx={{ mb: 4, color: 'text.primary' }}>
             {t('contextReading.noWordsLeft', {
               defaultValue: 'Слова для создания контента в этой папке закончились.',
             })}
           </Typography>
-          <Box sx={{ display: 'flex', gap: 4 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={onlyUnlearnedWords}
-                    onChange={(_, checked) => onOnlyUnlearnedWordsChange(checked)}
-                    disabled={loading || generating}
-                  />
-                }
-                label={t('contextReading.onlyUnlearned', { defaultValue: 'Only unlearned words' })}
-              />
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
-              <SetLanguageLevel
-                value={languageLevel}
-                onChange={onLanguageLevelChange}
-                disabled={loading || generating}
-              />
-              <CreateContentButton onClick={onCreateContent} disabled={loading || generating} sx={{ minWidth: 200 }} />
-            </Box>
-            </Box>
-            {learnFolderPath && (
-              <ButtonLink
-                onClick={() => navigate(learnFolderPath)}
-                disabled={loading || generating}
-                sx={{ minWidth: 200 }}
-              >
-                {t('contextReading.backToFolder', { defaultValue: 'Вернуться в папку' })}
-              </ButtonLink>
-            )}
-          </Box>
-        </Box>
+
+          {actionButtons}
+        </StyledChipsSection>
       ) : (
-        <>
-          <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
-          {folderId && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={onlyUnlearnedWords}
-                    onChange={(_, checked) => onOnlyUnlearnedWordsChange(checked)}
-                    disabled={loading || generating}
-                  />
-                }
-                label={t('contextReading.onlyUnlearned', { defaultValue: 'Only unlearned words' })}
-              />
-              <CreateContentButton onClick={onCreateContent} disabled={loading || generating} sx={{ minWidth: 220 }} />
-            </Box>
-          )}
-        </>
+        <StyledChipsSection>
+          <Alert severity="error" sx={{ mb: 4 }}>
+            {error}
+          </Alert>
+          {actionButtons}
+        </StyledChipsSection>
       )}
     </StyledContainerWrapper>
   );

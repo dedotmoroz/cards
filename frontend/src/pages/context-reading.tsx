@@ -24,6 +24,8 @@ export const ContextReadingPage = () => {
   const { t, i18n } = useTranslation();
   const { userId, folderId } = useParams<{ userId?: string; folderId?: string }>();
   const learnFolderPath = userId && folderId ? `/learn/${userId}/${folderId}` : undefined;
+  const contextReadingPath =
+    userId && folderId ? `/learn/${userId}/${folderId}/context-reading` : undefined;
 
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -173,6 +175,31 @@ export const ContextReadingPage = () => {
     }
   };
 
+  const handleBackToStart = async () => {
+    if (!folderId) return;
+
+    if (pollingTimeoutRef.current) {
+      clearTimeout(pollingTimeoutRef.current);
+      pollingTimeoutRef.current = null;
+    }
+
+    setLoading(false);
+    setGenerating(false);
+    setError(null);
+    setStatus(null);
+    setCurrentCards([]);
+    setProgress(null);
+    setHighlightedChipIndex(null);
+    lastProcessedKeyRef.current = null;
+
+    try {
+      await contextReadingApi.resetProgress(folderId);
+      void loadFolderCards();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reset progress');
+    }
+  };
+
   // Обработчик кнопки "Сброс" — сброс прогресса и возврат к форме выбора уровня / создания контента
   const handleReset = async () => {
     if (!folderId) return;
@@ -309,12 +336,8 @@ export const ContextReadingPage = () => {
       <ContextReadingContextError
         error={error}
         learnFolderPath={learnFolderPath}
-        folderId={folderId}
-        languageLevel={languageLevel}
-        onLanguageLevelChange={setLanguageLevel}
-        onlyUnlearnedWords={onlyUnlearnedWords}
-        onOnlyUnlearnedWordsChange={setOnlyUnlearnedWords}
-        onCreateContent={handleCreateContent}
+        contextReadingPath={contextReadingPath}
+        onBackToStart={handleBackToStart}
         loading={loading}
         generating={generating}
       />

@@ -365,7 +365,8 @@
     "createContent": "创建内容",
     "folderRequired": "需要文件夹 ID",
     "noWordsLeft": "此文件夹中已没有可用于创建语境阅读内容的单词。",
-    "backToFolder": "返回文件夹"
+    "backToFolder": "返回文件夹",
+    "createContentAgain": "重新创建内容"
   },
   "telegram": {
     "connect": {

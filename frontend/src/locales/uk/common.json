@@ -365,7 +365,8 @@
     "createContent": "Створити контент",
     "folderRequired": "Не вказано папку",
     "noWordsLeft": "Слова для створення контенту в цій папці закінчились.",
-    "backToFolder": "Повернутися в папку"
+    "backToFolder": "Повернутися в папку",
+    "createContentAgain": "Створити контент знову"
   },
   "telegram": {
     "connect": {

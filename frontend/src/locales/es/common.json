@@ -365,7 +365,8 @@
     "createContent": "Crear contenido",
     "folderRequired": "Se requiere el ID de la carpeta",
     "noWordsLeft": "Ya no quedan palabras en esta carpeta para crear contenido de lectura contextual.",
-    "backToFolder": "Volver a la carpeta"
+    "backToFolder": "Volver a la carpeta",
+    "createContentAgain": "Crear contenido de nuevo"
   },
   "telegram": {
     "connect": {
