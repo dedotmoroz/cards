@@ -66,13 +66,15 @@ export class GoogleSheetsService {
         return credentials.access_token;
     }
 
-    /** Use short-lived GIS token after Picker (drive.file) when provided; otherwise stored OAuth token. */
-    private async resolveSheetsAccessToken(userId: string, opts?: GooglePickerSheetsOptions): Promise<string> {
+    /** GIS token after Picker (drive.file) — required for import and sheet-titles. */
+    private resolvePickerSheetsAccessToken(opts?: GooglePickerSheetsOptions): string {
         const trimmed = opts?.googlePickerAccessToken?.trim();
         if (trimmed && trimmed.length > 0 && trimmed.length <= MAX_PICKER_ACCESS_TOKEN_CHARS) {
             return trimmed;
         }
-        return this.getValidAccessToken(userId);
+        throw new Error(
+            'Select a spreadsheet via Google Picker first (missing access token).',
+        );
     }
 
     async getSpreadsheetData(
@@ -81,7 +83,7 @@ export class GoogleSheetsService {
         opts?: { sheetName?: string } & GooglePickerSheetsOptions
     ): Promise<string[][]> {
         const sheetName = opts?.sheetName ?? 'Sheet1';
-        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
+        const accessToken = this.resolvePickerSheetsAccessToken(opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
         const range = `${sheetName}!A:Z`;
@@ -99,7 +101,7 @@ export class GoogleSheetsService {
         spreadsheetId: string,
         opts?: GooglePickerSheetsOptions
     ): Promise<string[]> {
-        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
+        const accessToken = this.resolvePickerSheetsAccessToken(opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
         const res = await sheets.spreadsheets.get({

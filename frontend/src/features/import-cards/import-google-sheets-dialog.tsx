@@ -97,12 +97,19 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       setSelectedSheet('');
       return;
     }
+    const pickerToken = pickerGsAccessTokenRef.current.trim();
+    if (!pickerToken) {
+      setSheetTitles([]);
+      setSelectedSheet('');
+      setError(t('googleSheets.pickerTokenRequired'));
+      return;
+    }
     let cancelled = false;
     setSheetTitles([]);
     setLoadingSheetTitles(true);
     cardsApi
       .getGoogleSpreadsheetSheetTitles(selectedSpreadsheet.id, {
-        pickerAccessToken: pickerGsAccessTokenRef.current || undefined,
+        pickerAccessToken: pickerToken,
       })
       .then((res) => {
         if (cancelled) return;
@@ -258,6 +265,11 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       setError(t('googleSheets.pickSpreadsheet'));
       return;
     }
+    const pickerToken = pickerGsAccessTokenRef.current.trim();
+    if (!pickerToken) {
+      setError(t('googleSheets.pickerTokenRequired'));
+      return;
+    }
 
     try {
       setError(null);
@@ -265,7 +277,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       const result = await cardsApi.importFromGoogleSheets(folderId, {
         spreadsheetId: selectedSpreadsheet.id,
         sheetName: selectedSheet.trim(),
-        pickerAccessToken: pickerGsAccessTokenRef.current || undefined,
+        pickerAccessToken: pickerToken,
       });
       if (result.successCount > 0) {
         onSuccess();
@@ -293,6 +305,13 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
     !loadingSheetTitles;
 
   const sheetFieldDisabled = !selectedSpreadsheet || loadingSheetTitles;
+
+  const isPickerTokenError = (message: string | null) =>
+    Boolean(
+      message &&
+        (message.includes('Google Picker') ||
+          message === t('googleSheets.pickerTokenRequired')),
+    );
 
   if (!open) {
     return null;
@@ -341,7 +360,11 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
               <ButtonUI onClick={handlePickAnotherSpreadsheet} disabled={pickerLoading} size="small">
                 {t('googleSheets.pickAnotherSpreadsheet')}
               </ButtonUI>
-            ) : null}
+            ) : (
+              <ButtonUI onClick={handlePickAnotherSpreadsheet} disabled={pickerLoading} size="small">
+                {t('googleSheets.pickSpreadsheetButton')}
+              </ButtonUI>
+            )}
           </Box>
           {sheetTitles.length > 0 ? (
             <FormControl fullWidth sx={{ mb: 2 }} disabled={sheetFieldDisabled}>
@@ -382,7 +405,22 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
             />
           )}
           {error ? (
-            <Alert severity="error" sx={{ mt: 2 }}>
+            <Alert
+              severity="error"
+              sx={{ mt: 2 }}
+              action={
+                isPickerTokenError(error) || !selectedSpreadsheet ? (
+                  <ButtonUI
+                    color="inherit"
+                    size="small"
+                    onClick={handlePickAnotherSpreadsheet}
+                    disabled={pickerLoading}
+                  >
+                    {t('googleSheets.pickSpreadsheetButton')}
+                  </ButtonUI>
+                ) : undefined
+              }
+            >
               {error}
             </Alert>
           ) : null}

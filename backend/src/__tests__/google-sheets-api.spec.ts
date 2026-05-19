@@ -131,6 +131,7 @@ describe('Google Sheets API', () => {
             const res = await request(fastify.server)
                 .post(`/cards/folder/${folderId}/import/google`)
                 .set('Cookie', authCookie)
+                .set('x-google-picker-access-token', 'picker-access-token')
                 .send({
                     spreadsheetId: 'test-spreadsheet-id',
                     sheetName: 'Sheet1',
@@ -152,6 +153,20 @@ describe('Google Sheets API', () => {
                 .send({});
 
             expect(res.status).toBe(400);
+        });
+
+        it('возвращает 400 без Google Picker access token', async () => {
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${folderId}/import/google`)
+                .set('Cookie', authCookie)
+                .send({
+                    spreadsheetId: 'test-spreadsheet-id',
+                    sheetName: 'Sheet1',
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body.message).toContain('Google Picker');
+            expect(getMocks().valuesGet).not.toHaveBeenCalled();
         });
 
         it('требует аутентификации', async () => {

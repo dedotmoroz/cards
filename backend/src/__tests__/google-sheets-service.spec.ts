@@ -151,6 +151,13 @@ describe('GoogleSheetsService', () => {
             });
         });
 
+        it('без googlePickerAccessToken выбрасывает ошибку и не обращается к tokensRepo', async () => {
+            await expect(service.getSpreadsheetData('user-1', 'spreadsheet-id')).rejects.toThrow(
+                'Select a spreadsheet via Google Picker first',
+            );
+            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
+        });
+
         it('возвращает данные из таблицы', async () => {
             getSheetsMocks().valuesGet.mockResolvedValue({
                 data: {
@@ -164,6 +171,7 @@ describe('GoogleSheetsService', () => {
 
             const result = await service.getSpreadsheetData('user-1', 'spreadsheet-id', {
                 sheetName: 'Sheet1',
+                googlePickerAccessToken: 'picker-access-token',
             });
 
             expect(result).toEqual([
@@ -180,7 +188,9 @@ describe('GoogleSheetsService', () => {
         it('возвращает пустой массив при отсутствии данных', async () => {
             getSheetsMocks().valuesGet.mockResolvedValue({ data: {} });
 
-            const result = await service.getSpreadsheetData('user-1', 'spreadsheet-id');
+            const result = await service.getSpreadsheetData('user-1', 'spreadsheet-id', {
+                googlePickerAccessToken: 'picker-access-token',
+            });
 
             expect(result).toEqual([]);
         });
@@ -274,6 +284,13 @@ describe('GoogleSheetsService', () => {
             });
         });
 
+        it('без googlePickerAccessToken выбрасывает ошибку и не обращается к tokensRepo', async () => {
+            await expect(service.getSpreadsheetSheetTitles('user-1', 'abc123_x')).rejects.toThrow(
+                'Select a spreadsheet via Google Picker first',
+            );
+            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
+        });
+
         it('возвращает названия листов', async () => {
             getSheetsMocks().spreadsheetsGet.mockResolvedValue({
                 data: {
@@ -284,7 +301,9 @@ describe('GoogleSheetsService', () => {
                 },
             });
 
-            const titles = await service.getSpreadsheetSheetTitles('user-1', 'abc123_x');
+            const titles = await service.getSpreadsheetSheetTitles('user-1', 'abc123_x', {
+                googlePickerAccessToken: 'picker-token',
+            });
 
             expect(titles).toEqual(['Sheet1', 'Cards']);
             expect(getSheetsMocks().spreadsheetsGet).toHaveBeenCalledWith({

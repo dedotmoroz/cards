@@ -1,15 +1,13 @@
-import { Alert, MenuItem, Snackbar } from '@mui/material';
+import { MenuItem } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import CloudIcon from '@mui/icons-material/Cloud';
 import { useTranslation } from 'react-i18next';
-import {useState, useRef, useEffect} from "react";
-import { useSearchParams } from "react-router-dom";
+import {useState, useRef} from "react";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {ImportCardsButton, ImportGoogleSheetsDialog} from "@/features/import-cards";
 import { MenuUI } from '@/shared/ui/menu-ui';
 import { StyledIconButton } from './styled-components.ts';
 import { cardsApi } from '@/shared/api/cardsApi';
-import { API_BASE_URL } from '@/shared/config/api';
+import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from '@/shared/config/api';
 import {useNavigate, useParams} from "react-router-dom";
 import {useAuthStore} from "@/shared/store/authStore.ts";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
@@ -22,10 +20,11 @@ import {
     AiContentIcon,
 } from '@/shared/icons'
 
+const googlePickerConfigured = Boolean(GOOGLE_CLIENT_ID && GOOGLE_API_KEY);
+
 export const CardsMenu = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
     const { userId, folderId: folderIdFromUrl } = useParams<{ userId?: string; folderId?: string }>();
     const { user } = useAuthStore();
     const currentUserId = user?.id;
@@ -37,30 +36,9 @@ export const CardsMenu = () => {
     const [isExporting, setIsExporting] = useState(false);
     const [isImportingExcel, setIsImportingExcel] = useState(false);
     // const [isExportingSheets, setIsExportingSheets] = useState(false);
-    const [sheetsConnected, setSheetsConnected] = useState(false);
     const [importSheetsDialogOpen, setImportSheetsDialogOpen] = useState(false);
-    const [sheetsConnectSuccessOpen, setSheetsConnectSuccessOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const refreshSheetsStatus = () => {
-        cardsApi.getGoogleSheetsStatus().then((r) => setSheetsConnected(r.connected)).catch(() => setSheetsConnected(false));
-    };
-
-    useEffect(() => {
-        refreshSheetsStatus();
-    }, [anchorEl]);
-
-    useEffect(() => {
-        if (searchParams.get('google_sheets') === 'connected') {
-            refreshSheetsStatus();
-            setSheetsConnectSuccessOpen(true);
-            const next = new URLSearchParams(searchParams);
-            next.delete('google_sheets');
-            setSearchParams(next, { replace: true });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount to handle OAuth return
-    }, []);
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -68,10 +46,6 @@ export const CardsMenu = () => {
 
     const handleMenuClose = () => {
         setAnchorEl(null);
-    };
-
-    const handleSheetsConnectSuccessClose = () => {
-        setSheetsConnectSuccessOpen(false);
     };
 
     const handleImportClick = () => {
@@ -126,12 +100,6 @@ export const CardsMenu = () => {
         }
     };
 
-    const handleConnectSheets = () => {
-        handleMenuClose();
-        const returnTo = encodeURIComponent(`${window.location.pathname}${window.location.search}`);
-        window.location.href = `${API_BASE_URL}/auth/google/sheets?return_to=${returnTo}`;
-    };
-
     const handleImportSheetsClick = () => {
         setImportSheetsDialogOpen(true);
         handleMenuClose();
@@ -153,16 +121,6 @@ export const CardsMenu = () => {
 
     return (
         <>
-            <Snackbar
-                open={sheetsConnectSuccessOpen}
-                autoHideDuration={7000}
-                onClose={handleSheetsConnectSuccessClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            >
-                <Alert onClose={handleSheetsConnectSuccessClose} severity="success" sx={{ width: '100%' }}>
-                    {t('googleSheets.connectSuccessMessage')}
-                </Alert>
-            </Snackbar>
             <StyledIconButton
                 onClick={handleMenuClick}
                 size="small"
@@ -198,23 +156,11 @@ export const CardsMenu = () => {
                     {isExporting ? t('export.exporting') : t('export.export')}
                 </MenuItem>
 
-                {!sheetsConnected && (
-                    <MenuItem onClick={handleConnectSheets}>
-                        <CloudIcon sx={{mr: 1}}/>
-                        {t('googleSheets.connect')}
+                {googlePickerConfigured && (
+                    <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
+                        <CloudArrowLeftIcon style={{marginRight: '10px'}} />
+                        {t('googleSheets.importFromSheets')}
                     </MenuItem>
-                )}
-                {sheetsConnected && (
-                    <>
-                        <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
-                            <CloudArrowLeftIcon style={{marginRight: '10px'}} />
-                            {t('googleSheets.importFromSheets')}
-                        </MenuItem>
-  {/*                      <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId || isExportingSheets}>
-                            <CloudArrowRightIcon style={{marginRight: '10px'}} />
-                            {isExportingSheets ? t('googleSheets.exportingToSheets') : t('googleSheets.exportToSheets')}
-                        </MenuItem>*/}
-                    </>
                 )}
                 <MenuItem onClick={handleGoToContent} disabled={!selectedFolderId}>
                     <AiContentIcon style={{marginRight: '12px', marginLeft: '3px'}} />

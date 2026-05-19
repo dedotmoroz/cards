@@ -5,7 +5,10 @@ import ExcelJS from 'exceljs';
 import { CardService } from '../../../application/card-service';
 import { FolderRepository } from '../../../ports/folder-repository';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
-import { googlePickerAccessTokenFromRequest } from '../google-picker-access-token';
+import {
+    GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE,
+    googlePickerAccessTokenFromRequest,
+} from '../google-picker-access-token';
 import { CreateCardDTO, CardDTO, UpdateCardDTO, ReviewCardDTO } from '../dto';
 import { CreateCardInput } from './types';
 import type { CardRepository } from '../../../ports/card-repository';
@@ -754,10 +757,14 @@ export function registerCardsRoutes(
                 if (!folder) return reply.code(404).send({ message: 'Folder not found' });
                 if (folder.userId !== userId) return reply.code(403).send({ message: 'Access denied' });
 
+                if (!googlePickerAccessToken) {
+                    return reply.code(400).send({ message: GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE });
+                }
+
                 try {
                     const rows = await googleSheetsService.getSpreadsheetData(userId, spreadsheetId, {
                         sheetName,
-                        ...(googlePickerAccessToken ? { googlePickerAccessToken } : {}),
+                        googlePickerAccessToken,
                     });
                     if (rows.length < 2) {
                         return reply.code(400).send({ message: 'Sheet is empty or has no data rows' });

@@ -3,7 +3,10 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
 import { GOOGLE_SHEETS_OAUTH_SCOPES } from '../../../application/google-sheets-oauth-scopes';
-import { googlePickerAccessTokenFromRequest } from '../google-picker-access-token';
+import {
+    GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE,
+    googlePickerAccessTokenFromRequest,
+} from '../google-picker-access-token';
 
 /** Разрешены только относительные пути вида /learn/... */
 function validateLearnPath(path: string): string | null {
@@ -214,11 +217,14 @@ export function registerGoogleSheetsRoutes(
             const userId = (req.user as any).userId;
             const { spreadsheetId } = req.params;
             const googlePickerAccessToken = googlePickerAccessTokenFromRequest(req);
+            if (!googlePickerAccessToken) {
+                return reply.code(400).send({ message: GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE });
+            }
             try {
                 const titles = await googleSheetsService.getSpreadsheetSheetTitles(
                     userId,
                     spreadsheetId,
-                    googlePickerAccessToken ? { googlePickerAccessToken } : undefined,
+                    { googlePickerAccessToken },
                 );
                 return reply.send({ titles });
             } catch (err) {
