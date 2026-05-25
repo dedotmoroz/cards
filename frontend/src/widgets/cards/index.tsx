@@ -81,10 +81,15 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
                                   &nbsp;
                             </Typography>)
                         }
+                        <Box sx={{ display: { xs: 'block', sm: 'none', md: 'none' }, marginTop: '16px' }}>
+                            <CreateAiContentButton />
+                        </Box>
                     </Box>
                 </StyleLeftBox>
                 <StyledCreateCardBox>
-                    <CreateAiContentButton />
+                    <Box sx={{ display: { xs: 'none', sm: 'block',  md: 'block' } }}>
+                        <CreateAiContentButton />
+                    </Box>
                     <CreateCardButton onToggleForm={handleToggleCreateCard} isFormOpen={isCreatingCard}/>
                 </StyledCreateCardBox>
             </StyledTopBox>

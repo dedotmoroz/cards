@@ -18,7 +18,7 @@ export const StyledWrapperBox = styled(Box)`
 export const StyledTopBox = styled(Box)`
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 20px;
 `
 export const StyleLeftBox = styled(Box)`
@@ -203,12 +203,6 @@ export const StyledCreateCardBox = styled(Box)`
     display: flex;
     align-items: center;
     gap: 16px;
-
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-    }
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
         padding-right: 8px;
