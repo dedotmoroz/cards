@@ -5,6 +5,7 @@ import {useState, useEffect} from "react";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import { CreateCardButton } from "@/features/create-card/index.tsx";
+import { CreateAiContentButton } from "@/features/create-ai-content";
 import {CardsMenu} from "@/entities/cards";
 import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox, StyledCreateCardBox } from './styled-components.ts'
 
@@ -83,7 +84,7 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
                     </Box>
                 </StyleLeftBox>
                 <StyledCreateCardBox>
-                    {/* Add card */}
+                    <CreateAiContentButton />
                     <CreateCardButton onToggleForm={handleToggleCreateCard} isFormOpen={isCreatingCard}/>
                 </StyledCreateCardBox>
             </StyledTopBox>

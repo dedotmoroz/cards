@@ -200,6 +200,16 @@ export const StyledMarginMobile = styled(Box)`
 `
 
 export const StyledCreateCardBox = styled(Box)`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
     ${({ theme }) => theme.breakpoints.down('sm')} {
         padding-right: 8px;
     }

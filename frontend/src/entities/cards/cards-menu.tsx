@@ -8,8 +8,6 @@ import { MenuUI } from '@/shared/ui/menu-ui';
 import { StyledIconButton } from './styled-components.ts';
 import { cardsApi } from '@/shared/api/cardsApi';
 import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from '@/shared/config/api';
-import {useNavigate, useParams} from "react-router-dom";
-import {useAuthStore} from "@/shared/store/authStore.ts";
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
 import {
     CloudArrowLeftIcon,
@@ -17,17 +15,12 @@ import {
     CloudInIcon,
     CloudOutIcon,
     FileReplaceOutlineIcon,
-    AiContentIcon,
 } from '@/shared/icons'
 
 const googlePickerConfigured = Boolean(GOOGLE_CLIENT_ID && GOOGLE_API_KEY);
 
 export const CardsMenu = () => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
-    const { userId, folderId: folderIdFromUrl } = useParams<{ userId?: string; folderId?: string }>();
-    const { user } = useAuthStore();
-    const currentUserId = user?.id;
 
     const { selectedFolderId, fetchFolders } = useFoldersStore();
     const { fetchCards } = useCardsStore();
@@ -50,13 +43,6 @@ export const CardsMenu = () => {
 
     const handleImportClick = () => {
         setIsImportingCards(true);
-        handleMenuClose();
-    };
-
-    const handleGoToContent = () => {
-        const currentFolderId = folderIdFromUrl || selectedFolderId;
-        const currentUserIdForNav = userId || currentUserId;
-        navigate(`/learn/${currentUserIdForNav}/${currentFolderId}/context-reading`)
         handleMenuClose();
     };
 
@@ -162,10 +148,6 @@ export const CardsMenu = () => {
                         {t('googleSheets.importFromSheets')}
                     </MenuItem>
                 )}
-                <MenuItem onClick={handleGoToContent} disabled={!selectedFolderId}>
-                    <AiContentIcon style={{marginRight: '12px', marginLeft: '3px'}} />
-                    {t('cards.context')}
-                </MenuItem>
             </MenuUI>
             
             {/* Скрытый input для выбора файла */}
