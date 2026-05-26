@@ -205,7 +205,19 @@ export const StyledCreateCardBox = styled(Box)`
     gap: 16px;
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
-        padding-right: 8px;
+        display: none;
+    }
+`
+
+export const StyledCreateBlockMobile  = styled(Box)`
+width: 100%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0 0 16px 20px;
+gap: 16px;
+    ${({ theme }) => theme.breakpoints.up('sm')} {
+        display: none;
     }
 `
 

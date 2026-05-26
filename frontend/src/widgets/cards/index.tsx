@@ -7,7 +7,7 @@ import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import { CreateCardButton } from "@/features/create-card/index.tsx";
 import { CreateAiContentButton } from "@/features/create-ai-content";
 import {CardsMenu} from "@/entities/cards";
-import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox, StyledCreateCardBox } from './styled-components.ts'
+import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox, StyledCreateCardBox, StyledCreateBlockMobile } from './styled-components.ts'
 
 type CardsProps = {
     isLoading?: boolean;
@@ -81,18 +81,19 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
                                   &nbsp;
                             </Typography>)
                         }
-                        <Box sx={{ display: { xs: 'block', sm: 'none', md: 'none' }, marginTop: '16px' }}>
-                            <CreateAiContentButton />
-                        </Box>
                     </Box>
                 </StyleLeftBox>
-                <StyledCreateCardBox>
-                    <Box sx={{ display: { xs: 'none', sm: 'block',  md: 'block' } }}>
+                <StyledCreateCardBox >
                         <CreateAiContentButton />
-                    </Box>
-                    <CreateCardButton onToggleForm={handleToggleCreateCard} isFormOpen={isCreatingCard}/>
+                        <CreateCardButton onToggleForm={handleToggleCreateCard} isFormOpen={isCreatingCard}/>
                 </StyledCreateCardBox>
             </StyledTopBox>
+
+            <StyledCreateBlockMobile>
+                            <CreateAiContentButton />
+                            <CreateCardButton onToggleForm={handleToggleCreateCard} isFormOpen={isCreatingCard}/>
+            </StyledCreateBlockMobile>
+                        
             <CardList
                 cards={cards}
                 displayFilter={displayFilter}
