@@ -24,7 +24,7 @@ export const StyledTopBox = styled(Box)`
 export const StyleLeftBox = styled(Box)`
     display: flex;
     align-items: flex-start;
-    padding-left: 20px;
+    padding-left: 16px;
 `
 
 export const StyledHeaderBox = styled(Box)`
@@ -214,7 +214,7 @@ width: 100%;
 display: flex;
 justify-content: space-between;
 align-items: center;
-padding: 0 0 16px 20px;
+padding: 16px 8px 16px 16px;
 gap: 16px;
     ${({ theme }) => theme.breakpoints.up('sm')} {
         display: none;
