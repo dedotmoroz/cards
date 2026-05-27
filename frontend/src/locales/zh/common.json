@@ -307,7 +307,17 @@
     "invalidUrl": "请输入表格链接或 ID",
     "importFromSheets": "从 Google Sheets 导入",
     "exportToSheets": "导出到 Google Sheets",
-    "exportingToSheets": "导出中..."
+    "exportingToSheets": "导出中...",
+    "exportTitle": "导出到 Google Sheets",
+    "exportDescription": "创建新表格，或将卡片写入通过 Google Picker 选择的表格。",
+    "exportModeNew": "创建新表格",
+    "exportModeExisting": "写入现有表格",
+    "exportNewTitleLabel": "表格标题",
+    "exportWriteOverwrite": "替换整个工作表（表头 + 所有卡片）",
+    "exportWriteAppend": "追加行（保留现有数据）",
+    "exportOverwriteConfirm": "我了解这将替换所选工作表上的所有数据",
+    "exportOverwriteConfirmRequired": "请确认要替换工作表内容",
+    "exportDefaultFolderName": "文件夹"
   },
   "profile": {
     "title": "个人资料",

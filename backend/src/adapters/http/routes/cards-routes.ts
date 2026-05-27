@@ -833,7 +833,14 @@ export function registerCardsRoutes(
                     },
                     body: {
                         type: 'object',
-                        properties: { title: { type: 'string' } },
+                        properties: {
+                            mode: { type: 'string', enum: ['new', 'existing'] },
+                            title: { type: 'string' },
+                            spreadsheetId: { type: 'string' },
+                            sheetName: { type: 'string' },
+                            append: { type: 'boolean' },
+                            googlePickerAccessToken: { type: 'string' },
+                        },
                     },
                     response: {
                         200: {
@@ -850,20 +857,65 @@ export function registerCardsRoutes(
             },
             async (req: FastifyRequest<{
                 Params: { folderId: string };
-                Body: { title?: string };
+                Body: {
+                    mode?: 'new' | 'existing';
+                    title?: string;
+                    spreadsheetId?: string;
+                    sheetName?: string;
+                    append?: boolean;
+                    googlePickerAccessToken?: string;
+                };
             }>, reply: FastifyReply) => {
                 const userId = (req.user as any).userId;
                 const { folderId } = req.params;
+                const {
+                    mode = 'new',
+                    title: bodyTitle,
+                    spreadsheetId,
+                    sheetName = 'Sheet1',
+                    append = false,
+                    googlePickerAccessToken: bodyPickerToken,
+                } = req.body;
+                const googlePickerAccessToken = googlePickerAccessTokenFromRequest(req, bodyPickerToken);
+
                 const folder = await folderRepo.findById(folderId);
                 if (!folder) return reply.code(404).send({ message: 'Folder not found' });
                 if (folder.userId !== userId) return reply.code(403).send({ message: 'Access denied' });
 
+                if (!googlePickerAccessToken) {
+                    return reply.code(400).send({ message: GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE });
+                }
+
+                if (mode === 'existing' && !spreadsheetId?.trim()) {
+                    return reply.code(400).send({ message: 'spreadsheetId is required for existing spreadsheet export' });
+                }
+
                 const cards = await cardService.getAll(folderId);
-                const title = req.body?.title || `${folder.name}_${new Date().toISOString().split('T')[0]}`;
                 const rows = cards.map((c) => ({ question: c.question, answer: c.answer }));
+                const pickerOpts = { googlePickerAccessToken };
 
                 try {
-                    const result = await googleSheetsService.createSpreadsheetAndWrite(userId, title, rows);
+                    if (mode === 'existing') {
+                        const result = await googleSheetsService.writeToExistingSpreadsheet(
+                            userId,
+                            spreadsheetId!.trim(),
+                            sheetName.trim() || 'Sheet1',
+                            rows,
+                            { ...pickerOpts, append },
+                        );
+                        return reply.send({
+                            spreadsheetUrl: result.spreadsheetUrl,
+                            spreadsheetId: result.spreadsheetId,
+                        });
+                    }
+
+                    const title = bodyTitle?.trim() || `${folder.name}_${new Date().toISOString().split('T')[0]}`;
+                    const result = await googleSheetsService.createSpreadsheetAndWrite(
+                        userId,
+                        title,
+                        rows,
+                        pickerOpts,
+                    );
                     return reply.send({
                         spreadsheetUrl: result.spreadsheetUrl,
                         spreadsheetId: result.spreadsheetId,

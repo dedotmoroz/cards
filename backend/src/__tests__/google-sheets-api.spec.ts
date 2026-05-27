@@ -4,6 +4,7 @@ import request from 'supertest';
 import { eq } from 'drizzle-orm';
 import { db } from '../db/db';
 import { googleSheetsTokens } from '../db/schema';
+import { GOOGLE_PICKER_ACCESS_TOKEN_HEADER } from '../adapters/http/google-picker-access-token';
 
 const mockVerifyTurnstileToken = jest.fn().mockResolvedValue(true);
 jest.mock('../lib/turnstile', () => ({
@@ -14,7 +15,8 @@ jest.mock('googleapis', () => {
     const valuesGet = jest.fn();
     const create = jest.fn();
     const valuesUpdate = jest.fn();
-    (global as any).__googleSheetsApiMocks = { valuesGet, create, valuesUpdate };
+    const valuesAppend = jest.fn();
+    (global as any).__googleSheetsApiMocks = { valuesGet, create, valuesUpdate, valuesAppend };
     return {
         google: {
             auth: {
@@ -24,7 +26,7 @@ jest.mock('googleapis', () => {
             },
             sheets: jest.fn().mockReturnValue({
                 spreadsheets: {
-                    values: { get: valuesGet, update: valuesUpdate },
+                    values: { get: valuesGet, update: valuesUpdate, append: valuesAppend },
                     create,
                 },
             }),
@@ -36,6 +38,7 @@ const getMocks = () => (global as any).__googleSheetsApiMocks as {
     valuesGet: jest.Mock;
     create: jest.Mock;
     valuesUpdate: jest.Mock;
+    valuesAppend: jest.Mock;
 };
 
 describe('Google Sheets API', () => {
@@ -199,7 +202,8 @@ describe('Google Sheets API', () => {
             const res = await request(fastify.server)
                 .post(`/cards/folder/${folderId}/export/google`)
                 .set('Cookie', authCookie)
-                .send({ title: 'Exported Cards' });
+                .set(GOOGLE_PICKER_ACCESS_TOKEN_HEADER, 'picker-access-token')
+                .send({ mode: 'new', title: 'Exported Cards' });
 
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('spreadsheetUrl');
@@ -207,6 +211,36 @@ describe('Google Sheets API', () => {
             expect(res.body.spreadsheetId).toBe('new-spreadsheet-id');
             expect(getMocks().create).toHaveBeenCalled();
             expect(getMocks().valuesUpdate).toHaveBeenCalled();
+        });
+
+        it('требует picker access token', async () => {
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${folderId}/export/google`)
+                .set('Cookie', authCookie)
+                .send({ mode: 'new' });
+
+            expect(res.status).toBe(400);
+        });
+
+        it('экспортирует в существующую таблицу', async () => {
+            getMocks().valuesGet.mockResolvedValue({
+                data: { values: [['Сторона A', 'Сторона B']] },
+            });
+
+            const res = await request(fastify.server)
+                .post(`/cards/folder/${folderId}/export/google`)
+                .set('Cookie', authCookie)
+                .set(GOOGLE_PICKER_ACCESS_TOKEN_HEADER, 'picker-access-token')
+                .send({
+                    mode: 'existing',
+                    spreadsheetId: 'existing-sheet-id',
+                    sheetName: 'Cards',
+                    append: true,
+                });
+
+            expect(res.status).toBe(200);
+            expect(res.body.spreadsheetId).toBe('existing-sheet-id');
+            expect(getMocks().valuesAppend).toHaveBeenCalled();
         });
 
         it('требует аутентификации', async () => {
@@ -222,7 +256,8 @@ describe('Google Sheets API', () => {
             const res = await request(fastify.server)
                 .post(`/cards/folder/${fakeFolderId}/export/google`)
                 .set('Cookie', authCookie)
-                .send({});
+                .set(GOOGLE_PICKER_ACCESS_TOKEN_HEADER, 'picker-token')
+                .send({ mode: 'new' });
 
             expect(res.status).toBe(404);
         });

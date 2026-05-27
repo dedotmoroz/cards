@@ -307,7 +307,17 @@
     "invalidUrl": "Entrez l'URL ou l'ID du tableau",
     "importFromSheets": "Importer depuis Google Sheets",
     "exportToSheets": "Exporter vers Google Sheets",
-    "exportingToSheets": "Exportation..."
+    "exportingToSheets": "Exportation...",
+    "exportTitle": "Exporter vers Google Sheets",
+    "exportDescription": "Créez une nouvelle feuille ou écrivez les cartes dans une feuille choisie via Google Picker.",
+    "exportModeNew": "Créer une nouvelle feuille",
+    "exportModeExisting": "Écrire dans une feuille existante",
+    "exportNewTitleLabel": "Titre de la feuille",
+    "exportWriteOverwrite": "Remplacer toute la feuille (en-têtes + cartes)",
+    "exportWriteAppend": "Ajouter des lignes (conserver les données)",
+    "exportOverwriteConfirm": "Je comprends que toutes les données de la feuille sélectionnée seront remplacées",
+    "exportOverwriteConfirmRequired": "Confirmez le remplacement du contenu de la feuille",
+    "exportDefaultFolderName": "Dossier"
   },
   "profile": {
     "title": "Profil",

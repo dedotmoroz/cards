@@ -307,7 +307,17 @@
     "invalidUrl": "Digite o URL ou ID da folha",
     "importFromSheets": "Importar do Google Sheets",
     "exportToSheets": "Exportar para Google Sheets",
-    "exportingToSheets": "Exportando..."
+    "exportingToSheets": "Exportando...",
+    "exportTitle": "Exportar para Google Sheets",
+    "exportDescription": "Crie uma planilha nova ou escreva os cartões numa planilha escolhida no Google Picker.",
+    "exportModeNew": "Criar planilha nova",
+    "exportModeExisting": "Escrever em planilha existente",
+    "exportNewTitleLabel": "Título da planilha",
+    "exportWriteOverwrite": "Substituir a aba inteira (cabeçalhos + cartões)",
+    "exportWriteAppend": "Adicionar linhas (manter dados existentes)",
+    "exportOverwriteConfirm": "Entendo que todos os dados da aba selecionada serão substituídos",
+    "exportOverwriteConfirmRequired": "Confirme a substituição do conteúdo da aba",
+    "exportDefaultFolderName": "Pasta"
   },
   "profile": {
     "title": "Perfil",

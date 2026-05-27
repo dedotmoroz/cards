@@ -307,7 +307,17 @@
     "invalidUrl": "Wprowadź URL lub ID arkusza",
     "importFromSheets": "Import z Google Sheets",
     "exportToSheets": "Eksport do Google Sheets",
-    "exportingToSheets": "Eksportowanie..."
+    "exportingToSheets": "Eksportowanie...",
+    "exportTitle": "Eksport do Google Sheets",
+    "exportDescription": "Utwórz nowy arkusz lub zapisz fiszki do arkusza wybranego w Google Picker.",
+    "exportModeNew": "Utwórz nowy arkusz",
+    "exportModeExisting": "Zapisz do istniejącego arkusza",
+    "exportNewTitleLabel": "Tytuł arkusza",
+    "exportWriteOverwrite": "Zastąp cały arkusz (nagłówki + wszystkie fiszki)",
+    "exportWriteAppend": "Dodaj wiersze (zachowaj istniejące dane)",
+    "exportOverwriteConfirm": "Rozumiem, że wszystkie dane na wybranym arkuszu zostaną zastąpione",
+    "exportOverwriteConfirmRequired": "Potwierdź zastąpienie zawartości arkusza",
+    "exportDefaultFolderName": "Folder"
   },
   "profile": {
     "title": "Profil",

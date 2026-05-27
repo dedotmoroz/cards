@@ -307,7 +307,17 @@
     "invalidUrl": "Introduce la URL o ID de la hoja",
     "importFromSheets": "Importar desde Google Sheets",
     "exportToSheets": "Exportar a Google Sheets",
-    "exportingToSheets": "Exportando..."
+    "exportingToSheets": "Exportando...",
+    "exportTitle": "Exportar a Google Sheets",
+    "exportDescription": "Crea una hoja nueva o escribe las tarjetas en una hoja elegida con Google Picker.",
+    "exportModeNew": "Crear hoja nueva",
+    "exportModeExisting": "Escribir en hoja existente",
+    "exportNewTitleLabel": "Título de la hoja",
+    "exportWriteOverwrite": "Reemplazar toda la pestaña (encabezados + tarjetas)",
+    "exportWriteAppend": "Añadir filas (conservar datos existentes)",
+    "exportOverwriteConfirm": "Entiendo que se reemplazarán todos los datos de la pestaña seleccionada",
+    "exportOverwriteConfirmRequired": "Confirma que deseas reemplazar el contenido de la pestaña",
+    "exportDefaultFolderName": "Carpeta"
   },
   "profile": {
     "title": "Perfil",

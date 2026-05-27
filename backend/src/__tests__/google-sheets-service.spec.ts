@@ -11,11 +11,13 @@ jest.mock('googleapis', () => {
     const valuesGet = jest.fn();
     const create = jest.fn();
     const valuesUpdate = jest.fn();
+    const valuesAppend = jest.fn();
     const spreadsheetsGet = jest.fn();
     (global as any).__googleSheetsTestMocks = {
         valuesGet,
         create,
         valuesUpdate,
+        valuesAppend,
         spreadsheetsGet,
     };
     return {
@@ -27,7 +29,7 @@ jest.mock('googleapis', () => {
             },
             sheets: jest.fn().mockReturnValue({
                 spreadsheets: {
-                    values: { get: valuesGet, update: valuesUpdate },
+                    values: { get: valuesGet, update: valuesUpdate, append: valuesAppend },
                     create,
                     get: spreadsheetsGet,
                 },
@@ -40,6 +42,7 @@ const getSheetsMocks = () => (global as any).__googleSheetsTestMocks as {
     valuesGet: jest.Mock;
     create: jest.Mock;
     valuesUpdate: jest.Mock;
+    valuesAppend: jest.Mock;
     spreadsheetsGet: jest.Mock;
 };
 
@@ -211,18 +214,19 @@ describe('GoogleSheetsService', () => {
 
     describe('createSpreadsheetAndWrite', () => {
         beforeEach(() => {
-            const futureExpiry = new Date(Date.now() + 3600 * 1000);
-            tokensRepo.findByUserId.mockResolvedValue({
-                userId: 'user-1',
-                accessToken: 'valid-token',
-                refreshToken: 'refresh',
-                expiresAt: futureExpiry,
-            });
-
             getSheetsMocks().create.mockResolvedValue({
                 data: { spreadsheetId: 'new-sheet-id' },
             });
             getSheetsMocks().valuesUpdate.mockResolvedValue({});
+        });
+
+        it('без googlePickerAccessToken выбрасывает ошибку и не обращается к tokensRepo', async () => {
+            await expect(
+                service.createSpreadsheetAndWrite('user-1', 'My Cards', [
+                    { question: 'Q', answer: 'A' },
+                ]),
+            ).rejects.toThrow('Select a spreadsheet via Google Picker first');
+            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
         });
 
         it('создаёт таблицу и записывает карточки', async () => {
@@ -231,11 +235,9 @@ describe('GoogleSheetsService', () => {
                 { question: 'Q2', answer: 'A2' },
             ];
 
-            const result = await service.createSpreadsheetAndWrite(
-                'user-1',
-                'My Cards',
-                rows
-            );
+            const result = await service.createSpreadsheetAndWrite('user-1', 'My Cards', rows, {
+                googlePickerAccessToken: 'picker-access-token',
+            });
 
             expect(result).toEqual({
                 spreadsheetId: 'new-sheet-id',
@@ -258,18 +260,105 @@ describe('GoogleSheetsService', () => {
                             ['Q2', 'A2'],
                         ],
                     },
-                })
+                }),
             );
+            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
         });
 
         it('выбрасывает ошибку при неудачном создании таблицы', async () => {
             getSheetsMocks().create.mockResolvedValue({ data: {} });
 
             await expect(
-                service.createSpreadsheetAndWrite('user-1', 'Title', [
-                    { question: 'Q', answer: 'A' },
-                ])
+                service.createSpreadsheetAndWrite(
+                    'user-1',
+                    'Title',
+                    [{ question: 'Q', answer: 'A' }],
+                    { googlePickerAccessToken: 'picker-token' },
+                ),
             ).rejects.toThrow('Failed to create spreadsheet');
+        });
+    });
+
+    describe('writeToExistingSpreadsheet', () => {
+        beforeEach(() => {
+            getSheetsMocks().valuesUpdate.mockResolvedValue({});
+            getSheetsMocks().valuesAppend.mockResolvedValue({});
+        });
+
+        it('без googlePickerAccessToken выбрасывает ошибку', async () => {
+            await expect(
+                service.writeToExistingSpreadsheet('user-1', 'sheet-id', 'Sheet1', [
+                    { question: 'Q', answer: 'A' },
+                ]),
+            ).rejects.toThrow('Select a spreadsheet via Google Picker first');
+        });
+
+        it('перезаписывает лист с заголовками', async () => {
+            const rows = [{ question: 'Q1', answer: 'A1' }];
+
+            const result = await service.writeToExistingSpreadsheet(
+                'user-1',
+                'sheet-id',
+                'Cards',
+                rows,
+                { googlePickerAccessToken: 'picker-token' },
+            );
+
+            expect(result.spreadsheetId).toBe('sheet-id');
+            expect(getSheetsMocks().valuesUpdate).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    spreadsheetId: 'sheet-id',
+                    range: 'Cards!A1:B2',
+                    requestBody: {
+                        values: [
+                            ['Сторона A', 'Сторона B'],
+                            ['Q1', 'A1'],
+                        ],
+                    },
+                }),
+            );
+            expect(getSheetsMocks().valuesAppend).not.toHaveBeenCalled();
+        });
+
+        it('добавляет строки в непустой лист', async () => {
+            getSheetsMocks().valuesGet.mockResolvedValue({
+                data: { values: [['Сторона A', 'Сторона B'], ['old', 'row']] },
+            });
+
+            await service.writeToExistingSpreadsheet(
+                'user-1',
+                'sheet-id',
+                'Sheet1',
+                [{ question: 'Q2', answer: 'A2' }],
+                { googlePickerAccessToken: 'picker-token', append: true },
+            );
+
+            expect(getSheetsMocks().valuesAppend).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    spreadsheetId: 'sheet-id',
+                    range: 'Sheet1!A:B',
+                    requestBody: { values: [['Q2', 'A2']] },
+                }),
+            );
+        });
+
+        it('записывает с заголовком в пустой лист при append', async () => {
+            getSheetsMocks().valuesGet.mockResolvedValue({ data: {} });
+
+            await service.writeToExistingSpreadsheet(
+                'user-1',
+                'sheet-id',
+                'Sheet1',
+                [{ question: 'Q1', answer: 'A1' }],
+                { googlePickerAccessToken: 'picker-token', append: true },
+            );
+
+            expect(getSheetsMocks().valuesUpdate).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    range: 'Sheet1!A1:B2',
+                }),
+            );
+            expect(getSheetsMocks().valuesAppend).not.toHaveBeenCalled();
         });
     });
 

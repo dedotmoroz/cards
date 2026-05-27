@@ -307,7 +307,17 @@
     "invalidUrl": "Tabellen-URL oder ID eingeben",
     "importFromSheets": "Aus Google Sheets importieren",
     "exportToSheets": "In Google Sheets exportieren",
-    "exportingToSheets": "Exportiere..."
+    "exportingToSheets": "Exportiere...",
+    "exportTitle": "In Google Sheets exportieren",
+    "exportDescription": "Neue Tabelle erstellen oder Karten in eine per Google Picker gewählte Tabelle schreiben.",
+    "exportModeNew": "Neue Tabelle erstellen",
+    "exportModeExisting": "In bestehende Tabelle schreiben",
+    "exportNewTitleLabel": "Tabellentitel",
+    "exportWriteOverwrite": "Gesamtes Blatt ersetzen (Kopfzeilen + alle Karten)",
+    "exportWriteAppend": "Zeilen anhängen (vorhandene Daten behalten)",
+    "exportOverwriteConfirm": "Ich verstehe, dass alle Daten auf dem gewählten Blatt ersetzt werden",
+    "exportOverwriteConfirmRequired": "Bestätigen Sie das Ersetzen des Blattinhalts",
+    "exportDefaultFolderName": "Ordner"
   },
   "profile": {
     "title": "Profil",

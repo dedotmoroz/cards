@@ -307,7 +307,17 @@
     "invalidUrl": "Введіть посилання або ID таблиці",
     "importFromSheets": "Імпорт з Google Sheets",
     "exportToSheets": "Експорт у Google Sheets",
-    "exportingToSheets": "Експорт..."
+    "exportingToSheets": "Експорт...",
+    "exportTitle": "Експорт у Google Sheets",
+    "exportDescription": "Створіть нову таблицю або запишіть картки в таблицю, обрану через Google Picker.",
+    "exportModeNew": "Створити нову таблицю",
+    "exportModeExisting": "Записати в існуючу таблицю",
+    "exportNewTitleLabel": "Назва таблиці",
+    "exportWriteOverwrite": "Замінити весь аркуш (заголовки та всі картки)",
+    "exportWriteAppend": "Додати рядки (зберегти наявні дані)",
+    "exportOverwriteConfirm": "Я розумію, що всі дані на обраному аркуші будуть замінені",
+    "exportOverwriteConfirmRequired": "Підтвердьте заміну вмісту аркуша",
+    "exportDefaultFolderName": "Папка"
   },
   "profile": {
     "title": "Профіль",

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {useState, useRef} from "react";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
 import {ImportCardsButton, ImportGoogleSheetsDialog} from "@/features/import-cards";
+import { ExportGoogleSheetsDialog } from '@/features/export-cards';
 import { MenuUI } from '@/shared/ui/menu-ui';
 import { StyledIconButton } from './styled-components.ts';
 import { cardsApi } from '@/shared/api/cardsApi';
@@ -11,7 +12,7 @@ import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from '@/shared/config/api';
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
 import {
     CloudArrowLeftIcon,
-    // CloudArrowRightIcon,
+    CloudArrowRightIcon,
     CloudInIcon,
     CloudOutIcon,
     FileReplaceOutlineIcon,
@@ -22,13 +23,13 @@ const googlePickerConfigured = Boolean(GOOGLE_CLIENT_ID && GOOGLE_API_KEY);
 export const CardsMenu = () => {
     const { t } = useTranslation();
 
-    const { selectedFolderId, fetchFolders } = useFoldersStore();
+    const { selectedFolderId, folders, fetchFolders } = useFoldersStore();
     const { fetchCards } = useCardsStore();
 
     const [isImportingCards, setIsImportingCards] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [isImportingExcel, setIsImportingExcel] = useState(false);
-    // const [isExportingSheets, setIsExportingSheets] = useState(false);
+    const [exportSheetsDialogOpen, setExportSheetsDialogOpen] = useState(false);
     const [importSheetsDialogOpen, setImportSheetsDialogOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -91,19 +92,13 @@ export const CardsMenu = () => {
         handleMenuClose();
     };
 
-    // const handleExportSheetsClick = async () => {
-    //     if (!selectedFolderId) return;
-    //     handleMenuClose();
-    //     setIsExportingSheets(true);
-    //     try {
-    //         const result = await cardsApi.exportToGoogleSheets(selectedFolderId);
-    //         window.open(result.spreadsheetUrl, '_blank');
-    //     } catch (error) {
-    //         console.error('Google Sheets export error:', error);
-    //     } finally {
-    //         setIsExportingSheets(false);
-    //     }
-    // };
+    const handleExportSheetsClick = () => {
+        setExportSheetsDialogOpen(true);
+        handleMenuClose();
+    };
+
+    const selectedFolderName =
+        folders.find((f) => f.id === selectedFolderId)?.name ?? t('googleSheets.exportDefaultFolderName');
 
     return (
         <>
@@ -143,10 +138,16 @@ export const CardsMenu = () => {
                 </MenuItem>
 
                 {googlePickerConfigured && (
-                    <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
-                        <CloudArrowLeftIcon style={{marginRight: '10px'}} />
-                        {t('googleSheets.importFromSheets')}
-                    </MenuItem>
+                    <>
+                        <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
+                            <CloudArrowLeftIcon style={{marginRight: '10px'}} />
+                            {t('googleSheets.importFromSheets')}
+                        </MenuItem>
+                        <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId}>
+                            <CloudArrowRightIcon style={{marginRight: '10px'}} />
+                            {t('googleSheets.exportToSheets')}
+                        </MenuItem>
+                    </>
                 )}
             </MenuUI>
             
@@ -161,15 +162,23 @@ export const CardsMenu = () => {
             
             <ImportCardsButton isImportingCards={isImportingCards} setIsImportingCards={setIsImportingCards}/>
             {selectedFolderId && (
-                <ImportGoogleSheetsDialog
-                    open={importSheetsDialogOpen}
-                    folderId={selectedFolderId}
-                    onClose={() => setImportSheetsDialogOpen(false)}
-                    onSuccess={() => {
-                        void fetchCards(selectedFolderId);
-                        void fetchFolders();
-                    }}
-                />
+                <>
+                    <ImportGoogleSheetsDialog
+                        open={importSheetsDialogOpen}
+                        folderId={selectedFolderId}
+                        onClose={() => setImportSheetsDialogOpen(false)}
+                        onSuccess={() => {
+                            void fetchCards(selectedFolderId);
+                            void fetchFolders();
+                        }}
+                    />
+                    <ExportGoogleSheetsDialog
+                        open={exportSheetsDialogOpen}
+                        folderId={selectedFolderId}
+                        folderName={selectedFolderName}
+                        onClose={() => setExportSheetsDialogOpen(false)}
+                    />
+                </>
             )}
         </>
     )

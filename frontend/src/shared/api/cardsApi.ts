@@ -230,11 +230,24 @@ export const cardsApi = {
    */
   exportToGoogleSheets: async (
     folderId: string,
-    params?: { title?: string }
+    params: {
+      mode: 'new' | 'existing';
+      pickerAccessToken: string;
+      title?: string;
+      spreadsheetId?: string;
+      sheetName?: string;
+      append?: boolean;
+    },
   ): Promise<{ spreadsheetUrl: string; spreadsheetId: string }> => {
+    const { pickerAccessToken, ...body } = params;
     const response = await axios.post(
       `${API_BASE_URL}/cards/folder/${folderId}/export/google`,
-      params ?? {}
+      body,
+      {
+        headers: {
+          [GOOGLE_PICKER_ACCESS_TOKEN_HEADER]: pickerAccessToken.trim(),
+        },
+      },
     );
     return response.data;
   },

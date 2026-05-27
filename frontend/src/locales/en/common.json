@@ -306,7 +306,17 @@
     "invalidUrl": "Enter spreadsheet URL or ID",
     "importFromSheets": "Import from Google Sheets",
     "exportToSheets": "Export to Google Sheets",
-    "exportingToSheets": "Exporting..."
+    "exportingToSheets": "Exporting...",
+    "exportTitle": "Export to Google Sheets",
+    "exportDescription": "Create a new spreadsheet or write cards to a spreadsheet you pick in Google Picker.",
+    "exportModeNew": "Create new spreadsheet",
+    "exportModeExisting": "Write to existing spreadsheet",
+    "exportNewTitleLabel": "Spreadsheet title",
+    "exportWriteOverwrite": "Replace entire sheet (headers + all cards)",
+    "exportWriteAppend": "Append rows (keep existing data)",
+    "exportOverwriteConfirm": "I understand this will replace all data on the selected sheet",
+    "exportOverwriteConfirmRequired": "Confirm that you want to replace the sheet contents",
+    "exportDefaultFolderName": "Folder"
   },
   "profile": {
     "title": "Profile",

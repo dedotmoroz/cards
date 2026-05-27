@@ -114,6 +114,13 @@ export class GoogleSheetsService {
         return titles;
     }
 
+    private buildExportValues(rows: Array<{ question: string; answer: string }>): string[][] {
+        return [
+            ['Сторона A', 'Сторона B'],
+            ...rows.map((r) => [r.question, r.answer]),
+        ];
+    }
+
     findQuestionAndAnswerColumnIndexes(headerRow: string[]): { question: number; answer: number } | null {
         let questionIdx = -1;
         let answerIdx = -1;
@@ -132,12 +139,63 @@ export class GoogleSheetsService {
         return null;
     }
 
+    async writeToExistingSpreadsheet(
+        userId: string,
+        spreadsheetId: string,
+        sheetName: string,
+        rows: Array<{ question: string; answer: string }>,
+        opts?: { append?: boolean } & GooglePickerSheetsOptions
+    ): Promise<{ spreadsheetId: string; spreadsheetUrl: string }> {
+        const accessToken = this.resolvePickerSheetsAccessToken(opts);
+        const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
+        const sheets = google.sheets({ version: 'v4', auth });
+        const spreadsheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}`;
+
+        if (opts?.append) {
+            const getRes = await sheets.spreadsheets.values.get({
+                spreadsheetId,
+                range: `${sheetName}!A1:Z`,
+            });
+            const existing = (getRes.data.values || []) as string[][];
+            const dataRows = rows.map((r) => [r.question, r.answer]);
+
+            if (existing.length === 0) {
+                const values = this.buildExportValues(rows);
+                await sheets.spreadsheets.values.update({
+                    spreadsheetId,
+                    range: `${sheetName}!A1:B${values.length}`,
+                    valueInputOption: 'USER_ENTERED',
+                    requestBody: { values },
+                });
+            } else {
+                await sheets.spreadsheets.values.append({
+                    spreadsheetId,
+                    range: `${sheetName}!A:B`,
+                    valueInputOption: 'USER_ENTERED',
+                    insertDataOption: 'INSERT_ROWS',
+                    requestBody: { values: dataRows },
+                });
+            }
+        } else {
+            const values = this.buildExportValues(rows);
+            await sheets.spreadsheets.values.update({
+                spreadsheetId,
+                range: `${sheetName}!A1:B${values.length}`,
+                valueInputOption: 'USER_ENTERED',
+                requestBody: { values },
+            });
+        }
+
+        return { spreadsheetId, spreadsheetUrl };
+    }
+
     async createSpreadsheetAndWrite(
         userId: string,
         title: string,
-        rows: Array<{ question: string; answer: string }>
+        rows: Array<{ question: string; answer: string }>,
+        opts?: GooglePickerSheetsOptions
     ): Promise<{ spreadsheetId: string; spreadsheetUrl: string }> {
-        const accessToken = await this.getValidAccessToken(userId);
+        const accessToken = this.resolvePickerSheetsAccessToken(opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
 
@@ -153,14 +211,11 @@ export class GoogleSheetsService {
             throw new Error('Failed to create spreadsheet');
         }
 
-        const values: string[][] = [
-            ['Сторона A', 'Сторона B'],
-            ...rows.map((r) => [r.question, r.answer]),
-        ];
+        const values = this.buildExportValues(rows);
 
         await sheets.spreadsheets.values.update({
             spreadsheetId,
-            range: 'Cards!A1:B' + (values.length),
+            range: 'Cards!A1:B' + values.length,
             valueInputOption: 'USER_ENTERED',
             requestBody: { values },
         });
