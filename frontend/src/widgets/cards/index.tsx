@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Typography } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import {CardList} from "@/widgets/cards/card-list.tsx";
 import {useState, useEffect} from "react";
@@ -19,6 +19,7 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
     const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
     const [isCreatingCard, setIsCreatingCard] = useState(false);
+    const [googleSheetsNotice, setGoogleSheetsNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
     const {
         cards,
@@ -36,6 +37,31 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
     useEffect(() => {
         setIsCreatingCard(false);
     }, [selectedFolderId]);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const connected = params.get('google_sheets');
+        const errorCode = params.get('google_sheets_error');
+        if (!connected && !errorCode) {
+            return;
+        }
+        if (connected === 'connected') {
+            setGoogleSheetsNotice({
+                type: 'success',
+                text: t('googleSheets.connectSuccessMessage'),
+            });
+        } else if (errorCode) {
+            setGoogleSheetsNotice({
+                type: 'error',
+                text: `${t('googleSheets.connectError')}${errorCode ? ` (${errorCode})` : ''}`,
+            });
+        }
+        params.delete('google_sheets');
+        params.delete('google_sheets_error');
+        const nextSearch = params.toString();
+        const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`;
+        window.history.replaceState(null, '', nextUrl);
+    }, [t]);
 
     const handleFilterChange = (newFilter: 'A' | 'AB' | 'B') => {
         console.log('handleFilterChange called with:', newFilter);
@@ -61,6 +87,15 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
 
     return (
         <StyledWrapperBox>
+            {googleSheetsNotice ? (
+                <Alert
+                    severity={googleSheetsNotice.type}
+                    onClose={() => setGoogleSheetsNotice(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {googleSheetsNotice.text}
+                </Alert>
+            ) : null}
             <StyledTopBox>
                 <StyleLeftBox>
                     <Box>
@@ -70,7 +105,14 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
                                     ? selectedFolder.name.charAt(0).toUpperCase() + selectedFolder.name.slice(1)
                                     : t('cards.title')}
                             </Typography>
-                            <CardsMenu/>
+                            <CardsMenu
+                                onGoogleSheetsDisconnected={() =>
+                                    setGoogleSheetsNotice({
+                                        type: 'success',
+                                        text: t('googleSheets.disconnectedSuccess'),
+                                    })
+                                }
+                            />
                         </StyledHeaderBox>
                         {cards.length > 0
                             ? (<Typography variant="body1" color="text.secondary">

@@ -119,6 +119,38 @@ describe('GoogleSheetsService', () => {
         });
     });
 
+    describe('isConnected', () => {
+        it('возвращает true когда access token валиден', async () => {
+            const futureExpiry = new Date(Date.now() + 3600 * 1000);
+            tokensRepo.findByUserId.mockResolvedValue({
+                userId: 'user-1',
+                accessToken: 'valid-token',
+                refreshToken: 'refresh',
+                expiresAt: futureExpiry,
+            });
+
+            await expect(service.isConnected('user-1')).resolves.toBe(true);
+        });
+
+        it('возвращает false когда токенов нет', async () => {
+            tokensRepo.findByUserId.mockResolvedValue(null);
+
+            await expect(service.isConnected('user-1')).resolves.toBe(false);
+        });
+
+        it('возвращает false когда токен истёк и нет refresh', async () => {
+            const pastExpiry = new Date(Date.now() - 3600 * 1000);
+            tokensRepo.findByUserId.mockResolvedValue({
+                userId: 'user-1',
+                accessToken: 'expired-token',
+                refreshToken: null,
+                expiresAt: pastExpiry,
+            });
+
+            await expect(service.isConnected('user-1')).resolves.toBe(false);
+        });
+    });
+
     describe('getValidAccessToken', () => {
         it('выбрасывает ошибку когда токенов нет', async () => {
             tokensRepo.findByUserId.mockResolvedValue(null);
@@ -154,11 +186,15 @@ describe('GoogleSheetsService', () => {
             });
         });
 
-        it('без googlePickerAccessToken выбрасывает ошибку и не обращается к tokensRepo', async () => {
-            await expect(service.getSpreadsheetData('user-1', 'spreadsheet-id')).rejects.toThrow(
-                'Select a spreadsheet via Google Picker first',
-            );
-            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
+        it('без googlePickerAccessToken использует токены из БД', async () => {
+            getSheetsMocks().valuesGet.mockResolvedValue({
+                data: { values: [['Сторона A', 'Сторона B'], ['q', 'a']] },
+            });
+
+            await service.getSpreadsheetData('user-1', 'spreadsheet-id');
+
+            expect(tokensRepo.findByUserId).toHaveBeenCalledWith('user-1');
+            expect(getSheetsMocks().valuesGet).toHaveBeenCalled();
         });
 
         it('возвращает данные из таблицы', async () => {
@@ -220,13 +256,21 @@ describe('GoogleSheetsService', () => {
             getSheetsMocks().valuesUpdate.mockResolvedValue({});
         });
 
-        it('без googlePickerAccessToken выбрасывает ошибку и не обращается к tokensRepo', async () => {
-            await expect(
-                service.createSpreadsheetAndWrite('user-1', 'My Cards', [
-                    { question: 'Q', answer: 'A' },
-                ]),
-            ).rejects.toThrow('Select a spreadsheet via Google Picker first');
-            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
+        it('без googlePickerAccessToken использует токены из БД', async () => {
+            const futureExpiry = new Date(Date.now() + 3600 * 1000);
+            tokensRepo.findByUserId.mockResolvedValue({
+                userId: 'user-1',
+                accessToken: 'valid-token',
+                refreshToken: 'refresh',
+                expiresAt: futureExpiry,
+            });
+
+            const result = await service.createSpreadsheetAndWrite('user-1', 'My Cards', [
+                { question: 'Q', answer: 'A' },
+            ]);
+
+            expect(tokensRepo.findByUserId).toHaveBeenCalledWith('user-1');
+            expect(result.spreadsheetId).toBe('new-sheet-id');
         });
 
         it('создаёт таблицу и записывает карточки', async () => {
@@ -285,12 +329,21 @@ describe('GoogleSheetsService', () => {
             getSheetsMocks().valuesAppend.mockResolvedValue({});
         });
 
-        it('без googlePickerAccessToken выбрасывает ошибку', async () => {
-            await expect(
-                service.writeToExistingSpreadsheet('user-1', 'sheet-id', 'Sheet1', [
-                    { question: 'Q', answer: 'A' },
-                ]),
-            ).rejects.toThrow('Select a spreadsheet via Google Picker first');
+        it('без googlePickerAccessToken использует токены из БД', async () => {
+            const futureExpiry = new Date(Date.now() + 3600 * 1000);
+            tokensRepo.findByUserId.mockResolvedValue({
+                userId: 'user-1',
+                accessToken: 'valid-token',
+                refreshToken: 'refresh',
+                expiresAt: futureExpiry,
+            });
+
+            const result = await service.writeToExistingSpreadsheet('user-1', 'sheet-id', 'Sheet1', [
+                { question: 'Q', answer: 'A' },
+            ]);
+
+            expect(tokensRepo.findByUserId).toHaveBeenCalledWith('user-1');
+            expect(result.spreadsheetId).toBe('sheet-id');
         });
 
         it('перезаписывает лист с заголовками', async () => {
@@ -373,11 +426,15 @@ describe('GoogleSheetsService', () => {
             });
         });
 
-        it('без googlePickerAccessToken выбрасывает ошибку и не обращается к tokensRepo', async () => {
-            await expect(service.getSpreadsheetSheetTitles('user-1', 'abc123_x')).rejects.toThrow(
-                'Select a spreadsheet via Google Picker first',
-            );
-            expect(tokensRepo.findByUserId).not.toHaveBeenCalled();
+        it('без googlePickerAccessToken использует токены из БД', async () => {
+            getSheetsMocks().spreadsheetsGet.mockResolvedValue({
+                data: { sheets: [{ properties: { title: 'Sheet1' } }] },
+            });
+
+            const titles = await service.getSpreadsheetSheetTitles('user-1', 'abc123_x');
+
+            expect(tokensRepo.findByUserId).toHaveBeenCalledWith('user-1');
+            expect(titles).toEqual(['Sheet1']);
         });
 
         it('возвращает названия листов', async () => {

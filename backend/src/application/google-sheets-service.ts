@@ -66,15 +66,19 @@ export class GoogleSheetsService {
         return credentials.access_token;
     }
 
-    /** GIS token after Picker (drive.file) — required for import and sheet-titles. */
-    private resolvePickerSheetsAccessToken(opts?: GooglePickerSheetsOptions): string {
+    /**
+     * Uses GIS token from browser if passed; otherwise falls back to stored OAuth tokens.
+     * This allows opening Picker without re-consent after explicit "Connect Google Sheets".
+     */
+    private async resolveSheetsAccessToken(
+        userId: string,
+        opts?: GooglePickerSheetsOptions,
+    ): Promise<string> {
         const trimmed = opts?.googlePickerAccessToken?.trim();
         if (trimmed && trimmed.length > 0 && trimmed.length <= MAX_PICKER_ACCESS_TOKEN_CHARS) {
             return trimmed;
         }
-        throw new Error(
-            'Select a spreadsheet via Google Picker first (missing access token).',
-        );
+        return this.getValidAccessToken(userId);
     }
 
     async getSpreadsheetData(
@@ -83,7 +87,7 @@ export class GoogleSheetsService {
         opts?: { sheetName?: string } & GooglePickerSheetsOptions
     ): Promise<string[][]> {
         const sheetName = opts?.sheetName ?? 'Sheet1';
-        const accessToken = this.resolvePickerSheetsAccessToken(opts);
+        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
         const range = `${sheetName}!A:Z`;
@@ -101,7 +105,7 @@ export class GoogleSheetsService {
         spreadsheetId: string,
         opts?: GooglePickerSheetsOptions
     ): Promise<string[]> {
-        const accessToken = this.resolvePickerSheetsAccessToken(opts);
+        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
         const res = await sheets.spreadsheets.get({
@@ -146,7 +150,7 @@ export class GoogleSheetsService {
         rows: Array<{ question: string; answer: string }>,
         opts?: { append?: boolean } & GooglePickerSheetsOptions
     ): Promise<{ spreadsheetId: string; spreadsheetUrl: string }> {
-        const accessToken = this.resolvePickerSheetsAccessToken(opts);
+        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
         const spreadsheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}`;
@@ -195,7 +199,7 @@ export class GoogleSheetsService {
         rows: Array<{ question: string; answer: string }>,
         opts?: GooglePickerSheetsOptions
     ): Promise<{ spreadsheetId: string; spreadsheetUrl: string }> {
-        const accessToken = this.resolvePickerSheetsAccessToken(opts);
+        const accessToken = await this.resolveSheetsAccessToken(userId, opts);
         const auth = createSheetsAuth(this.clientId, this.clientSecret, accessToken);
         const sheets = google.sheets({ version: 'v4', auth });
 
@@ -227,5 +231,15 @@ export class GoogleSheetsService {
     async hasTokens(userId: string): Promise<boolean> {
         const row = await this.tokensRepo.findByUserId(userId);
         return !!row;
+    }
+
+    /** True when a usable access token exists (including via refresh). */
+    async isConnected(userId: string): Promise<boolean> {
+        try {
+            await this.getValidAccessToken(userId);
+            return true;
+        } catch {
+            return false;
+        }
     }
 }

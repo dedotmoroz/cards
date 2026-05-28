@@ -17,7 +17,7 @@ import { DialogUI } from '@/shared/ui/dialog-ui';
 import { ButtonUI } from '@/shared/ui/button-ui';
 import { cardsApi } from '@/shared/api/cardsApi';
 import { ButtonBlack } from '@/shared/ui';
-import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from '@/shared/config/api';
+import { GOOGLE_API_KEY } from '@/shared/config/api';
 
 type Phase = 'closed' | 'picking' | 'form';
 
@@ -26,6 +26,7 @@ interface ImportGoogleSheetsDialogProps {
   folderId: string;
   onClose: () => void;
   onSuccess: () => void;
+  onGoogleSheetsAuthLost?: () => void;
 }
 
 export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> = ({
@@ -33,6 +34,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   folderId,
   onClose,
   onSuccess,
+  onGoogleSheetsAuthLost,
 }) => {
   const { t } = useTranslation();
   const [phase, setPhase] = useState<Phase>('closed');
@@ -50,12 +52,9 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   const [selectedSheet, setSelectedSheet] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
-  const pickerTokenClientRef = useRef<google.accounts.oauth2.TokenClient | null>(null);
   const pickerScriptPromiseRef = useRef<Promise<void> | null>(null);
-  const gisScriptPromiseRef = useRef<Promise<void> | null>(null);
   const lastPickerLaunchSigRef = useRef('');
-  /** GIS access_token used for Picker (drive.file) — same token must reach backend for sheet-titles/import. */
-  const pickerGsAccessTokenRef = useRef('');
+  const pickerAccessTokenRef = useRef('');
 
   const loadScript = (src: string) =>
     new Promise<void>((resolve, reject) => {
@@ -78,7 +77,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       setPhase('closed');
       setPickerAttemptId(0);
       lastPickerLaunchSigRef.current = '';
-      pickerGsAccessTokenRef.current = '';
+      pickerAccessTokenRef.current = '';
       return;
     }
 
@@ -97,20 +96,11 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       setSelectedSheet('');
       return;
     }
-    const pickerToken = pickerGsAccessTokenRef.current.trim();
-    if (!pickerToken) {
-      setSheetTitles([]);
-      setSelectedSheet('');
-      setError(t('googleSheets.pickerTokenRequired'));
-      return;
-    }
     let cancelled = false;
     setSheetTitles([]);
     setLoadingSheetTitles(true);
     cardsApi
-      .getGoogleSpreadsheetSheetTitles(selectedSpreadsheet.id, {
-        pickerAccessToken: pickerToken,
-      })
+      .getGoogleSpreadsheetSheetTitles(selectedSpreadsheet.id)
       .then((res) => {
         if (cancelled) return;
         const titles = res.titles;
@@ -139,7 +129,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   }, [selectedSpreadsheet, t]);
 
   const ensurePickerReady = useCallback(async () => {
-    if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY) {
+    if (!GOOGLE_API_KEY) {
       throw new Error(t('googleSheets.pickerMissingConfig'));
     }
     if (!pickerScriptPromiseRef.current) {
@@ -156,10 +146,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
           }),
       );
     }
-    if (!gisScriptPromiseRef.current) {
-      gisScriptPromiseRef.current = loadScript('https://accounts.google.com/gsi/client');
-    }
-    await Promise.all([pickerScriptPromiseRef.current, gisScriptPromiseRef.current]);
+    await pickerScriptPromiseRef.current;
   }, [t]);
 
   const openPickerOverlay = useCallback(
@@ -209,34 +196,26 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       setPickerLoading(true);
       setError(null);
       await ensurePickerReady();
-      const googleClient = (window as Window & { google?: typeof google }).google;
-      if (!googleClient?.accounts?.oauth2) {
-        throw new Error(t('googleSheets.pickerLoadError'));
+      const tokenRes = await cardsApi.getGoogleSheetsPickerToken();
+      const accessToken = tokenRes.accessToken?.trim();
+      if (!accessToken) {
+        throw new Error(t('googleSheets.pickerAuthError'));
       }
-      if (!pickerTokenClientRef.current) {
-        pickerTokenClientRef.current = googleClient.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
-          scope: 'https://www.googleapis.com/auth/drive.file',
-          callback: () => {},
-        });
+      pickerAccessTokenRef.current = accessToken;
+      openPickerOverlay(accessToken);
+    } catch (err: unknown) {
+      const ax = err as { response?: { status?: number } };
+      if (ax.response?.status === 401) {
+        onGoogleSheetsAuthLost?.();
+        setError(t('googleSheets.reconnectRequired'));
+      } else {
+        setError(err instanceof Error ? err.message : t('googleSheets.pickerLoadError'));
       }
-      pickerTokenClientRef.current.callback = (response) => {
-        if (response.error || !response.access_token) {
-          setError(t('googleSheets.pickerAuthError'));
-          setPhase('form');
-          setPickerLoading(false);
-          return;
-        }
-        pickerGsAccessTokenRef.current = response.access_token;
-        openPickerOverlay(response.access_token);
-      };
-      pickerTokenClientRef.current.requestAccessToken({ prompt: '' });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('googleSheets.pickerLoadError'));
       setPhase('form');
       setPickerLoading(false);
+      setShowPickingBackdrop(false);
     }
-  }, [ensurePickerReady, openPickerOverlay, t]);
+  }, [ensurePickerReady, onGoogleSheetsAuthLost, openPickerOverlay, t]);
 
   useEffect(() => {
     if (!open || phase !== 'picking') {
@@ -265,19 +244,12 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
       setError(t('googleSheets.pickSpreadsheet'));
       return;
     }
-    const pickerToken = pickerGsAccessTokenRef.current.trim();
-    if (!pickerToken) {
-      setError(t('googleSheets.pickerTokenRequired'));
-      return;
-    }
-
     try {
       setError(null);
       setIsImporting(true);
       const result = await cardsApi.importFromGoogleSheets(folderId, {
         spreadsheetId: selectedSpreadsheet.id,
         sheetName: selectedSheet.trim(),
-        pickerAccessToken: pickerToken,
       });
       if (result.successCount > 0) {
         onSuccess();
@@ -309,8 +281,7 @@ export const ImportGoogleSheetsDialog: React.FC<ImportGoogleSheetsDialogProps> =
   const isPickerTokenError = (message: string | null) =>
     Boolean(
       message &&
-        (message.includes('Google Picker') ||
-          message === t('googleSheets.pickerTokenRequired')),
+        message.includes('Google Picker'),
     );
 
   if (!open) {

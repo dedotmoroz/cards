@@ -9,7 +9,7 @@ import type {
   CardGenerationTriggerResponse,
   CardGenerationStatusResponse,
 } from '../types/cards';
-import { API_BASE_URL, GOOGLE_PICKER_ACCESS_TOKEN_HEADER } from '../config/api';
+import { API_BASE_URL } from '../config/api';
 
 // Настраиваем axios для работы с httpOnly cookies
 axios.defaults.withCredentials = true;
@@ -188,19 +188,29 @@ export const cardsApi = {
   },
 
   /**
+   * Отключить Google Sheets (удалить сохранённые токены)
+   */
+  disconnectGoogleSheets: async (): Promise<{ disconnected: boolean }> => {
+    const response = await axios.delete(`${API_BASE_URL}/auth/google/sheets`);
+    return response.data;
+  },
+
+  /**
+   * Access token for Google Picker from connected Google account
+   */
+  getGoogleSheetsPickerToken: async (): Promise<{ accessToken: string }> => {
+    const response = await axios.get(`${API_BASE_URL}/auth/google/sheets/picker-token`);
+    return response.data;
+  },
+
+  /**
    * Названия листов выбранной таблицы
    */
   getGoogleSpreadsheetSheetTitles: async (
     spreadsheetId: string,
-    options: { pickerAccessToken: string },
   ): Promise<{ titles: string[] }> => {
     const response = await axios.get(
       `${API_BASE_URL}/auth/google/sheets/spreadsheet/${encodeURIComponent(spreadsheetId)}/sheet-titles`,
-      {
-        headers: {
-          [GOOGLE_PICKER_ACCESS_TOKEN_HEADER]: options.pickerAccessToken.trim(),
-        },
-      },
     );
     return response.data;
   },
@@ -210,17 +220,11 @@ export const cardsApi = {
    */
   importFromGoogleSheets: async (
     folderId: string,
-    params: { spreadsheetId: string; sheetName?: string; pickerAccessToken: string },
+    params: { spreadsheetId: string; sheetName?: string },
   ): Promise<{ message: string; successCount: number; errorCount: number; errors?: string[] }> => {
-    const { pickerAccessToken, ...body } = params;
     const response = await axios.post(
       `${API_BASE_URL}/cards/folder/${folderId}/import/google`,
-      body,
-      {
-        headers: {
-          [GOOGLE_PICKER_ACCESS_TOKEN_HEADER]: pickerAccessToken.trim(),
-        },
-      },
+      params,
     );
     return response.data;
   },
@@ -232,22 +236,15 @@ export const cardsApi = {
     folderId: string,
     params: {
       mode: 'new' | 'existing';
-      pickerAccessToken: string;
       title?: string;
       spreadsheetId?: string;
       sheetName?: string;
       append?: boolean;
     },
   ): Promise<{ spreadsheetUrl: string; spreadsheetId: string }> => {
-    const { pickerAccessToken, ...body } = params;
     const response = await axios.post(
       `${API_BASE_URL}/cards/folder/${folderId}/export/google`,
-      body,
-      {
-        headers: {
-          [GOOGLE_PICKER_ACCESS_TOKEN_HEADER]: pickerAccessToken.trim(),
-        },
-      },
+      params,
     );
     return response.data;
   },

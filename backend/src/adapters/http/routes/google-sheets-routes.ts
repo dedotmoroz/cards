@@ -3,8 +3,8 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
 import { GOOGLE_SHEETS_OAUTH_SCOPES } from '../../../application/google-sheets-oauth-scopes';
+import type { GoogleSheetsTokensRepository } from '../../../ports/google-sheets-tokens-repository';
 import {
-    GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE,
     googlePickerAccessTokenFromRequest,
 } from '../google-picker-access-token';
 
@@ -63,7 +63,7 @@ function buildFrontendSuccessUrl(frontendBase: string, returnPath: string | null
 export function registerGoogleSheetsRoutes(
     fastify: FastifyInstance,
     googleSheetsService: GoogleSheetsService,
-    tokensRepo: { save: (row: { userId: string; accessToken: string; refreshToken: string | null; expiresAt: Date }) => Promise<void> }
+    tokensRepo: GoogleSheetsTokensRepository,
 ) {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -186,9 +186,70 @@ export function registerGoogleSheetsRoutes(
         },
         async (req: FastifyRequest, reply: FastifyReply) => {
             const userId = (req.user as any).userId;
-            const connected = await googleSheetsService.hasTokens(userId);
+            const connected = await googleSheetsService.isConnected(userId);
             return reply.send({ connected });
         }
+    );
+
+    /**
+     * Отключить Google Sheets — удалить сохранённые токены
+     */
+    fastify.delete(
+        '/auth/google/sheets',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            disconnected: { type: 'boolean' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Disconnect Google Sheets',
+            },
+        },
+        async (req: FastifyRequest, reply: FastifyReply) => {
+            const userId = (req.user as any).userId;
+            await tokensRepo.deleteByUserId(userId);
+            return reply.send({ disconnected: true });
+        },
+    );
+
+    /**
+     * Access token for Google Picker from saved OAuth connection.
+     */
+    fastify.get(
+        '/auth/google/sheets/picker-token',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            accessToken: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Get Google Sheets access token for Picker',
+            },
+        },
+        async (req: FastifyRequest, reply: FastifyReply) => {
+            const userId = (req.user as any).userId;
+            try {
+                const accessToken = await googleSheetsService.getValidAccessToken(userId);
+                return reply.send({ accessToken });
+            } catch (err) {
+                req.log.warn({ err, userId }, 'Google Sheets: picker token unavailable');
+                return reply.code(401).send({
+                    message: err instanceof Error ? err.message : 'Google Sheets not connected',
+                });
+            }
+        },
     );
 
     /**
@@ -217,14 +278,11 @@ export function registerGoogleSheetsRoutes(
             const userId = (req.user as any).userId;
             const { spreadsheetId } = req.params;
             const googlePickerAccessToken = googlePickerAccessTokenFromRequest(req);
-            if (!googlePickerAccessToken) {
-                return reply.code(400).send({ message: GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE });
-            }
             try {
                 const titles = await googleSheetsService.getSpreadsheetSheetTitles(
                     userId,
                     spreadsheetId,
-                    { googlePickerAccessToken },
+                    googlePickerAccessToken ? { googlePickerAccessToken } : undefined,
                 );
                 return reply.send({ titles });
             } catch (err) {

@@ -1,5 +1,7 @@
 import { MenuItem } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CloudIcon from '@mui/icons-material/Cloud';
+import CloudOffIcon from '@mui/icons-material/CloudOff';
 import { useTranslation } from 'react-i18next';
 import {useState, useRef} from "react";
 import {useFoldersStore} from "@/shared/store/foldersStore.ts";
@@ -10,6 +12,7 @@ import { StyledIconButton } from './styled-components.ts';
 import { cardsApi } from '@/shared/api/cardsApi';
 import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from '@/shared/config/api';
 import {useCardsStore} from "@/shared/store/cardsStore.ts";
+import { useGoogleSheetsConnection } from '@/features/google-sheets/use-google-sheets-connection';
 import {
     CloudArrowLeftIcon,
     CloudArrowRightIcon,
@@ -20,7 +23,11 @@ import {
 
 const googlePickerConfigured = Boolean(GOOGLE_CLIENT_ID && GOOGLE_API_KEY);
 
-export const CardsMenu = () => {
+interface CardsMenuProps {
+    onGoogleSheetsDisconnected?: () => void;
+}
+
+export const CardsMenu = ({ onGoogleSheetsDisconnected }: CardsMenuProps) => {
     const { t } = useTranslation();
 
     const { selectedFolderId, folders, fetchFolders } = useFoldersStore();
@@ -33,8 +40,23 @@ export const CardsMenu = () => {
     const [importSheetsDialogOpen, setImportSheetsDialogOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const {
+        connected: isGoogleSheetsConnected,
+        loading: isGoogleSheetsStatusLoading,
+        refetch: refetchGoogleSheetsStatus,
+        connect: connectGoogleSheets,
+        disconnect: disconnectGoogleSheets,
+        markDisconnected: markGoogleSheetsDisconnected,
+    } = useGoogleSheetsConnection({ enabled: googlePickerConfigured });
+
+    const handleGoogleSheetsAuthLost = () => {
+        markGoogleSheetsDisconnected();
+    };
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+        if (googlePickerConfigured) {
+            void refetchGoogleSheetsStatus();
+        }
         setAnchorEl(event.currentTarget);
     };
 
@@ -97,6 +119,19 @@ export const CardsMenu = () => {
         handleMenuClose();
     };
 
+    const handleConnectGoogleSheetsClick = () => {
+        handleMenuClose();
+        connectGoogleSheets();
+    };
+
+    const handleDisconnectGoogleSheetsClick = async () => {
+        handleMenuClose();
+        const ok = await disconnectGoogleSheets();
+        if (ok) {
+            onGoogleSheetsDisconnected?.();
+        }
+    };
+
     const selectedFolderName =
         folders.find((f) => f.id === selectedFolderId)?.name ?? t('googleSheets.exportDefaultFolderName');
 
@@ -139,14 +174,30 @@ export const CardsMenu = () => {
 
                 {googlePickerConfigured && (
                     <>
-                        <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
-                            <CloudArrowLeftIcon style={{marginRight: '10px'}} />
-                            {t('googleSheets.importFromSheets')}
-                        </MenuItem>
-                        <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId}>
-                            <CloudArrowRightIcon style={{marginRight: '10px'}} />
-                            {t('googleSheets.exportToSheets')}
-                        </MenuItem>
+                        {!isGoogleSheetsConnected ? (
+                            <MenuItem
+                                onClick={handleConnectGoogleSheetsClick}
+                                disabled={!selectedFolderId || isGoogleSheetsStatusLoading}
+                            >
+                                <CloudIcon style={{marginRight: '10px'}} />
+                                {t('googleSheets.connect')}
+                            </MenuItem>
+                        ) : (
+                            <>
+                                <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
+                                    <CloudArrowLeftIcon style={{marginRight: '10px'}} />
+                                    {t('googleSheets.importFromSheets')}
+                                </MenuItem>
+                                <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId}>
+                                    <CloudArrowRightIcon style={{marginRight: '10px'}} />
+                                    {t('googleSheets.exportToSheets')}
+                                </MenuItem>
+                                <MenuItem onClick={() => void handleDisconnectGoogleSheetsClick()}>
+                                    <CloudOffIcon style={{marginRight: '10px'}} />
+                                    {t('googleSheets.disconnect')}
+                                </MenuItem>
+                            </>
+                        )}
                     </>
                 )}
             </MenuUI>
@@ -167,6 +218,7 @@ export const CardsMenu = () => {
                         open={importSheetsDialogOpen}
                         folderId={selectedFolderId}
                         onClose={() => setImportSheetsDialogOpen(false)}
+                        onGoogleSheetsAuthLost={handleGoogleSheetsAuthLost}
                         onSuccess={() => {
                             void fetchCards(selectedFolderId);
                             void fetchFolders();
@@ -177,6 +229,7 @@ export const CardsMenu = () => {
                         folderId={selectedFolderId}
                         folderName={selectedFolderName}
                         onClose={() => setExportSheetsDialogOpen(false)}
+                        onGoogleSheetsAuthLost={handleGoogleSheetsAuthLost}
                     />
                 </>
             )}

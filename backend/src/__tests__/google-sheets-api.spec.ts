@@ -115,6 +115,66 @@ describe('Google Sheets API', () => {
 
             expect(res.status).toBe(401);
         });
+
+        it('возвращает connected: false когда токен истёк и нет refresh', async () => {
+            const pastExpiry = new Date(Date.now() - 3600 * 1000);
+            await db
+                .update(googleSheetsTokens)
+                .set({
+                    access_token: 'expired-token',
+                    refresh_token: null,
+                    expires_at: pastExpiry,
+                })
+                .where(eq(googleSheetsTokens.user_id, userId));
+
+            const res = await request(fastify.server)
+                .get('/auth/google/sheets/status')
+                .set('Cookie', authCookie);
+
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual({ connected: false });
+
+            const futureExpiry = new Date(Date.now() + 3600 * 1000);
+            await db
+                .update(googleSheetsTokens)
+                .set({
+                    access_token: 'test-access-token',
+                    refresh_token: 'test-refresh-token',
+                    expires_at: futureExpiry,
+                })
+                .where(eq(googleSheetsTokens.user_id, userId));
+        });
+    });
+
+    describe('DELETE /auth/google/sheets', () => {
+        it('удаляет токены и status возвращает connected: false', async () => {
+            const deleteRes = await request(fastify.server)
+                .delete('/auth/google/sheets')
+                .set('Cookie', authCookie);
+
+            expect(deleteRes.status).toBe(200);
+            expect(deleteRes.body).toEqual({ disconnected: true });
+
+            const statusRes = await request(fastify.server)
+                .get('/auth/google/sheets/status')
+                .set('Cookie', authCookie);
+
+            expect(statusRes.status).toBe(200);
+            expect(statusRes.body).toEqual({ connected: false });
+
+            const futureExpiry = new Date(Date.now() + 3600 * 1000);
+            await db.insert(googleSheetsTokens).values({
+                user_id: userId,
+                access_token: 'test-access-token',
+                refresh_token: 'test-refresh-token',
+                expires_at: futureExpiry,
+            });
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server).delete('/auth/google/sheets');
+            expect(res.status).toBe(401);
+        });
     });
 
     describe('POST /cards/folder/:folderId/import/google', () => {
@@ -158,7 +218,7 @@ describe('Google Sheets API', () => {
             expect(res.status).toBe(400);
         });
 
-        it('возвращает 400 без Google Picker access token', async () => {
+        it('импортирует с токенами из БД без picker header', async () => {
             const res = await request(fastify.server)
                 .post(`/cards/folder/${folderId}/import/google`)
                 .set('Cookie', authCookie)
@@ -167,9 +227,9 @@ describe('Google Sheets API', () => {
                     sheetName: 'Sheet1',
                 });
 
-            expect(res.status).toBe(400);
-            expect(res.body.message).toContain('Google Picker');
-            expect(getMocks().valuesGet).not.toHaveBeenCalled();
+            expect(res.status).toBe(200);
+            expect(res.body.successCount).toBeGreaterThan(0);
+            expect(getMocks().valuesGet).toHaveBeenCalled();
         });
 
         it('требует аутентификации', async () => {
@@ -213,13 +273,14 @@ describe('Google Sheets API', () => {
             expect(getMocks().valuesUpdate).toHaveBeenCalled();
         });
 
-        it('требует picker access token', async () => {
+        it('экспортирует с токенами из БД без picker header', async () => {
             const res = await request(fastify.server)
                 .post(`/cards/folder/${folderId}/export/google`)
                 .set('Cookie', authCookie)
-                .send({ mode: 'new' });
+                .send({ mode: 'new', title: 'DB Token Export' });
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('spreadsheetId');
         });
 
         it('экспортирует в существующую таблицу', async () => {

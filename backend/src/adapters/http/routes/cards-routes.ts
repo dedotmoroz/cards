@@ -6,7 +6,6 @@ import { CardService } from '../../../application/card-service';
 import { FolderRepository } from '../../../ports/folder-repository';
 import { GoogleSheetsService } from '../../../application/google-sheets-service';
 import {
-    GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE,
     googlePickerAccessTokenFromRequest,
 } from '../google-picker-access-token';
 import { CreateCardDTO, CardDTO, UpdateCardDTO, ReviewCardDTO } from '../dto';
@@ -757,14 +756,10 @@ export function registerCardsRoutes(
                 if (!folder) return reply.code(404).send({ message: 'Folder not found' });
                 if (folder.userId !== userId) return reply.code(403).send({ message: 'Access denied' });
 
-                if (!googlePickerAccessToken) {
-                    return reply.code(400).send({ message: GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE });
-                }
-
                 try {
                     const rows = await googleSheetsService.getSpreadsheetData(userId, spreadsheetId, {
                         sheetName,
-                        googlePickerAccessToken,
+                        ...(googlePickerAccessToken ? { googlePickerAccessToken } : {}),
                     });
                     if (rows.length < 2) {
                         return reply.code(400).send({ message: 'Sheet is empty or has no data rows' });
@@ -882,17 +877,15 @@ export function registerCardsRoutes(
                 if (!folder) return reply.code(404).send({ message: 'Folder not found' });
                 if (folder.userId !== userId) return reply.code(403).send({ message: 'Access denied' });
 
-                if (!googlePickerAccessToken) {
-                    return reply.code(400).send({ message: GOOGLE_PICKER_ACCESS_TOKEN_REQUIRED_MESSAGE });
-                }
-
                 if (mode === 'existing' && !spreadsheetId?.trim()) {
                     return reply.code(400).send({ message: 'spreadsheetId is required for existing spreadsheet export' });
                 }
 
                 const cards = await cardService.getAll(folderId);
                 const rows = cards.map((c) => ({ question: c.question, answer: c.answer }));
-                const pickerOpts = { googlePickerAccessToken };
+                const pickerOpts = googlePickerAccessToken
+                    ? { googlePickerAccessToken }
+                    : undefined;
 
                 try {
                     if (mode === 'existing') {
@@ -901,7 +894,7 @@ export function registerCardsRoutes(
                             spreadsheetId!.trim(),
                             sheetName.trim() || 'Sheet1',
                             rows,
-                            { ...pickerOpts, append },
+                            { ...(pickerOpts ?? {}), append },
                         );
                         return reply.send({
                             spreadsheetUrl: result.spreadsheetUrl,
