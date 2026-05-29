@@ -216,6 +216,8 @@
     "create": "Utwórz folder",
     "edit": "Edytuj folder",
     "delete": "Usuń folder",
+    "sideALanguage": "Język strony A",
+    "sideBLanguage": "Język strony B",
     "virtual": {
       "remember": "Przypomnij",
       "hard": "Trudne"

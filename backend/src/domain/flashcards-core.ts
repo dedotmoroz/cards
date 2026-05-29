@@ -28,7 +28,9 @@ export class Folder {
     constructor(
         public readonly id: string,
         public name: string,
-        public readonly userId: string
+        public readonly userId: string,
+        public sideALanguage: string,
+        public sideBLanguage: string,
     ) {}
 }
 
@@ -108,9 +110,14 @@ export class CardService {
 export class FolderService {
     constructor(private readonly folderRepo: FolderRepository) {}
 
-    async createFolder(userId: string, name: string): Promise<Folder> {
+    async createFolder(
+        userId: string,
+        name: string,
+        sideALanguage = 'en',
+        sideBLanguage = 'ru',
+    ): Promise<Folder> {
         const id = crypto.randomUUID();
-        const folder = new Folder(id, name, userId);
+        const folder = new Folder(id, name, userId, sideALanguage, sideBLanguage);
         await this.folderRepo.save(folder);
         return folder;
     }

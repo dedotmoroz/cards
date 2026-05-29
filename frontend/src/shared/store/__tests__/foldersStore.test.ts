@@ -10,7 +10,9 @@ const mockedFoldersApi = vi.mocked(foldersApi)
 const mockFolder: Folder = {
   id: 'folder-1',
   name: 'My folder',
-  userId: 'user-1'
+  userId: 'user-1',
+  sideALanguage: 'en',
+  sideBLanguage: 'ru',
 }
 
 describe('foldersStore', () => {
@@ -85,10 +87,18 @@ describe('foldersStore', () => {
     const { result } = renderHook(() => useFoldersStore())
 
     await act(async () => {
-      await result.current.createFolder('My folder')
+      await result.current.createFolder({
+        name: 'My folder',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
+      })
     })
 
-    expect(mockedFoldersApi.createFolder).toHaveBeenCalledWith({ name: 'My folder' })
+    expect(mockedFoldersApi.createFolder).toHaveBeenCalledWith({
+      name: 'My folder',
+      sideALanguage: 'en',
+      sideBLanguage: 'ru',
+    })
     expect(result.current.folders).toEqual([mockFolder])
     expect(result.current.folderCardCounts['folder-1']).toBe(0)
   })
@@ -106,10 +116,18 @@ describe('foldersStore', () => {
     const { result } = renderHook(() => useFoldersStore())
 
     await act(async () => {
-      await result.current.updateFolderName('folder-1', 'Updated')
+      await result.current.updateFolder('folder-1', {
+        name: 'Updated',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
+      })
     })
 
-    expect(mockedFoldersApi.updateFolder).toHaveBeenCalledWith('folder-1', { name: 'Updated' })
+    expect(mockedFoldersApi.updateFolder).toHaveBeenCalledWith('folder-1', {
+      name: 'Updated',
+      sideALanguage: 'en',
+      sideBLanguage: 'ru',
+    })
     expect(result.current.folders[0].name).toBe('Updated')
   })
 

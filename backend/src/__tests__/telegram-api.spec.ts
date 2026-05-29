@@ -5,6 +5,7 @@ import { users, externalAccounts, telegramAuthNonce } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
+import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults';
 
 const mockVerifyTurnstileToken = jest.fn().mockResolvedValue(true);
 jest.mock('../lib/turnstile', () => ({
@@ -388,7 +389,7 @@ describe('Telegram API (e2e)', () => {
             const folderRes = await request(fastify.server)
                 .post('/folders')
                 .set('Cookie', userAuthCookie)
-                .send({ userId, name: 'Telegram Test Folder' });
+                .send({ userId, name: 'Telegram Test Folder', ...TEST_FOLDER_LANGUAGES });
 
             const folderId = folderRes.body.id;
 
@@ -470,7 +471,7 @@ describe('Telegram API (e2e)', () => {
             const folderRes = await request(fastify.server)
                 .post('/folders')
                 .set('Cookie', userAuthCookie)
-                .send({ userId, name: 'Context Folder' });
+                .send({ userId, name: 'Context Folder', ...TEST_FOLDER_LANGUAGES });
 
             folderId = folderRes.body.id;
 
@@ -586,7 +587,7 @@ describe('Telegram API (e2e)', () => {
             const folderRes = await request(fastify.server)
                 .post('/folders')
                 .set('Cookie', userAuthCookie)
-                .send({ userId, name: 'Reset Folder' });
+                .send({ userId, name: 'Reset Folder', ...TEST_FOLDER_LANGUAGES });
 
             folderId = folderRes.body.id;
         });

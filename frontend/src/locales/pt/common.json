@@ -216,6 +216,8 @@
     "create": "Criar pasta",
     "edit": "Editar pasta",
     "delete": "Excluir pasta",
+    "sideALanguage": "Idioma do lado A",
+    "sideBLanguage": "Idioma do lado B",
     "virtual": {
       "remember": "Relembrar",
       "hard": "Difícil"

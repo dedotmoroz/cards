@@ -13,6 +13,10 @@ import {
 import { foldersApi } from '@/shared/api/foldersApi';
 import { cardsApi } from '@/shared/api/cardsApi';
 import { useTranslation } from 'react-i18next';
+import {
+    getDefaultSideALanguage,
+    getDefaultSideBLanguage,
+} from '@/shared/libs/folder-languages';
 import { useSEO } from '@/shared/hooks/useSEO';
 import { SITE_BASE_URL } from '@/shared/config/api';
 import { PageLayout } from '@/entities';
@@ -142,7 +146,11 @@ export function CollectionDetailPage() {
             return;
         }
 
-        const folder = await foldersApi.createFolder({ name: folderName });
+        const folder = await foldersApi.createFolder({
+            name: folderName,
+            sideALanguage: getDefaultSideALanguage(i18n.language),
+            sideBLanguage: getDefaultSideBLanguage(i18n.language),
+        });
 
         await Promise.all(
             selectedItems.map((item) =>

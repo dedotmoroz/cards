@@ -34,6 +34,8 @@ export const folders = pgTable('folders', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   userId: text('user_id').notNull(),
+  sideALanguage: text('side_a_language').notNull().default('en'),
+  sideBLanguage: text('side_b_language').notNull().default('ru'),
 });
 
 export const users = pgTable('users', {

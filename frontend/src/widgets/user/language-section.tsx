@@ -4,17 +4,7 @@ import { Box, Alert, FormControl, Select, MenuItem } from '@mui/material';
 import { ButtonColor } from '@/shared/ui';
 import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel} from './styled-components';
 
-const languages = [
-    { code: 'ru', label: 'Русский' },
-    { code: 'en', label: 'English' },
-    { code: 'uk', label: 'Українська' },
-    { code: 'de', label: 'Deutsch' },
-    { code: 'es', label: 'Español' },
-    { code: 'fr', label: 'Français' },
-    { code: 'pl', label: 'Polski' },
-    { code: 'pt', label: 'Português' },
-    { code: 'zh', label: '中文' }
-];
+import { APP_LANGUAGE_OPTIONS } from '@/shared/constants/languages';
 
 interface LanguageSectionProps {
     initialLanguage: string;
@@ -72,7 +62,7 @@ export const LanguageSection = ({ initialLanguage, onSubmit }: LanguageSectionPr
                         value={language}
                         onChange={(event) => setLanguage(event.target.value as string)}
                     >
-                        {languages.map((lang) => (
+                        {APP_LANGUAGE_OPTIONS.map((lang) => (
                             <MenuItem key={lang.code} value={lang.code}>
                                 {lang.label}
                             </MenuItem>

@@ -3,7 +3,27 @@ import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { FolderService } from '../../../application/folder-service';
 import { CardRepository } from '../../../ports/card-repository';
-import { CreateFolderDTO, FolderDTO } from '../dto';
+import { CreateFolderDTO, FolderDTO, UpdateFolderDTO } from '../dto';
+
+function folderToDto(
+    folder: {
+        id: string;
+        userId: string;
+        name: string;
+        sideALanguage: string;
+        sideBLanguage: string;
+    },
+    cardCount?: number,
+) {
+    return {
+        id: folder.id,
+        userId: folder.userId,
+        name: folder.name,
+        sideALanguage: folder.sideALanguage,
+        sideBLanguage: folder.sideBLanguage,
+        ...(cardCount !== undefined ? { cardCount } : {}),
+    };
+}
 
 export function registerFoldersRoutes(
     fastify: FastifyInstance,
@@ -29,14 +49,19 @@ export function registerFoldersRoutes(
             req: FastifyRequest<{ Body: z.infer<typeof CreateFolderDTO> }>,
             reply: FastifyReply
         ) => {
-            const { userId, name } = req.body;
-            const folder = await folderService.createFolder(userId, name);
-            return reply.code(201).send(folder);
+            const { userId, name, sideALanguage, sideBLanguage } = req.body;
+            const folder = await folderService.createFolder(
+                userId,
+                name,
+                sideALanguage,
+                sideBLanguage,
+            );
+            return reply.code(201).send(folderToDto(folder));
         }
     );
 
     /**
-     * Переименовать Папку
+     * Обновить папку (название и языки сторон)
      */
     fastify.patch('/folders/:id',
         {
@@ -49,13 +74,7 @@ export function registerFoldersRoutes(
                     },
                     required: ['id'],
                 },
-                body: {
-                    type: 'object',
-                    properties: {
-                        name: { type: 'string' },
-                    },
-                    required: ['name'],
-                },
+                body: zodToJsonSchema(UpdateFolderDTO),
                 response: {
                     200: zodToJsonSchema(FolderDTO),
                     404: {
@@ -66,20 +85,27 @@ export function registerFoldersRoutes(
                     },
                 },
                 tags: ['folders'],
-                summary: 'Rename folder',
+                summary: 'Update folder',
             },
         },
         async (
-            req: FastifyRequest<{ Params: { id: string }; Body: { name: string } }>,
+            req: FastifyRequest<{ Params: { id: string }; Body: z.infer<typeof UpdateFolderDTO> }>,
             reply: FastifyReply
         ) => {
             const { id } = req.params;
-            const { name } = req.body;
-            const updated = await folderService.renameFolder(id, name);
+            const { name, sideALanguage, sideBLanguage } = req.body;
+            if (name === undefined && sideALanguage === undefined && sideBLanguage === undefined) {
+                return reply.code(400).send({ message: 'At least one field is required' });
+            }
+            const updated = await folderService.updateFolder(id, {
+                name,
+                sideALanguage,
+                sideBLanguage,
+            });
             if (!updated) {
                 return reply.code(404).send({ message: 'Folder not found' });
             }
-            return reply.send(updated);
+            return reply.send(folderToDto(updated));
         }
     );
 
@@ -160,12 +186,9 @@ export function registerFoldersRoutes(
                 return reply.send([]);
             }
             const counts = await cardRepo.countByFolderIds(folders.map((f) => f.id));
-            const foldersWithCounts = folders.map((f) => ({
-                id: f.id,
-                userId: f.userId,
-                name: f.name,
-                cardCount: counts[f.id] ?? 0,
-            }));
+            const foldersWithCounts = folders.map((f) =>
+                folderToDto(f, counts[f.id] ?? 0),
+            );
             return reply.send(foldersWithCounts);
         }
     );

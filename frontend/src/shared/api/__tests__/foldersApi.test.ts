@@ -24,13 +24,17 @@ describe('foldersApi', () => {
         {
           id: 'folder-1',
           name: 'React Basics',
-          userId: 'user-123'
+          userId: 'user-123',
+          sideALanguage: 'en',
+          sideBLanguage: 'ru',
         },
         {
           id: 'folder-2',
           name: 'TypeScript',
-          userId: 'user-123'
-        }
+          userId: 'user-123',
+          sideALanguage: 'en',
+          sideBLanguage: 'ru',
+        },
       ]
 
       getStateSpy.mockReturnValue({
@@ -109,13 +113,17 @@ describe('foldersApi', () => {
       // Arrange
       const mockUserId = 'user-123'
       const createData: CreateFolderData = {
-        name: 'New Folder'
+        name: 'New Folder',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
 
       const mockFolder: Folder = {
         id: 'folder-123',
         name: 'New Folder',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
 
       getStateSpy.mockReturnValue({
@@ -151,7 +159,9 @@ describe('foldersApi', () => {
     it('should throw error when user is not authenticated', async () => {
       // Arrange
       const createData: CreateFolderData = {
-        name: 'New Folder'
+        name: 'New Folder',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
 
       getStateSpy.mockReturnValue({
@@ -176,7 +186,9 @@ describe('foldersApi', () => {
       // Arrange
       const mockUserId = 'user-123'
       const createData: CreateFolderData = {
-        name: 'New Folder'
+        name: 'New Folder',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
 
       getStateSpy.mockReturnValue({
@@ -212,7 +224,9 @@ describe('foldersApi', () => {
       const mockUpdatedFolder: Folder = {
         id: 'folder-123',
         name: 'Updated Folder Name',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
 
       mockedAxios.patch.mockResolvedValueOnce({ data: mockUpdatedFolder })

@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { FOLDER_LANGUAGE_CODES } from '../../shared/folder-languages';
+
+const FolderLanguageSchema = z.enum(FOLDER_LANGUAGE_CODES);
 
 export const CreateCardDTO = z.object({
   folderId: z.string().uuid(),
@@ -35,12 +38,22 @@ export const ReviewCardDTO = z.object({
 export const CreateFolderDTO = z.object({
   userId: z.string().uuid().describe('ID пользователя'),
   name: z.string().min(1).describe('Название папки'),
+  sideALanguage: FolderLanguageSchema,
+  sideBLanguage: FolderLanguageSchema,
 }).describe('CreateFolderDTO');
+
+export const UpdateFolderDTO = z.object({
+  name: z.string().min(1).optional(),
+  sideALanguage: FolderLanguageSchema.optional(),
+  sideBLanguage: FolderLanguageSchema.optional(),
+}).describe('UpdateFolderDTO');
 
 export const FolderDTO = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
   name: z.string(),
+  sideALanguage: z.string(),
+  sideBLanguage: z.string(),
   cardCount: z.number().int().min(0).optional(),
 }).describe('FolderDTO');
 
@@ -63,4 +76,5 @@ export type CardDTO = z.infer<typeof CardDTO>;
 export type UpdateCardDTO = z.infer<typeof UpdateCardDTO>;
 export type ReviewCardDTO = z.infer<typeof ReviewCardDTO>;
 export type CreateFolderDTO = z.infer<typeof CreateFolderDTO>;
+export type UpdateFolderDTO = z.infer<typeof UpdateFolderDTO>;
 export type FolderDTO = z.infer<typeof FolderDTO>;

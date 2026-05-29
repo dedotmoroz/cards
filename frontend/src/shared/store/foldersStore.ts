@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { Folder } from '../types/cards'
+import type { CreateFolderData, UpdateFolderData } from '../types/folders'
 import { foldersApi } from '../api/foldersApi'
 import { cardsApi } from '../api/cardsApi'
 
@@ -26,7 +27,7 @@ interface FoldersState {
 
     // CRUD operations
     addFolder: (folder: Folder) => void
-    updateFolder: (id: string, updates: Partial<Folder>) => void
+    patchFolder: (id: string, updates: Partial<Folder>) => void
     removeFolder: (id: string) => void
 
     // Card count adjustments (used by cardsStore)
@@ -39,8 +40,8 @@ interface FoldersState {
     fetchRememberEligibleCount: () => Promise<void>
     fetchHardEligibleCount: () => Promise<void>
     refreshVirtualFolderCounts: () => Promise<void>
-    createFolder: (name: string) => Promise<void>
-    updateFolderName: (id: string, name: string) => Promise<void>
+    createFolder: (data: CreateFolderData) => Promise<void>
+    updateFolder: (id: string, data: UpdateFolderData) => Promise<void>
     deleteFolder: (id: string) => Promise<void>
 }
 
@@ -66,7 +67,7 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         folders: [...state.folders, folder]
     })),
 
-    updateFolder: (id, updates) => set((state) => ({
+    patchFolder: (id, updates) => set((state) => ({
         folders: state.folders.map(folder =>
             folder.id === id ? { ...folder, ...updates } : folder
         )
@@ -145,10 +146,10 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         ])
     },
 
-    createFolder: async (name: string) => {
+    createFolder: async (data: CreateFolderData) => {
         set({ error: null })
         try {
-            const folder = await foldersApi.createFolder({ name })
+            const folder = await foldersApi.createFolder(data)
             get().addFolder(folder)
             set((state) => ({
                 folderCardCounts: { ...state.folderCardCounts, [folder.id]: 0 }
@@ -159,11 +160,11 @@ export const useFoldersStore = create<FoldersState>((set, get) => ({
         }
     },
 
-    updateFolderName: async (id: string, name: string) => {
+    updateFolder: async (id: string, data: UpdateFolderData) => {
         set({ error: null })
         try {
-            await foldersApi.updateFolder(id, { name })
-            get().updateFolder(id, { name })
+            await foldersApi.updateFolder(id, data)
+            get().patchFolder(id, data)
         } catch (error) {
             console.error('Error updating folder:', error)
             set({ error: 'Failed to update folder' })

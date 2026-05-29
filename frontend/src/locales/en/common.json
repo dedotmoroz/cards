@@ -218,6 +218,8 @@
     "create": "Create Folder",
     "edit": "Edit Folder",
     "delete": "Delete Folder",
+    "sideALanguage": "Side A language",
+    "sideBLanguage": "Side B language",
     "virtual": {
       "remember": "Remember",
       "hard": "Hard"

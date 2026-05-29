@@ -216,6 +216,8 @@
     "create": "Créer un dossier",
     "edit": "Modifier le dossier",
     "delete": "Supprimer le dossier",
+    "sideALanguage": "Langue côté A",
+    "sideBLanguage": "Langue côté B",
     "virtual": {
       "remember": "Rappelle-toi",
       "hard": "Difficile"

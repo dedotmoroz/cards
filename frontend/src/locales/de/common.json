@@ -216,6 +216,8 @@
     "create": "Ordner erstellen",
     "edit": "Ordner bearbeiten",
     "delete": "Ordner löschen",
+    "sideALanguage": "Sprache Seite A",
+    "sideBLanguage": "Sprache Seite B",
     "virtual": {
       "remember": "Wiederholen",
       "hard": "Schwierig"

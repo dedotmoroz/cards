@@ -16,13 +16,15 @@ const VIRTUAL_FOLDER_COLOR = '#9810fa';
 export interface Folder {
     id: string;
     name: string;
+    sideALanguage?: string;
+    sideBLanguage?: string;
 }
 
 interface FolderListProps {
     folders: Folder[];
     selectedId: string | null;
     onSelect: (id: string) => void;
-    onRename?: (id: string, name: string) => void;
+    onRename?: (id: string, name: string, sideALanguage: string, sideBLanguage: string) => void;
     onDelete?: (id: string) => void;
     onFolderSelect?: () => void;
     folderCardCounts?: Record<string, number>;
@@ -153,6 +155,8 @@ export const FolderList = ({
                                 <RenameFolderMenuItem
                                     folderId={folder.id}
                                     folderName={folder.name}
+                                    sideALanguage={folder.sideALanguage ?? 'en'}
+                                    sideBLanguage={folder.sideBLanguage ?? 'ru'}
                                     onRename={onRename}
                                     onMenuClose={handleMenuClose}
                                 />

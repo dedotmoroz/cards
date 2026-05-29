@@ -40,12 +40,14 @@ describe('📁 Folder API (e2e)', () => {
     const res = await request(fastify.server)
         .post('/folders')
         .set('Cookie', authCookie)
-        .send({ userId, name: 'Test Folder' });
+        .send({ userId, name: 'Test Folder', sideALanguage: 'en', sideBLanguage: 'ru' });
 
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('id');
     expect(res.body.name).toBe('Test Folder');
     expect(res.body.userId).toBe(userId);
+    expect(res.body.sideALanguage).toBe('en');
+    expect(res.body.sideBLanguage).toBe('ru');
 
     createdFolderId = res.body.id;
   });
@@ -67,7 +69,7 @@ describe('📁 Folder API (e2e)', () => {
     const folderRes = await request(fastify.server)
         .post('/folders')
         .set('Cookie', authCookie)
-        .send({ userId, name: 'Folder With Cards' });
+        .send({ userId, name: 'Folder With Cards', sideALanguage: 'en', sideBLanguage: 'ru' });
     const folderId = folderRes.body.id;
 
     await request(fastify.server)
@@ -115,7 +117,7 @@ describe('📁 Folder API (e2e)', () => {
     const folderRes = await request(fastify.server)
         .post('/folders')
         .set('Cookie', authCookie)
-        .send({ userId, name: 'Original Name' });
+        .send({ userId, name: 'Original Name', sideALanguage: 'en', sideBLanguage: 'ru' });
 
     const folderId = folderRes.body.id;
 
@@ -158,12 +160,34 @@ describe('📁 Folder API (e2e)', () => {
     expect(res.status).toBe(401);
   });
 
-  it('требует поле name для переименования', async () => {
+  it('требует хотя бы одно поле для обновления', async () => {
     const res = await request(fastify.server)
         .patch(`/folders/${createdFolderId}`)
         .set('Cookie', authCookie)
         .send({});
 
     expect(res.status).toBe(400);
+  });
+
+  it('обновляет языки папки', async () => {
+    const folderRes = await request(fastify.server)
+        .post('/folders')
+        .set('Cookie', authCookie)
+        .send({
+          userId,
+          name: 'Languages Folder',
+          sideALanguage: 'en',
+          sideBLanguage: 'ru',
+        });
+    const folderId = folderRes.body.id;
+
+    const patchRes = await request(fastify.server)
+        .patch(`/folders/${folderId}`)
+        .set('Cookie', authCookie)
+        .send({ sideALanguage: 'es', sideBLanguage: 'de' });
+
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.sideALanguage).toBe('es');
+    expect(patchRes.body.sideBLanguage).toBe('de');
   });
 });

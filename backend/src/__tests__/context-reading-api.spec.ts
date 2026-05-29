@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { buildServer } from '../adapters/http/build-server';
 import request from 'supertest';
+import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults';
 
 describe('📖 Context Reading API (e2e)', () => {
     let fastify: FastifyInstance;
@@ -36,7 +37,7 @@ describe('📖 Context Reading API (e2e)', () => {
         const folderRes = await request(fastify.server)
             .post('/folders')
             .set('Cookie', authCookie)
-            .send({ userId, name: 'Context Reading Test Folder' });
+            .send({ userId, name: 'Context Reading Test Folder', ...TEST_FOLDER_LANGUAGES });
 
         folderId = folderRes.body.id;
 

@@ -21,7 +21,12 @@ export function registerAuthRoutes(
         const folders = await folderService.getAll(userId);
         if (folders.length > 0) return;
 
-        const folder = await folderService.createFolder(userId, defaultSetting.folderName);
+        const folder = await folderService.createFolder(
+            userId,
+            defaultSetting.folderName,
+            'es',
+            'en',
+        );
         for (const cardData of [...defaultSetting.card]) {
             await cardService.createCard(folder.id, cardData.question, cardData.answer);
         }

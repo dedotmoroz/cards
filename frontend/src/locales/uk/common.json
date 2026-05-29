@@ -216,6 +216,8 @@
     "create": "Створити папку",
     "edit": "Редагувати папку",
     "delete": "Видалити папку",
+    "sideALanguage": "Мова сторони A",
+    "sideBLanguage": "Мова сторони B",
     "virtual": {
       "remember": "Згадай",
       "hard": "Складно"

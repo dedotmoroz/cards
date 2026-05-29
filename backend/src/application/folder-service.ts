@@ -1,22 +1,46 @@
 import { Folder } from '../domain/folder';
 import { FolderRepository } from '../ports/folder-repository';
 
+export interface UpdateFolderParams {
+  name?: string;
+  sideALanguage?: string;
+  sideBLanguage?: string;
+}
+
 export class FolderService {
   constructor(private readonly folderRepo: FolderRepository) {}
 
-  async createFolder(userId: string, name: string): Promise<Folder> {
+  async createFolder(
+    userId: string,
+    name: string,
+    sideALanguage: string,
+    sideBLanguage: string,
+  ): Promise<Folder> {
     const id = crypto.randomUUID();
-    const folder = new Folder(id, name, userId);
+    const folder = new Folder(id, name, userId, sideALanguage, sideBLanguage);
     await this.folderRepo.save(folder);
     return folder;
   }
 
-  async renameFolder(id: string, newName: string): Promise<Folder | null> {
+  async updateFolder(id: string, updates: UpdateFolderParams): Promise<Folder | null> {
     const folder = await this.folderRepo.findById(id);
     if (!folder) return null;
-    folder.name = newName;
+    if (updates.name !== undefined) {
+      folder.name = updates.name;
+    }
+    if (updates.sideALanguage !== undefined) {
+      folder.sideALanguage = updates.sideALanguage;
+    }
+    if (updates.sideBLanguage !== undefined) {
+      folder.sideBLanguage = updates.sideBLanguage;
+    }
     await this.folderRepo.save(folder);
     return folder;
+  }
+
+  /** @deprecated Use updateFolder */
+  async renameFolder(id: string, newName: string): Promise<Folder | null> {
+    return this.updateFolder(id, { name: newName });
   }
 
   async deleteFolder(id: string): Promise<boolean> {

@@ -18,9 +18,18 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
         hardEligibleCount,
         selectedFolderId,
         setSelectedFolder,
-        updateFolderName,
+        updateFolder,
         deleteFolder
     } = useFoldersStore();
+
+    const handleRename = (
+        id: string,
+        name: string,
+        sideALanguage: string,
+        sideBLanguage: string,
+    ) => {
+        void updateFolder(id, { name, sideALanguage, sideBLanguage });
+    };
 
     const totalCards = useMemo(
         () => Object.values(folderCardCounts ?? {}).reduce((sum, n) => sum + (n ?? 0), 0),
@@ -58,7 +67,7 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
                 folders={foldersForUi}
                 selectedId={selectedFolderId}
                 onSelect={setSelectedFolder}
-                onRename={updateFolderName}
+                onRename={handleRename}
                 onDelete={deleteFolder}
                 onFolderSelect={onFolderSelect}
                 folderCardCounts={folderCardCounts}

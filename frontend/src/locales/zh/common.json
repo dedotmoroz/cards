@@ -216,6 +216,8 @@
     "create": "创建文件夹",
     "edit": "编辑文件夹",
     "delete": "删除文件夹",
+    "sideALanguage": "A 面语言",
+    "sideBLanguage": "B 面语言",
     "virtual": {
       "remember": "回忆",
       "hard": "困难"

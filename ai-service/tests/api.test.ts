@@ -79,7 +79,12 @@ describe("API routes", () => {
             progress: 100,
             returnvalue: { sentences: [{ text: "hi", translation: "привет" }] },
         };
-        mocks.jobFromIdMock.mockResolvedValue(jobStub);
+        let callCount = 0;
+        mocks.jobFromIdMock.mockImplementation(async () => {
+            callCount++;
+            if (callCount === 1) return null;
+            return jobStub;
+        });
 
         const app = Fastify();
         await registerApi(app);
@@ -95,7 +100,7 @@ describe("API routes", () => {
             state: "completed",
             progress: 100,
             result: { sentences: [{ text: "hi", translation: "привет" }] },
-            error: undefined,
+            queueType: "generate",
         });
 
         await app.close();
@@ -238,16 +243,11 @@ describe("API routes", () => {
             },
         };
         
-        // Первый вызов (generate queue) вернет null, второй (context queue) вернет job
         let callCount = 0;
-        mocks.jobFromIdMock.mockImplementation(async (queue, id) => {
+        mocks.jobFromIdMock.mockImplementation(async () => {
             callCount++;
-            if (callCount === 1) {
-                // Первый вызов для generate queue
-                return null;
-            }
-            // Второй вызов для context queue
-            return jobStub;
+            if (callCount === 1) return jobStub;
+            return null;
         });
 
         const app = Fastify();
@@ -267,9 +267,9 @@ describe("API routes", () => {
                 text: "Hello world test",
                 translation: "Привет мир тест",
             },
-            error: undefined,
+            queueType: "context",
         });
-        expect(mocks.jobFromIdMock).toHaveBeenCalledTimes(2);
+        expect(mocks.jobFromIdMock).toHaveBeenCalledTimes(1);
 
         await app.close();
     });

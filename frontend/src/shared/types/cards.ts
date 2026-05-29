@@ -2,6 +2,8 @@ export interface Folder {
   id: string;
   name: string;
   userId: string;
+  sideALanguage: string;
+  sideBLanguage: string;
   cardCount?: number;
 }
 

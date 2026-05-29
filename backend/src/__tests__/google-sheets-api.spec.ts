@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '../db/db';
 import { googleSheetsTokens } from '../db/schema';
 import { GOOGLE_PICKER_ACCESS_TOKEN_HEADER } from '../adapters/http/google-picker-access-token';
+import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults';
 
 const mockVerifyTurnstileToken = jest.fn().mockResolvedValue(true);
 jest.mock('../lib/turnstile', () => ({
@@ -76,7 +77,7 @@ describe('Google Sheets API', () => {
         const folderRes = await request(fastify.server)
             .post('/folders')
             .set('Cookie', authCookie)
-            .send({ userId, name: 'Sheets Test Folder' });
+            .send({ userId, name: 'Sheets Test Folder', ...TEST_FOLDER_LANGUAGES });
         folderId = folderRes.body.id;
 
         const futureExpiry = new Date(Date.now() + 3600 * 1000);

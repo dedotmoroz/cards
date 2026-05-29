@@ -15,12 +15,16 @@ const server = setupServer(
       {
         id: 'folder-1',
         name: 'React Basics',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       },
       {
         id: 'folder-2',
         name: 'TypeScript',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
     ]
     return HttpResponse.json(mockFolders, { status: 200 })
@@ -31,7 +35,9 @@ const server = setupServer(
     const mockFolder: Folder = {
       id: 'folder-123',
       name: 'New Folder',
-      userId: 'user-123'
+      userId: 'user-123',
+      sideALanguage: 'en',
+      sideBLanguage: 'ru',
     }
     return HttpResponse.json(mockFolder, { status: 201 })
   }),
@@ -41,7 +47,9 @@ const server = setupServer(
     const mockUpdatedFolder: Folder = {
       id: 'folder-123',
       name: 'Updated Folder Name',
-      userId: 'user-123'
+      userId: 'user-123',
+      sideALanguage: 'en',
+      sideBLanguage: 'ru',
     }
     return HttpResponse.json(mockUpdatedFolder, { status: 200 })
   }),
@@ -92,12 +100,16 @@ describe('foldersApi Integration Tests', () => {
       expect(result[0]).toEqual({
         id: 'folder-1',
         name: 'React Basics',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       })
       expect(result[1]).toEqual({
         id: 'folder-2',
         name: 'TypeScript',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       })
     })
 
@@ -138,7 +150,9 @@ describe('foldersApi Integration Tests', () => {
       // Arrange
       const mockUserId = 'user-123'
       const createData: CreateFolderData = {
-        name: 'New Folder'
+        name: 'New Folder',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
 
       getStateSpy.mockReturnValue({
@@ -162,7 +176,9 @@ describe('foldersApi Integration Tests', () => {
       expect(result).toEqual({
         id: 'folder-123',
         name: 'New Folder',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       })
     })
 
@@ -170,7 +186,9 @@ describe('foldersApi Integration Tests', () => {
       // Arrange
       const mockUserId = 'user-123'
       const createData: CreateFolderData = {
-        name: 'New Folder'
+        name: 'New Folder',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       }
 
       getStateSpy.mockReturnValue({
@@ -216,7 +234,9 @@ describe('foldersApi Integration Tests', () => {
       expect(result).toEqual({
         id: 'folder-123',
         name: 'Updated Folder Name',
-        userId: 'user-123'
+        userId: 'user-123',
+        sideALanguage: 'en',
+        sideBLanguage: 'ru',
       })
     })
 

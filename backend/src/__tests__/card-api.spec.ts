@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { buildServer } from '../adapters/http/build-server';
 import request from "supertest";
 import ExcelJS from 'exceljs';
+import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults';
 
 describe('📦 Card Repository (e2e)', () => {
     let fastify: FastifyInstance;
@@ -36,7 +37,7 @@ describe('📦 Card Repository (e2e)', () => {
         const folderRes = await request(fastify.server)
             .post('/folders')
             .set('Cookie', authCookie)
-            .send({ userId: realUserId, name: 'Test Folder' });
+            .send({ userId: realUserId, name: 'Test Folder', ...TEST_FOLDER_LANGUAGES });
 
         folderId = folderRes.body.id;
     });
@@ -156,13 +157,13 @@ describe('📦 Card Repository (e2e)', () => {
         const sourceFolderRes = await request(fastify.server)
             .post('/folders')
             .set('Cookie', authCookie)
-            .send({ userId, name: 'Source Folder' });
+            .send({ userId, name: 'Source Folder', ...TEST_FOLDER_LANGUAGES });
         const sourceFolderId = sourceFolderRes.body.id;
 
         const targetFolderRes = await request(fastify.server)
             .post('/folders')
             .set('Cookie', authCookie)
-            .send({ userId, name: 'Target Folder' });
+            .send({ userId, name: 'Target Folder', ...TEST_FOLDER_LANGUAGES });
         const targetFolderId = targetFolderRes.body.id;
 
         const createRes = await request(fastify.server)

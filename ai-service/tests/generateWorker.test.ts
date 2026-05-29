@@ -6,7 +6,7 @@ const mocks = vi.hoisted(() => ({
     redis: {},
 }));
 
-vi.mock("../src/services/openaiService", () => ({
+vi.mock("../src/services/generateService", () => ({
     generateSentences: mocks.generateSentences,
 }));
 

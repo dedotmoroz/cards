@@ -216,6 +216,8 @@
     "create": "Crear carpeta",
     "edit": "Editar carpeta",
     "delete": "Eliminar carpeta",
+    "sideALanguage": "Idioma del lado A",
+    "sideBLanguage": "Idioma del lado B",
     "virtual": {
       "remember": "Recordar",
       "hard": "Difícil"
