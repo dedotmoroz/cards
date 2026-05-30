@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -55,6 +55,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
 
   const { login, loginWithGoogle } = useAuthStore();
   const navigate = useNavigate();
@@ -128,6 +129,14 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       cancelAnimationFrame(raf);
       if (poll) clearInterval(poll);
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(() => {
+      emailInputRef.current?.focus();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,7 +220,12 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
       </StyledDialogTitle>
       
       <DialogContent>
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box
+          component="form"
+          id="auth-login-form"
+          onSubmit={handleSubmit}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+        >
             <TextFieldUI
                 placeholder={t('auth.email')}
                 fullWidth
@@ -221,7 +235,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
                 onChange={handleChange}
                 required
                 disabled={isLoading || isGoogleLoading}
-                autoFocus
+                inputRef={emailInputRef}
                 error={!!emailError}
                 helperText={emailError}
             />
@@ -243,7 +257,8 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
 
         <StyledDialogActions>
             <ButtonColor
-                onClick={handleSubmit}
+                type="submit"
+                form="auth-login-form"
                 variant="contained"
                 disabled={isLoading || isGoogleLoading}
             >

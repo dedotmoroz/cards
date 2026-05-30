@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CreateNewFolderIcon } from '@/shared/icons/create-new-folder-icon.tsx';
-import { TextField } from '@mui/material';
+import { TextField, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useCreateFolder } from './useCreateFolder.ts';
 import { StyledIconButton } from './styled-components.ts';
@@ -22,6 +22,7 @@ export const CreateFolder = () => {
     const [sideBLanguage, setSideBLanguage] = useState(() =>
         getDefaultSideBLanguage(i18n.language),
     );
+    const nameInputRef = useRef<HTMLInputElement>(null);
 
     const { createFolder } = useCreateFolder();
 
@@ -31,6 +32,14 @@ export const CreateFolder = () => {
             setSideBLanguage(getDefaultSideBLanguage(i18n.language));
         }
     }, [isCreatingFolder, i18n.language]);
+
+    useEffect(() => {
+        if (!isCreatingFolder) return;
+        const timer = setTimeout(() => {
+            nameInputRef.current?.focus();
+        }, 0);
+        return () => clearTimeout(timer);
+    }, [isCreatingFolder]);
 
     const handleCreateFolder = async (
         name: string,
@@ -47,6 +56,11 @@ export const CreateFolder = () => {
             setName('');
             setIsCreatingFolder(false);
         }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleCreate();
     };
 
     const handleClose = () => {
@@ -67,14 +81,18 @@ export const CreateFolder = () => {
                 onClose={handleClose}
                 title={t('forms.newFolder')}
                 content={
-                    <>
+                    <Box
+                        component="form"
+                        id="create-folder-form"
+                        onSubmit={handleSubmit}
+                    >
                         <TextField
-                            autoFocus
                             margin="dense"
                             label={t('forms.folderName')}
                             fullWidth
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            inputRef={nameInputRef}
                         />
                         <FolderLanguageFields
                             sideALanguage={sideALanguage}
@@ -82,14 +100,18 @@ export const CreateFolder = () => {
                             onSideALanguageChange={setSideALanguage}
                             onSideBLanguageChange={setSideBLanguage}
                         />
-                    </>
+                    </Box>
                 }
                 actions={
                     <>
                         <ButtonUI onClick={handleClose}>
                             {t('auth.cancel')}
                         </ButtonUI>
-                        <ButtonUI onClick={handleCreate} variant="contained">
+                        <ButtonUI
+                            type="submit"
+                            form="create-folder-form"
+                            variant="contained"
+                        >
                             {t('forms.create')}
                         </ButtonUI>
                     </>
