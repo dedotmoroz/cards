@@ -2,7 +2,15 @@ import { describe, it, expect } from 'vitest';
 import {
     canRequestTranslation,
     formatLanguagePairLabel,
+    formatLanguageCodeLabel,
 } from '../folder-languages';
+
+describe('formatLanguageCodeLabel', () => {
+    it('capitalizes language code for display', () => {
+        expect(formatLanguageCodeLabel('en')).toBe('En');
+        expect(formatLanguageCodeLabel('ru')).toBe('Ru');
+    });
+});
 
 describe('formatLanguagePairLabel', () => {
     it('formats language codes as uppercase pair', () => {

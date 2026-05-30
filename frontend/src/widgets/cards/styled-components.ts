@@ -190,6 +190,11 @@ export const StyledColumnHeader = styled(Typography)`
     font-size: 16px;
 `;
 
+export const StyledColumnHeaderLang = styled('span')`
+    font-weight: normal;
+    color: #888;
+`;
+
 export const StyledMargin = styled(Box)`
     margin: 0 0 0 12px;
 `

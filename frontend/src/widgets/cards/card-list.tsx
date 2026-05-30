@@ -13,13 +13,15 @@ import {MenuCard} from "@/widgets/cards/menu-card.tsx";
 import {DialogCard} from "@/widgets/cards/dialog-card.tsx";
 import {CardItem} from "@/widgets/cards/card-item.tsx";
 import {CreateCardForm} from "@/widgets/cards/create-card-form.tsx";
-import type { Card } from "@/shared/types/cards";
+import type { Card } from '@/shared/types/cards';
+import { formatLanguageCodeLabel } from '@/shared/libs/folder-languages';
 import {
     StyledCardBoxHeader,
     StyledBoxWrapper,
     StyledBoxSideA,
     StyledBoxSideB,
     StyledColumnHeader,
+    StyledColumnHeaderLang,
     StyledHeaderCardActions,
     StyledCardHeaderContent,
     StyledHeaderWithButton,
@@ -216,6 +218,11 @@ export const CardList: React.FC<CardListProps> = ({
                     <StyledHeaderWithButton>
                         <StyledColumnHeader variant="subtitle2">
                             {t('forms.question')}
+                            {folder?.sideALanguage ? (
+                                <StyledColumnHeaderLang>
+                                    {' '}({formatLanguageCodeLabel(folder.sideALanguage)})
+                                </StyledColumnHeaderLang>
+                            ) : null}
                         </StyledColumnHeader>
                         <IconButton size="small" onClick={handleQuestionToggle}>
                             {displayFilter === 'A' || displayFilter === 'AB'
@@ -229,6 +236,11 @@ export const CardList: React.FC<CardListProps> = ({
                     <StyledHeaderWithButton>
                         <StyledColumnHeader variant="subtitle2">
                             {t('forms.answer')}
+                            {folder?.sideBLanguage ? (
+                                <StyledColumnHeaderLang>
+                                    {' '}({formatLanguageCodeLabel(folder.sideBLanguage)})
+                                </StyledColumnHeaderLang>
+                            ) : null}
                         </StyledColumnHeader>
                         <IconButton size="small" onClick={handleAnswerToggle}>
                             {displayFilter === 'B' || displayFilter === 'AB'

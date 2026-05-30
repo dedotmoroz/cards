@@ -19,6 +19,11 @@ export function formatLanguagePairLabel(source: string, target: string): string 
     return `${source.toUpperCase()} → ${target.toUpperCase()}`;
 }
 
+export function formatLanguageCodeLabel(code: string): string {
+    const normalized = code.split('-')[0]?.toLowerCase() ?? code;
+    return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+}
+
 export function canRequestTranslation(
     sourceLang?: string,
     targetLang?: string
