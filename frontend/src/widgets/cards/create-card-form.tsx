@@ -15,15 +15,21 @@ import {
     StyledSuggestionsBox,
     StyledSuggestionsList,
     StyledSuggestionItem,
+    StyledSuggestionMeta,
     StyledLoadingIndicator,
 } from './styled-components.ts';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 import { translateApi } from '@/shared/api/translateApi';
-import { useAuthStore } from '@/shared/store/authStore';
+import {
+    canRequestTranslation,
+    formatLanguagePairLabel,
+} from '@/shared/libs/folder-languages';
 
 interface CreateCardFormProps {
     displayFilter: 'A' | 'AB' | 'B';
     folderId: string;
+    sourceLang?: string;
+    targetLang?: string;
     onSave: (question: string, answer: string) => Promise<void>;
     onCancel: () => void;
     onAutoSave?: (folderId: string, question: string, answer: string) => Promise<void>;
@@ -32,12 +38,13 @@ interface CreateCardFormProps {
 export const CreateCardForm: React.FC<CreateCardFormProps> = ({
     displayFilter,
     folderId,
+    sourceLang,
+    targetLang,
     onSave,
     onCancel,
     onAutoSave,
 }) => {
-    const { t, i18n } = useTranslation();
-    const { user } = useAuthStore();
+    const { t } = useTranslation();
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [isSaving, setIsSaving] = useState(false);
@@ -66,13 +73,7 @@ export const CreateCardForm: React.FC<CreateCardFormProps> = ({
             return;
         }
 
-        // Получаем язык интерфейса (приоритет - текущий язык интерфейса из i18n)
-        // Если язык интерфейса не установлен, используем язык пользователя из настроек
-        const targetLang = i18n.language || user?.language || 'en';
-        
-        // Если язык английский, не переводим (скорее всего пользователь учит английский)
-        // Но можно убрать эту проверку, если нужен перевод даже для английского
-        if (targetLang === 'en') {
+        if (!canRequestTranslation(sourceLang, targetLang)) {
             setTranslationSuggestion(null);
             setShowSuggestions(false);
             return;
@@ -88,7 +89,8 @@ export const CreateCardForm: React.FC<CreateCardFormProps> = ({
             try {
                 const result = await translateApi.translate({
                     text: trimmedQuestion,
-                    targetLang: targetLang,
+                    targetLang: targetLang!,
+                    sourceLang: sourceLang!,
                 });
                 
                 // Проверяем, не был ли запрос отменен
@@ -114,7 +116,7 @@ export const CreateCardForm: React.FC<CreateCardFormProps> = ({
         return () => {
             cancelled = true;
         };
-    }, [debouncedQuestion, answer, isSaving, user?.language, i18n.language]);
+    }, [debouncedQuestion, answer, isSaving, sourceLang, targetLang]);
 
     // Автосохранение при смене папки, если данные валидны
     useEffect(() => {
@@ -288,10 +290,13 @@ export const CreateCardForm: React.FC<CreateCardFormProps> = ({
                                             <StyledLoadingIndicator>
                                                 {t('forms.translating', { defaultValue: 'Перевожу...' })}
                                             </StyledLoadingIndicator>
-                                        ) : translationSuggestion ? (
+                                        ) : translationSuggestion && sourceLang && targetLang ? (
                                             <StyledSuggestionItem
                                                 onClick={() => handleSuggestionClick(translationSuggestion)}
                                             >
+                                                <StyledSuggestionMeta>
+                                                    {formatLanguagePairLabel(sourceLang, targetLang)}
+                                                </StyledSuggestionMeta>
                                                 {translationSuggestion}
                                             </StyledSuggestionItem>
                                         ) : null}

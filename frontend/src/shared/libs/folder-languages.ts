@@ -14,3 +14,17 @@ export function getDefaultSideALanguage(uiLanguage: string): string {
 export function getDefaultSideBLanguage(uiLanguage: string): string {
     return normalizeLanguageCode(uiLanguage);
 }
+
+export function formatLanguagePairLabel(source: string, target: string): string {
+    return `${source.toUpperCase()} → ${target.toUpperCase()}`;
+}
+
+export function canRequestTranslation(
+    sourceLang?: string,
+    targetLang?: string
+): boolean {
+    if (!sourceLang || !targetLang) {
+        return false;
+    }
+    return sourceLang !== targetLang;
+}

@@ -70,6 +70,7 @@ export const CardList: React.FC<CardListProps> = ({
       generationStatuses
   } = useCardsStore();
   const { folders } = useFoldersStore();
+  const folder = folders.find((f) => f.id === folderId);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [moveDialogOpen, setMoveDialogOpen] = useState(false);
@@ -271,6 +272,8 @@ export const CardList: React.FC<CardListProps> = ({
             <CreateCardForm
               displayFilter={displayFilter}
               folderId={folderId}
+              sourceLang={folder?.sideALanguage}
+              targetLang={folder?.sideBLanguage}
               onSave={handleSaveCard}
               onCancel={onCancelCreateCard || (() => {})}
               onAutoSave={handleAutoSaveCard}

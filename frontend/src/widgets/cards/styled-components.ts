@@ -319,6 +319,12 @@ export const StyledSuggestionItem = styled(Box)`
     }
 `
 
+export const StyledSuggestionMeta = styled(Box)`
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 2px;
+`
+
 export const StyledLoadingIndicator = styled(Box)`
     padding: 8px 12px;
     font-size: 14px;
