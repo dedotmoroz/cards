@@ -1,24 +1,23 @@
 WORDS_TO_USE:
 {WORDS_LIST}
 
+TARGET_LANGUAGE: "{TARGET_LANGUAGE}"
+TRANSLATION_LANGUAGE: "{TRANSLATION_LANGUAGE}"
 CEFR_LEVEL: {CEFR_LEVEL}
 
 Instructions:
 
 1) Understanding WORDS_TO_USE:
    - Each item in WORDS_TO_USE contains:
-     a) a word or phrase in its ORIGINAL LANGUAGE (this is the form that MUST be used in the text)
+     a) a word or phrase in TARGET_LANGUAGE (this is the form that MUST be used in the text)
      b) an optional explanation or translation in parentheses
    - Text inside parentheses is provided ONLY to clarify meaning.
    - Parentheses content MUST NOT appear in the generated text.
-   - The AI must automatically:
-     - infer the original language of each word or phrase
-     - infer the target translation language from the explanations in parentheses
 
-2) Language Selection:
-   - The main text MUST be written in the dominant original language of WORDS_TO_USE.
-   - The translation MUST be written in the dominant language used inside the parentheses.
-   - No languages are explicitly provided — the AI must infer them.
+2) Languages:
+   - Write the main text in TARGET_LANGUAGE.
+   - Write the translation in TRANSLATION_LANGUAGE.
+   - Do NOT infer or swap these languages.
 
 3) Text Requirements:
    - Create ONE coherent, engaging text (story, article, or narrative).
@@ -36,7 +35,7 @@ Instructions:
    - Use natural, authentic language appropriate for this level.
 
 5) Translation:
-   - Provide a complete, natural translation of the entire text.
+   - Provide a complete, natural translation of the entire text in TRANSLATION_LANGUAGE.
    - Translate meaning, not form.
    - Each word or phrase from WORDS_TO_USE must be translated according to its meaning from the parentheses.
 
@@ -45,8 +44,8 @@ Instructions:
    - Output ONLY valid JSON with this exact structure:
 
 {
-  "text": "Complete coherent text in the inferred original language",
-  "translation": "Complete translation in the inferred translation language"
+  "text": "Complete coherent text in TARGET_LANGUAGE",
+  "translation": "Complete translation in TRANSLATION_LANGUAGE"
 }
 
 7) Self-Check and Regeneration:
@@ -56,8 +55,8 @@ Instructions:
      c) The text matches the specified CEFR_LEVEL
    - If these conditions are not met, regenerate the text.
    - Do NOT mention the self-check in the output.
-   - Verify that the "text" field is written in the dominant original language of WORDS_TO_USE.
-   - Verify that the "translation" field is written in the dominant language used inside parentheses.
+   - Verify that the "text" field is written in TARGET_LANGUAGE.
+   - Verify that the "translation" field is written in TRANSLATION_LANGUAGE.
    - Verify that original words or phrases from WORDS_TO_USE appear ONLY in "text" and NEVER in "translation".
    - Verify that "text" and "translation" are NOT swapped.
    - If any of these checks fail, regenerate the entire output.

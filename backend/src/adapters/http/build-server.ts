@@ -166,7 +166,7 @@ export async function buildServer() {
     const generateContextTextUseCase =
         new GenerateContextTextUseCase(
             cardRepo,
-            userRepo,
+            folderRepo,
             requestContextGeneration
         );
 

@@ -1,6 +1,8 @@
 import { Card } from '../domain/card'
+import { Folder } from '../domain/folder'
 import { ContextReadingState, CONTEXT_READING_POOL_MODE_MISMATCH } from '../domain/context-reading'
-import { GetNextContextCardsUseCase, ResetContextReadingUseCase } from '../application/context-reading-service'
+import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase } from '../application/context-reading-service'
+import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults'
 
 export class InMemoryCardRepository {
     constructor(private cards: Card[]) {}
@@ -206,5 +208,126 @@ describe('ResetContextReadingUseCase', () => {
         })
 
         expect(repo.getState()).toBeNull()
+    })
+})
+
+class InMemoryGenerateCardRepository {
+    constructor(private cards: Map<string, Card>) {}
+
+    async findById(id: string): Promise<Card | null> {
+        return this.cards.get(id) ?? null
+    }
+}
+
+class InMemoryGenerateFolderRepository {
+    constructor(private folders: Map<string, Folder>) {}
+
+    async findById(id: string): Promise<Folder | null> {
+        return this.folders.get(id) ?? null
+    }
+}
+
+describe('GenerateContextTextUseCase', () => {
+    const userId = 'user-1'
+    const folderId = 'folder-1'
+    const folder = new Folder(
+        folderId,
+        'Test Folder',
+        userId,
+        TEST_FOLDER_LANGUAGES.sideALanguage,
+        TEST_FOLDER_LANGUAGES.sideBLanguage,
+    )
+    const cards = [
+        new Card('card-1', folderId, 'hello', 'привет', false),
+        new Card('card-2', folderId, 'world', 'мир', false),
+        new Card('card-3', folderId, 'test', 'тест', false),
+    ]
+
+    it('passes folder side languages to ai-service', async () => {
+        const requestContextGeneration = jest.fn().mockResolvedValue({ jobId: 'job-1' })
+        const useCase = new GenerateContextTextUseCase(
+            new InMemoryGenerateCardRepository(new Map(cards.map(c => [c.id, c]))) as any,
+            new InMemoryGenerateFolderRepository(new Map([[folderId, folder]])) as any,
+            requestContextGeneration,
+        )
+
+        const result = await useCase.execute({
+            userId,
+            cardIds: cards.map(c => c.id),
+            level: 'B1',
+        })
+
+        expect(result).toEqual({ jobId: 'job-1' })
+        expect(requestContextGeneration).toHaveBeenCalledWith(
+            expect.objectContaining({
+                lang: 'en',
+                translationLang: 'ru',
+                level: 'B1',
+                words: [
+                    { word: 'hello', translation: 'привет' },
+                    { word: 'world', translation: 'мир' },
+                    { word: 'test', translation: 'тест' },
+                ],
+            }),
+        )
+    })
+
+    it('allows body.lang override while translationLang stays from folder', async () => {
+        const requestContextGeneration = jest.fn().mockResolvedValue({ jobId: 'job-1' })
+        const useCase = new GenerateContextTextUseCase(
+            new InMemoryGenerateCardRepository(new Map(cards.map(c => [c.id, c]))) as any,
+            new InMemoryGenerateFolderRepository(new Map([[folderId, folder]])) as any,
+            requestContextGeneration,
+        )
+
+        await useCase.execute({
+            userId,
+            cardIds: cards.map(c => c.id),
+            lang: 'de',
+        })
+
+        expect(requestContextGeneration).toHaveBeenCalledWith(
+            expect.objectContaining({
+                lang: 'de',
+                translationLang: 'ru',
+            }),
+        )
+    })
+
+    it('throws when cards belong to different folders', async () => {
+        const mixedCards = [
+            ...cards,
+            new Card('card-4', 'folder-2', 'other', 'другое', false),
+        ]
+        const useCase = new GenerateContextTextUseCase(
+            new InMemoryGenerateCardRepository(new Map(mixedCards.map(c => [c.id, c]))) as any,
+            new InMemoryGenerateFolderRepository(new Map([[folderId, folder]])) as any,
+            jest.fn(),
+        )
+
+        await expect(
+            useCase.execute({
+                userId,
+                cardIds: mixedCards.map(c => c.id),
+            }),
+        ).rejects.toThrow('Cards must belong to the same folder')
+    })
+
+    it('throws when folder access is denied', async () => {
+        const requestContextGeneration = jest.fn()
+        const useCase = new GenerateContextTextUseCase(
+            new InMemoryGenerateCardRepository(new Map(cards.map(c => [c.id, c]))) as any,
+            new InMemoryGenerateFolderRepository(new Map([[folderId, folder]])) as any,
+            requestContextGeneration,
+        )
+
+        await expect(
+            useCase.execute({
+                userId: 'other-user',
+                cardIds: cards.map(c => c.id),
+            }),
+        ).rejects.toThrow('Access denied')
+
+        expect(requestContextGeneration).not.toHaveBeenCalled()
     })
 })

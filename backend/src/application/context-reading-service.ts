@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { ContextReadingState, CONTEXT_READING_POOL_MODE_MISMATCH } from '../domain/context-reading'
 import { CardRepository as ContextReadingCardRepository, ContextReadingStateRepository } from '../ports/context-reading-repository'
 import { CardRepository } from '../ports/card-repository'
-import { UserRepository } from '../ports/user-repository'
+import { FolderRepository } from '../ports/folder-repository'
 import { Card } from '../domain/card'
 import type { ContextRequestPayload, ContextJobResponse } from '../adapters/ai/ai-service-client'
 
@@ -103,45 +103,52 @@ export class ResetContextReadingUseCase {
 export class GenerateContextTextUseCase {
     constructor(
         private readonly cardRepo: CardRepository,
-        private readonly userRepo: UserRepository,
+        private readonly folderRepo: FolderRepository,
         private readonly requestContextGeneration: (payload: ContextRequestPayload) => Promise<ContextJobResponse>
     ) {}
 
     async execute(params: {
         userId: string;
         cardIds: string[];
-        lang: string;
+        lang?: string;
         level?: string;
     }): Promise<{ jobId: string }> {
         const { userId, cardIds, lang, level } = params;
 
-        // Загружаем карточки
         const cards = await Promise.all(
             cardIds.map(id => this.cardRepo.findById(id))
         );
 
-        // Проверяем, что все карточки найдены
         const missingCards = cards.filter(card => card === null);
         if (missingCards.length > 0) {
             throw new Error('Some cards not found');
         }
 
-        // Формируем payload для AI-сервиса
-        const words = (cards as NonNullable<typeof cards[0]>[]).map(card => ({
+        const resolvedCards = cards as NonNullable<typeof cards[0]>[];
+        const folderIds = new Set(resolvedCards.map(card => card.folderId));
+        if (folderIds.size !== 1) {
+            throw new Error('Cards must belong to the same folder');
+        }
+
+        const folderId = resolvedCards[0].folderId;
+        const folder = await this.folderRepo.findById(folderId);
+        if (!folder) {
+            throw new Error('Folder not found');
+        }
+        if (folder.userId !== userId) {
+            throw new Error('Access denied');
+        }
+
+        const words = resolvedCards.map(card => ({
             word: card.question,
             translation: card.answer,
         }));
 
-        // Получаем язык пользователя для перевода
-        const user = await this.userRepo.findById(userId);
-        const translationLang = user?.language ?? 'en';
-
-        // Вызываем AI-сервис
         const { jobId } = await this.requestContextGeneration({
             words,
-            lang,
+            lang: lang ?? folder.sideALanguage,
             level: level ?? 'B1',
-            translationLang,
+            translationLang: folder.sideBLanguage,
             userId,
             traceId: randomUUID(),
         });

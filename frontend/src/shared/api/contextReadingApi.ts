@@ -23,7 +23,7 @@ export type ContextReadingNextResponse = {
 
 export type ContextReadingGenerateRequest = {
   cardIds: string[];
-  lang: string;
+  lang?: string;
   level?: string;
 };
 

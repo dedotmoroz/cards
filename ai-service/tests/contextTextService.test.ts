@@ -156,6 +156,36 @@ describe("generateContextText", () => {
         expect(userPrompt).toMatch(/, B1$/);
     });
 
+    it("includes explicit target and translation languages in the prompt", async () => {
+        const expected = {
+            text: "Hello world test",
+            translation: "Привет мир тест",
+        };
+
+        mocks.create.mockResolvedValue({
+            choices: [
+                {
+                    message: {
+                        content: JSON.stringify(expected),
+                    },
+                },
+            ],
+        });
+
+        await generateContextText({
+            words: [
+                { word: "hello", translation: "привет" },
+                { word: "world", translation: "мир" },
+            ],
+            lang: "en",
+            translationLang: "ru",
+        });
+
+        const userPrompt = mocks.create.mock.calls[0][0].messages[1].content;
+        expect(userPrompt).toContain("en");
+        expect(userPrompt).toContain("ru");
+    });
+
     it("includes words list in the prompt", async () => {
         const expected = {
             text: "Hello world test",

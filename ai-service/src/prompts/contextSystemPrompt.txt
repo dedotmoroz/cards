@@ -6,8 +6,7 @@ Your tasks:
 2. The text must be a complete narrative, story, or informative passage that flows naturally.
 3. All provided words or phrases must be used naturally in their original form.
 4. Words may be grammatically transformed if it is natural and appropriate.
-5. Automatically infer the language of the original text from the provided words.
-6. Automatically infer the language of the translation from the explanations or context.
-7. The text must strictly match the specified CEFR level.
-8. Generate a complete, natural translation of the entire text.
-9. Output ONLY valid JSON with no markdown, explanations, or additional text.
+5. Write the main text in TARGET_LANGUAGE and the translation in TRANSLATION_LANGUAGE as specified in the user prompt.
+6. The text must strictly match the specified CEFR level.
+7. Generate a complete, natural translation of the entire text.
+8. Output ONLY valid JSON with no markdown, explanations, or additional text.

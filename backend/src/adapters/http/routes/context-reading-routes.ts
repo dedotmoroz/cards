@@ -147,7 +147,7 @@ export function registerContextReadingRoutes(
             schema: {
                 body: {
                     type: 'object',
-                    required: ['cardIds', 'lang'],
+                    required: ['cardIds'],
                     properties: {
                         cardIds: {
                             type: 'array',
@@ -173,6 +173,12 @@ export function registerContextReadingRoutes(
                             message: { type: 'string' },
                         },
                     },
+                    403: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
                     404: {
                         type: 'object',
                         properties: {
@@ -186,7 +192,7 @@ export function registerContextReadingRoutes(
         },
         async (
             req: FastifyRequest<{
-                Body: { cardIds: string[]; lang: string; level?: string };
+                Body: { cardIds: string[]; lang?: string; level?: string };
             }>,
             reply: FastifyReply
         ) => {
@@ -203,8 +209,16 @@ export function registerContextReadingRoutes(
 
                 return reply.code(202).send(result);
             } catch (error) {
-                if (error instanceof Error && error.message === 'Some cards not found') {
-                    return reply.code(404).send({ message: error.message });
+                if (error instanceof Error) {
+                    if (error.message === 'Some cards not found' || error.message === 'Folder not found') {
+                        return reply.code(404).send({ message: error.message });
+                    }
+                    if (error.message === 'Access denied') {
+                        return reply.code(403).send({ message: error.message });
+                    }
+                    if (error.message === 'Cards must belong to the same folder') {
+                        return reply.code(400).send({ message: error.message });
+                    }
                 }
                 throw error;
             }

@@ -3,6 +3,16 @@ import { buildServer } from '../adapters/http/build-server';
 import request from 'supertest';
 import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults';
 
+jest.mock('../adapters/ai/ai-service-client', () => ({
+    requestContextGeneration: jest.fn(),
+    fetchContextGenerationStatus: jest.fn(),
+}));
+
+import { requestContextGeneration, fetchContextGenerationStatus } from '../adapters/ai/ai-service-client';
+
+const mockedRequestContextGeneration = requestContextGeneration as jest.MockedFunction<typeof requestContextGeneration>;
+const mockedFetchContextGenerationStatus = fetchContextGenerationStatus as jest.MockedFunction<typeof fetchContextGenerationStatus>;
+
 describe('📖 Context Reading API (e2e)', () => {
     let fastify: FastifyInstance;
     let authCookie: string;
@@ -456,6 +466,11 @@ describe('📖 Context Reading API (e2e)', () => {
     });
 
     describe('POST /context-reading/generate', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            mockedRequestContextGeneration.mockResolvedValue({ jobId: 'context-job-123' });
+        });
+
         it('запускает генерацию текста для карточек', async () => {
             // Используем первые 3 карточки
             const cardIdsToGenerate = cardIds.slice(0, 3);
@@ -498,15 +513,26 @@ describe('📖 Context Reading API (e2e)', () => {
             expect(res.status).toBe(400);
         });
 
-        it('требует lang', async () => {
+        it('не требует lang и передаёт языки папки в ai-service', async () => {
+            const cardIdsToGenerate = cardIds.slice(0, 3);
+
             const res = await request(fastify.server)
                 .post('/context-reading/generate')
                 .set('Cookie', authCookie)
                 .send({
-                    cardIds: cardIds.slice(0, 3),
+                    cardIds: cardIdsToGenerate,
+                    level: 'B1',
                 });
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(202);
+            expect(res.body).toEqual({ jobId: 'context-job-123' });
+            expect(mockedRequestContextGeneration).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    lang: TEST_FOLDER_LANGUAGES.sideALanguage,
+                    translationLang: TEST_FOLDER_LANGUAGES.sideBLanguage,
+                    level: 'B1',
+                }),
+            );
         });
 
         it('требует аутентификации', async () => {
@@ -540,6 +566,21 @@ describe('📖 Context Reading API (e2e)', () => {
     });
 
     describe('GET /context-reading/generate-status', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            mockedRequestContextGeneration.mockResolvedValue({ jobId: 'context-job-123' });
+            mockedFetchContextGenerationStatus.mockResolvedValue({
+                id: 'context-job-123',
+                state: 'completed',
+                progress: 100,
+                result: {
+                    text: 'Hello world test',
+                    translation: 'Привет мир тест',
+                },
+                queueType: 'context',
+            });
+        });
+
         it('возвращает статус генерации текста', async () => {
             // Запускаем генерацию
             const generateRes = await request(fastify.server)
@@ -578,13 +619,16 @@ describe('📖 Context Reading API (e2e)', () => {
         });
 
         it('возвращает 404 для несуществующего jobId', async () => {
+            mockedFetchContextGenerationStatus.mockRejectedValue(
+                new Error('[ai-service] Unexpected status 404 for http://localhost:4000/jobs/non-existent-job-id?queue=context. Body: not found'),
+            );
+
             const res = await request(fastify.server)
                 .get('/context-reading/generate-status')
                 .set('Cookie', authCookie)
                 .query({ jobId: 'non-existent-job-id' });
 
-            // Может вернуть 404 или другой статус в зависимости от реализации
-            expect([404, 500]).toContain(res.status);
+            expect(res.status).toBe(404);
         });
     });
 });

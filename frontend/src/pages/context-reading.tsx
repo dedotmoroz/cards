@@ -121,11 +121,9 @@ export const ContextReadingPage = () => {
 
       // 2. Запускаем генерацию текста
       const cardIds = nextCardsResponse.cards.map(card => card.id);
-      const lang = i18n.language || 'en';
 
       const generateResponse = await contextReadingApi.generateText({
         cardIds,
-        lang,
         level: languageLevel,
       });
 
