@@ -3,6 +3,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { randomUUID } from 'crypto';
 import { CardService } from '../../../application/card-service';
 import { UserService } from '../../../application/user-service';
+import { FolderRepository } from '../../../ports/folder-repository';
 import { requestGeneration, fetchGenerationStatus } from '../../ai/ai-service-client';
 import { CardDTO } from '../dto';
 import { CardGenerateRequestDTO, CardGenerateRequestInput, CardGenerateStatusQueryDTO, CardGenerateStatusQuery } from './types';
@@ -10,7 +11,8 @@ import { CardGenerateRequestDTO, CardGenerateRequestInput, CardGenerateStatusQue
 export function registerAIRoutes(
     fastify: FastifyInstance,
     cardService: CardService,
-    userService: UserService
+    _userService: UserService,
+    folderRepo: FolderRepository,
 ) {
     /**
      * Запустить генерацию предложений для карточки
@@ -60,16 +62,23 @@ export function registerAIRoutes(
             }
 
             const { lang, level, count, target, sample } = req.body ?? {};
-            const userId = (req.user as any).userId;
-            const user = await userService.getById(userId);
+            const userId = (req.user as any).userId as string;
+
+            const folder = await folderRepo.findById(card.folderId);
+            if (!folder) {
+                return reply.code(404).send({ message: 'Folder not found' });
+            }
+            if (folder.userId !== userId) {
+                return reply.code(403).send({ message: 'Access denied' });
+            }
 
             const payload = {
                 target: target ?? card.question,
                 translationSample: sample ?? card.answer,
-                lang: lang ?? 'en',
+                lang: lang ?? folder.sideALanguage,
+                translationLang: folder.sideBLanguage,
                 count: count ?? 1,
                 level: level ?? 'B1',
-                translationLang: user?.language ?? 'en',
                 userId,
                 traceId: randomUUID(),
             };

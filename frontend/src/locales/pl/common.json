@@ -209,7 +209,8 @@
     "showAll": "Pokaż wszystkie",
     "showUnlearned": "Pokaż nieprzerobione",
     "emptyFolder": "Brak kart w folderze",
-    "pronounce": "Wymów"
+    "pronounce": "Wymów",
+    "generateSentences": "Utwórz treść dla słowa"
   },
   "folders": {
     "title": "Foldery",

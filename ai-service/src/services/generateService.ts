@@ -42,13 +42,16 @@ export async function generateSentences(input: GenerateJobInput) {
         lang = "en",
         count = 3,
         level = "B2",
+        translationLang,
     } = input;
 
+    const finalTranslationLang = translationLang || lang;
     const topic = getRandomTopic(level as Level);
 
     const userPrompt = fillTemplate(userTemplate, {
         TARGET_WORD: target,
         TARGET_LANGUAGE: lang,
+        TRANSLATION_LANGUAGE: finalTranslationLang,
         CEFR_LEVEL: level,
         COUNT: String(count),
         TOPIC: topic,

@@ -211,7 +211,8 @@
     "emptyFolder": "В папке нет карточек",
     "pronounce": "Произнести",
     "switchMode": "Переключить режим",
-    "noPhrasesForCard": "Нет контекстных фраз для этой карточки"
+    "noPhrasesForCard": "Нет контекстных фраз для этой карточки",
+    "generateSentences": "Создать контент для слова"
   },
   "folders": {
     "title": "Папки",

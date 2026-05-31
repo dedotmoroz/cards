@@ -209,7 +209,8 @@
     "showAll": "Показати всі",
     "showUnlearned": "Показати невивчені",
     "emptyFolder": "У папці немає карток",
-    "pronounce": "Вимовити"
+    "pronounce": "Вимовити",
+    "generateSentences": "Створити контент для слова"
   },
   "folders": {
     "title": "Папки",

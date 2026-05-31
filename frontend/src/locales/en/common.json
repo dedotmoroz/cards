@@ -211,7 +211,8 @@
     "emptyFolder": "No cards in folder",
     "pronounce": "Pronounce",
     "switchMode": "Switch mode",
-    "noPhrasesForCard": "No contextual phrases for this card"
+    "noPhrasesForCard": "No contextual phrases for this card",
+    "generateSentences": "Create content for word"
   },
   "folders": {
     "title": "Folders",

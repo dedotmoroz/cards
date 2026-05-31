@@ -209,7 +209,8 @@
     "showAll": "显示全部",
     "showUnlearned": "显示未学习的",
     "emptyFolder": "文件夹中没有卡片",
-    "pronounce": "发音"
+    "pronounce": "发音",
+    "generateSentences": "为单词创建内容"
   },
   "folders": {
     "title": "文件夹",

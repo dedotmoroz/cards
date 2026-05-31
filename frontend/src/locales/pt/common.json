@@ -209,7 +209,8 @@
     "showAll": "Mostrar todos",
     "showUnlearned": "Mostrar não aprendidos",
     "emptyFolder": "Nenhum cartão na pasta",
-    "pronounce": "Pronunciar"
+    "pronounce": "Pronunciar",
+    "generateSentences": "Criar conteúdo para a palavra"
   },
   "folders": {
     "title": "Pastas",

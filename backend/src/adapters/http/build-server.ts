@@ -197,7 +197,7 @@ export async function buildServer() {
 
     // ✅ Регистрируем все роуты
     registerCardsRoutes(fastify, cardService, folderRepo, cardRepo, googleSheetsService);
-    registerAIRoutes(fastify, cardService, userService);
+    registerAIRoutes(fastify, cardService, userService, folderRepo);
     registerFoldersRoutes(fastify, folderService, cardRepo);
     registerContextReadingRoutes(
         fastify,

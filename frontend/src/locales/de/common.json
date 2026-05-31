@@ -209,7 +209,8 @@
     "showAll": "Alle anzeigen",
     "showUnlearned": "Nicht gelernte anzeigen",
     "emptyFolder": "Keine Karten im Ordner",
-    "pronounce": "Aussprechen"
+    "pronounce": "Aussprechen",
+    "generateSentences": "Inhalt für Wort erstellen"
   },
   "folders": {
     "title": "Ordner",

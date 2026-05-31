@@ -209,7 +209,8 @@
     "showAll": "Afficher tout",
     "showUnlearned": "Afficher non apprises",
     "emptyFolder": "Aucune carte dans le dossier",
-    "pronounce": "Prononcer"
+    "pronounce": "Prononcer",
+    "generateSentences": "Créer du contenu pour le mot"
   },
   "folders": {
     "title": "Dossiers",

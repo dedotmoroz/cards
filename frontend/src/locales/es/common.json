@@ -209,7 +209,8 @@
     "showAll": "Mostrar todas",
     "showUnlearned": "Mostrar no aprendidas",
     "emptyFolder": "No hay tarjetas en la carpeta",
-    "pronounce": "Pronunciar"
+    "pronounce": "Pronunciar",
+    "generateSentences": "Crear contenido para la palabra"
   },
   "folders": {
     "title": "Carpetas",
