@@ -6,6 +6,10 @@ import { Job, QueueEvents } from "bullmq";
 import { redis } from "../redis/connection.js";
 import type { FastifySchema } from "fastify";
 
+type GenerateJob = Job<GenerateJobInput, GenerateJobResult, string>;
+type ContextJob = Job<ContextJobInput, ContextJobResult, string>;
+type QueueJob = GenerateJob | ContextJob;
+
 const queueEvents = new QueueEvents("generate", { connection: redis });
 const contextQueueEvents = new QueueEvents("context", { connection: redis });
 // (необязательно, но полезно) ловим ошибки слушателя
@@ -269,21 +273,21 @@ export default async function registerApi(app: FastifyInstance) {
             const lookupContext = () =>
                 Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id);
 
-            let job: Awaited<ReturnType<typeof lookupGenerate>> | null = null;
+            let job: QueueJob | null = null;
             let queueType: 'generate' | 'context' | undefined;
 
             if (queueParam === 'generate') {
-                job = await lookupGenerate();
+                job = (await lookupGenerate()) ?? null;
                 if (job) queueType = 'generate';
             } else if (queueParam === 'context') {
-                job = await lookupContext();
+                job = (await lookupContext()) ?? null;
                 if (job) queueType = 'context';
             } else {
-                job = await lookupContext();
+                job = (await lookupContext()) ?? null;
                 if (job) {
                     queueType = 'context';
                 } else {
-                    job = await lookupGenerate();
+                    job = (await lookupGenerate()) ?? null;
                     if (job) queueType = 'generate';
                 }
             }
