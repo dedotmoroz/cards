@@ -153,8 +153,20 @@ export function registerAIRoutes(
                 });
             }
 
-            if (status.state === 'completed' && status.result) {
-                const sentences = status.result.sentences ?? [];
+            if (status.queueType && status.queueType !== 'generate') {
+                return reply.code(400).send({
+                    message:
+                        'Invalid job type. Expected generate job, but got context job. Please use jobId from POST /cards/:id/generate.',
+                });
+            }
+
+            if (
+                status.state === 'completed' &&
+                status.result &&
+                'sentences' in status.result &&
+                Array.isArray(status.result.sentences)
+            ) {
+                const sentences = status.result.sentences;
                 const questionSentences = sentences
                     .map((item) => item.text.trim())
                     .filter(Boolean)

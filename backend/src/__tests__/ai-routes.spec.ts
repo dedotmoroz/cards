@@ -11,9 +11,10 @@ jest.mock('../adapters/ai/ai-service-client', () => ({
     fetchGenerationStatus: jest.fn(),
 }));
 
-import { requestGeneration } from '../adapters/ai/ai-service-client';
+import { requestGeneration, fetchGenerationStatus } from '../adapters/ai/ai-service-client';
 
 const mockedRequestGeneration = requestGeneration as jest.MockedFunction<typeof requestGeneration>;
+const mockedFetchGenerationStatus = fetchGenerationStatus as jest.MockedFunction<typeof fetchGenerationStatus>;
 
 describe('AI routes (e2e)', () => {
     let fastify: FastifyInstance;
@@ -141,6 +142,77 @@ describe('AI routes (e2e)', () => {
 
             expect(res.status).toBe(401);
             expect(mockedRequestGeneration).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('GET /cards/:id/generate-status', () => {
+        it('saves sentences from generate job result', async () => {
+            const createRes = await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'self-driven',
+                    answer: 'самостоятельный',
+                });
+
+            const cardId = createRes.body.id;
+
+            mockedFetchGenerationStatus.mockResolvedValue({
+                id: 'job-234',
+                state: 'completed',
+                progress: 100,
+                queueType: 'generate',
+                result: {
+                    sentences: [
+                        {
+                            text: 'In the city, being self-driven is important.',
+                            translation: 'В городе быть самостоятельным важно.',
+                        },
+                    ],
+                },
+            });
+
+            const res = await request(fastify.server)
+                .get(`/cards/${cardId}/generate-status`)
+                .query({ jobId: 'job-234' })
+                .set('Cookie', authCookie);
+
+            expect(res.status).toBe(200);
+            expect(res.body.status).toBe('completed');
+            expect(res.body.card.questionSentences).toContain('self-driven');
+            expect(res.body.card.answerSentences).toContain('самостоятельным');
+        });
+
+        it('rejects context job type', async () => {
+            const createRes = await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'word',
+                    answer: 'слово',
+                });
+
+            const cardId = createRes.body.id;
+
+            mockedFetchGenerationStatus.mockResolvedValue({
+                id: '234',
+                state: 'completed',
+                progress: 100,
+                queueType: 'context',
+                result: {
+                    sentences: [],
+                },
+            });
+
+            const res = await request(fastify.server)
+                .get(`/cards/${cardId}/generate-status`)
+                .query({ jobId: '234' })
+                .set('Cookie', authCookie);
+
+            expect(res.status).toBe(400);
+            expect(res.body.message).toContain('Expected generate job');
         });
     });
 });

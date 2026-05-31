@@ -79,19 +79,14 @@ describe("API routes", () => {
             progress: 100,
             returnvalue: { sentences: [{ text: "hi", translation: "привет" }] },
         };
-        let callCount = 0;
-        mocks.jobFromIdMock.mockImplementation(async () => {
-            callCount++;
-            if (callCount === 1) return null;
-            return jobStub;
-        });
+        mocks.jobFromIdMock.mockResolvedValue(jobStub);
 
         const app = Fastify();
         await registerApi(app);
 
         const response = await app.inject({
             method: "GET",
-            url: "/jobs/job-321",
+            url: "/jobs/job-321?queue=generate",
         });
 
         expect(response.statusCode).toBe(200);
@@ -102,6 +97,39 @@ describe("API routes", () => {
             result: { sentences: [{ text: "hi", translation: "привет" }] },
             queueType: "generate",
         });
+        expect(mocks.jobFromIdMock).toHaveBeenCalledTimes(1);
+
+        await app.close();
+    });
+
+    it("returns generate job when queue=generate even if context job shares the same id", async () => {
+        const generateJobStub = {
+            id: "234",
+            getState: vi.fn().mockResolvedValue("completed"),
+            progress: 100,
+            returnvalue: {
+                sentences: [
+                    {
+                        text: "In the city, being self-driven is important.",
+                        translation: "В городе быть самостоятельным важно.",
+                    },
+                ],
+            },
+        };
+        mocks.jobFromIdMock.mockResolvedValue(generateJobStub);
+
+        const app = Fastify();
+        await registerApi(app);
+
+        const response = await app.inject({
+            method: "GET",
+            url: "/jobs/234?queue=generate",
+        });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.json().queueType).toBe("generate");
+        expect(response.json().result.sentences).toHaveLength(1);
+        expect(mocks.jobFromIdMock).toHaveBeenCalledTimes(1);
 
         await app.close();
     });
@@ -255,7 +283,7 @@ describe("API routes", () => {
 
         const response = await app.inject({
             method: "GET",
-            url: "/jobs/context-job-456",
+            url: "/jobs/context-job-456?queue=context",
         });
 
         expect(response.statusCode).toBe(200);

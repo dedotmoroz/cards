@@ -262,20 +262,29 @@ export default async function registerApi(app: FastifyInstance) {
         } as unknown as FastifySchema,
         handler: async (req, reply) => {
             const { id } = req.params;
-            
-            // Сначала пробуем найти в очереди context (для контекстного чтения)
-            // Потом в очереди generate (для генерации предложений)
-            // Это важно, так как jobId могут пересекаться между очередями в Redis
-            let job = await Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id) as any;
-            let queueType: 'generate' | 'context' | undefined = undefined;
-            
-            if (job) {
-                queueType = 'context';
+            const queueParam = (req.query as { queue?: string }).queue;
+
+            const lookupGenerate = () =>
+                Job.fromId<GenerateJobInput, GenerateJobResult>(generateQueue, id);
+            const lookupContext = () =>
+                Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id);
+
+            let job: Awaited<ReturnType<typeof lookupGenerate>> | null = null;
+            let queueType: 'generate' | 'context' | undefined;
+
+            if (queueParam === 'generate') {
+                job = await lookupGenerate();
+                if (job) queueType = 'generate';
+            } else if (queueParam === 'context') {
+                job = await lookupContext();
+                if (job) queueType = 'context';
             } else {
-                // Если не найдена в context, пробуем в generate
-                job = await Job.fromId<GenerateJobInput, GenerateJobResult>(generateQueue, id);
+                job = await lookupContext();
                 if (job) {
-                    queueType = 'generate';
+                    queueType = 'context';
+                } else {
+                    job = await lookupGenerate();
+                    if (job) queueType = 'generate';
                 }
             }
 

@@ -57,6 +57,7 @@ export type GenerateJobStatusResponse = {
     sentences: GenerateJobStatusSentence[];
   };
   error?: string;
+  queueType?: 'generate' | 'context';
 };
 
 export async function requestGeneration(
@@ -69,7 +70,7 @@ export async function requestGeneration(
 }
 
 export async function fetchGenerationStatus(jobId: string): Promise<GenerateJobStatusResponse> {
-  return callAiService<GenerateJobStatusResponse>(`/jobs/${jobId}`, {
+  return callAiService<GenerateJobStatusResponse>(`/jobs/${jobId}?queue=generate`, {
     method: 'GET',
   });
 }
@@ -112,7 +113,7 @@ export async function requestContextGeneration(
 }
 
 export async function fetchContextGenerationStatus(jobId: string): Promise<ContextJobStatusResponse> {
-  return callAiService<ContextJobStatusResponse>(`/jobs/${jobId}`, {
+  return callAiService<ContextJobStatusResponse>(`/jobs/${jobId}?queue=context`, {
     method: 'GET',
   });
 }
