@@ -11,6 +11,7 @@ import {
 import { CreateCardDTO, CardDTO, UpdateCardDTO, ReviewCardDTO } from '../dto';
 import { CreateCardInput } from './types';
 import type { CardRepository } from '../../../ports/card-repository';
+import { translateForFolder } from '../../ai/translate-service';
 
 export function registerCardsRoutes(
     fastify: FastifyInstance,
@@ -82,6 +83,18 @@ export function registerCardsRoutes(
                             message: { type: 'string' },
                         },
                     },
+                    403: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
                 },
                 tags: ['extension'],
                 summary: 'Add word from browser extension',
@@ -99,15 +112,33 @@ export function registerCardsRoutes(
             reply: FastifyReply
         ) => {
             const { word, folderId, sentence } = req.body;
+            const userId = (req.user as { userId?: string }).userId;
 
-            const question = word;
-            const answer = '';
+            const folder = await folderRepo.findById(folderId);
+            if (!folder) {
+                return reply.code(404).send({ message: 'Folder not found' });
+            }
+
+            if (!userId || folder.userId !== userId) {
+                return reply.code(403).send({ message: 'Access denied. Folder does not belong to user' });
+            }
+
+            const onTranslateError = (error: unknown) => {
+                req.log.warn({ err: error }, 'Extension card translation failed');
+            };
+
+            const [answer, answerSentences] = await Promise.all([
+                translateForFolder(folder.sideALanguage, folder.sideBLanguage, word, onTranslateError),
+                sentence
+                    ? translateForFolder(folder.sideALanguage, folder.sideBLanguage, sentence, onTranslateError)
+                    : Promise.resolve(undefined),
+            ]);
+
             const questionSentences = sentence ? sentence : undefined;
-            const answerSentences = undefined;
 
             const card = await cardService.createCard(
                 folderId,
-                question,
+                word,
                 answer,
                 questionSentences,
                 answerSentences

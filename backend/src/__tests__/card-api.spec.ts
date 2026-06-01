@@ -4,6 +4,16 @@ import request from "supertest";
 import ExcelJS from 'exceljs';
 import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults';
 
+jest.mock('../adapters/ai/translate-service', () => ({
+    translateText: jest.fn(),
+    mapLanguageToGoogleFormat: (lang: string) => lang,
+    translateForFolder: jest.fn(),
+}));
+
+import { translateForFolder } from '../adapters/ai/translate-service';
+
+const mockedTranslateForFolder = translateForFolder as jest.MockedFunction<typeof translateForFolder>;
+
 describe('📦 Card Repository (e2e)', () => {
     let fastify: FastifyInstance;
     let folderId: string;
@@ -251,7 +261,17 @@ describe('📦 Card Repository (e2e)', () => {
     });
 
     describe('POST /ext/cards', () => {
+        beforeEach(() => {
+            mockedTranslateForFolder.mockReset();
+        });
+
         it('создает карточку из браузерного расширения', async () => {
+            mockedTranslateForFolder.mockImplementation(async (_a, _b, text) => {
+                if (text === 'hello') return 'привет';
+                if (text === 'Hello world') return 'привет мир';
+                return '';
+            });
+
             const res = await request(fastify.server)
                 .post('/ext/cards')
                 .set('Cookie', authCookie)
@@ -266,9 +286,19 @@ describe('📦 Card Repository (e2e)', () => {
             expect(res.body).toHaveProperty('id');
             expect(res.body.word).toBe('hello');
             expect(res.body.folderId).toBe(folderId);
+
+            const cardsRes = await request(fastify.server)
+                .get(`/cards/folder/${folderId}`)
+                .set('Cookie', authCookie);
+            const created = cardsRes.body.find((c: { id: string }) => c.id === res.body.id);
+            expect(created?.answer).toBe('привет');
+            expect(created?.answerSentences).toBe('привет мир');
+            expect(mockedTranslateForFolder).toHaveBeenCalledTimes(2);
         });
 
         it('создает карточку из расширения без sentence', async () => {
+            mockedTranslateForFolder.mockResolvedValue('тест');
+
             const res = await request(fastify.server)
                 .post('/ext/cards')
                 .set('Cookie', authCookie)
@@ -280,6 +310,78 @@ describe('📦 Card Repository (e2e)', () => {
             expect(res.status).toBe(201);
             expect(res.body).toHaveProperty('id');
             expect(res.body.word).toBe('test');
+            expect(mockedTranslateForFolder).toHaveBeenCalledTimes(1);
+        });
+
+        it('создает карточку с пустым answer при ошибке перевода', async () => {
+            mockedTranslateForFolder.mockResolvedValue('');
+
+            const res = await request(fastify.server)
+                .post('/ext/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    word: 'fallback-word',
+                    folderId,
+                    sentence: 'Fallback sentence',
+                });
+
+            expect(res.status).toBe(201);
+
+            const cardsRes = await request(fastify.server)
+                .get(`/cards/folder/${folderId}`)
+                .set('Cookie', authCookie);
+            const created = cardsRes.body.find((c: { id: string }) => c.id === res.body.id);
+            expect(created?.answer).toBe('');
+            expect(created?.answerSentences).toBe('');
+        });
+
+        it('не заполняет answer при одинаковых языках папки', async () => {
+            mockedTranslateForFolder.mockImplementation(async (sideA, sideB) => {
+                if (sideA === sideB) return '';
+                return 'unexpected-translation';
+            });
+
+            const meRes = await request(fastify.server)
+                .get('/auth/me')
+                .set('Cookie', authCookie);
+            const userId = meRes.body.id;
+
+            const folderRes = await request(fastify.server)
+                .post('/folders')
+                .set('Cookie', authCookie)
+                .send({ userId, name: 'Same Lang Folder', sideALanguage: 'en', sideBLanguage: 'en' });
+
+            const sameLangFolderId = folderRes.body.id;
+
+            const res = await request(fastify.server)
+                .post('/ext/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    word: 'same-lang',
+                    folderId: sameLangFolderId,
+                    sentence: 'Same lang sentence',
+                });
+
+            expect(res.status).toBe(201);
+
+            const cardsRes = await request(fastify.server)
+                .get(`/cards/folder/${sameLangFolderId}`)
+                .set('Cookie', authCookie);
+            const created = cardsRes.body.find((c: { id: string }) => c.id === res.body.id);
+            expect(created?.answer).toBe('');
+            expect(created?.answerSentences).toBe('');
+        });
+
+        it('возвращает 404 если папка не найдена', async () => {
+            const res = await request(fastify.server)
+                .post('/ext/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    word: 'hello',
+                    folderId: '00000000-0000-0000-0000-000000000000',
+                });
+
+            expect(res.status).toBe(404);
         });
 
         it('требует аутентификации', async () => {

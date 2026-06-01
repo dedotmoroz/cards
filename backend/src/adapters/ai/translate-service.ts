@@ -102,3 +102,30 @@ export function mapLanguageToGoogleFormat(lang: string): string {
 
     return languageMap[lang] || lang;
 }
+
+/**
+ * Переводит текст из языка стороны A папки в язык стороны B.
+ * При одинаковых языках, пустом тексте или ошибке API возвращает пустую строку.
+ */
+export async function translateForFolder(
+    sideALanguage: string,
+    sideBLanguage: string,
+    text: string,
+    onError?: (error: unknown) => void
+): Promise<string> {
+    if (sideALanguage === sideBLanguage || !text.trim()) {
+        return '';
+    }
+
+    try {
+        const result = await translateText({
+            text,
+            targetLang: mapLanguageToGoogleFormat(sideBLanguage),
+            sourceLang: mapLanguageToGoogleFormat(sideALanguage),
+        });
+        return result.translatedText;
+    } catch (error) {
+        onError?.(error);
+        return '';
+    }
+}
