@@ -52,6 +52,26 @@ describe('📁 Folder API (e2e)', () => {
     createdFolderId = res.body.id;
   });
 
+  it('создаёт папку с расширенным языком стороны A (ja)', async () => {
+    const res = await request(fastify.server)
+        .post('/folders')
+        .set('Cookie', authCookie)
+        .send({ userId, name: 'Japanese Folder', sideALanguage: 'ja', sideBLanguage: 'ru' });
+
+    expect(res.status).toBe(201);
+    expect(res.body.sideALanguage).toBe('ja');
+    expect(res.body.sideBLanguage).toBe('ru');
+  });
+
+  it('отклоняет ja для стороны B', async () => {
+    const res = await request(fastify.server)
+        .post('/folders')
+        .set('Cookie', authCookie)
+        .send({ userId, name: 'Invalid B', sideALanguage: 'en', sideBLanguage: 'ja' });
+
+    expect(res.status).toBe(400);
+  });
+
   it('возвращает список папок пользователя с cardCount', async () => {
     const res = await request(fastify.server)
         .get(`/folders/${userId}`)

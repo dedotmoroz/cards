@@ -1,14 +1,35 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { sortLanguageCodesByLabel } from '../../constants/languages';
 import {
     canRequestTranslation,
     formatLanguagePairLabel,
     formatLanguageCodeLabel,
 } from '../folder-languages';
 
+describe('sortLanguageCodesByLabel', () => {
+    it('sorts by localized label', () => {
+        const t = vi.fn((key: string) => {
+            const labels: Record<string, string> = {
+                'folders.languageOptions.en': 'English',
+                'folders.languageOptions.ru': 'Russian',
+                'folders.languageOptions.de': 'German',
+            };
+            return labels[key] ?? key;
+        }) as unknown as import('i18next').TFunction;
+
+        expect(sortLanguageCodesByLabel(['ru', 'en', 'de'], t, 'en')).toEqual([
+            'en',
+            'de',
+            'ru',
+        ]);
+    });
+});
+
 describe('formatLanguageCodeLabel', () => {
-    it('capitalizes language code for display', () => {
-        expect(formatLanguageCodeLabel('en')).toBe('En');
-        expect(formatLanguageCodeLabel('ru')).toBe('Ru');
+    it('returns lowercase language code for column headers', () => {
+        expect(formatLanguageCodeLabel('ja')).toBe('ja');
+        expect(formatLanguageCodeLabel('EN')).toBe('en');
+        expect(formatLanguageCodeLabel('ru-RU')).toBe('ru');
     });
 });
 

@@ -1,7 +1,11 @@
 import { z } from 'zod';
-import { FOLDER_LANGUAGE_CODES } from '../../shared/folder-languages';
+import {
+    FOLDER_SIDE_A_LANGUAGE_CODES,
+    FOLDER_SIDE_B_LANGUAGE_CODES,
+} from '../../shared/folder-languages';
 
-const FolderLanguageSchema = z.enum(FOLDER_LANGUAGE_CODES);
+const FolderSideALanguageSchema = z.enum(FOLDER_SIDE_A_LANGUAGE_CODES);
+const FolderSideBLanguageSchema = z.enum(FOLDER_SIDE_B_LANGUAGE_CODES);
 
 export const CreateCardDTO = z.object({
   folderId: z.string().uuid(),
@@ -38,14 +42,14 @@ export const ReviewCardDTO = z.object({
 export const CreateFolderDTO = z.object({
   userId: z.string().uuid().describe('ID пользователя'),
   name: z.string().min(1).describe('Название папки'),
-  sideALanguage: FolderLanguageSchema,
-  sideBLanguage: FolderLanguageSchema,
+  sideALanguage: FolderSideALanguageSchema,
+  sideBLanguage: FolderSideBLanguageSchema,
 }).describe('CreateFolderDTO');
 
 export const UpdateFolderDTO = z.object({
   name: z.string().min(1).optional(),
-  sideALanguage: FolderLanguageSchema.optional(),
-  sideBLanguage: FolderLanguageSchema.optional(),
+  sideALanguage: FolderSideALanguageSchema.optional(),
+  sideBLanguage: FolderSideBLanguageSchema.optional(),
 }).describe('UpdateFolderDTO');
 
 export const FolderDTO = z.object({

@@ -1,6 +1,12 @@
 import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { APP_LANGUAGE_OPTIONS } from '@/shared/constants/languages';
+import {
+    FOLDER_SIDE_B_LANGUAGE_CODES,
+    SIDE_A_LANGUAGE_CODES,
+    getFolderLanguageLabel,
+    sortLanguageCodesByLabel,
+} from '@/shared/constants/languages';
 
 interface FolderLanguageFieldsProps {
     sideALanguage: string;
@@ -15,7 +21,15 @@ export const FolderLanguageFields = ({
     onSideALanguageChange,
     onSideBLanguageChange,
 }: FolderLanguageFieldsProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const sideACodes = useMemo(
+        () => sortLanguageCodesByLabel(SIDE_A_LANGUAGE_CODES, t, i18n.language),
+        [t, i18n.language],
+    );
+    const sideBCodes = useMemo(
+        () => sortLanguageCodesByLabel(FOLDER_SIDE_B_LANGUAGE_CODES, t, i18n.language),
+        [t, i18n.language],
+    );
 
     return (
         <Box sx={{ display: 'flex', gap: 1.5, mt: '16px', mb: '8px' }}>
@@ -30,9 +44,9 @@ export const FolderLanguageFields = ({
                     size="small"
                     onChange={(e) => onSideALanguageChange(e.target.value)}
                 >
-                    {APP_LANGUAGE_OPTIONS.map((lang) => (
-                        <MenuItem key={lang.code} value={lang.code} dense>
-                            {lang.label}
+                    {sideACodes.map((code) => (
+                        <MenuItem key={code} value={code} dense>
+                            {getFolderLanguageLabel(code, t)}
                         </MenuItem>
                     ))}
                 </Select>
@@ -48,9 +62,9 @@ export const FolderLanguageFields = ({
                     size="small"
                     onChange={(e) => onSideBLanguageChange(e.target.value)}
                 >
-                    {APP_LANGUAGE_OPTIONS.map((lang) => (
-                        <MenuItem key={lang.code} value={lang.code} dense>
-                            {lang.label}
+                    {sideBCodes.map((code) => (
+                        <MenuItem key={code} value={code} dense>
+                            {getFolderLanguageLabel(code, t)}
                         </MenuItem>
                     ))}
                 </Select>

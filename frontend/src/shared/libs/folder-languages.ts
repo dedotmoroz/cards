@@ -1,8 +1,8 @@
-import { APP_LANGUAGE_OPTIONS } from '../constants/languages';
+import { FOLDER_SIDE_B_LANGUAGE_CODES } from '../constants/languages';
 
 export function normalizeLanguageCode(language: string): string {
     const code = language.split('-')[0]?.toLowerCase() ?? language;
-    const supported = APP_LANGUAGE_OPTIONS.some((l) => l.code === code);
+    const supported = (FOLDER_SIDE_B_LANGUAGE_CODES as readonly string[]).includes(code);
     return supported ? code : 'en';
 }
 
@@ -19,9 +19,9 @@ export function formatLanguagePairLabel(source: string, target: string): string 
     return `${source.toUpperCase()} → ${target.toUpperCase()}`;
 }
 
+/** Short code for column headers, e.g. "ja", "ru". */
 export function formatLanguageCodeLabel(code: string): string {
-    const normalized = code.split('-')[0]?.toLowerCase() ?? code;
-    return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+    return code.split('-')[0]?.toLowerCase() ?? code;
 }
 
 export function canRequestTranslation(

@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Alert, FormControl, Select, MenuItem } from '@mui/material';
 import { ButtonColor } from '@/shared/ui';
 import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel} from './styled-components';
 
-import { APP_LANGUAGE_OPTIONS } from '@/shared/constants/languages';
+import {
+    APP_LANGUAGE_OPTIONS,
+    getFolderLanguageLabel,
+    sortLanguageCodesByLabel,
+} from '@/shared/constants/languages';
 
 interface LanguageSectionProps {
     initialLanguage: string;
@@ -12,7 +16,16 @@ interface LanguageSectionProps {
 }
 
 export const LanguageSection = ({ initialLanguage, onSubmit }: LanguageSectionProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const uiLanguageCodes = useMemo(
+        () =>
+            sortLanguageCodesByLabel(
+                APP_LANGUAGE_OPTIONS.map((lang) => lang.code),
+                t,
+                i18n.language,
+            ),
+        [t, i18n.language],
+    );
     const [language, setLanguage] = useState(initialLanguage);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
@@ -62,9 +75,9 @@ export const LanguageSection = ({ initialLanguage, onSubmit }: LanguageSectionPr
                         value={language}
                         onChange={(event) => setLanguage(event.target.value as string)}
                     >
-                        {APP_LANGUAGE_OPTIONS.map((lang) => (
-                            <MenuItem key={lang.code} value={lang.code}>
-                                {lang.label}
+                        {uiLanguageCodes.map((code) => (
+                            <MenuItem key={code} value={code}>
+                                {getFolderLanguageLabel(code, t)}
                             </MenuItem>
                         ))}
                     </Select>
