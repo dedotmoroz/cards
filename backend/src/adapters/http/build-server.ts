@@ -83,11 +83,22 @@ export async function buildServer() {
 
             const allowedOrigins = [
                 'http://localhost:8888',
+                'http://localhost:7777',
                 'https://kotcat.com',
             ];
 
             // разрешаем фронт
             if (allowedOrigins.includes(origin)) {
+                return cb(null, true);
+            }
+
+            // dev: localhost / LAN IP on any port (e.g. http://192.168.1.50:7777)
+            if (
+                process.env.NODE_ENV !== 'production' &&
+                /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(
+                    origin
+                )
+            ) {
                 return cb(null, true);
             }
 

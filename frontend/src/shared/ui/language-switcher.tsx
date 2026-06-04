@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -29,6 +29,11 @@ export const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
     const newLanguage = event.target.value;
@@ -52,6 +57,15 @@ export const LanguageSwitcher: React.FC = () => {
       i18n.changeLanguage(newLanguage);
     }
   };
+
+  if (!mounted) {
+    return (
+      <Box
+        sx={{ minWidth: 120, height: 40 }}
+        aria-hidden
+      />
+    );
+  }
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

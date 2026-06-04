@@ -172,33 +172,32 @@ export const CardsMenu = ({ onGoogleSheetsDisconnected }: CardsMenuProps) => {
                     {isExporting ? t('export.exporting') : t('export.export')}
                 </MenuItem>
 
-                {googlePickerConfigured && (
-                    <>
-                        {!isGoogleSheetsConnected ? (
-                            <MenuItem
-                                onClick={handleConnectGoogleSheetsClick}
-                                disabled={!selectedFolderId || isGoogleSheetsStatusLoading}
-                            >
-                                <CloudIcon style={{marginRight: '10px'}} />
-                                {t('googleSheets.connect')}
-                            </MenuItem>
-                        ) : (
-                            <>
-                                <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
-                                    <CloudArrowLeftIcon style={{marginRight: '10px'}} />
-                                    {t('googleSheets.importFromSheets')}
-                                </MenuItem>
-                                <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId}>
-                                    <CloudArrowRightIcon style={{marginRight: '10px'}} />
-                                    {t('googleSheets.exportToSheets')}
-                                </MenuItem>
-                                <MenuItem onClick={() => void handleDisconnectGoogleSheetsClick()}>
-                                    <CloudOffIcon style={{marginRight: '10px'}} />
-                                    {t('googleSheets.disconnect')}
-                                </MenuItem>
-                            </>
-                        )}
-                    </>
+                {googlePickerConfigured && !isGoogleSheetsConnected && (
+                    <MenuItem
+                        onClick={handleConnectGoogleSheetsClick}
+                        disabled={!selectedFolderId || isGoogleSheetsStatusLoading}
+                    >
+                        <CloudIcon style={{marginRight: '10px'}} />
+                        {t('googleSheets.connect')}
+                    </MenuItem>
+                )}
+                {googlePickerConfigured && isGoogleSheetsConnected && (
+                    <MenuItem onClick={handleImportSheetsClick} disabled={!selectedFolderId}>
+                        <CloudArrowLeftIcon style={{marginRight: '10px'}} />
+                        {t('googleSheets.importFromSheets')}
+                    </MenuItem>
+                )}
+                {googlePickerConfigured && isGoogleSheetsConnected && (
+                    <MenuItem onClick={handleExportSheetsClick} disabled={!selectedFolderId}>
+                        <CloudArrowRightIcon style={{marginRight: '10px'}} />
+                        {t('googleSheets.exportToSheets')}
+                    </MenuItem>
+                )}
+                {googlePickerConfigured && isGoogleSheetsConnected && (
+                    <MenuItem onClick={() => void handleDisconnectGoogleSheetsClick()}>
+                        <CloudOffIcon style={{marginRight: '10px'}} />
+                        {t('googleSheets.disconnect')}
+                    </MenuItem>
                 )}
             </MenuUI>
             

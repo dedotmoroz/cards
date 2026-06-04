@@ -48,7 +48,9 @@ export const StyledCardContent = styled(CardContent)`
     padding: 32px;
 `;
 
-export const StyledCardTypography = styled(Typography)<StyledCardTypographyProps>`
+export const StyledCardTypography = styled(Typography, {
+    shouldForwardProp: (prop) => prop !== '$fontSize',
+})<StyledCardTypographyProps>`
     margin-bottom: 24px;
     min-height: 120px;
     display: flex;

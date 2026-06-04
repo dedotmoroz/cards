@@ -1,6 +1,7 @@
 import { styled } from "@mui/material/styles";
 import {Box, Button, Card, Chip} from "@mui/material";
 import kotcatImg from '@/shared/images/kotcat.png';
+import { staticImageUrl } from '@/shared/libs/static-image-url';
 
 export const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -188,6 +189,7 @@ export const StyledHeaderTop = styled(Box)`
     margin: 0 auto;
     padding: 8px 24px;
     border: 1px solid #000;
+    width: 100%;
     background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
 `
 
@@ -486,7 +488,7 @@ export const StyledImagesBox = styled(Box)(() => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    backgroundImage: `url(${kotcatImg})`,
+    backgroundImage: `url(${staticImageUrl(kotcatImg)})`,
     backgroundSize: 'contain',
     backgroundPosition: 'right center',
     backgroundRepeat: 'no-repeat',

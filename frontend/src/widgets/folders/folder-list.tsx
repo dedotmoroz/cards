@@ -149,28 +149,28 @@ export const FolderList = ({
                     const folder = folders.find((f) => f.id === selectedFolderId);
                     if (!folder) return null;
                     if (isVirtualFolderId(folder.id)) return null;
-                    return (
-                        <>
-                            {onRename && (
-                                <RenameFolderMenuItem
-                                    folderId={folder.id}
-                                    folderName={folder.name}
-                                    sideALanguage={folder.sideALanguage ?? 'en'}
-                                    sideBLanguage={folder.sideBLanguage ?? 'ru'}
-                                    onRename={onRename}
-                                    onMenuClose={handleMenuClose}
-                                />
-                            )}
-                            {onDelete && (
-                                <DeleteFolderMenuItem
-                                    folderId={folder.id}
-                                    folderName={folder.name}
-                                    onDelete={onDelete}
-                                    onMenuClose={handleMenuClose}
-                                />
-                            )}
-                        </>
-                    );
+                    return [
+                        onRename ? (
+                            <RenameFolderMenuItem
+                                key="rename"
+                                folderId={folder.id}
+                                folderName={folder.name}
+                                sideALanguage={folder.sideALanguage ?? 'en'}
+                                sideBLanguage={folder.sideBLanguage ?? 'ru'}
+                                onRename={onRename}
+                                onMenuClose={handleMenuClose}
+                            />
+                        ) : null,
+                        onDelete ? (
+                            <DeleteFolderMenuItem
+                                key="delete"
+                                folderId={folder.id}
+                                folderName={folder.name}
+                                onDelete={onDelete}
+                                onMenuClose={handleMenuClose}
+                            />
+                        ) : null,
+                    ];
                 })()}
             </MenuUI>
         </>

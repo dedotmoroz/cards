@@ -134,9 +134,11 @@ export const StyledCardHeaderContent = styled(Box)`
     }
 `
 
-export const StyledCardColumn = styled(Box)<{ $isVisible: boolean }>`
+export const StyledCardColumn = styled(Box, {
+    shouldForwardProp: (prop) => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
     flex: 1;
-    visibility: ${({ $isVisible }) => $isVisible ? 'visible' : 'hidden'};
+    visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 `;
 
 export const StyledCardActions = styled(Box)`
