@@ -1,0 +1,433 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat Système efficace d'apprentissage par cartes. Mémorisez les informations plus rapidement et plus longtemps."
+  },
+  "landing": {
+    "appName": "Cartes de vocabulaire",
+    "firstScreen": {
+      "tag": "Une nouvelle approche de l'apprentissage des langues",
+      "title1": "Mémorisez",
+      "title2": "les mots en contexte,",
+      "title3": "pas par listes",
+      "description": "Créez des exemples vivants avec l’IA, enregistrez des phrases depuis le navigateur et apprenez la langue dans des situations réelles.",
+      "button1": "Commencer à apprendre",
+      "button2": "Comment ça marche"
+    },
+    "hero": {
+      "title": "Commencez à mémoriser les mots consciemment",
+      "description": "Ajoutez des mots de contenu réel, apprenez-les en contexte et revenez-y quand c'est vraiment nécessaire.",
+      "button": "Commencer à apprendre"
+    },
+    "context": {
+      "title": "Pourquoi le contexte est plus important que la mémorisation",
+      "subtitle": "La recherche en psychologie cognitive le confirme : le contexte est le plus court chemin vers la parole fluide.",
+      "subtitleBold1": "+35 % à la mémorisation.",
+      "subtitle1": "Les mots appris dans des phrases restent en mémoire à long terme un tiers plus longtemps que les listes",
+      "subtitleBold2": "2 fois plus vite.",
+      "subtitle2": "Le cerveau dépense moins d’énergie pour intégrer un mot s’il le voit dans une situation réelle.",
+      "subtitleBold3": "0 % de récitation par cœur.",
+      "subtitle3": "Vous n’apprenez pas une traduction par cœur : vous créez des connexions neuronales naturelles, comme les locuteurs natifs.",
+      "description": "Fondé sur la théorie des « niveaux de traitement » de Craik et Lockhart.",
+      "link": "En savoir plus sur la théorie de la mémoire…"
+    },
+    "features": {
+      "contextAI": {
+        "title": "Contexte IA",
+        "subtitle": "Maîtrisez les mots dans le contexte des phrases.",
+        "item1": "▪ L’IA choisit le contexte le plus pertinent",
+        "item2": "▪ Idéal pour les verbes à particule, les idiomes et les expressions figées",
+        "item3": "▪ Comprenez la logique de la parole réelle",
+        "accent": "Mémorisez des phrases toutes faites et parlez naturellement."
+      },
+      "chrome": {
+        "title": "Extension Chrome",
+        "subtitle": "Transforme le texte sélectionné sur les sites en cartes.",
+        "description": "Comment ça marche :",
+        "item1": "▪ Sélectionnez un mot ou une expression sur la page",
+        "item2": "▪ Ajoutez-le au dictionnaire via le menu contextuel du navigateur",
+        "item3": "Une carte sera créée automatiquement dans le dossier choisi.",
+        "accent": "En savoir plus sur l’extension et l’installation…"
+      },
+      "importExport": {
+        "title": "Import et export",
+        "subtitle": "Contrôle total sur votre vocabulaire.",
+        "description": "",
+        "item1": "▪ Import de listes de mots prêtes à l’emploi",
+        "item2": "▪ Téléversement et téléchargement de fichiers au format Excel",
+        "item3": "▪ Synchronisation des données avec Google Sheets",
+        "accent": "Vous n’êtes pas enfermé dans une seule plateforme."
+      },
+      "adaptive": {
+        "title": "Adaptabilité",
+        "subtitle": "Confortable sur n'importe quel écran.",
+        "description": "Le service est adapté pour :",
+        "item1": "▪ Appareils mobiles",
+        "item2": "▪ Ordinateurs portables",
+        "item3": "▪ Grands moniteurs",
+        "accent": "L'interface est simple, légère et épurée — rien ne distrait de l'apprentissage."
+      }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "surdoué, surperformant",
+      "example": "Être un overachiever peut parfois mener à des problèmes de communication parce que les autres peuvent se sentir pressés de répondre à vos hauts standards."
+    }
+  },
+  "footer": {
+    "vocabularyCollections": "Recueils thématiques de mots",
+    "ecosystem": "Écosystème"
+  },
+  "collections": {
+    "wordsImport": {
+      "title": "Mots de la collection",
+      "takeButton": "Ajouter à mes dossiers",
+      "createGuestButton": "Créer",
+      "guestPrompt": "Vous n’êtes pas connecté. Créer cette collection dans un compte temporaire ?",
+      "goToFolder": "Aller au dossier",
+      "success": "Terminé : cartes créées — {{count}}",
+      "errors": {
+        "missingFolderName": "folderName introuvable dans words",
+        "selectAtLeastOne": "Sélectionnez au moins un mot",
+        "folderExists": "Le dossier « {{folderName}} » existe déjà",
+        "importFailed": "Échec de l’import"
+      }
+    }
+  },
+  "seo": {
+    "keywords": "cartes, apprentissage, mémoire, éducation, étude, flash cards",
+    "landing": {
+      "title": "KotCat",
+      "description": "Système efficace d'apprentissage par cartes. Mémorisez les informations plus rapidement et plus longtemps."
+    },
+    "learn": {
+      "title": "KotCat Apprendre",
+      "description": "Étudiez les cartes et mémorisez les informations efficacement"
+    },
+    "profile": {
+      "title": "KotCat Profil",
+      "description": "Gérez votre profil et les paramètres du compte"
+    },
+    "signin": {
+      "title": "KotCat Connexion",
+      "description": "Connectez-vous à votre compte pour accéder aux cartes"
+    },
+    "signup": {
+      "title": "KotCat Inscription",
+      "description": "Créez un compte et commencez à étudier les cartes"
+    },
+    "notFound": {
+      "title": "KotCat Page non trouvée",
+      "description": "La page demandée n'existe pas"
+    },
+    "collections": {
+      "title": "Recueils thématiques de mots - KotCat",
+      "description": "Recueils thématiques de mots pour l'apprentissage du vocabulaire"
+    },
+    "ecosystem": {
+      "title": "Écosystème - KotCat",
+      "description": "Pages de l'écosystème"
+    }
+  },
+  "navigation": {
+    "home": "Accueil",
+    "learn": "Apprendre",
+    "signin": "Connexion",
+    "signup": "Inscription"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "email": "E-mail",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "cancel": "Annuler",
+    "submit": "Envoyer",
+    "loading": "Chargement...",
+    "notRegistered": "Si vous n'êtes pas encore inscrit,",
+    "registerLink": "Inscrivez-vous",
+    "alreadyRegistered": "Vous avez déjà un compte ?",
+    "loginLink": "Connexion",
+    "invalidCredentials": "E-mail ou mot de passe incorrect",
+    "or": "ou",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+    "registerDescription": "Créez un compte et commencez à mémoriser",
+    "usernameRequired": "Entrez le nom d'utilisateur",
+    "emailRequired": "Entrez l'e-mail",
+    "passwordRequired": "Entrez le mot de passe",
+    "emailInvalidFormat": "Format d'e-mail invalide",
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer plus tard",
+    "captchaRequired": "Veuillez compléter la captcha"
+  },
+  "buttons": {
+    "startLearning": "Apprendre les mots",
+    "learnWords": "Apprendre les mots",
+    "learnPhrases": "Apprendre les phrases",
+    "tryIt": "Essayer",
+    "enterSystem": "Entrer dans le système",
+    "create": "Créer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer"
+  },
+  "features": {
+    "title": "Pourquoi nous choisir",
+    "interactiveCards": {
+      "title": "Cartes interactives",
+      "description": "Créez et étudiez des cartes avec des questions et des réponses"
+    },
+    "adaptiveLearning": {
+      "title": "Apprentissage adaptatif",
+      "description": "Le système se souvient de vos résultats et adapte le processus"
+    },
+    "fastLearning": {
+      "title": "Apprentissage rapide",
+      "description": "Méthodes efficaces de mémorisation pour maîtriser rapidement le matériel"
+    }
+  },
+  "cta": {
+    "title": "Prêt à commencer à mémoriser ?",
+    "description": "Rejoignez des milliers d'utilisateurs qui ont déjà amélioré leur mémoire"
+  },
+  "cards": {
+    "title": "Cartes",
+    "front": "Recto",
+    "back": "Verso",
+    "create": "Ajouter une carte",
+    "context": "Créer du contenu IA",
+    "edit": "Modifier la carte",
+    "move": "Déplacer",
+    "moveToFolder": "Déplacer la carte vers un dossier",
+    "noOtherFolders": "Aucun autre dossier",
+    "delete": "Supprimer la carte",
+    "showAll": "Afficher tout",
+    "showUnlearned": "Afficher non apprises",
+    "emptyFolder": "Aucune carte dans le dossier",
+    "pronounce": "Prononcer",
+    "generateSentences": "Créer du contenu pour le mot"
+  },
+  "folders": {
+    "title": "Dossiers",
+    "create": "Créer un dossier",
+    "edit": "Modifier le dossier",
+    "delete": "Supprimer le dossier",
+    "sideALanguage": "Langue côté A",
+    "sideBLanguage": "Langue côté B",
+    "languageOptions": {
+      "ru": "Russe",
+      "en": "Anglais",
+      "uk": "Ukrainien",
+      "de": "Allemand",
+      "es": "Espagnol",
+      "fr": "Français",
+      "pl": "Polonais",
+      "pt": "Portugais",
+      "zh": "Chinois",
+      "ja": "Japonais",
+      "ko": "Coréen",
+      "it": "Italien",
+      "nl": "Néerlandais",
+      "tr": "Turc",
+      "sv": "Suédois",
+      "no": "Norvégien",
+      "da": "Danois",
+      "fi": "Finnois",
+      "cs": "Tchèque",
+      "hu": "Hongrois",
+      "ro": "Roumain",
+      "el": "Grec",
+      "th": "Thaï",
+      "vi": "Vietnamien",
+      "ar": "Arabe",
+      "he": "Hébreu",
+      "fa": "Persan"
+    },
+    "virtual": {
+      "remember": "Rappelle-toi",
+      "hard": "Difficile"
+    }
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite",
+    "network": "Erreur réseau",
+    "unauthorized": "Non autorisé",
+    "notFound": "Non trouvé"
+  },
+  "home": {
+    "title": "Mes cartes",
+    "logout": "Déconnexion",
+    "welcome": "Bienvenue",
+    "profile": "Profil"
+  },
+  "forms": {
+    "newCard": "Nouvelle carte",
+    "newFolder": "Nouveau dossier",
+    "question": "Face A",
+    "answer": "Face B",
+    "folderName": "Nom du dossier",
+    "add": "Ajouter",
+    "create": "Créer",
+    "back": "Retour",
+    "continue": "Continuer",
+    "continueWithCount": "Continuer à apprendre ({{count}} cartes non apprises)",
+    "selectAll": "Tout sélectionner",
+    "translating": "Traduction..."
+  },
+  "learning": {
+    "sideA": "Face A",
+    "sideB": "Face B",
+    "allLearned": "Toutes les cartes apprises",
+    "completedCycle": "Il ne reste plus de cartes",
+    "wantToContinue": "Continuer à apprendre",
+    "showAnswer": "Face B",
+    "showQuestion": "Face A",
+    "initialSide": "Face initiale",
+    "next": "Suivant",
+    "learned": "Appris",
+    "notLearned": "Non appris",
+    "remainingCards": "Cartes restantes : {{count}}",
+    "continueLearning": "Continuer à apprendre"
+  },
+  "import": {
+    "title": "Importer des cartes",
+    "selectFile": "Sélectionner un fichier",
+    "import": "Importer la liste",
+    "importing": "Importation...",
+    "format": "Format CSV : question, réponse",
+    "textImport": "Importation de texte",
+    "excelImport": "Importation Excel",
+    "excelDescription": "Sélectionnez un fichier Excel avec les colonnes 'Face A' et 'Face B'",
+    "excelFormat": "Seuls les fichiers .xlsx et .xls sont pris en charge",
+    "fileSelected": "Fichier sélectionné"
+  },
+  "export": {
+    "export": "Exporter vers Excel",
+    "exporting": "Exportation...",
+    "error": "Erreur d'exportation"
+  },
+  "googleSheets": {
+    "connect": "Connecter Google Sheets",
+    "connected": "Google Sheets connecté",
+    "connectSuccessMessage": "Ouvrez le menu ⋯ puis «Importer depuis Google Sheets» pour choisir un tableur dans Google Picker.",
+    "connectError": "Échec de la connexion à Google Sheets.",
+    "disconnect": "Déconnecter Google Sheets",
+    "disconnectedSuccess": "Google Sheets déconnecté.",
+    "reconnectRequired": "La connexion Google Sheets a expiré. Reconnectez via le menu ⋯.",
+    "importTitle": "Importer depuis Google Sheets",
+    "importDescription": "Choisissez un tableur dans Google Picker et un onglet. Colonnes : Face A et Face B (ou Question/Answer).",
+    "spreadsheetPickerLabel": "Tableur",
+    "spreadsheetSearchPlaceholder": "Rechercher par nom…",
+    "loadMoreSpreadsheets": "Charger plus",
+    "listSpreadsheetsError": "Impossible de charger les tableurs. Réessayez ou reconnectez Google Sheets.",
+    "sheetTabLabel": "Onglet",
+    "pickSpreadsheet": "Sélectionnez un tableur",
+    "pickSpreadsheetButton": "Choisir dans Google Picker",
+    "pickAnotherSpreadsheet": "Autre tableur…",
+    "noSpreadsheetSelected": "Aucun tableur sélectionné",
+    "unknownSpreadsheetName": "Tableur sans titre",
+    "pickerLoading": "Ouverture du picker...",
+    "pickerMissingConfig": "Google Picker n'est pas configuré (client id ou API key manquant).",
+    "pickerAuthError": "L'autorisation Google a échoué. Choisissez à nouveau le tableur dans Google Picker.",
+    "pickerTokenRequired": "Sélectionnez d'abord un tableur via Google Picker.",
+    "pickerLoadError": "Impossible de charger Google Picker. Désactivez les bloqueurs puis réessayez.",
+    "loadingSheetTabs": "Chargement des onglets…",
+    "sheetTabsLoadError": "Impossible de charger les onglets.",
+    "spreadsheetUrlOrId": "URL ou ID du tableau",
+    "sheetName": "Nom de la feuille",
+    "invalidUrl": "Entrez l'URL ou l'ID du tableau",
+    "importFromSheets": "Importer depuis Google Sheets",
+    "exportToSheets": "Exporter vers Google Sheets",
+    "exportingToSheets": "Exportation...",
+    "exportTitle": "Exporter vers Google Sheets",
+    "exportDescription": "Créez une nouvelle feuille ou écrivez les cartes dans une feuille choisie via Google Picker.",
+    "exportModeNew": "Créer une nouvelle feuille",
+    "exportModeExisting": "Écrire dans une feuille existante",
+    "exportNewTitleLabel": "Titre de la feuille",
+    "exportWriteOverwrite": "Remplacer toute la feuille (en-têtes + cartes)",
+    "exportWriteAppend": "Ajouter des lignes (conserver les données)",
+    "exportOverwriteConfirm": "Je comprends que toutes les données de la feuille sélectionnée seront remplacées",
+    "exportOverwriteConfirmRequired": "Confirmez le remplacement du contenu de la feuille",
+    "exportDefaultFolderName": "Dossier"
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Mettez à jour vos informations personnelles et vos préférences",
+    "profileSection": "Informations du compte",
+    "usernameLabel": "Nom d'affichage",
+    "emailLabel": "E-mail",
+    "languageLabel": "Langue de l'interface",
+    "saveProfile": "Enregistrer les modifications",
+    "profileUpdated": "Profil mis à jour avec succès",
+    "usernameRequired": "Le nom d'affichage ne peut pas être vide",
+    "nothingToUpdate": "Rien à mettre à jour",
+    "languageSection": "Langue de l'interface",
+    "saveLanguage": "Enregistrer la langue",
+    "languageUpdated": "Langue de l'interface mise à jour",
+    "passwordSection": "Changer le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "savePassword": "Changer le mot de passe",
+    "passwordUpdated": "Mot de passe mis à jour avec succès",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "openProfile": "Ouvrir le profil",
+    "registerGuestTitle": "Enregistrer un profil permanent",
+    "registerGuestSubtitle": "Remplissez les détails pour créer un compte permanent",
+    "registerGuestButton": "S'inscrire",
+    "registerGuestSuccess": "Profil enregistré avec succès",
+    "passwordLabel": "Mot de passe",
+    "getToken": "Obtenir un token",
+    "token": "Token",
+    "createToken": "Créer un token",
+    "creatingToken": "Création du token...",
+    "copyToken": "Copier",
+    "tokenError": "Erreur lors de l'obtention du token",
+    "tokenNotCreated": "Token pas encore créé",
+    "deleteAccountTitle": "Supprimer le compte",
+    "deleteAccountDescription": "La suppression du compte supprimera définitivement toutes vos données.",
+    "deleteAccountButton": "Supprimer le compte",
+    "deletingAccount": "Suppression du compte...",
+    "deleteAccountConfirmTitle": "Confirmer la suppression du compte",
+    "deleteAccountConfirmText": "Êtes-vous sûr de vouloir supprimer votre compte ? Toutes les données seront supprimées définitivement."
+  },
+  "contextReading": {
+    "title": "Contexte",
+    "text": "Texte",
+    "translation": "Traduction",
+    "generating": "Génération du texte...",
+    "waiting": "En attente du début de la génération...",
+    "reset": "Réinitialiser",
+    "next": "Suivant",
+    "back": "Retour",
+    "words": "Mots pour le contexte : {{count}}",
+    "onlyUnlearned": "Mots non appris uniquement",
+    "progress": "{{used}}/{{total}} (restants : {{remaining}})",
+    "languageLevel": "Niveau de langue",
+    "createContent": "Créer du contenu",
+    "folderRequired": "L'identifiant du dossier est requis",
+    "noWordsLeft": "Il ne reste plus de mots dans ce dossier pour créer du contenu de lecture contextuelle.",
+    "backToFolder": "Retour au dossier",
+    "createContentAgain": "Créer du contenu à nouveau"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Connecter Telegram",
+      "description": "Connecter le compte Telegram",
+      "processing": "Connexion du compte...",
+      "success": "Compte Telegram connecté avec succès !",
+      "error": "Erreur lors de la connexion du compte",
+      "invalidNonce": "Code invalide ou expiré. Veuillez réessayer depuis le bot Telegram.",
+      "alreadyBound": "Ce compte Telegram est déjà lié à un autre utilisateur",
+      "userAlreadyBound": "Vous avez déjà un compte Telegram lié",
+      "noNonce": "Paramètre nonce manquant. Veuillez suivre le lien du bot Telegram.",
+      "goToApp": "Aller à l'application",
+      "close": "Fermer"
+    }
+  }
+}

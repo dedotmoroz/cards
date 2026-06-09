@@ -1,0 +1,433 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat Ефективна система навчання за допомогою карток. Запам'ятовуйте інформацію швидше і надовго."
+  },
+  "landing": {
+    "appName": "Картки для вивчення слів",
+    "firstScreen": {
+      "tag": "Новий підхід до вивчення мов",
+      "title1": "Запам'ятовуй",
+      "title2": "слова в контексті,",
+      "title3": "а не за списками",
+      "description": "Створюй живі приклади з AI, зберігай фрази прямо з браузера й вчи мову на реальних ситуаціях.",
+      "button1": "Почати навчання",
+      "button2": "Як це працює"
+    },
+    "hero": {
+      "title": "Почни запам'ятовувати слова свідомо",
+      "description": "Додавай слова з реального контенту, вчи їх у контексті та повертайся до них тоді, коли це дійсно потрібно.",
+      "button": "Почати навчання"
+    },
+    "context": {
+      "title": "Чому контекст важливіший за заучування",
+      "subtitle": "Дослідження когнітивної психології підтверджують: контекст — це найкоротший шлях до вільного мовлення.",
+      "subtitleBold1": "+35% до запам’ятовування.",
+      "subtitle1": "Слова, вивчені в реченнях, залишаються в довготривалій пам’яті на третину довше, ніж списки",
+      "subtitleBold2": "У 2 рази швидше.",
+      "subtitle2": "Мозок витрачає менше енергії на засвоєння слова, якщо бачить його в реальній ситуації.",
+      "subtitleBold3": "0% зубріння.",
+      "subtitle3": "Ви не заучуєте переклад, а формуєте природні нейронні зв’язки, як це роблять носії мови.",
+      "description": "На основі теорії «Рівнів обробки» Крейка та Локхарта.",
+      "link": "Докладніше про теорію запам’ятовування…"
+    },
+    "features": {
+      "contextAI": {
+        "title": "AI Контекст",
+        "subtitle": "Опановуйте слова в контексті речень.",
+        "item1": "▪ AI підбере максимально релевантний контекст",
+        "item2": "▪ Ідеально для фразових дієслів, ідіом і сталих сполучень",
+        "item3": "▪ Розумійте логіку живого мовлення",
+        "accent": "Запам’ятовуйте готові фрази й звучіть природно."
+      },
+      "chrome": {
+        "title": "Chrome-розширення",
+        "subtitle": "Перетворює виділений текст на сайтах на картки.",
+        "description": "Як це працює:",
+        "item1": "▪ Виділіть слово або фразу на сторінці",
+        "item2": "▪ Через контекстне меню браузера додайте до словника",
+        "item3": "Картка автоматично створиться у вибраній папці.",
+        "accent": "Детальніше про розширення та встановлення…"
+      },
+      "importExport": {
+        "title": "Імпорт і експорт",
+        "subtitle": "Повний контроль над словником.",
+        "description": "",
+        "item1": "▪ Імпорт готових списків слів",
+        "item2": "▪ Завантаження та вивантаження файлів у форматі Excel",
+        "item3": "▪ Синхронізація даних з Google Таблицями",
+        "accent": "Ви не прив’язані до однієї платформи."
+      },
+      "adaptive": {
+        "title": "Адаптивність",
+        "subtitle": "Зручно на будь-якому екрані.",
+        "description": "Сервіс адаптований для:",
+        "item1": "▪ Мобільних пристроїв",
+        "item2": "▪ Ноутбуків",
+        "item3": "▪ Великих моніторів",
+        "accent": "Інтерфейс простий, легкий та не перевантажений — ніщо не відволікає від навчання."
+      }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "наддосягач, відмінник",
+      "example": "Бути overachiever може іноді призводити до проблем у спілкуванні, тому що інші можуть відчувати тиск необхідності відповідати вашим високим стандартам."
+    }
+  },
+  "footer": {
+    "vocabularyCollections": "Тематичні підбірки слів",
+    "ecosystem": "Екосистема"
+  },
+  "collections": {
+    "wordsImport": {
+      "title": "Слова колекції",
+      "takeButton": "Забрати собі",
+      "createGuestButton": "Створити",
+      "guestPrompt": "Ви не авторизовані. Створити колекцію в тимчасовому акаунті?",
+      "goToFolder": "Перейти до папки",
+      "success": "Готово: створено карток — {{count}}",
+      "errors": {
+        "missingFolderName": "Не знайдено folderName в words",
+        "selectAtLeastOne": "Виберіть хоча б одне слово",
+        "folderExists": "Папка «{{folderName}}» вже існує",
+        "importFailed": "Помилка імпорту"
+      }
+    }
+  },
+  "seo": {
+    "keywords": "картки, навчання, пам'ять, освіта, вивчення, флешкарти",
+    "landing": {
+      "title": "KotCat",
+      "description": "Ефективна система навчання за допомогою карток. Запам'ятовуйте інформацію швидше і надовго."
+    },
+    "learn": {
+      "title": "KotCat Навчання",
+      "description": "Вивчайте картки та ефективно запам'ятовуйте інформацію"
+    },
+    "profile": {
+      "title": "KotCat Профіль",
+      "description": "Керуйте своїм профілем та налаштуваннями облікового запису"
+    },
+    "signin": {
+      "title": "KotCat Вхід",
+      "description": "Увійдіть до свого облікового запису для доступу до карток"
+    },
+    "signup": {
+      "title": "KotCat Реєстрація",
+      "description": "Створіть обліковий запис і почніть вивчати картки"
+    },
+    "notFound": {
+      "title": "KotCat Сторінку не знайдено",
+      "description": "Запитана сторінка не існує"
+    },
+    "collections": {
+      "title": "Тематичні підбірки слів - KotCat",
+      "description": "Тематичні підбірки слів для вивчення лексики"
+    },
+    "ecosystem": {
+      "title": "Екосистема - KotCat",
+      "description": "Сторінки екосистеми"
+    }
+  },
+  "navigation": {
+    "home": "Головна",
+    "learn": "Навчання",
+    "signin": "Вхід",
+    "signup": "Реєстрація"
+  },
+  "auth": {
+    "login": "Увійти",
+    "register": "Зареєструватися",
+    "logout": "Вийти",
+    "email": "Електронна пошта",
+    "username": "Ім'я користувача",
+    "password": "Пароль",
+    "confirmPassword": "Підтвердити пароль",
+    "cancel": "Скасувати",
+    "submit": "Відправити",
+    "loading": "Завантаження...",
+    "notRegistered": "Якщо ви ще не зареєстровані,",
+    "registerLink": "Зареєструйтеся",
+    "alreadyRegistered": "Вже є обліковий запис?",
+    "loginLink": "Увійти",
+    "invalidCredentials": "Неправильна електронна пошта або пароль",
+    "or": "або",
+    "noAccount": "Немає облікового запису?",
+    "passwordMismatch": "Паролі не співпадають",
+    "passwordMinLength": "Пароль повинен містити принаймні 6 символів",
+    "registerDescription": "Створіть обліковий запис і почніть запам'ятовувати",
+    "usernameRequired": "Введіть ім'я користувача",
+    "emailRequired": "Введіть email",
+    "passwordRequired": "Введіть пароль",
+    "emailInvalidFormat": "Некоректний формат email",
+    "errorGeneric": "Щось пішло не так. Спробуйте пізніше",
+    "captchaRequired": "Будь ласка, пройдіть перевірку капчі"
+  },
+  "buttons": {
+    "startLearning": "Вчити слова",
+    "learnWords": "Вчити слова",
+    "learnPhrases": "Вчити фрази",
+    "tryIt": "Спробувати",
+    "enterSystem": "Увійти до системи",
+    "create": "Створити",
+    "edit": "Редагувати",
+    "delete": "Видалити",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "close": "Закрити"
+  },
+  "features": {
+    "title": "Чому обирають нас",
+    "interactiveCards": {
+      "title": "Інтерактивні картки",
+      "description": "Створюйте та вивчайте картки з питаннями та відповідями"
+    },
+    "adaptiveLearning": {
+      "title": "Адаптивне навчання",
+      "description": "Система запам'ятовує ваші результати та адаптує процес"
+    },
+    "fastLearning": {
+      "title": "Швидке навчання",
+      "description": "Ефективні методи запам'ятовування для швидкого освоєння матеріалу"
+    }
+  },
+  "cta": {
+    "title": "Готові почати запам'ятовувати?",
+    "description": "Приєднуйтесь до тисяч користувачів, які вже покращили свою пам'ять"
+  },
+  "cards": {
+    "title": "Картки",
+    "front": "Лицева сторона",
+    "back": "Зворотна сторона",
+    "create": "Додати картку",
+    "context": "Створити AI контент",
+    "edit": "Редагувати картку",
+    "move": "Перемістити",
+    "moveToFolder": "Перемістити картку в папку",
+    "noOtherFolders": "Немає інших папок",
+    "delete": "Видалити картку",
+    "showAll": "Показати всі",
+    "showUnlearned": "Показати невивчені",
+    "emptyFolder": "У папці немає карток",
+    "pronounce": "Вимовити",
+    "generateSentences": "Створити контент для слова"
+  },
+  "folders": {
+    "title": "Папки",
+    "create": "Створити папку",
+    "edit": "Редагувати папку",
+    "delete": "Видалити папку",
+    "sideALanguage": "Мова сторони A",
+    "sideBLanguage": "Мова сторони B",
+    "languageOptions": {
+      "ru": "Російська",
+      "en": "Англійська",
+      "uk": "Українська",
+      "de": "Німецька",
+      "es": "Іспанська",
+      "fr": "Французька",
+      "pl": "Польська",
+      "pt": "Португальська",
+      "zh": "Китайська",
+      "ja": "Японська",
+      "ko": "Корейська",
+      "it": "Італійська",
+      "nl": "Нідерландська",
+      "tr": "Турецька",
+      "sv": "Шведська",
+      "no": "Норвезька",
+      "da": "Данська",
+      "fi": "Фінська",
+      "cs": "Чеська",
+      "hu": "Угорська",
+      "ro": "Румунська",
+      "el": "Грецька",
+      "th": "Тайська",
+      "vi": "В'єтнамська",
+      "ar": "Арабська",
+      "he": "Іврит",
+      "fa": "Перська"
+    },
+    "virtual": {
+      "remember": "Згадай",
+      "hard": "Складно"
+    }
+  },
+  "errors": {
+    "generic": "Сталася помилка",
+    "network": "Помилка мережі",
+    "unauthorized": "Не авторизовано",
+    "notFound": "Не знайдено"
+  },
+  "home": {
+    "title": "Мої картки",
+    "logout": "Вийти",
+    "welcome": "Ласкаво просимо",
+    "profile": "Профіль"
+  },
+  "forms": {
+    "newCard": "Нова картка",
+    "newFolder": "Нова папка",
+    "question": "Сторона A",
+    "answer": "Сторона B",
+    "folderName": "Назва папки",
+    "add": "Додати",
+    "create": "Створити",
+    "back": "Назад",
+    "continue": "Продовжити",
+    "continueWithCount": "Продовжити навчання ({{count}} невивчених карток)",
+    "selectAll": "Вибрати все",
+    "translating": "Перекладаю..."
+  },
+  "learning": {
+    "sideA": "Сторона A",
+    "sideB": "Сторона B",
+    "allLearned": "Всі картки вивчені",
+    "completedCycle": "Карток не залишилося",
+    "wantToContinue": "Продовжити навчання",
+    "showAnswer": "Сторона B",
+    "showQuestion": "Сторона A",
+    "initialSide": "Початкова сторона",
+    "next": "Далі",
+    "learned": "Вивчено",
+    "notLearned": "Не вивчено",
+    "remainingCards": "Залишилося карток: {{count}}",
+    "continueLearning": "Продовжити навчання"
+  },
+  "import": {
+    "title": "Імпорт карток",
+    "selectFile": "Вибрати файл",
+    "import": "Імпортувати список",
+    "importing": "Імпортування...",
+    "format": "Формат CSV: питання, відповідь",
+    "textImport": "Текстовий імпорт",
+    "excelImport": "Імпорт Excel",
+    "excelDescription": "Виберіть файл Excel зі стовпцями 'Сторона A' та 'Сторона B'",
+    "excelFormat": "Підтримуються лише файли .xlsx та .xls",
+    "fileSelected": "Файл вибрано"
+  },
+  "export": {
+    "export": "Експорт у Excel",
+    "exporting": "Експортування...",
+    "error": "Помилка експорту"
+  },
+  "googleSheets": {
+    "connect": "Підключити Google Sheets",
+    "connected": "Google Sheets підключено",
+    "connectSuccessMessage": "Відкрийте меню «⋯» і оберіть «Імпорт з Google Sheets», щоб вказати таблицю в Google Picker.",
+    "connectError": "Не вдалося підключити Google Sheets.",
+    "disconnect": "Відключити Google Sheets",
+    "disconnectedSuccess": "Google Sheets відключено.",
+    "reconnectRequired": "Підключення Google Sheets закінчилось. Підключіть знову через меню ⋯.",
+    "importTitle": "Імпорт з Google Sheets",
+    "importDescription": "Оберіть таблицю в Google Picker та аркуш. Колонки: Сторона A та Сторона B (або Question/Answer).",
+    "spreadsheetPickerLabel": "Таблиця",
+    "spreadsheetSearchPlaceholder": "Пошук за назвою…",
+    "loadMoreSpreadsheets": "Завантажити ще",
+    "listSpreadsheetsError": "Не вдалося завантажити список таблиць. Спробуйте ще раз або перепідключіть Google Sheets.",
+    "sheetTabLabel": "Аркуш",
+    "pickSpreadsheet": "Оберіть таблицю",
+    "pickSpreadsheetButton": "Вибрати через Google Picker",
+    "pickAnotherSpreadsheet": "Інша таблиця…",
+    "noSpreadsheetSelected": "Таблицю не вибрано",
+    "unknownSpreadsheetName": "Таблиця без назви",
+    "pickerLoading": "Відкриваємо Picker...",
+    "pickerMissingConfig": "Google Picker не налаштований (немає client id або API key).",
+    "pickerAuthError": "Помилка авторизації Google. Оберіть таблицю в Google Picker ще раз.",
+    "pickerTokenRequired": "Спочатку оберіть таблицю через Google Picker.",
+    "pickerLoadError": "Не вдалося завантажити Google Picker. Вимкніть блокувальники й спробуйте ще раз.",
+    "loadingSheetTabs": "Завантаження аркушів…",
+    "sheetTabsLoadError": "Не вдалося завантажити список аркушів.",
+    "spreadsheetUrlOrId": "Посилання або ID таблиці",
+    "sheetName": "Назва аркуша",
+    "invalidUrl": "Введіть посилання або ID таблиці",
+    "importFromSheets": "Імпорт з Google Sheets",
+    "exportToSheets": "Експорт у Google Sheets",
+    "exportingToSheets": "Експорт...",
+    "exportTitle": "Експорт у Google Sheets",
+    "exportDescription": "Створіть нову таблицю або запишіть картки в таблицю, обрану через Google Picker.",
+    "exportModeNew": "Створити нову таблицю",
+    "exportModeExisting": "Записати в існуючу таблицю",
+    "exportNewTitleLabel": "Назва таблиці",
+    "exportWriteOverwrite": "Замінити весь аркуш (заголовки та всі картки)",
+    "exportWriteAppend": "Додати рядки (зберегти наявні дані)",
+    "exportOverwriteConfirm": "Я розумію, що всі дані на обраному аркуші будуть замінені",
+    "exportOverwriteConfirmRequired": "Підтвердьте заміну вмісту аркуша",
+    "exportDefaultFolderName": "Папка"
+  },
+  "profile": {
+    "title": "Профіль",
+    "subtitle": "Оновіть свою особисту інформацію та налаштування",
+    "profileSection": "Інформація про обліковий запис",
+    "usernameLabel": "Відображуване ім'я",
+    "emailLabel": "Електронна пошта",
+    "languageLabel": "Мова інтерфейсу",
+    "saveProfile": "Зберегти зміни",
+    "profileUpdated": "Профіль успішно оновлено",
+    "usernameRequired": "Відображуване ім'я не може бути порожнім",
+    "nothingToUpdate": "Немає що оновлювати",
+    "languageSection": "Мова інтерфейсу",
+    "saveLanguage": "Зберегти мову",
+    "languageUpdated": "Мову інтерфейсу оновлено",
+    "passwordSection": "Змінити пароль",
+    "currentPassword": "Поточний пароль",
+    "newPassword": "Новий пароль",
+    "confirmPassword": "Підтвердити новий пароль",
+    "savePassword": "Змінити пароль",
+    "passwordUpdated": "Пароль успішно змінено",
+    "passwordMismatch": "Паролі не співпадають",
+    "openProfile": "Відкрити профіль",
+    "registerGuestTitle": "Зареєструвати постійний профіль",
+    "registerGuestSubtitle": "Заповніть дані для створення постійного облікового запису",
+    "registerGuestButton": "Зареєструвати",
+    "registerGuestSuccess": "Профіль успішно зареєстровано",
+    "passwordLabel": "Пароль",
+    "getToken": "Отримати токен",
+    "token": "Токен",
+    "createToken": "Створити токен",
+    "creatingToken": "Створення токена...",
+    "copyToken": "Копіювати",
+    "tokenError": "Помилка отримання токена",
+    "tokenNotCreated": "Токен ще не створено",
+    "deleteAccountTitle": "Видалення акаунта",
+    "deleteAccountDescription": "Видалення акаунта безповоротно видалить усі ваші дані.",
+    "deleteAccountButton": "Видалити акаунт",
+    "deletingAccount": "Видалення акаунта...",
+    "deleteAccountConfirmTitle": "Підтвердження видалення акаунта",
+    "deleteAccountConfirmText": "Ви впевнені, що хочете видалити акаунт? Усі дані буде безповоротно видалено."
+  },
+  "contextReading": {
+    "title": "Контекст",
+    "text": "Текст",
+    "translation": "Переклад",
+    "generating": "Генерація тексту...",
+    "waiting": "Очікування початку генерації...",
+    "reset": "Скинути",
+    "next": "Далі",
+    "back": "Назад",
+    "words": "Слова для контексту: {{count}}",
+    "onlyUnlearned": "Лише невивчені слова",
+    "progress": "{{used}}/{{total}} (залишилось: {{remaining}})",
+    "languageLevel": "Рівень мови",
+    "createContent": "Створити контент",
+    "folderRequired": "Не вказано папку",
+    "noWordsLeft": "Слова для створення контенту в цій папці закінчились.",
+    "backToFolder": "Повернутися в папку",
+    "createContentAgain": "Створити контент знову"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Підключення Telegram",
+      "description": "Підключення Telegram акаунта",
+      "processing": "Підключення акаунта...",
+      "success": "Telegram акаунт успішно підключено!",
+      "error": "Помилка при підключенні акаунта",
+      "invalidNonce": "Невірний або застарілий код. Спробуйте знову з Telegram бота.",
+      "alreadyBound": "Цей Telegram акаунт вже прив'язаний до іншого користувача",
+      "userAlreadyBound": "У вас вже прив'язаний Telegram акаунт",
+      "noNonce": "Відсутній параметр nonce. Будь ласка, перейдіть за посиланням з Telegram бота.",
+      "goToApp": "Перейти до додатку",
+      "close": "Закрити"
+    }
+  }
+}

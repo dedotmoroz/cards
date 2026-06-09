@@ -1,0 +1,433 @@
+{
+  "app": {
+    "title": "KotCat",
+    "tagline": "KotCat Sistema eficaz de aprendizaje con tarjetas. Recuerda información más rápido y durante más tiempo."
+  },
+  "landing": {
+    "appName": "Tarjetas de vocabulario",
+    "firstScreen": {
+      "tag": "Un nuevo enfoque para aprender idiomas",
+      "title1": "Memoriza",
+      "title2": "palabras en contexto,",
+      "title3": "no por listas",
+      "description": "Crea ejemplos vivos con IA, guarda frases directamente desde el navegador y aprende el idioma en situaciones reales.",
+      "button1": "Comenzar a aprender",
+      "button2": "Cómo funciona"
+    },
+    "hero": {
+      "title": "Comienza a memorizar palabras conscientemente",
+      "description": "Añade palabras de contenido real, apréndelas en contexto y vuelve a ellas cuando sea realmente necesario.",
+      "button": "Comenzar a aprender"
+    },
+    "context": {
+      "title": "Por qué el contexto es más importante que memorizar",
+      "subtitle": "La investigación en psicología cognitiva lo confirma: el contexto es el camino más corto hacia el habla fluida.",
+      "subtitleBold1": "+35 % en la retención.",
+      "subtitle1": "Las palabras aprendidas en oraciones permanecen en la memoria a largo plazo un tercio más que las listas",
+      "subtitleBold2": "El doble de rápido.",
+      "subtitle2": "El cerebro gasta menos energía en asimilar una palabra si la ve en una situación real.",
+      "subtitleBold3": "0 % de memorización mecánica.",
+      "subtitle3": "No memorizas una traducción: creas conexiones neuronales naturales como los nativos.",
+      "description": "Basado en la teoría de los «niveles de procesamiento» de Craik y Lockhart.",
+      "link": "Más sobre la teoría de la memoria…"
+    },
+    "features": {
+      "contextAI": {
+        "title": "Contexto con IA",
+        "subtitle": "Domina palabras en el contexto de oraciones.",
+        "item1": "▪ La IA elige el contexto más relevante",
+        "item2": "▪ Ideal para phrasal verbs, modismos y expresiones fijas",
+        "item3": "▪ Comprende la lógica del habla real",
+        "accent": "Memoriza frases hechas y suena natural."
+      },
+      "chrome": {
+        "title": "Extensión de Chrome",
+        "subtitle": "Convierte el texto seleccionado en sitios web en tarjetas.",
+        "description": "Cómo funciona:",
+        "item1": "▪ Selecciona una palabra o frase en la página",
+        "item2": "▪ Añádela al diccionario desde el menú contextual del navegador",
+        "item3": "La tarjeta se creará automáticamente en la carpeta elegida.",
+        "accent": "Más sobre la extensión y la instalación…"
+      },
+      "importExport": {
+        "title": "Importar y exportar",
+        "subtitle": "Control total de tu vocabulario.",
+        "description": "",
+        "item1": "▪ Importa listas de palabras listas para usar",
+        "item2": "▪ Carga y descarga archivos en formato Excel",
+        "item3": "▪ Sincroniza datos con Google Sheets",
+        "accent": "No quedas atado a una sola plataforma."
+      },
+      "adaptive": {
+        "title": "Adaptabilidad",
+        "subtitle": "Cómodo en cualquier pantalla.",
+        "description": "El servicio está adaptado para:",
+        "item1": "▪ Dispositivos móviles",
+        "item2": "▪ Portátiles",
+        "item3": "▪ Monitores grandes",
+        "accent": "La interfaz es simple, ligera y ordenada — nada distrae del aprendizaje."
+      }
+    },
+    "exampleCard": {
+      "word": "overachiever",
+      "translation": "sobrerrealizador, triunfador",
+      "example": "Ser un overachiever a veces puede llevar a problemas de comunicación porque otros pueden sentirse presionados a cumplir con tus altos estándares."
+    }
+  },
+  "footer": {
+    "vocabularyCollections": "Colecciones temáticas de palabras",
+    "ecosystem": "Ecosistema"
+  },
+  "collections": {
+    "wordsImport": {
+      "title": "Palabras de la colección",
+      "takeButton": "Añadir a mis carpetas",
+      "createGuestButton": "Crear",
+      "guestPrompt": "No has iniciado sesión. ¿Crear esta colección en una cuenta temporal?",
+      "goToFolder": "Ir a la carpeta",
+      "success": "Listo: tarjetas creadas — {{count}}",
+      "errors": {
+        "missingFolderName": "No se encontró folderName en words",
+        "selectAtLeastOne": "Selecciona al menos una palabra",
+        "folderExists": "La carpeta «{{folderName}}» ya existe",
+        "importFailed": "Error de importación"
+      }
+    }
+  },
+  "seo": {
+    "keywords": "tarjetas, aprendizaje, memoria, educación, estudio, flash cards",
+    "landing": {
+      "title": "KotCat",
+      "description": "Sistema eficaz de aprendizaje con tarjetas. Recuerda información más rápido y durante más tiempo."
+    },
+    "learn": {
+      "title": "KotCat Aprender",
+      "description": "Estudia tarjetas y memoriza información eficazmente"
+    },
+    "profile": {
+      "title": "KotCat Perfil",
+      "description": "Gestiona tu perfil y configuraciones de cuenta"
+    },
+    "signin": {
+      "title": "KotCat Iniciar sesión",
+      "description": "Inicia sesión en tu cuenta para acceder a las tarjetas"
+    },
+    "signup": {
+      "title": "KotCat Registrarse",
+      "description": "Crea una cuenta y comienza a estudiar tarjetas"
+    },
+    "notFound": {
+      "title": "KotCat Página no encontrada",
+      "description": "La página solicitada no existe"
+    },
+    "collections": {
+      "title": "Colecciones temáticas de palabras - KotCat",
+      "description": "Colecciones temáticas de palabras para aprender vocabulario"
+    },
+    "ecosystem": {
+      "title": "Ecosistema - KotCat",
+      "description": "Páginas del ecosistema"
+    }
+  },
+  "navigation": {
+    "home": "Inicio",
+    "learn": "Aprender",
+    "signin": "Iniciar sesión",
+    "signup": "Registrarse"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "notRegistered": "Si aún no estás registrado,",
+    "registerLink": "Regístrate",
+    "alreadyRegistered": "¿Ya tienes una cuenta?",
+    "loginLink": "Iniciar sesión",
+    "invalidCredentials": "Correo electrónico o contraseña incorrectos",
+    "or": "o",
+    "noAccount": "¿No tienes una cuenta?",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+    "registerDescription": "Crea una cuenta y comienza a memorizar",
+    "usernameRequired": "Introduce el nombre de usuario",
+    "emailRequired": "Introduce el correo electrónico",
+    "passwordRequired": "Introduce la contraseña",
+    "emailInvalidFormat": "Formato de correo electrónico no válido",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo más tarde",
+    "captchaRequired": "Por favor, completa la captcha"
+  },
+  "buttons": {
+    "startLearning": "Aprender palabras",
+    "learnWords": "Aprender palabras",
+    "learnPhrases": "Aprender frases",
+    "tryIt": "Probar",
+    "enterSystem": "Entrar al sistema",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar"
+  },
+  "features": {
+    "title": "Por qué elegirnos",
+    "interactiveCards": {
+      "title": "Tarjetas interactivas",
+      "description": "Crea y estudia tarjetas con preguntas y respuestas"
+    },
+    "adaptiveLearning": {
+      "title": "Aprendizaje adaptativo",
+      "description": "El sistema recuerda tus resultados y adapta el proceso"
+    },
+    "fastLearning": {
+      "title": "Aprendizaje rápido",
+      "description": "Métodos efectivos de memorización para dominio rápido del material"
+    }
+  },
+  "cta": {
+    "title": "¿Listo para empezar a recordar?",
+    "description": "Únete a miles de usuarios que ya han mejorado su memoria"
+  },
+  "cards": {
+    "title": "Tarjetas",
+    "front": "Frente",
+    "back": "Reverso",
+    "create": "Añadir tarjeta",
+    "context": "Crear contenido con IA",
+    "edit": "Editar tarjeta",
+    "move": "Mover",
+    "moveToFolder": "Mover tarjeta a carpeta",
+    "noOtherFolders": "No hay otras carpetas",
+    "delete": "Eliminar tarjeta",
+    "showAll": "Mostrar todas",
+    "showUnlearned": "Mostrar no aprendidas",
+    "emptyFolder": "No hay tarjetas en la carpeta",
+    "pronounce": "Pronunciar",
+    "generateSentences": "Crear contenido para la palabra"
+  },
+  "folders": {
+    "title": "Carpetas",
+    "create": "Crear carpeta",
+    "edit": "Editar carpeta",
+    "delete": "Eliminar carpeta",
+    "sideALanguage": "Idioma del lado A",
+    "sideBLanguage": "Idioma del lado B",
+    "languageOptions": {
+      "ru": "Ruso",
+      "en": "Inglés",
+      "uk": "Ucraniano",
+      "de": "Alemán",
+      "es": "Español",
+      "fr": "Francés",
+      "pl": "Polaco",
+      "pt": "Portugués",
+      "zh": "Chino",
+      "ja": "Japonés",
+      "ko": "Coreano",
+      "it": "Italiano",
+      "nl": "Neerlandés",
+      "tr": "Turco",
+      "sv": "Sueco",
+      "no": "Noruego",
+      "da": "Danés",
+      "fi": "Finlandés",
+      "cs": "Checo",
+      "hu": "Húngaro",
+      "ro": "Rumano",
+      "el": "Griego",
+      "th": "Tailandés",
+      "vi": "Vietnamita",
+      "ar": "Árabe",
+      "he": "Hebreo",
+      "fa": "Persa"
+    },
+    "virtual": {
+      "remember": "Recordar",
+      "hard": "Difícil"
+    }
+  },
+  "errors": {
+    "generic": "Ocurrió un error",
+    "network": "Error de red",
+    "unauthorized": "No autorizado",
+    "notFound": "No encontrado"
+  },
+  "home": {
+    "title": "Mis tarjetas",
+    "logout": "Cerrar sesión",
+    "welcome": "Bienvenido",
+    "profile": "Perfil"
+  },
+  "forms": {
+    "newCard": "Nueva tarjeta",
+    "newFolder": "Nueva carpeta",
+    "question": "Lado A",
+    "answer": "Lado B",
+    "folderName": "Nombre de carpeta",
+    "add": "Añadir",
+    "create": "Crear",
+    "back": "Atrás",
+    "continue": "Continuar",
+    "continueWithCount": "Continuar aprendiendo ({{count}} tarjetas no aprendidas)",
+    "selectAll": "Seleccionar todo",
+    "translating": "Traduciendo..."
+  },
+  "learning": {
+    "sideA": "Lado A",
+    "sideB": "Lado B",
+    "allLearned": "Todas las tarjetas aprendidas",
+    "completedCycle": "No quedan tarjetas",
+    "wantToContinue": "Continuar aprendiendo",
+    "showAnswer": "Lado B",
+    "showQuestion": "Lado A",
+    "initialSide": "Lado inicial",
+    "next": "Siguiente",
+    "learned": "Aprendido",
+    "notLearned": "No aprendido",
+    "remainingCards": "Tarjetas restantes: {{count}}",
+    "continueLearning": "Continuar aprendiendo"
+  },
+  "import": {
+    "title": "Importar tarjetas",
+    "selectFile": "Seleccionar archivo",
+    "import": "Importar lista",
+    "importing": "Importando...",
+    "format": "Formato CSV: pregunta, respuesta",
+    "textImport": "Importar texto",
+    "excelImport": "Importar Excel",
+    "excelDescription": "Selecciona archivo Excel con columnas 'Lado A' y 'Lado B'",
+    "excelFormat": "Solo se admiten archivos .xlsx y .xls",
+    "fileSelected": "Archivo seleccionado"
+  },
+  "export": {
+    "export": "Exportar a Excel",
+    "exporting": "Exportando...",
+    "error": "Error de exportación"
+  },
+  "googleSheets": {
+    "connect": "Conectar Google Sheets",
+    "connected": "Google Sheets conectado",
+    "connectSuccessMessage": "Abre el menú ⋯ y elige «Importar desde Google Sheets» para seleccionar una hoja en Google Picker.",
+    "connectError": "No se pudo conectar Google Sheets.",
+    "disconnect": "Desconectar Google Sheets",
+    "disconnectedSuccess": "Google Sheets desconectado.",
+    "reconnectRequired": "La conexión con Google Sheets expiró. Vuelva a conectar desde el menú ⋯.",
+    "importTitle": "Importar desde Google Sheets",
+    "importDescription": "Elige una hoja de cálculo en Google Picker y una pestaña. Columnas: Lado A y Lado B (o Question/Answer).",
+    "spreadsheetPickerLabel": "Hoja de cálculo",
+    "spreadsheetSearchPlaceholder": "Buscar por nombre…",
+    "loadMoreSpreadsheets": "Cargar más",
+    "listSpreadsheetsError": "No se pudieron cargar las tablas. Inténtalo de nuevo o vuelve a conectar Google Sheets.",
+    "sheetTabLabel": "Pestaña",
+    "pickSpreadsheet": "Selecciona una hoja de cálculo",
+    "pickSpreadsheetButton": "Elegir en Google Picker",
+    "pickAnotherSpreadsheet": "Otra hoja…",
+    "noSpreadsheetSelected": "No se seleccionó ninguna hoja",
+    "unknownSpreadsheetName": "Hoja sin título",
+    "pickerLoading": "Abriendo picker...",
+    "pickerMissingConfig": "Google Picker no está configurado (falta client id o API key).",
+    "pickerAuthError": "Falló la autorización de Google. Elige la hoja de nuevo en Google Picker.",
+    "pickerTokenRequired": "Primero selecciona una hoja de cálculo en Google Picker.",
+    "pickerLoadError": "No se pudo cargar Google Picker. Desactiva bloqueadores e inténtalo de nuevo.",
+    "loadingSheetTabs": "Cargando pestañas…",
+    "sheetTabsLoadError": "No se pudieron cargar las pestañas.",
+    "spreadsheetUrlOrId": "URL o ID de la hoja",
+    "sheetName": "Nombre de la hoja",
+    "invalidUrl": "Introduce la URL o ID de la hoja",
+    "importFromSheets": "Importar desde Google Sheets",
+    "exportToSheets": "Exportar a Google Sheets",
+    "exportingToSheets": "Exportando...",
+    "exportTitle": "Exportar a Google Sheets",
+    "exportDescription": "Crea una hoja nueva o escribe las tarjetas en una hoja elegida con Google Picker.",
+    "exportModeNew": "Crear hoja nueva",
+    "exportModeExisting": "Escribir en hoja existente",
+    "exportNewTitleLabel": "Título de la hoja",
+    "exportWriteOverwrite": "Reemplazar toda la pestaña (encabezados + tarjetas)",
+    "exportWriteAppend": "Añadir filas (conservar datos existentes)",
+    "exportOverwriteConfirm": "Entiendo que se reemplazarán todos los datos de la pestaña seleccionada",
+    "exportOverwriteConfirmRequired": "Confirma que deseas reemplazar el contenido de la pestaña",
+    "exportDefaultFolderName": "Carpeta"
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Actualiza tu información personal y preferencias",
+    "profileSection": "Información de cuenta",
+    "usernameLabel": "Nombre para mostrar",
+    "emailLabel": "Correo electrónico",
+    "languageLabel": "Idioma de interfaz",
+    "saveProfile": "Guardar cambios",
+    "profileUpdated": "Perfil actualizado exitosamente",
+    "usernameRequired": "El nombre para mostrar no puede estar vacío",
+    "nothingToUpdate": "Nada que actualizar",
+    "languageSection": "Idioma de interfaz",
+    "saveLanguage": "Guardar idioma",
+    "languageUpdated": "Idioma de interfaz actualizado",
+    "passwordSection": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar nueva contraseña",
+    "savePassword": "Cambiar contraseña",
+    "passwordUpdated": "Contraseña actualizada exitosamente",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "openProfile": "Abrir perfil",
+    "registerGuestTitle": "Registrar perfil permanente",
+    "registerGuestSubtitle": "Completa los detalles para crear una cuenta permanente",
+    "registerGuestButton": "Registrarse",
+    "registerGuestSuccess": "Perfil registrado exitosamente",
+    "passwordLabel": "Contraseña",
+    "getToken": "Obtener token",
+    "token": "Token",
+    "createToken": "Crear token",
+    "creatingToken": "Creando token...",
+    "copyToken": "Copiar",
+    "tokenError": "Error al obtener token",
+    "tokenNotCreated": "Token aún no creado",
+    "deleteAccountTitle": "Eliminar cuenta",
+    "deleteAccountDescription": "Eliminar la cuenta borrará permanentemente todos tus datos.",
+    "deleteAccountButton": "Eliminar cuenta",
+    "deletingAccount": "Eliminando cuenta...",
+    "deleteAccountConfirmTitle": "Confirmar eliminación de cuenta",
+    "deleteAccountConfirmText": "¿Estás seguro de que quieres eliminar tu cuenta? Todos los datos se eliminarán de forma irreversible."
+  },
+  "contextReading": {
+    "title": "Contexto",
+    "text": "Texto",
+    "translation": "Traducción",
+    "generating": "Generando texto...",
+    "waiting": "Esperando el inicio de la generación...",
+    "reset": "Reiniciar",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "words": "Palabras para el contexto: {{count}}",
+    "onlyUnlearned": "Solo palabras no aprendidas",
+    "progress": "{{used}}/{{total}} (restantes: {{remaining}})",
+    "languageLevel": "Nivel de idioma",
+    "createContent": "Crear contenido",
+    "folderRequired": "Se requiere el ID de la carpeta",
+    "noWordsLeft": "Ya no quedan palabras en esta carpeta para crear contenido de lectura contextual.",
+    "backToFolder": "Volver a la carpeta",
+    "createContentAgain": "Crear contenido de nuevo"
+  },
+  "telegram": {
+    "connect": {
+      "title": "Conectar Telegram",
+      "description": "Conectar cuenta de Telegram",
+      "processing": "Conectando cuenta...",
+      "success": "¡Cuenta de Telegram conectada exitosamente!",
+      "error": "Error al conectar cuenta",
+      "invalidNonce": "Código inválido o expirado. Intente nuevamente desde el bot de Telegram.",
+      "alreadyBound": "Esta cuenta de Telegram ya está vinculada a otro usuario",
+      "userAlreadyBound": "Ya tiene una cuenta de Telegram vinculada",
+      "noNonce": "Falta el parámetro nonce. Por favor, siga el enlace del bot de Telegram.",
+      "goToApp": "Ir a la aplicación",
+      "close": "Cerrar"
+    }
+  }
+}

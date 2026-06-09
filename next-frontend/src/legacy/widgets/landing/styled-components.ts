@@ -1,0 +1,571 @@
+import { styled } from "@mui/material/styles";
+import {Box, Button, Card, Chip} from "@mui/material";
+import kotcatImg from '@/shared/images/kotcat.png';
+import { staticImageUrl } from '@/shared/libs/static-image-url';
+
+export const StyledBox = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    width: '100%',
+    padding: '41px',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '24px',
+    alignSelf: 'stretch',
+    justifySelf: 'stretch',
+    borderRadius: '24px',
+    border: '1px solid rgba(255, 255, 255, 0.40)',
+    background: 'rgba(255, 255, 255, 0.40)',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.10)',
+    [theme.breakpoints.down('sm')]: {
+        padding: '20px',
+    },
+}));
+
+export const StyledHeader = styled(Box)`
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+`
+
+export const StyledTitle = styled(Box)`
+    color: #101828;
+    font-size: 30px;
+    line-height: 35px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.396px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 5px;
+`;
+
+export const StyledDescription = styled(Box)`
+    color: #4A5565;
+    // font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px; /* 155.556% */
+    letter-spacing: -0.439px;
+    white-space: pre-line;
+    width: 100%;
+`
+
+export const StyledAccentLink = styled('a')`
+    display: block;
+    font-weight: bold;
+    margin-top: 12px;
+    && {
+        color: #000;
+        text-decoration: none;
+    }
+
+    &&:hover {
+        text-decoration: none;
+        opacity: 0.9;
+    }
+`
+
+export const StyledWhiteCard = styled(Card)(({ theme }) => ({
+    display: 'flex',
+    padding: '45px',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderRadius: '24px',
+    border: '1px solid rgba(255, 255, 255, 0.40)',
+    background: 'rgba(255, 255, 255, 0.40)',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    [theme.breakpoints.down('md')]: {
+        padding: '40px',
+    },
+    [theme.breakpoints.down('sm')]: {
+        padding: '20px',
+    },
+}));
+
+export const StyledGradientCard = styled(Card)(({ theme }) => ({
+    background: 'linear-gradient(135deg, #4F39F6 0%, #9810FA 50%, #E60076 100%)',
+    borderRadius: '24px',
+    padding: theme.spacing(6, 5),
+    margin: '0 auto',
+    position: 'relative',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    overflow: 'hidden',
+    [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(4, 3),
+    },
+}));
+
+export const StyledRedContainer = styled(Box)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
+
+export const StyledWhiteButton = styled(Button)`
+    // height: 40px;
+    padding: 10px 24px 10px 24px;
+    text-transform: none;
+    font-size: 16px;
+    color: #000;
+
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.10);
+`
+
+export const RobotCatIllustration = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    bottom: '-20px',
+    left: '-20px',
+    width: '120px',
+    height: '120px',
+    opacity: 0.8,
+    [theme.breakpoints.down('md')]: {
+        width: '80px',
+        height: '80px',
+        bottom: '-10px',
+        left: '-10px',
+    },
+}));
+
+export const StyledExampleCard = styled(Card)(({ theme }) => ({
+    borderRadius: '24px',
+    background: 'rgba(255, 255, 255, 0.50)',
+    border: '1px solid rgba(255, 255, 255, 0.40)',
+    padding: theme.spacing(3),
+    maxWidth: '500px',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+}));
+
+export const StyledExampleHeader = styled(Box)`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+`
+
+export const StyledSideA = styled(Box)`
+    color: #101828;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+    letter-spacing: -0.312px;
+`
+
+export const StyledSideB = styled(Box)`
+    color: #6A7282;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+    letter-spacing: -0.15px;
+`
+
+export const StyledTranslateBlock = styled(Box)`
+    width: 100%;
+    padding: 17px 17px 17px 17px;
+    margin-top: 24px;
+
+    border-radius: 14px;
+    border: 1px solid rgba(198, 210, 255, 0.50);
+    background: linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 100%);
+`
+
+export const StyledColorText = styled(Box)`
+    display: inline-block;
+    color: #615FFF;
+`
+
+export const StyledHeaderTop = styled(Box)`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    padding: 8px 24px;
+    border: 1px solid #000;
+    width: 100%;
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
+`
+
+export const StyledLogo = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#6A0DAD',
+}));
+
+export const StyledAIIcon = styled(Box)`
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 16px;
+    background: linear-gradient(135deg, #615FFF 0%, #155DFC 100%);
+    box-shadow: 0 10px 15px -3px rgba(97, 95, 255, 0.30), 0 4px 6px -4px rgba(97, 95, 255, 0.30);
+`
+
+export const StyledChromeIcon = styled(Box)`
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 16px;
+    background: linear-gradient(135deg, #AD46FF 0%, #E60076 100%);
+    box-shadow: 0 10px 15px -3px rgba(173, 70, 255, 0.30), 0 4px 6px -4px rgba(173, 70, 255, 0.30);
+`
+
+export const StyledExcelIcon = styled(Box)`
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 16px;
+    background: linear-gradient(135deg, #00C950 0%, #096 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 201, 80, 0.30), 0 4px 6px -4px rgba(0, 201, 80, 0.30);
+`
+
+export const StyledMonitorIcon = styled(Box)`
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 16px;
+    background: linear-gradient(135deg, #FF6900 0%, #E7000B 100%);
+    box-shadow: 0 10px 15px -3px rgba(255, 105, 0, 0.30), 0 4px 6px -4px rgba(255, 105, 0, 0.30);
+`
+
+export const StyledLampIcon = styled(Box)`
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 16px;
+    background: linear-gradient(135deg, #AD46FF 0%, #E60076 100%);
+    box-shadow: 0 10px 15px -3px rgba(173, 70, 255, 0.30), 0 4px 6px -4px rgba(173, 70, 255, 0.30);
+`
+
+export const StyledBookIcon = styled(Box)`
+    display: flex;
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 14px;
+    background: linear-gradient(135deg, #615FFF 0%, #9810FA 100%);
+`
+
+export const StyledWhiteHeader = styled(Box)(({ theme }) => ({
+    color: '#101828',
+    textAlign: 'center',
+    fontSize: '48px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '48px',
+    letterSpacing: '0.35px',
+    marginBottom: '24px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '30px',
+        lineHeight: '38px',
+    },
+}));
+
+export const StyledWhiteText = styled(Box)`
+    color: #4A5565;
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 29.25px; /* 162.5% */
+    letter-spacing: -0.439px;
+    margin-top: 16px;
+`
+
+export const StyledTypographyCrossed = styled(Box)`
+    color: #99A1AF;
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 29.25px; /* 162.5% */
+    letter-spacing: -0.439px;
+    text-decoration-line: line-through;
+`
+
+export const StyledTypographyStressed = styled(Box)(({ theme }) => ({
+    fontSize: '26px',
+    fontStyle: 'normal',
+    textAlign: 'center',
+    lineHeight: '130%',
+    letterSpacing: '-0.439px',
+    background: 'linear-gradient(90deg, #4F39F6 0%, #9810FA 100%)',
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    marginBottom: '30px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '20px',
+    },
+}));
+
+export const StyledTypographyOrdinary = styled(Box)(({ theme }) => ({
+    fontSize: '22px',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    lineHeight: '29.25px',
+    letterSpacing: '-0.439px',
+    marginBottom: '20px',
+    color: 'rgb(74, 85, 101)',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '18px',
+        lineHeight: '28px',
+    },
+}));
+
+export const StyledTypographyBold = styled(Box)`
+    font-weight: 600;
+    color: rgb(0, 0, 0);
+`
+
+export const StyledRedHeader = styled(Box)(({ theme }) => ({
+    color: '#FFF',
+    textAlign: 'center',
+    fontSize: '48px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '48px',
+    letterSpacing: '0.352px',
+    marginBottom: '32px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '30px',
+        lineHeight: '40px',
+        marginBottom: '16px',
+    },
+}));
+
+export const StyledRedDescription = styled(Box)`
+    color: rgba(255, 255, 255, 0.90);
+    max-width: 550px;
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px; /* 140% */
+    letter-spacing: -0.449px;
+    margin-bottom: 32px;
+`
+
+export const StyledWhiteCardContainer = styled(Box)`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 750px;
+`
+
+export const StyledRedContent = styled(Box)`
+    display: flex;
+    justify-content: center;
+`
+
+export const StyledChip = styled(Chip)`
+    display: flex;
+    width: 291.617px;
+    height: 42px;
+    padding: 11.5px 17px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+
+    border-radius: 16777200px;
+    border: 1px solid rgba(255, 255, 255, 0.40);
+    background: linear-gradient(90deg, rgba(97, 95, 255, 0.20) 0%, rgba(173, 70, 255, 0.20) 100%);
+`
+export const StyledFS = styled(Box)`
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+    letter-spacing: -0.312px;
+
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`
+
+export const StyledFirstScreenTitle = styled(Box)(({ theme }) => ({
+    color: '#101828',
+    fontSize: '54px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '60px',
+    letterSpacing: '0.264px',
+    marginTop: '32px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '40px',
+        lineHeight: '48px',
+        marginTop: '20px',
+    },
+}));
+
+export const StyledFirstScreenDescription = styled(Box)(({ theme }) => ({
+    color: '#4A5565',
+    fontSize: '22px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: '36px',
+    letterSpacing: '-0.449px',
+    marginTop: '32px',
+    marginBottom: '60px',
+    [theme.breakpoints.down('md')]: {
+        fontSize: '20px',
+        lineHeight: '30px',
+        marginTop: '20px',
+        marginBottom: '40px',
+    },
+}));
+
+export const StyledInButton = styled(Button)(({ theme }) => ({
+    padding: '16px 24px',
+    color: '#FFF',
+    textAlign: 'center',
+    textTransform: 'none',
+    fontSize: '16px',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    lineHeight: '20px',
+    borderRadius: '8px',
+    background: 'linear-gradient(90deg, #4F39F6 0%, #9810FA 100%)',
+    boxShadow: '0 20px 25px -5px rgba(97, 95, 255, 0.30), 0 8px 10px -6px rgba(97, 95, 255, 0.30)',
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+    },
+}));
+
+export const StyledShowButton = styled(Button)(({ theme }) => ({
+    display: 'flex',
+    padding: '16px 24px',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    gap: '16px',
+    color: '#6A0DAD',
+    textAlign: 'center',
+    textTransform: 'none',
+    fontSize: '16px',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    lineHeight: '20px',
+    borderRadius: '8px',
+    borderColor: '#6A0DAD',
+    '&:hover': {
+        borderColor: '#5A0B9D',
+        backgroundColor: 'rgba(106, 13, 173, 0.05)',
+    },
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+    },
+}));
+
+export const StyledImagesBox = styled(Box)(() => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    backgroundImage: `url(${staticImageUrl(kotcatImg)})`,
+    backgroundSize: 'contain',
+    backgroundPosition: 'right center',
+    backgroundRepeat: 'no-repeat',
+    minHeight: '400px',
+}));
+
+export const StyledColorTitle = styled(Box)`
+    display: inline;
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 50%, #E60076 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`
+
+export const StyledFooter = styled(Box)`
+    margin-top: auto;
+    padding: 24px 16px;
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+`
+
+export const StyledFooterLinks = styled(Box)`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px 24px;
+
+    a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+`
+
+export const StyledHeight = styled(Box)`
+    display: block;
+    color: #9810FA;
+    font-size: 20px;
+    margin-top: 12px;
+    margin-bottom: 22px;
+    // font-weight: bold;
+    text-align: center;
+    background: linear-gradient(90deg, #4F39F6 0%, #9810FA 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`
+
+export const StyledLinkButton = styled(Button)`
+    text-transform: none;
+    display: flex;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #615FFF 0%, #F6339A 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10);
+    //width: 100%;
+
+    &:hover {
+        box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.3), 0 4px 6px -4px rgba(17, 24, 39, 0.3);
+    }
+
+    &:disabled {
+        outline: 1px dashed rgba(0, 0, 0, 0.8);
+        background: #fff;
+        opacity: 0.5;
+    }
+
+    & .MuiButton-startIcon {
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+`

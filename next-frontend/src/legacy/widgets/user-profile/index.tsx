@@ -1,0 +1,94 @@
+import { useState } from 'react';
+import { Box, Typography, Button, MenuItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from '@mui/material';
+import { Logout, Person } from '@mui/icons-material';
+
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/shared/store/authStore';
+import { StyledUserCard, StyledAvatar, StyledAccountCircle } from './styled-components';
+import { MenuUI } from '@/shared/ui/menu-ui';
+
+export const UserProfile = () => {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const { user, logout } = useAuthStore();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleProfile = () => {
+        handleClose();
+        navigate('/profile');
+    };
+
+    const logoutHandler = async () => {
+        handleClose();
+        await logout();
+        navigate('/');
+    };
+
+    if (user) {
+        return (
+            <>
+                <StyledUserCard onClick={handleClick}>
+                    { !isMobile && <Typography
+                        variant="body2"
+                        sx={{ color: '#000' }}
+                    >
+                        {user.username}
+                    </Typography>}
+                    <StyledAvatar>
+                        <StyledAccountCircle />
+                    </StyledAvatar>
+                </StyledUserCard>
+                <MenuUI
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                >
+                    <MenuItem onClick={handleProfile}>
+                        <ListItemIcon>
+                            <Person fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t('home.profile')}</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={logoutHandler}>
+                        <ListItemIcon>
+                            <Logout fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t('auth.logout')}</ListItemText>
+                    </MenuItem>
+                </MenuUI>
+            </>
+        );
+    }
+
+    return (
+        <Box display="flex" gap={1}>
+            <Button color="inherit" onClick={() => navigate('/signin')}>
+                {t('auth.login')}
+            </Button>
+            <Button color="inherit" onClick={() => navigate('/signup')}>
+                {t('auth.register')}
+            </Button>
+        </Box>
+    );
+};
+
