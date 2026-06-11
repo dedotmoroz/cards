@@ -134,6 +134,8 @@ jobs:
           build-args: |
             VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}
             VITE_GOOGLE_API_KEY=${{ secrets.VITE_GOOGLE_API_KEY }}
+            BACKEND_URL=http://api:3000
+            STRAPI_URL=http://strapi:1337
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -333,3 +335,21 @@ jobs:
             docker compose pull strapi
             docker compose up -d --force-recreate strapi
             docker image prune -f
+            
+  deploy-next-frontend:
+    needs: [detect-changes, build-next-frontend]
+    if: always() && needs.detect-changes.outputs.next_frontend == 'true' && (needs.build-next-frontend.result == 'success' || needs.build-next-frontend.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /srv/selltime.org
+            docker compose pull next-web
+            docker compose up -d next-web
+            docker image prune -f            
