@@ -1,5 +1,5 @@
 import {type ReactNode } from "react";
-import {useNavigate} from "react-router-dom";
+import {useAppNavigate} from "@/shared/libs/use-app-navigate";
 import {Box, AppBar, useMediaQuery, useTheme} from '@mui/material';
 import {UserProfile} from "@/widgets/user-profile";
 import {Logo, MobileMenuIcon} from "@/shared/ui";
@@ -20,7 +20,7 @@ export const HeaderToolbar = ({
                                   // selectSide,
                                   onDrawerToggle
                               }: HeaderToolbarProps) => {
-    const navigate = useNavigate();
+    const navigate = useAppNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 

@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useAppNavigate } from '@/shared/libs/use-app-navigate';
 import { Box, Grid, Drawer, useMediaQuery, useTheme } from '@mui/material';
 
 import { useCardsStore } from '@/shared/store/cardsStore';
@@ -24,7 +25,7 @@ export const HomePage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
     const { userId, folderId, kind } = useParams<{ userId?: string; folderId?: string; kind?: string }>();
-    const navigate = useNavigate();
+    const navigate = useAppNavigate();
     const { user } = useAuthStore();
     const currentUserId = user?.id;
 

@@ -1,9 +1,9 @@
 import { AppBar, Toolbar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useAppNavigate } from '@/shared/libs/use-app-navigate';
 import { Logo } from '@/shared/ui';
 
 export const HeaderCollection = () => {
-    const navigate = useNavigate();
+    const navigate = useAppNavigate();
 
     const goToHome = () => {
         navigate('/');

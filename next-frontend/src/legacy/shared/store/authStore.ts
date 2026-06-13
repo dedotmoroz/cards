@@ -69,7 +69,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ error: null });
     try {
       await authApi.login({ email, password });
-      
+
       // Получаем полную информацию о пользователе
       const userData = await authApi.getMe();
       // Маппим name из API в username для типа User

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Box, Button, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useAppNavigate } from '@/shared/libs/use-app-navigate';
 import {ButtonDangerous} from '@/shared/ui';
 import { DialogUI } from '@/shared/ui/dialog-ui';
 import { useAuthStore } from '@/shared/store/authStore';
@@ -9,7 +9,7 @@ import {StyledGroupBox, StyledButtonBox, StyledTypography, StyledLabel} from './
 
 export const DeleteAccountSection = () => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
+    const navigate = useAppNavigate();
     const { deleteAccount } = useAuthStore();
 
     const [dialogOpen, setDialogOpen] = useState(false);

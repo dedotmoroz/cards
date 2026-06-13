@@ -3,14 +3,14 @@ import { Box, Typography, Button, MenuItem, ListItemIcon, ListItemText, useMedia
 import { Logout, Person } from '@mui/icons-material';
 
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useAppNavigate } from '@/shared/libs/use-app-navigate';
 import { useAuthStore } from '@/shared/store/authStore';
 import { StyledUserCard, StyledAvatar, StyledAccountCircle } from './styled-components';
 import { MenuUI } from '@/shared/ui/menu-ui';
 
 export const UserProfile = () => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
+    const navigate = useAppNavigate();
     const { user, logout } = useAuthStore();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
