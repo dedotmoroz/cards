@@ -1,16 +1,8 @@
-"use client";
-
 import type { AppLocale } from "@app/lib/i18n";
 import type { LandingDictionary } from "@app/lib/i18n/server";
 import { createTranslator } from "@app/lib/i18n/server";
-import {
-  StyledGradientCard,
-  StyledRedContainer,
-  StyledRedContent,
-  StyledRedDescription,
-  StyledRedHeader,
-} from "@/widgets/landing/styled-components";
 import { RedBoxCta } from "./red-box-cta";
+import styles from "./landing.module.css";
 
 type Props = {
   locale: AppLocale;
@@ -21,18 +13,18 @@ export function RedBoxContent({ locale, dict }: Props) {
   const t = createTranslator(dict);
 
   return (
-    <StyledGradientCard>
-      <StyledRedContainer>
-        <StyledRedHeader>{t("landing.hero.title")}</StyledRedHeader>
-        <StyledRedDescription>{t("landing.hero.description")}</StyledRedDescription>
-        <StyledRedContent>
+    <div className={styles.gradientCard}>
+      <div className={styles.redContainer}>
+        <h2 className={styles.redHeader}>{t("landing.hero.title")}</h2>
+        <p className={styles.redDescription}>{t("landing.hero.description")}</p>
+        <div className={styles.redContent}>
           <RedBoxCta
             locale={locale}
             buttonLabel={t("landing.hero.button")}
             continueLabel={t("learning.wantToContinue")}
           />
-        </StyledRedContent>
-      </StyledRedContainer>
-    </StyledGradientCard>
+        </div>
+      </div>
+    </div>
   );
 }

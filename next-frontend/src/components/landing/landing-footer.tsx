@@ -1,12 +1,9 @@
-"use client";
-
 import Link from "next/link";
-import { Typography } from "@mui/material";
 import type { AppLocale } from "@app/lib/i18n";
 import type { LandingDictionary } from "@app/lib/i18n/server";
 import { createTranslator, localizedPath } from "@app/lib/i18n/server";
 import type { FooterData } from "@app/lib/landing/footer-data";
-import { StyledFooter, StyledFooterLinks } from "@/widgets/landing/styled-components";
+import styles from "./landing.module.css";
 
 type Props = {
   locale: AppLocale;
@@ -21,43 +18,27 @@ export function LandingFooter({ locale, dict, footerData }: Props) {
   const hasLinks =
     collections.length > 0 || ecosystems.length > 0 || pages.length > 0;
 
-  if (!hasLinks) return <StyledFooter />;
+  if (!hasLinks) return <footer className={styles.footer} />;
 
   return (
-    <StyledFooter>
-      <StyledFooterLinks>
-        {collections.length > 0 && (
-          <Link
-            href={localizedPath(locale, "/collections")}
-            style={{ textDecoration: "none" }}
-          >
-            <Typography component="span" variant="body2">
-              {t("footer.vocabularyCollections")}
-            </Typography>
+    <footer className={styles.footer}>
+      <nav className={styles.footerLinks} aria-label="Footer">
+        {collections.length > 0 ? (
+          <Link href={localizedPath(locale, "/collections")}>
+            {t("footer.vocabularyCollections")}
           </Link>
-        )}
-        {ecosystems.length > 0 && (
-          <Link
-            href={localizedPath(locale, "/ecosystem")}
-            style={{ textDecoration: "none" }}
-          >
-            <Typography component="span" variant="body2">
-              {t("footer.ecosystem")}
-            </Typography>
+        ) : null}
+        {ecosystems.length > 0 ? (
+          <Link href={localizedPath(locale, "/ecosystem")}>
+            {t("footer.ecosystem")}
           </Link>
-        )}
+        ) : null}
         {pages.map((page) => (
-          <Link
-            key={page.slug}
-            href={`/p/${locale}/${page.slug}`}
-            style={{ textDecoration: "none" }}
-          >
-            <Typography component="span" variant="body2">
-              {page.title}
-            </Typography>
+          <Link key={page.slug} href={`/p/${locale}/${page.slug}`}>
+            {page.title}
           </Link>
         ))}
-      </StyledFooterLinks>
-    </StyledFooter>
+      </nav>
+    </footer>
   );
 }

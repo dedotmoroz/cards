@@ -1,18 +1,7 @@
-"use client";
-
-import { Box } from "@mui/material";
 import type { LandingDictionary } from "@app/lib/i18n/server";
 import { createTranslator } from "@app/lib/i18n/server";
-import { StyledWordIcon } from "@/shared/ui/logo/styled-components";
-import {
-  StyledBookIcon,
-  StyledColorText,
-  StyledExampleCard,
-  StyledExampleHeader,
-  StyledSideA,
-  StyledSideB,
-  StyledTranslateBlock,
-} from "@/widgets/landing/styled-components";
+import { WordIcon } from "@/shared/icons/word-icon";
+import styles from "./landing.module.css";
 
 type Props = {
   dict: LandingDictionary;
@@ -22,21 +11,21 @@ export function ExampleCardContent({ dict }: Props) {
   const t = createTranslator(dict);
 
   return (
-    <StyledExampleCard>
-      <StyledExampleHeader>
-        <StyledBookIcon>
-          <StyledWordIcon color="#fff" />
-        </StyledBookIcon>
-        <Box>
-          <StyledSideA>{t("landing.exampleCard.word")}</StyledSideA>
-          <StyledSideB>{t("landing.exampleCard.translation")}</StyledSideB>
-        </Box>
-      </StyledExampleHeader>
-      <StyledTranslateBlock>
-        Being an <StyledColorText>overachiever</StyledColorText> can sometimes
+    <div className={styles.exampleCard}>
+      <div className={styles.exampleHeader}>
+        <div className={styles.bookIcon}>
+          <WordIcon color="#fff" />
+        </div>
+        <div>
+          <div className={styles.sideA}>{t("landing.exampleCard.word")}</div>
+          <div className={styles.sideB}>{t("landing.exampleCard.translation")}</div>
+        </div>
+      </div>
+      <div className={styles.translateBlock}>
+        Being an <span className={styles.colorText}>overachiever</span> can sometimes
         lead to communication issues because others may feel pressured to meet
         your high standards.
-      </StyledTranslateBlock>
-    </StyledExampleCard>
+      </div>
+    </div>
   );
 }

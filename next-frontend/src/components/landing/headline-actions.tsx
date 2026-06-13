@@ -19,21 +19,31 @@ function ArrowForwardIcon() {
 
 type Props = {
   locale: AppLocale;
-  buttonLabel: string;
+  startLabel: string;
   continueLabel: string;
+  showFeaturesLabel: string;
 };
 
-export function RedBoxCta({ locale, buttonLabel, continueLabel }: Props) {
+export function HeadlineActions({
+  locale,
+  startLabel,
+  continueLabel,
+  showFeaturesLabel,
+}: Props) {
   const navigate = useNextNavigate();
   const checkAuth = useAuthStore((s) => s.checkAuth);
-  const { isAuthenticated, createGuest } = useAuthStore();
-  const [label, setLabel] = useState(buttonLabel);
+  const { isAuthenticated, createGuest, user } = useAuthStore();
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [ctaLabel, setCtaLabel] = useState(startLabel);
 
   useEffect(() => {
     const sync = () => {
       const state = useAuthStore.getState();
       const registered = Boolean(state.user && !state.user.isGuest);
-      setLabel(registered || state.isAuthenticated ? continueLabel : buttonLabel);
+      setIsRegistered(registered);
+      setCtaLabel(
+        registered || state.isAuthenticated ? continueLabel : startLabel
+      );
     };
 
     sync();
@@ -49,7 +59,7 @@ export function RedBoxCta({ locale, buttonLabel, continueLabel }: Props) {
       void checkAuth().then(sync);
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [buttonLabel, checkAuth, continueLabel]);
+  }, [checkAuth, continueLabel, startLabel]);
 
   const handleStartLearning = async () => {
     if (isAuthenticated) {
@@ -65,13 +75,28 @@ export function RedBoxCta({ locale, buttonLabel, continueLabel }: Props) {
   };
 
   return (
-    <button
-      type="button"
-      className={styles.whiteButton}
-      onClick={() => void handleStartLearning()}
-    >
-      {label}
-      <ArrowForwardIcon />
-    </button>
+    <div className={styles.headlineActions}>
+      <button
+        type="button"
+        className={styles.primaryButton}
+        onClick={() => void handleStartLearning()}
+      >
+        {ctaLabel}
+        <ArrowForwardIcon />
+      </button>
+      {!isRegistered ? (
+        <button
+          type="button"
+          className={styles.outlineButton}
+          onClick={() => {
+            document.getElementById("features-section")?.scrollIntoView({
+              behavior: "smooth",
+            });
+          }}
+        >
+          {showFeaturesLabel}
+        </button>
+      ) : null}
+    </div>
   );
 }
