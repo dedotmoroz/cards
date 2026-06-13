@@ -1,5 +1,4 @@
 import React, { useState, useLayoutEffect, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -10,6 +9,7 @@ import {
 } from '@mui/material';
 import { ButtonColor, TextFieldUI } from '@/shared/ui';
 import { useAuthStore } from '@/shared/store/authStore.ts';
+import { useNextNavigate } from '@app/lib/navigation/use-next-navigate';
 import { normalizeLoginError } from '@/shared/libs/authLoginErrors';
 import { isValidEmail } from '@/shared/libs/emailValidation';
 import { GOOGLE_CLIENT_ID } from '@/shared/config/api';
@@ -58,7 +58,7 @@ export const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose, onSuccess
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const { login, loginWithGoogle } = useAuthStore();
-  const navigate = useNavigate();
+  const navigate = useNextNavigate();
 
   const handleGoogleSignInRef = useRef<(credential: string) => Promise<void>>(async () => {});
   handleGoogleSignInRef.current = async (credential: string) => {

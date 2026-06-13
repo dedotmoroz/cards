@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
       { source: "/cms/:path*", destination: `${strapiUrl}/:path*` },
     ];
   },
+  async redirects() {
+    return [{ source: "/en", destination: "/", permanent: true }];
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
