@@ -13,27 +13,27 @@ export function WhiteBlockContent({ dict }: Props) {
     <div className={styles.whiteCard}>
       <h2 className={styles.whiteHeader}>{t("landing.context.title")}</h2>
       <div className={styles.whiteCardContainer}>
-        <p className={styles.typographyStressed}>
+        <div className={styles.typographyStressed}>
           {t("landing.context.subtitle")}
-        </p>
-        <p className={styles.typographyOrdinary}>
-          <span className={styles.typographyBold}>
+        </div>
+        <div className={styles.typographyOrdinary}>
+          <div className={styles.typographyBold}>
             {t("landing.context.subtitleBold1")}
-          </span>
+          </div>
           {t("landing.context.subtitle1")}
-        </p>
-        <p className={styles.typographyOrdinary}>
-          <span className={styles.typographyBold}>
+        </div>
+        <div className={styles.typographyOrdinary}>
+          <div className={styles.typographyBold}>
             {t("landing.context.subtitleBold2")}
-          </span>
+          </div>
           {t("landing.context.subtitle2")}
-        </p>
-        <p className={styles.typographyOrdinary}>
-          <span className={styles.typographyBold}>
+        </div>
+        <div className={styles.typographyOrdinary}>
+          <div className={styles.typographyBold}>
             {t("landing.context.subtitleBold3")}
-          </span>
+          </div>
           {t("landing.context.subtitle3")}
-        </p>
+        </div>
       </div>
     </div>
   );

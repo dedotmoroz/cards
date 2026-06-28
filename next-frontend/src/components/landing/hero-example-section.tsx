@@ -10,22 +10,14 @@ type Props = {
 
 export function HeroExampleSection({ dict }: Props) {
   return (
-    <div className={styles.imagesBox}>
-      <ExampleCardContent dict={dict} />
-      <Image
-        src={kotcatImg}
-        alt=""
-        priority
-        className={styles.heroImage}
-        sizes="(max-width: 900px) 100vw, 50vw"
+    <div
+        className={styles.imagesBox}
         style={{
-          position: "absolute",
-          right: 0,
-          bottom: 0,
-          width: "auto",
-          height: "min(320px, 60%)",
-          maxWidth: "100%",
+            backgroundImage: `url(${kotcatImg.src})`,
         }}
+    >
+      <ExampleCardContent
+          dict={dict}
       />
     </div>
   );

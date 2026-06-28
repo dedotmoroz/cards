@@ -27,12 +27,11 @@ export function LandingPageView({
       />
       <main className={styles.landingContainer}>
         <section className={styles.headlineContainer}>
-          <div className={styles.heroGrid}>
+            <div className={styles.styledBox}>
             <HeadlineContent locale={locale} dict={dict} />
             <HeroExampleSection dict={dict} />
-          </div>
+            </div>
         </section>
-
         <section className={styles.headlineContainer}>
           <WhiteBlockContent dict={dict} />
         </section>

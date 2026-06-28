@@ -12,6 +12,21 @@
   flex: 1;
 }
 
+.styledBox {
+    display: grid;
+    gap: 32px; /* 4 * 8px */
+    align-items: start;
+    grid-template-columns: 1fr;
+}
+
+
+
+@media (min-width: 900px) {
+    .styledBox {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 .headlineContainer {
   max-width: 1200px;
   margin: 0 auto;
@@ -283,11 +298,14 @@
 }
 
 .imagesBox {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 400px;
-  position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 400px;
+    position: relative;
+    background-size: contain;
+    background-position: right center;
+    background-repeat: no-repeat;
 }
 
 .heroImage {

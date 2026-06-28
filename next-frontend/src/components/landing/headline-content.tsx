@@ -13,7 +13,7 @@ export function HeadlineContent({ locale, dict }: Props) {
   const t = createTranslator(dict);
 
   return (
-    <>
+    <div>
       <div className={styles.chip}>
         <span className={styles.chipText}>{t("landing.firstScreen.tag")}</span>
       </div>
@@ -31,6 +31,6 @@ export function HeadlineContent({ locale, dict }: Props) {
         continueLabel={t("learning.wantToContinue")}
         showFeaturesLabel={t("landing.firstScreen.button2")}
       />
-    </>
+    </div>
   );
 }
