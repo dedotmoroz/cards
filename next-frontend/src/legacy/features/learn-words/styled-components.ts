@@ -30,6 +30,10 @@ export const StyledButton = styled(Button)`
         background: transparent;
     }
     
+    &::before {
+        display: none;
+    }
+
     & .MuiButton-startIcon {
         margin: 0;
         display: flex;
@@ -39,5 +43,6 @@ export const StyledButton = styled(Button)`
 
 export const StyledWordIcon = styled(WordIcon)`
     margin: 0;
+    width: 16px;
+    height: 16px;
 `;
-

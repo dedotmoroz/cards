@@ -14,7 +14,7 @@ export function ExampleCardContent({ dict }: Props) {
     <div className={styles.exampleCard}>
       <div className={styles.exampleHeader}>
         <div className={styles.bookIcon}>
-          <WordIcon color="#fff" />
+          <WordIcon color="#fff" width={24} height={24} />
         </div>
         <div>
           <div className={styles.sideA}>{t("landing.exampleCard.word")}</div>

@@ -46,4 +46,5 @@ export const StyledWordIcon = styled(WordIcon)`
     margin: 0;
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
 `;

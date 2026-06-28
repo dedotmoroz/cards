@@ -17,11 +17,11 @@ export function HeadlineContent({ locale, dict }: Props) {
       <div className={styles.chip}>
         <span className={styles.chipText}>{t("landing.firstScreen.tag")}</span>
       </div>
-      <h1 className={styles.firstScreenTitle}>
+      <div className={styles.firstScreenTitle}>
         {t("landing.firstScreen.title1")}{" "}
         <span className={styles.colorTitle}>{t("landing.firstScreen.title2")}</span>{" "}
         {t("landing.firstScreen.title3")}
-      </h1>
+      </div>
       <p className={styles.firstScreenDescription}>
         {t("landing.firstScreen.description")}
       </p>

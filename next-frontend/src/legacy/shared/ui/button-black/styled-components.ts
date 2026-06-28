@@ -25,6 +25,10 @@ export const StyledButtonBlack = styled(Button)`
         background: #fff;
         border: 1px dashed rgba(17, 24, 39, 0.3);
     }
+
+    &::before {
+        display: none;
+    }
     
     & .MuiButton-startIcon {
         margin: 0;

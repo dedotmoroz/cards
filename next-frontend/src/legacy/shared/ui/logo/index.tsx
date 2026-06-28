@@ -15,7 +15,7 @@ export const Logo = ({ handle, handleGoMain }: LogoProps) => {
                 aria-label={t('navigation.home')}
                 onClick={handle}
             >
-                <StyledWordIcon />
+                <StyledWordIcon width={24} height={24} />
             </StyledLogoButton>
             <StyledLogoText
                 onClick={handleGoMain}
