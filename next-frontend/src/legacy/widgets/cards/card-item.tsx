@@ -11,6 +11,9 @@ import {
     StyledCardContainer,
     StyledCardContent,
     StyledCardColumn,
+    StyledCardColumnContent,
+    StyledHiddenColumnOverlay,
+    StyledHiddenEyeIcon,
     StyledCardActions,
     StyledSentencesContainer,
     StyledCardText,
@@ -47,6 +50,8 @@ export const CardItem: React.FC<CardItemProps> = ({
     const state = generationStatus ?? { status: 'idle', progress: 0 };
     const isGenerating = state.status === 'pending' || state.status === 'polling';
     const hasError = state.status === 'failed' && state.error;
+    const isQuestionVisible = displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id;
+    const isAnswerVisible = displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id;
 
     return (
         <StyledListItem
@@ -57,58 +62,68 @@ export const CardItem: React.FC<CardItemProps> = ({
         >
             <StyledCardContainer>
                 <StyledCardContent>
-                    <StyledCardColumn
-                        $isVisible={displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id}
-                    >
-                        <StyledBoxQuestion>
-                            <StyledCardText
-                                variant="body1"
-                                color="text.primary"
-                            >
-                                {card.question}
-                            </StyledCardText>
-                            <PronunciationButton text={card.question} lang={'en'} />
-                        </StyledBoxQuestion>
-                        <StyledSentencesContainer>
+                    <StyledCardColumn>
+                        <StyledCardColumnContent $isVisible={isQuestionVisible}>
+                            <StyledBoxQuestion>
+                                <StyledCardText
+                                    variant="body1"
+                                    color="text.primary"
+                                >
+                                    {card.question}
+                                </StyledCardText>
+                                <PronunciationButton text={card.question} lang={'en'} />
+                            </StyledBoxQuestion>
+                            <StyledSentencesContainer>
+                                {isGenerating ? (
+                                    <CardSkeleton />
+                                ) : (
+                                    card.questionSentences && (
+                                    <>
+                                        <StyledCardSentencesText
+                                            variant="body2"
+                                            color="text.secondary"
+                                        >
+                                            {card.questionSentences}
+                                        </StyledCardSentencesText>
+                                        {/*<PronunciationButton text={card.questionSentences} lang={'en'} />*/}
+                                    </>
+                                    )
+                                )}
+                            </StyledSentencesContainer>
+                        </StyledCardColumnContent>
+                        {!isQuestionVisible && (
+                            <StyledHiddenColumnOverlay>
+                                <StyledHiddenEyeIcon />
+                            </StyledHiddenColumnOverlay>
+                        )}
+                    </StyledCardColumn>
+                    <StyledCardColumn>
+                        <StyledCardColumnContent $isVisible={isAnswerVisible}>
+                            <StyledBoxAnswer>
+                                <StyledCardText
+                                    variant="body1"
+                                    color="text.primary"
+                                >
+                                    {card.answer}
+                                </StyledCardText>
+                            </StyledBoxAnswer>
                             {isGenerating ? (
                                 <CardSkeleton />
                             ) : (
-                                card.questionSentences && (
-                                <>
+                                card.answerSentences && (
                                     <StyledCardSentencesText
                                         variant="body2"
                                         color="text.secondary"
                                     >
-                                        {card.questionSentences}
+                                        {card.answerSentences}
                                     </StyledCardSentencesText>
-                                    {/*<PronunciationButton text={card.questionSentences} lang={'en'} />*/}
-                                </>
                                 )
                             )}
-                        </StyledSentencesContainer>
-                    </StyledCardColumn>
-                    <StyledCardColumn
-                        $isVisible={displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id}
-                    >
-                        <StyledBoxAnswer>
-                            <StyledCardText
-                                variant="body1"
-                                color="text.primary"
-                            >
-                                {card.answer}
-                            </StyledCardText>
-                        </StyledBoxAnswer>
-                        {isGenerating ? (
-                            <CardSkeleton />
-                        ) : (
-                            card.answerSentences && (
-                                <StyledCardSentencesText
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
-                                    {card.answerSentences}
-                                </StyledCardSentencesText>
-                            )
+                        </StyledCardColumnContent>
+                        {!isAnswerVisible && (
+                            <StyledHiddenColumnOverlay>
+                                <StyledHiddenEyeIcon />
+                            </StyledHiddenColumnOverlay>
                         )}
                     </StyledCardColumn>
                     {hasError && (

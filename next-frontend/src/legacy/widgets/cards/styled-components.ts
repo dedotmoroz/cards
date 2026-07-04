@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
 import { Grid, Box, ListItem, Typography, IconButton } from "@mui/material";
+import { VisibilityOffOutlined } from '@mui/icons-material';
 import type { InputHTMLAttributes } from "react";
 import React, { forwardRef } from "react";
 
@@ -138,11 +139,30 @@ export const StyledCardHeaderContent = styled(Box)`
     }
 `
 
-export const StyledCardColumn = styled(Box, {
+export const StyledCardColumn = styled(Box)`
+    flex: 1;
+    position: relative;
+`;
+
+export const StyledCardColumnContent = styled(Box, {
     shouldForwardProp: (prop) => prop !== '$isVisible',
 })<{ $isVisible: boolean }>`
-    flex: 1;
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
+`;
+
+export const StyledHiddenColumnOverlay = styled(Box)`
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+`;
+
+export const StyledHiddenEyeIcon = styled(VisibilityOffOutlined)`
+    font-size: 20px;
+    color: ${({ theme }) => theme.palette.text.secondary};
+    opacity: 0.5;
 `;
 
 export const StyledCardActions = styled(Box)`

@@ -6,6 +6,9 @@ import {
     StyledCardContainer,
     StyledCardContent,
     StyledCardColumn,
+    StyledCardColumnContent,
+    StyledHiddenColumnOverlay,
+    StyledHiddenEyeIcon,
     StyledCardActions,
     StyledBoxAnswer,
     StyledBoxQuestion,
@@ -248,62 +251,77 @@ export const CreateCardForm: React.FC<CreateCardFormProps> = ({
         }
     };
 
+    const isQuestionVisible = displayFilter === 'A' || displayFilter === 'AB';
+    const isAnswerVisible = displayFilter === 'B' || displayFilter === 'AB';
+
     return (
         <StyledListItem>
             <StyledCardContainer>
                 <StyledCardContent>
-                    <StyledCardColumn
-                        $isVisible={displayFilter === 'A' || displayFilter === 'AB'}
-                    >
-                        <StyledBoxQuestion>
-                            <StyledInput
-                                type="text"
-                                placeholder={t('forms.question')}
-                                value={question}
-                                onChange={(e) => setQuestion(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                autoFocus
-                            />
-                        </StyledBoxQuestion>
-                    </StyledCardColumn>
-                    <StyledCardColumn
-                        $isVisible={displayFilter === 'B' || displayFilter === 'AB'}
-                    >
-                        <StyledBoxAnswer>
-                            <StyledSuggestionsBox>
+                    <StyledCardColumn>
+                        <StyledCardColumnContent $isVisible={isQuestionVisible}>
+                            <StyledBoxQuestion>
                                 <StyledInput
-                                    ref={answerInputRef}
                                     type="text"
-                                    placeholder={
-                                        isLoadingTranslation 
-                                            ? t('forms.translating', { defaultValue: 'Перевожу...' })
-                                            : t('forms.answer')
-                                    }
-                                    value={answer}
-                                    onChange={handleAnswerChange}
+                                    placeholder={t('forms.question')}
+                                    value={question}
+                                    onChange={(e) => setQuestion(e.target.value)}
                                     onKeyDown={handleKeyDown}
-                                    onFocus={handleAnswerFocus}
+                                    autoFocus={isQuestionVisible}
+                                    tabIndex={isQuestionVisible ? 0 : -1}
                                 />
-                                {showSuggestions && (
-                                    <StyledSuggestionsList ref={suggestionsRef}>
-                                        {isLoadingTranslation ? (
-                                            <StyledLoadingIndicator>
-                                                {t('forms.translating', { defaultValue: 'Перевожу...' })}
-                                            </StyledLoadingIndicator>
-                                        ) : translationSuggestion && sourceLang && targetLang ? (
-                                            <StyledSuggestionItem
-                                                onClick={() => handleSuggestionClick(translationSuggestion)}
-                                            >
-                                                <StyledSuggestionMeta>
-                                                    {formatLanguagePairLabel(sourceLang, targetLang)}
-                                                </StyledSuggestionMeta>
-                                                {translationSuggestion}
-                                            </StyledSuggestionItem>
-                                        ) : null}
-                                    </StyledSuggestionsList>
-                                )}
-                            </StyledSuggestionsBox>
-                        </StyledBoxAnswer>
+                            </StyledBoxQuestion>
+                        </StyledCardColumnContent>
+                        {!isQuestionVisible && (
+                            <StyledHiddenColumnOverlay>
+                                <StyledHiddenEyeIcon />
+                            </StyledHiddenColumnOverlay>
+                        )}
+                    </StyledCardColumn>
+                    <StyledCardColumn>
+                        <StyledCardColumnContent $isVisible={isAnswerVisible}>
+                            <StyledBoxAnswer>
+                                <StyledSuggestionsBox>
+                                    <StyledInput
+                                        ref={answerInputRef}
+                                        type="text"
+                                        placeholder={
+                                            isLoadingTranslation 
+                                                ? t('forms.translating', { defaultValue: 'Перевожу...' })
+                                                : t('forms.answer')
+                                        }
+                                        value={answer}
+                                        onChange={handleAnswerChange}
+                                        onKeyDown={handleKeyDown}
+                                        onFocus={handleAnswerFocus}
+                                        tabIndex={isAnswerVisible ? 0 : -1}
+                                    />
+                                    {showSuggestions && isAnswerVisible && (
+                                        <StyledSuggestionsList ref={suggestionsRef}>
+                                            {isLoadingTranslation ? (
+                                                <StyledLoadingIndicator>
+                                                    {t('forms.translating', { defaultValue: 'Перевожу...' })}
+                                                </StyledLoadingIndicator>
+                                            ) : translationSuggestion && sourceLang && targetLang ? (
+                                                <StyledSuggestionItem
+                                                    onClick={() => handleSuggestionClick(translationSuggestion)}
+                                                >
+                                                    <StyledSuggestionMeta>
+                                                        {formatLanguagePairLabel(sourceLang, targetLang)}
+                                                    </StyledSuggestionMeta>
+                                                    {translationSuggestion}
+                                                </StyledSuggestionItem>
+                                            ) : null}
+                                        </StyledSuggestionsList>
+                                    )}
+                                </StyledSuggestionsBox>
+                            </StyledBoxAnswer>
+                        </StyledCardColumnContent>
+                        {!isAnswerVisible && (
+                            <StyledHiddenColumnOverlay>
+                                <StyledHiddenEyeIcon />
+                            </StyledHiddenColumnOverlay>
+                        )}
                     </StyledCardColumn>
                 </StyledCardContent>
                 <StyledCardActions>
