@@ -5,6 +5,8 @@ export interface Folder {
   sideALanguage: string;
   sideBLanguage: string;
   cardCount?: number;
+  createdAt?: string;
+  pinned?: boolean;
 }
 
 export interface Card {

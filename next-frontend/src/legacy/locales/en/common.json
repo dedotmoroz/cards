@@ -250,6 +250,13 @@
       "he": "Hebrew",
       "fa": "Persian"
     },
+    "sort": {
+      "label": "Folder sort",
+      "createdDesc": "By creation date",
+      "nameAsc": "By name"
+    },
+    "pin": "Pin",
+    "unpin": "Unpin",
     "virtual": {
       "remember": "Remember",
       "hard": "Hard"

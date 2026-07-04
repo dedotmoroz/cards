@@ -3,6 +3,7 @@ export interface User {
   username: string;
   email: string;
   language?: string;
+  folderSortMode?: 'created_desc' | 'name_asc';
   isGuest?: boolean;
   isAdmin?: boolean;
   impersonatedBy?: string | null;

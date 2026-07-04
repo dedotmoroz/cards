@@ -36,6 +36,8 @@ export const folders = pgTable('folders', {
   userId: text('user_id').notNull(),
   sideALanguage: text('side_a_language').notNull().default('en'),
   sideBLanguage: text('side_b_language').notNull().default('ru'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  pinned: boolean('pinned').notNull().default(false),
 });
 
 export const users = pgTable('users', {
@@ -49,6 +51,7 @@ export const users = pgTable('users', {
   language: text('language'),
   is_guest: boolean('is_guest'),
   last_login_at: timestamp('last_login_at', { withTimezone: true }),
+  folderSortMode: text('folder_sort_mode').notNull().default('created_desc'),
 });
 
 export const adminUsers = pgTable('admin_users', {

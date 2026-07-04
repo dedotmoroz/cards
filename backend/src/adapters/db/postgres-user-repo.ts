@@ -1,9 +1,25 @@
-import { User } from '../../domain/user';
+import { User, FolderSortMode } from '../../domain/user';
 import { UserRepository } from '../../ports/user-repository';
 import { randomUUID } from 'crypto';
 import { db } from '../../db/db';
 import { eq, and } from 'drizzle-orm';
 import { users } from '../../db/schema'; // schema.ts должен экспортировать `users`
+
+function rowToUser(row: typeof users.$inferSelect): User {
+    return {
+        id: row.id,
+        email: row.email,
+        passwordHash: row.password_hash,
+        name: row.name ?? undefined,
+        createdAt: row.created_at,
+        oauthProvider: row.oauth_provider || undefined,
+        oauthId: row.oauth_id ?? undefined,
+        language: row.language ?? undefined,
+        isGuest: row.is_guest ?? undefined,
+        lastLoginAt: row.last_login_at ?? undefined,
+        folderSortMode: (row.folderSortMode as FolderSortMode) ?? 'created_desc',
+    };
+}
 
 export class PostgresUserRepository implements UserRepository {
     async create(user: Omit<User, 'id'>): Promise<User> {
@@ -17,6 +33,7 @@ export class PostgresUserRepository implements UserRepository {
             is_guest: user.isGuest,
             oauth_provider: user.oauthProvider,
             oauth_id: user.oauthId,
+            folderSortMode: user.folderSortMode ?? 'created_desc',
         });
         return { id, ...user };
     }
@@ -31,18 +48,7 @@ export class PostgresUserRepository implements UserRepository {
         const row = result[0];
         if (!row) return null;
 
-        return {
-            id: row.id,
-            email: row.email,
-            passwordHash: row.password_hash,
-            name: row.name ?? undefined,
-            createdAt: row.created_at,
-            oauthProvider: row.oauth_provider || undefined,
-            oauthId: row.oauth_id ?? undefined,
-            language: row.language ?? undefined,
-            isGuest: row.is_guest ?? undefined,
-            lastLoginAt: row.last_login_at ?? undefined,
-        };
+        return rowToUser(row);
     }
 
 
@@ -55,18 +61,7 @@ export class PostgresUserRepository implements UserRepository {
         const row = result[0];
         if (!row) return null;
 
-        return {
-            id: row.id,
-            email: row.email,
-            passwordHash: row.password_hash,
-            name: row.name ?? undefined,
-            createdAt: row.created_at,
-            oauthProvider: row.oauth_provider ?? undefined,
-            oauthId: row.oauth_id ?? undefined,
-            language: row.language ?? undefined,
-            isGuest: row.is_guest ?? undefined,
-            lastLoginAt: row.last_login_at ?? undefined,
-        };
+        return rowToUser(row);
     }
 
     async findByOAuth(provider: string, oauthId: string): Promise<User | null> {
@@ -83,18 +78,7 @@ export class PostgresUserRepository implements UserRepository {
         const row = result[0];
         if (!row) return null;
 
-        return {
-            id: row.id,
-            email: row.email,
-            passwordHash: row.password_hash,
-            name: row.name ?? undefined,
-            createdAt: row.created_at,
-            oauthProvider: row.oauth_provider ?? undefined,
-            oauthId: row.oauth_id ?? undefined,
-            language: row.language ?? undefined,
-            isGuest: row.is_guest ?? undefined,
-            lastLoginAt: row.last_login_at ?? undefined,
-        };
+        return rowToUser(row);
     }
 
     async update(id: string, updates: Partial<Omit<User, 'id' | 'createdAt'>>): Promise<User> {
@@ -120,6 +104,9 @@ export class PostgresUserRepository implements UserRepository {
         }
         if (updates.isGuest !== undefined) {
             updateData.is_guest = updates.isGuest;
+        }
+        if (updates.folderSortMode !== undefined) {
+            updateData.folderSortMode = updates.folderSortMode;
         }
 
         await db

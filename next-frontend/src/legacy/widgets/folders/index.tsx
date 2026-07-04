@@ -1,16 +1,23 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { IconButton, Menu, MenuItem, ListItemText } from '@mui/material';
+import SortIcon from '@mui/icons-material/Sort';
 import {FolderList} from "@/widgets/folders/folder-list.tsx";
 import {CreateFolder} from "@/features/create-folder/index.tsx";
 import { useFoldersStore, REMEMBER_VIRTUAL_MIN_TOTAL_CARDS } from '@/shared/store/foldersStore.ts';
-import {StyledWrappedBox, StyledCaptionBox, StyledTypography, StyledFoldersCounter} from "./styled-components.ts";
+import { useAuthStore } from '@/shared/store/authStore.ts';
+import { sortFolders } from '@/shared/libs/sort-folders.ts';
+import {StyledWrappedBox, StyledCaptionBox, StyledTypography, StyledFoldersCounter, StyledHeaderActions} from "./styled-components.ts";
 
 interface FoldersProps {
     onFolderSelect?: () => void;
 }
 
 export const Folders = ({ onFolderSelect }: FoldersProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const folderSortMode = useAuthStore((state) => state.user?.folderSortMode ?? 'created_desc');
+    const updateFolderSortMode = useAuthStore((state) => state.updateFolderSortMode);
+    const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
     const {
         folders,
         folderCardCounts,
@@ -31,14 +38,22 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
         void updateFolder(id, { name, sideALanguage, sideBLanguage });
     };
 
+    const handlePinToggle = (id: string, pinned: boolean) => {
+        void updateFolder(id, { pinned });
+    };
+
+    const handleSortModeChange = (mode: 'created_desc' | 'name_asc') => {
+        setSortAnchorEl(null);
+        void updateFolderSortMode(mode);
+    };
+
     const totalCards = useMemo(
         () => Object.values(folderCardCounts ?? {}).reduce((sum, n) => sum + (n ?? 0), 0),
         [folderCardCounts]
     );
 
     const foldersForUi = useMemo(() => {
-        const ordered = [...folders].reverse();
-        // null = счётчик ещё не пришёл с API — не скрываем папку до ответа (иначе «пропадает» при задержке/ошибке)
+        const ordered = sortFolders(folders, folderSortMode, i18n.language);
         const showRemember =
             rememberEligibleCount === null ||
             rememberEligibleCount >= REMEMBER_VIRTUAL_MIN_TOTAL_CARDS;
@@ -50,7 +65,7 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
             ...(showHard ? [{ id: 'virtual:hard', name: t('folders.virtual.hard', 'Сложно') }] : []),
         ];
         return [...ordered, ...virtuals];
-    }, [folders, rememberEligibleCount, hardEligibleCount, t]);
+    }, [folders, folderSortMode, rememberEligibleCount, hardEligibleCount, t, i18n.language]);
 
     return (
         <StyledWrappedBox>
@@ -61,14 +76,44 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
                         {folders.length} / {totalCards}
                     </StyledFoldersCounter>
                 </StyledTypography>
-                <CreateFolder/>
+                <StyledHeaderActions>
+                    <IconButton
+                        size="small"
+                        aria-label={t('folders.sort.label')}
+                        onClick={(event) => setSortAnchorEl(event.currentTarget)}
+                    >
+                        <SortIcon fontSize="small" />
+                    </IconButton>
+                    <CreateFolder/>
+                </StyledHeaderActions>
             </StyledCaptionBox>
+            <Menu
+                anchorEl={sortAnchorEl}
+                open={Boolean(sortAnchorEl)}
+                onClose={() => setSortAnchorEl(null)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <MenuItem
+                    selected={folderSortMode === 'created_desc'}
+                    onClick={() => handleSortModeChange('created_desc')}
+                >
+                    <ListItemText>{t('folders.sort.createdDesc')}</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    selected={folderSortMode === 'name_asc'}
+                    onClick={() => handleSortModeChange('name_asc')}
+                >
+                    <ListItemText>{t('folders.sort.nameAsc')}</ListItemText>
+                </MenuItem>
+            </Menu>
             <FolderList
                 folders={foldersForUi}
                 selectedId={selectedFolderId}
                 onSelect={setSelectedFolder}
                 onRename={handleRename}
                 onDelete={deleteFolder}
+                onPinToggle={handlePinToggle}
                 onFolderSelect={onFolderSelect}
                 folderCardCounts={folderCardCounts}
                 hardVirtualCount={hardEligibleCount}

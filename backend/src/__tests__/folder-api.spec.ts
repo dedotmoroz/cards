@@ -48,6 +48,8 @@ describe('📁 Folder API (e2e)', () => {
     expect(res.body.userId).toBe(userId);
     expect(res.body.sideALanguage).toBe('en');
     expect(res.body.sideBLanguage).toBe('ru');
+    expect(res.body).toHaveProperty('createdAt');
+    expect(res.body.pinned).toBe(false);
 
     createdFolderId = res.body.id;
   });
@@ -209,5 +211,45 @@ describe('📁 Folder API (e2e)', () => {
     expect(patchRes.status).toBe(200);
     expect(patchRes.body.sideALanguage).toBe('es');
     expect(patchRes.body.sideBLanguage).toBe('de');
+  });
+
+  it('закрепляет и открепляет папку', async () => {
+    const folderRes = await request(fastify.server)
+        .post('/folders')
+        .set('Cookie', authCookie)
+        .send({ userId, name: 'Pin Folder', sideALanguage: 'en', sideBLanguage: 'ru' });
+    const folderId = folderRes.body.id;
+
+    const pinRes = await request(fastify.server)
+        .patch(`/folders/${folderId}`)
+        .set('Cookie', authCookie)
+        .send({ pinned: true });
+
+    expect(pinRes.status).toBe(200);
+    expect(pinRes.body.pinned).toBe(true);
+
+    const unpinRes = await request(fastify.server)
+        .patch(`/folders/${folderId}`)
+        .set('Cookie', authCookie)
+        .send({ pinned: false });
+
+    expect(unpinRes.status).toBe(200);
+    expect(unpinRes.body.pinned).toBe(false);
+  });
+
+  it('обновляет режим сортировки папок пользователя', async () => {
+    const res = await request(fastify.server)
+        .patch('/auth/folder-sort-mode')
+        .set('Cookie', authCookie)
+        .send({ folderSortMode: 'name_asc' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.folderSortMode).toBe('name_asc');
+
+    const meRes = await request(fastify.server)
+        .get('/auth/me')
+        .set('Cookie', authCookie);
+
+    expect(meRes.body.folderSortMode).toBe('name_asc');
   });
 });

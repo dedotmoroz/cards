@@ -1,3 +1,5 @@
+export type FolderSortMode = 'created_desc' | 'name_asc';
+
 export type User = {
     id: string;
     email: string;
@@ -9,4 +11,5 @@ export type User = {
     language?: string;
     isGuest?: boolean;
     lastLoginAt?: Date;
+    folderSortMode?: FolderSortMode;
 };

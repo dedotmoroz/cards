@@ -275,6 +275,7 @@ export function registerAuthRoutes(
                             isGuest: { type: 'boolean' },
                             isAdmin: { type: 'boolean' },
                             impersonatedBy: { type: ['string', 'null'] },
+                            folderSortMode: { type: 'string', enum: ['created_desc', 'name_asc'] },
                         },
                     },
                     404: {
@@ -313,6 +314,7 @@ export function registerAuthRoutes(
                 isGuest: user.isGuest ?? false,
                 isAdmin,
                 impersonatedBy,
+                folderSortMode: user.folderSortMode ?? 'created_desc',
             });
         }
     );
@@ -471,6 +473,54 @@ export function registerAuthRoutes(
             try {
                 const user = await userService.updateLanguage(userId, body.language);
                 return reply.send({ language: user.language });
+            } catch (error) {
+                return reply.code(404).send({ error: 'User not found' });
+            }
+        }
+    );
+
+    /**
+     * Смена режима сортировки папок
+     */
+    fastify.patch('/auth/folder-sort-mode',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                security: [{ cookieAuth: [] }],
+                body: {
+                    type: 'object',
+                    required: ['folderSortMode'],
+                    properties: {
+                        folderSortMode: { type: 'string', enum: ['created_desc', 'name_asc'] },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            folderSortMode: { type: 'string', enum: ['created_desc', 'name_asc'] },
+                        },
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['auth'],
+                summary: 'Update folder sort mode',
+            },
+        },
+        async (req, reply) => {
+            const userId = (req.user as any).userId;
+            const body = z.object({
+                folderSortMode: z.enum(['created_desc', 'name_asc']),
+            }).parse(req.body);
+
+            try {
+                const user = await userService.updateFolderSortMode(userId, body.folderSortMode);
+                return reply.send({ folderSortMode: user.folderSortMode ?? 'created_desc' });
             } catch (error) {
                 return reply.code(404).send({ error: 'User not found' });
             }

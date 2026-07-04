@@ -50,7 +50,10 @@ export const UpdateFolderDTO = z.object({
   name: z.string().min(1).optional(),
   sideALanguage: FolderSideALanguageSchema.optional(),
   sideBLanguage: FolderSideBLanguageSchema.optional(),
+  pinned: z.boolean().optional(),
 }).describe('UpdateFolderDTO');
+
+export const FolderSortModeSchema = z.enum(['created_desc', 'name_asc']);
 
 export const FolderDTO = z.object({
   id: z.string().uuid(),
@@ -58,6 +61,8 @@ export const FolderDTO = z.object({
   name: z.string(),
   sideALanguage: z.string(),
   sideBLanguage: z.string(),
+  createdAt: z.string().datetime(),
+  pinned: z.boolean(),
   cardCount: z.number().int().min(0).optional(),
 }).describe('FolderDTO');
 

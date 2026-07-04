@@ -10,6 +10,8 @@ function rowToFolder(row: {
     userId: string;
     sideALanguage: string;
     sideBLanguage: string;
+    createdAt: Date;
+    pinned: boolean;
 }): Folder {
     return new Folder(
         row.id,
@@ -17,6 +19,8 @@ function rowToFolder(row: {
         row.userId,
         row.sideALanguage,
         row.sideBLanguage,
+        row.createdAt,
+        row.pinned,
     );
 }
 
@@ -32,6 +36,7 @@ export class PostgresFolderRepository implements FolderRepository {
                 userId: folder.userId,
                 sideALanguage: folder.sideALanguage,
                 sideBLanguage: folder.sideBLanguage,
+                pinned: folder.pinned,
             }).where(eq(folders.id, folder.id));
         } else {
             await db.insert(folders).values({
@@ -40,6 +45,8 @@ export class PostgresFolderRepository implements FolderRepository {
                 userId: folder.userId,
                 sideALanguage: folder.sideALanguage,
                 sideBLanguage: folder.sideBLanguage,
+                createdAt: folder.createdAt,
+                pinned: folder.pinned,
             });
         }
     }

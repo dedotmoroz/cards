@@ -131,6 +131,26 @@ describe('foldersStore', () => {
     expect(result.current.folders[0].name).toBe('Updated')
   })
 
+  it('should update folder pinned state', async () => {
+    useFoldersStore.setState({
+      folders: [mockFolder],
+      selectedFolderId: 'folder-1',
+      isLoading: false,
+      error: null
+    })
+
+    mockedFoldersApi.updateFolder.mockResolvedValueOnce({ ...mockFolder, pinned: true })
+
+    const { result } = renderHook(() => useFoldersStore())
+
+    await act(async () => {
+      await result.current.updateFolder('folder-1', { pinned: true })
+    })
+
+    expect(mockedFoldersApi.updateFolder).toHaveBeenCalledWith('folder-1', { pinned: true })
+    expect(result.current.folders[0].pinned).toBe(true)
+  })
+
   it('should delete folder and reset selection if necessary', async () => {
     useFoldersStore.setState({
       folders: [mockFolder],

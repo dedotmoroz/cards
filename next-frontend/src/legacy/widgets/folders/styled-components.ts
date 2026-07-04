@@ -53,3 +53,20 @@ display: inline-block;
     margin-left: 4px;
     color: rgba(0, 0, 0, 0.42);
 `
+
+export const StyledHeaderActions = styled(Box)`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+`
+
+export const StyledPinIcon = styled(Box)`
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+    color: rgba(0, 0, 0, 0.42);
+
+    svg {
+        font-size: 14px;
+    }
+`

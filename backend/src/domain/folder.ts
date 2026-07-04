@@ -5,5 +5,7 @@ export class Folder {
     public readonly userId: string,
     public sideALanguage: string,
     public sideBLanguage: string,
+    public readonly createdAt: Date = new Date(),
+    public pinned: boolean = false,
   ) {}
 }

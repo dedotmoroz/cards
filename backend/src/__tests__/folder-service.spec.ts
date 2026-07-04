@@ -53,6 +53,16 @@ describe('FolderService', () => {
         expect(repo.save).toHaveBeenCalledWith(folder);
     });
 
+    it('закрепляет папку', async () => {
+        const folder = new Folder('123', 'Folder', 'user1', 'en', 'ru');
+        repo.findById.mockResolvedValue(folder);
+
+        const updated = await service.updateFolder('123', { pinned: true });
+
+        expect(updated?.pinned).toBe(true);
+        expect(repo.save).toHaveBeenCalledWith(folder);
+    });
+
     it('удаляет папку', async () => {
         const mockFolder = new Folder('123', 'Test Folder', 'user1', 'en', 'ru');
         repo.findById.mockResolvedValue(mockFolder);

@@ -12,6 +12,8 @@ function folderToDto(
         name: string;
         sideALanguage: string;
         sideBLanguage: string;
+        createdAt: Date;
+        pinned: boolean;
     },
     cardCount?: number,
 ) {
@@ -21,6 +23,8 @@ function folderToDto(
         name: folder.name,
         sideALanguage: folder.sideALanguage,
         sideBLanguage: folder.sideBLanguage,
+        createdAt: folder.createdAt.toISOString(),
+        pinned: folder.pinned,
         ...(cardCount !== undefined ? { cardCount } : {}),
     };
 }
@@ -93,14 +97,20 @@ export function registerFoldersRoutes(
             reply: FastifyReply
         ) => {
             const { id } = req.params;
-            const { name, sideALanguage, sideBLanguage } = req.body;
-            if (name === undefined && sideALanguage === undefined && sideBLanguage === undefined) {
+            const { name, sideALanguage, sideBLanguage, pinned } = req.body;
+            if (
+                name === undefined &&
+                sideALanguage === undefined &&
+                sideBLanguage === undefined &&
+                pinned === undefined
+            ) {
                 return reply.code(400).send({ message: 'At least one field is required' });
             }
             const updated = await folderService.updateFolder(id, {
                 name,
                 sideALanguage,
                 sideBLanguage,
+                pinned,
             });
             if (!updated) {
                 return reply.code(404).send({ message: 'Folder not found' });

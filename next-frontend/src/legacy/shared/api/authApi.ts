@@ -86,6 +86,16 @@ export const authApi = {
   },
 
   /**
+   * Обновление режима сортировки папок
+   */
+  updateFolderSortMode: async (folderSortMode: 'created_desc' | 'name_asc'): Promise<{ folderSortMode: 'created_desc' | 'name_asc' }> => {
+    const response = await axios.patch(`${API_BASE_URL}/auth/folder-sort-mode`, { folderSortMode }, {
+      withCredentials: true
+    });
+    return response.data;
+  },
+
+  /**
    * Создание гостевого пользователя
    */
   createGuest: async (data: GuestData): Promise<User> => {

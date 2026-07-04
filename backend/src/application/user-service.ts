@@ -10,6 +10,7 @@ import { hash, compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import { db } from '../db/db';
+import type { FolderSortMode } from '../domain/user';
 
 export class UserService {
     private readonly jwtSecret: string;
@@ -75,6 +76,10 @@ export class UserService {
 
     async updateLanguage(userId: string, language: string): Promise<User> {
         return this.userRepo.update(userId, { language });
+    }
+
+    async updateFolderSortMode(userId: string, folderSortMode: FolderSortMode): Promise<User> {
+        return this.userRepo.update(userId, { folderSortMode });
     }
 
     async updateEmail(userId: string, email: string): Promise<User> {

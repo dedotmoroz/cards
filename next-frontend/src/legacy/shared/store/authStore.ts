@@ -24,6 +24,7 @@ interface AuthState {
   updateProfile: (data: UpdateProfileData) => Promise<void>;
   changePassword: (data: ChangePasswordData) => Promise<void>;
   updateLanguage: (language: string) => Promise<void>;
+  updateFolderSortMode: (folderSortMode: 'created_desc' | 'name_asc') => Promise<void>;
   createGuest: (language: string) => Promise<void>;
   registerGuest: (email: string, password: string, name: string, language: string, turnstileToken?: string) => Promise<void>;
 
@@ -148,10 +149,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       const userData = await authApi.getMe();
-      // Маппим name из API в username для типа User
       const user: User = {
         ...userData,
-        username: (userData as any).name || userData.username
+        username: (userData as any).name || userData.username,
+        folderSortMode: userData.folderSortMode ?? 'created_desc',
       };
       set({
         user,
@@ -224,6 +225,37 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
+      set({ error: errorMessage});
+      throw new Error(errorMessage);
+    }
+  },
+
+  updateFolderSortMode: async (folderSortMode: 'created_desc' | 'name_asc') => {
+    set({ error: null });
+    const currentUser = get().user;
+    if (currentUser) {
+      set({
+        user: { ...currentUser, folderSortMode },
+        isAuthenticated: true,
+      });
+    }
+    try {
+      const { folderSortMode: savedMode } = await authApi.updateFolderSortMode(folderSortMode);
+      const userAfter = get().user;
+      if (userAfter) {
+        set({
+          user: { ...userAfter, folderSortMode: savedMode },
+          isAuthenticated: true,
+        });
+      }
+    } catch (error: any) {
+      if (currentUser) {
+        set({
+          user: currentUser,
+          isAuthenticated: true,
+        });
+      }
+      const errorMessage = error.response?.data?.message ?? error.response?.data?.error;
       set({ error: errorMessage});
       throw new Error(errorMessage);
     }

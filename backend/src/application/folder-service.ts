@@ -5,6 +5,7 @@ export interface UpdateFolderParams {
   name?: string;
   sideALanguage?: string;
   sideBLanguage?: string;
+  pinned?: boolean;
 }
 
 export class FolderService {
@@ -17,7 +18,7 @@ export class FolderService {
     sideBLanguage: string,
   ): Promise<Folder> {
     const id = crypto.randomUUID();
-    const folder = new Folder(id, name, userId, sideALanguage, sideBLanguage);
+    const folder = new Folder(id, name, userId, sideALanguage, sideBLanguage, new Date(), false);
     await this.folderRepo.save(folder);
     return folder;
   }
@@ -33,6 +34,9 @@ export class FolderService {
     }
     if (updates.sideBLanguage !== undefined) {
       folder.sideBLanguage = updates.sideBLanguage;
+    }
+    if (updates.pinned !== undefined) {
+      folder.pinned = updates.pinned;
     }
     await this.folderRepo.save(folder);
     return folder;
