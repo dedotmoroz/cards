@@ -4,6 +4,7 @@ Next.js App Router app running **alongside** the legacy Vite `frontend`.
 
 - **SSR/SSG/ISR**: landing, Strapi pages (`/p/...`), collections, ecosystem
 - **CSR**: cards and learn flow (`/learn/**`) via `@/` imports from `src/legacy` (copy of Vite UI; independent from `frontend/`)
+- **Global card search**: 🔍 in the folders sidebar → dialog with debounced query (min 2 chars) → `GET /cards/search` on backend → click a result to open `/learn/{userId}/{folderId}?cardId={id}` with scroll and highlight
 
 ## Quick start
 

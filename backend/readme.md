@@ -106,6 +106,47 @@ SELECT id, email FROM users WHERE email = 'you@example.com';
 
 ---
 
+## 🔍 Глобальный поиск карточек
+
+`GET /cards/search` — поиск по **question** и **answer** во всех папках текущего пользователя.
+
+**Аутентификация:** cookie `token` (как у остальных `/cards/*`).
+
+**Query-параметры:**
+
+| Параметр | Обязательный | По умолчанию | Описание |
+|----------|--------------|--------------|----------|
+| `q` | да | — | Строка поиска; короче 2 символов → пустой массив |
+| `limit` | нет | `30` | 1–100 |
+| `offset` | нет | `0` | смещение для пагинации |
+
+**Ответ:** массив объектов `CardDTO` + поле `folderName` (название папки).
+
+**Пример:**
+
+```http
+GET /cards/search?q=hello&limit=30&offset=0
+```
+
+```json
+[
+  {
+    "id": "...",
+    "question": "hello",
+    "answer": "привет",
+    "isLearned": false,
+    "folderId": "...",
+    "folderName": "English"
+  }
+]
+```
+
+Поиск в PostgreSQL — `ILIKE` по полям `question` и `answer`. Реализация: `CardRepository.searchByFolderIds`, `CardService.searchCards`, маршрут в `adapters/http/routes/cards-routes.ts`.
+
+**Frontend (next-frontend):** иконка 🔍 в заголовке списка папок открывает диалог; клик по результату ведёт на `/learn/{userId}/{folderId}?cardId={id}` — прокрутка к карточке и временная подсветка.
+
+---
+
 ## 📌 Принцип
 
 - Ядро (`domain`, `application`, `ports`) **не зависит от фреймворков**
@@ -122,4 +163,3 @@ SELECT id, email FROM users WHERE email = 'you@example.com';
 - Telegram Bot.
 - Web API (например, Express)
 - БД-хранилище (например, Prisma, SQLite)
-
