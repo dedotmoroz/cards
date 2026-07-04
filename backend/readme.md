@@ -119,7 +119,7 @@ SELECT id, email FROM users WHERE email = 'you@example.com';
 🔹 Реализовать адаптеры:
 
 
-- Telegram Bot
+- Telegram Bot.
 - Web API (например, Express)
 - БД-хранилище (например, Prisma, SQLite)
 
