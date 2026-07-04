@@ -19,6 +19,10 @@ export interface Card {
   folderId: string;
 }
 
+export interface CardSearchResult extends Card {
+  folderName?: string;
+}
+
 export interface CreateCardData {
   question: string;
   answer: string;

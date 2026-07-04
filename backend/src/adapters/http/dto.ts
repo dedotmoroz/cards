@@ -26,6 +26,10 @@ export const CardDTO = z.object({
   createdAt: z.date(),
 }).describe('CardDTO');
 
+export const CardSearchResultDTO = CardDTO.extend({
+  folderName: z.string().optional(),
+}).describe('CardSearchResultDTO');
+
 export const UpdateCardDTO = z.object({
   question: z.string().min(1).optional(),
   answer: z.string().min(1).optional(),

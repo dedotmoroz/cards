@@ -25,6 +25,7 @@ interface CardItemProps {
     handleCardClick: (cardId: string) => void;
     displayFilter: 'A' | 'AB' | 'B';
     expandedCardId: string | null;
+    highlighted?: boolean;
     updateCardLearnStatus: (cardId: string, isLearned: boolean) => void;
     handleMenuOpen: (event: React.MouseEvent<HTMLElement>, cardId: string) => void;
     onReload?: (cardId: string) => void;
@@ -36,6 +37,7 @@ export const CardItem: React.FC<CardItemProps> = ({
                              handleCardClick,
                              displayFilter,
                              expandedCardId,
+                             highlighted = false,
                              updateCardLearnStatus,
                              handleMenuOpen,
                              onReload,
@@ -49,6 +51,8 @@ export const CardItem: React.FC<CardItemProps> = ({
     return (
         <StyledListItem
             key={card.id}
+            data-card-id={card.id}
+            $highlighted={highlighted}
             onClick={() => handleCardClick(card.id)}
         >
             <StyledCardContainer>

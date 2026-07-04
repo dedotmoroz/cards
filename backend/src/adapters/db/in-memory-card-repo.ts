@@ -86,4 +86,25 @@ export class InMemoryCardRepository implements CardRepository {
                 c.reviewCount >= 2
         ).length;
     }
+
+    async searchByFolderIds(
+        folderIds: string[],
+        query: string,
+        limit: number,
+        offset: number
+    ): Promise<Array<{ card: Card; folderName: string }>> {
+        if (folderIds.length === 0 || query.trim().length < 2) return [];
+
+        const needle = query.trim().toLowerCase();
+        return this.cards
+            .filter(
+                (c) =>
+                    folderIds.includes(c.folderId) &&
+                    (c.question.toLowerCase().includes(needle) ||
+                        c.answer.toLowerCase().includes(needle))
+            )
+            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+            .slice(offset, offset + limit)
+            .map((card) => ({ card, folderName: '' }));
+    }
 }

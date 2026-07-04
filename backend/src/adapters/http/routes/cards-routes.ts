@@ -8,7 +8,7 @@ import { GoogleSheetsService } from '../../../application/google-sheets-service'
 import {
     googlePickerAccessTokenFromRequest,
 } from '../google-picker-access-token';
-import { CreateCardDTO, CardDTO, UpdateCardDTO, ReviewCardDTO } from '../dto';
+import { CreateCardDTO, CardDTO, CardSearchResultDTO, UpdateCardDTO, ReviewCardDTO } from '../dto';
 import { CreateCardInput } from './types';
 import type { CardRepository } from '../../../ports/card-repository';
 import { translateForFolder } from '../../ai/translate-service';
@@ -243,6 +243,62 @@ export function registerCardsRoutes(
             const updated = await cardService.reviewCard(id, req.body.outcome);
             if (!updated) return reply.code(404).send({ message: 'Card not found' });
             return reply.send(updated.toPublicDTO());
+        }
+    );
+
+    /**
+     * Глобальный поиск карточек по всем папкам пользователя
+     */
+    fastify.get(
+        '/cards/search',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['q'],
+                    properties: {
+                        q: { type: 'string' },
+                        limit: { type: 'number', minimum: 1, maximum: 100 },
+                        offset: { type: 'number', minimum: 0 },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'array',
+                        items: zodToJsonSchema(CardSearchResultDTO),
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Search cards across all user folders',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Querystring: { q: string; limit?: number; offset?: number } }>,
+            reply: FastifyReply
+        ) => {
+            const authUserId = (req.user as { userId?: string }).userId;
+            if (!authUserId) return reply.send([]);
+
+            const q = req.query.q?.trim() ?? '';
+            if (q.length < 2) return reply.send([]);
+
+            const limit = Math.max(1, Math.min(100, Number(req.query.limit ?? 30)));
+            const offset = Math.max(0, Number(req.query.offset ?? 0));
+
+            const userFolders = await folderRepo.findAll(authUserId);
+            const folderIds = userFolders.map((f) => f.id);
+            if (folderIds.length === 0) return reply.send([]);
+
+            const folderNameById = Object.fromEntries(userFolders.map((f) => [f.id, f.name]));
+            const results = await cardService.searchCards(folderIds, q, limit, offset);
+
+            return reply.send(
+                results.map(({ card, folderName }) => ({
+                    ...card.toPublicDTO(),
+                    folderName: folderName || folderNameById[card.folderId] || '',
+                }))
+            );
         }
     );
 

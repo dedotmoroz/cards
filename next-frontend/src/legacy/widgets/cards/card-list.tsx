@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { List, IconButton, Box, Typography, CircularProgress } from '@mui/material';
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
@@ -44,6 +44,8 @@ type CardListProps = {
   folderId?: string;
   onCancelCreateCard?: () => void;
   isLoading?: boolean;
+  highlightCardId?: string | null;
+  onHighlightComplete?: () => void;
 };
 
 export const CardList: React.FC<CardListProps> = ({
@@ -58,6 +60,8 @@ export const CardList: React.FC<CardListProps> = ({
                                                     folderId,
                                                     onCancelCreateCard,
                                                     isLoading = false,
+                                                    highlightCardId = null,
+                                                    onHighlightComplete,
                                                      // onToggleLearned
 }) => {
   const { t } = useTranslation();
@@ -82,6 +86,37 @@ export const CardList: React.FC<CardListProps> = ({
   const [renameAnswer, setRenameAnswer] = useState('');
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [highlightedCardId, setHighlightedCardId] = useState<string | null>(null);
+  const lastHighlightedRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    lastHighlightedRef.current = null;
+    setHighlightedCardId(null);
+  }, [folderId]);
+
+  useEffect(() => {
+    if (!highlightCardId || isLoading) return;
+    if (lastHighlightedRef.current === highlightCardId) return;
+
+    const card = cards.find((item) => item.id === highlightCardId);
+    if (!card) return;
+
+    lastHighlightedRef.current = highlightCardId;
+    setExpandedCardId(highlightCardId);
+    setHighlightedCardId(highlightCardId);
+
+    requestAnimationFrame(() => {
+      const element = document.querySelector(`[data-card-id="${highlightCardId}"]`);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    const timer = window.setTimeout(() => {
+      setHighlightedCardId(null);
+      onHighlightComplete?.();
+    }, 3000);
+
+    return () => window.clearTimeout(timer);
+  }, [highlightCardId, cards, isLoading, onHighlightComplete]);
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLElement>, id: string) => {
     e.stopPropagation();
@@ -299,6 +334,7 @@ export const CardList: React.FC<CardListProps> = ({
                   handleCardClick={handleCardClick}
                   displayFilter={displayFilter}
                   expandedCardId={expandedCardId}
+                  highlighted={highlightedCardId === card.id}
                   updateCardLearnStatus={updateCardLearnStatus}
                   handleMenuOpen={handleMenuOpen}
                   onReload={generateCardSentences}

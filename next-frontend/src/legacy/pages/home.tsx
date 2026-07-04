@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useAppNavigate } from '@/shared/libs/use-app-navigate';
 import { Box, Grid, Drawer, useMediaQuery, useTheme } from '@mui/material';
 
@@ -25,6 +25,8 @@ export const HomePage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
     const { userId, folderId, kind } = useParams<{ userId?: string; folderId?: string; kind?: string }>();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const highlightCardId = searchParams.get('cardId');
     const navigate = useAppNavigate();
     const { user } = useAuthStore();
     const currentUserId = user?.id;
@@ -148,6 +150,13 @@ export const HomePage = () => {
         navigate('/');
     }
 
+    const handleHighlightComplete = useCallback(() => {
+        if (!searchParams.get('cardId')) return;
+        const next = new URLSearchParams(searchParams);
+        next.delete('cardId');
+        setSearchParams(next, { replace: true });
+    }, [searchParams, setSearchParams]);
+
 
     return (
         <>
@@ -168,7 +177,11 @@ export const HomePage = () => {
                             <Folders />
                         </Grid>
                         <Grid size={9}>
-                            <Cards isLoading={cardsLoading} />
+                            <Cards
+                                isLoading={cardsLoading}
+                                highlightCardId={highlightCardId}
+                                onHighlightComplete={handleHighlightComplete}
+                            />
                         </Grid>
                     </StyledGrid>
                 ) : (
@@ -199,7 +212,11 @@ export const HomePage = () => {
                         </Box>
                     </Drawer>
                     <StyledCardsBox>
-                        <Cards isLoading={cardsLoading} />
+                        <Cards
+                            isLoading={cardsLoading}
+                            highlightCardId={highlightCardId}
+                            onHighlightComplete={handleHighlightComplete}
+                        />
                     </StyledCardsBox>
                 </StyledMobileVersionBox>
             )}

@@ -93,11 +93,15 @@ export const StyledHeaderWithButton = styled(Box)`
     gap: ${({ theme }) => theme.spacing(1)};
 `
 
-export const StyledListItem = styled(ListItem)`
+export const StyledListItem = styled(ListItem, {
+    shouldForwardProp: (prop) => prop !== '$highlighted',
+})<{ $highlighted?: boolean }>`
     transition: background-color 0.2s ease-in-out;
     margin: 0;
     padding: 10px 20px;
     border-bottom: 2px solid rgba(227, 231, 237, 0.74);
+    background-color: ${({ theme, $highlighted }) =>
+        $highlighted ? theme.palette.action.selected : 'transparent'};
     &:last-child {
         border-bottom: none;
     }

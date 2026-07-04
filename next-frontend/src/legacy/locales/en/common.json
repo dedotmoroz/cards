@@ -260,6 +260,17 @@
     "virtual": {
       "remember": "Remember",
       "hard": "Hard"
+    },
+    "search": {
+      "label": "Search cards",
+      "title": "Search cards",
+      "placeholder": "Search question or answer…",
+      "minChars": "Enter at least 2 characters",
+      "noResults": "No cards found",
+      "error": "Search failed. Please try again.",
+      "learned": "Learned",
+      "notLearned": "Not learned",
+      "unknownFolder": "Unknown folder"
     }
   },
   "errors": {

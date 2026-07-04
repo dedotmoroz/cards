@@ -108,4 +108,15 @@ export class CardService {
     const cards = await this.cardRepo.findAll(folderId, filter);
     return cards.sort(() => Math.random() - 0.5);
   }
+
+  async searchCards(
+    folderIds: string[],
+    query: string,
+    limit: number,
+    offset: number
+  ): Promise<Array<{ card: Card; folderName: string }>> {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) return [];
+    return this.cardRepo.searchByFolderIds(folderIds, trimmed, limit, offset);
+  }
 }

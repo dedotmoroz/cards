@@ -17,4 +17,12 @@ export interface CardRepository {
   findHardCardsByFolderIds(folderIds: string[], limit: number): Promise<Card[]>;
   /** Число карточек с теми же критериями, что и «Сложно» (выученные, reviewCount >= 2). */
   countHardCardsByFolderIds(folderIds: string[]): Promise<number>;
+
+  /** Поиск карточек по question/answer среди указанных папок (ILIKE). */
+  searchByFolderIds(
+    folderIds: string[],
+    query: string,
+    limit: number,
+    offset: number
+  ): Promise<Array<{ card: Card; folderName: string }>>;
 }

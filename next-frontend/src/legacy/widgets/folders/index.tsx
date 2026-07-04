@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Menu, MenuItem, ListItemText } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import SortIcon from '@mui/icons-material/Sort';
 import {FolderList} from "@/widgets/folders/folder-list.tsx";
 import {CreateFolder} from "@/features/create-folder/index.tsx";
+import { SearchCardsDialog } from '@/features/search-cards';
 import { useFoldersStore, REMEMBER_VIRTUAL_MIN_TOTAL_CARDS } from '@/shared/store/foldersStore.ts';
 import { useAuthStore } from '@/shared/store/authStore.ts';
 import { sortFolders } from '@/shared/libs/sort-folders.ts';
@@ -18,6 +20,7 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
     const folderSortMode = useAuthStore((state) => state.user?.folderSortMode ?? 'created_desc');
     const updateFolderSortMode = useAuthStore((state) => state.updateFolderSortMode);
     const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
+    const [searchOpen, setSearchOpen] = useState(false);
     const {
         folders,
         folderCardCounts,
@@ -79,6 +82,13 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
                 <StyledHeaderActions>
                     <IconButton
                         size="small"
+                        aria-label={t('folders.search.label', 'Search')}
+                        onClick={() => setSearchOpen(true)}
+                    >
+                        <SearchIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                        size="small"
                         aria-label={t('folders.sort.label')}
                         onClick={(event) => setSortAnchorEl(event.currentTarget)}
                     >
@@ -118,6 +128,7 @@ export const Folders = ({ onFolderSelect }: FoldersProps) => {
                 folderCardCounts={folderCardCounts}
                 hardVirtualCount={hardEligibleCount}
             />
+            <SearchCardsDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
         </StyledWrappedBox>
     )
 }

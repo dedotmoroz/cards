@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type {
   Card,
+  CardSearchResult,
   CreateCardData,
   UpdateCardData,
   UpdateCardLearnStatusData,
@@ -28,6 +29,18 @@ export const cardsApi = {
    */
   getCards: async (folderId: string): Promise<Card[]> => {
     const response = await axios.get(`${API_BASE_URL}/cards/folder/${folderId}`);
+    return response.data;
+  },
+
+  /**
+   * Глобальный поиск карточек по всем папкам
+   */
+  searchCards: async (params: {
+    q: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<CardSearchResult[]> => {
+    const response = await axios.get(`${API_BASE_URL}/cards/search`, { params });
     return response.data;
   },
 

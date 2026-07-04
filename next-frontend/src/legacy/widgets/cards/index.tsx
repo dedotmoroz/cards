@@ -11,9 +11,15 @@ import { StyledWrapperBox, StyledTopBox, StyleLeftBox, StyledHeaderBox, StyledCr
 
 type CardsProps = {
     isLoading?: boolean;
+    highlightCardId?: string | null;
+    onHighlightComplete?: () => void;
 };
 
-export const Cards = ({ isLoading = false }: CardsProps) => {
+export const Cards = ({
+    isLoading = false,
+    highlightCardId = null,
+    onHighlightComplete,
+}: CardsProps) => {
     const { t } = useTranslation();
     const [displayFilter, setDisplayFilter] = useState<'A' | 'AB' | 'B'>('AB');
     const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
@@ -148,6 +154,8 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
                 folderId={selectedFolderId ?? undefined}
                 onCancelCreateCard={() => setIsCreatingCard(false)}
                 isLoading={isLoading}
+                highlightCardId={highlightCardId}
+                onHighlightComplete={onHighlightComplete}
             />
         </StyledWrapperBox>
     )

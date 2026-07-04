@@ -587,6 +587,77 @@ describe('📦 Card Repository (e2e)', () => {
         });
     });
 
+    describe('GET /cards/search', () => {
+        it('находит карточки по question и answer среди всех папок пользователя', async () => {
+            const meRes = await request(fastify.server)
+                .get('/auth/me')
+                .set('Cookie', authCookie);
+            const userId = meRes.body.id;
+
+            const folder2Res = await request(fastify.server)
+                .post('/folders')
+                .set('Cookie', authCookie)
+                .send({ userId, name: 'Search Folder 2', ...TEST_FOLDER_LANGUAGES });
+            const folder2Id = folder2Res.body.id;
+
+            await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'UniqueAlphaTerm',
+                    answer: 'Answer in folder 1',
+                });
+
+            const create2Res = await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId: folder2Id,
+                    question: 'Another question',
+                    answer: 'UniqueBetaTerm',
+                });
+
+            const searchByQuestion = await request(fastify.server)
+                .get('/cards/search')
+                .set('Cookie', authCookie)
+                .query({ q: 'UniqueAlpha' });
+
+            expect(searchByQuestion.status).toBe(200);
+            expect(searchByQuestion.body.length).toBeGreaterThanOrEqual(1);
+            expect(searchByQuestion.body.some((c: { question: string }) => c.question.includes('UniqueAlphaTerm'))).toBe(true);
+            expect(searchByQuestion.body[0]).toHaveProperty('folderId');
+            expect(searchByQuestion.body[0]).toHaveProperty('folderName');
+
+            const searchByAnswer = await request(fastify.server)
+                .get('/cards/search')
+                .set('Cookie', authCookie)
+                .query({ q: 'UniqueBeta' });
+
+            expect(searchByAnswer.status).toBe(200);
+            expect(searchByAnswer.body.some((c: { answer: string }) => c.answer.includes('UniqueBetaTerm'))).toBe(true);
+            expect(searchByAnswer.body.find((c: { id: string }) => c.id === create2Res.body.id)?.folderId).toBe(folder2Id);
+        });
+
+        it('возвращает пустой массив для короткого запроса', async () => {
+            const res = await request(fastify.server)
+                .get('/cards/search')
+                .set('Cookie', authCookie)
+                .query({ q: 'a' });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual([]);
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .get('/cards/search')
+                .query({ q: 'test' });
+
+            expect(res.status).toBe(401);
+        });
+    });
+
     describe('GET /cards/:id/generate-status', () => {
         it('возвращает статус генерации', async () => {
             // Создаем карточку и запускаем генерацию

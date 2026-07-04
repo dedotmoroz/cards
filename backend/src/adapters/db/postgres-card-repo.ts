@@ -1,4 +1,4 @@
-import { eq, desc, and, inArray, sql } from 'drizzle-orm';
+import { eq, desc, and, inArray, sql, or, ilike } from 'drizzle-orm';
 import { db } from '../../db/db';
 import { Card } from '../../domain/card';
 import { CardRepository } from '../../ports/card-repository';
@@ -148,5 +148,36 @@ export class PostgresCardRepository implements CardRepository {
                 )
             );
         return rows[0]?.count ?? 0;
+    }
+
+    async searchByFolderIds(
+        folderIds: string[],
+        query: string,
+        limit: number,
+        offset: number
+    ): Promise<Array<{ card: Card; folderName: string }>> {
+        if (folderIds.length === 0 || query.trim().length < 2) return [];
+
+        const pattern = `%${query.trim().replace(/[%_\\]/g, '\\$&')}%`;
+        const rows = await db
+            .select()
+            .from(cards)
+            .where(
+                and(
+                    inArray(cards.folderId, folderIds),
+                    or(
+                        ilike(cards.question, pattern),
+                        ilike(cards.answer, pattern)
+                    )
+                )
+            )
+            .orderBy(desc(cards.createdAt))
+            .limit(limit)
+            .offset(offset);
+
+        return rows.map((row) => ({
+            card: toCard(row),
+            folderName: '',
+        }));
     }
 }
