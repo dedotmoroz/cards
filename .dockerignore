@@ -1,3 +1,13 @@
 *
+!backend/
+!backend/**
+!frontend/
+!frontend/**
 !next-frontend/
 !next-frontend/**
+!ai-service/
+!ai-service/**
+!telegram-bot/
+!telegram-bot/**
+!cms/
+!cms/**
