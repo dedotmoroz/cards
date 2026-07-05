@@ -163,3 +163,4 @@ GET /cards/search?q=hello&limit=30&offset=0
 - Telegram Bot.
 - Web API (например, Express)
 - БД-хранилище (например, Prisma, SQLite)
+
