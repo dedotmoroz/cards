@@ -3,12 +3,20 @@ import { Worker, Job } from "bullmq";
 import { redis } from "../redis/connection";
 import { queueName, ContextJobInput, ContextJobResult } from "../queues/contextQueue";
 import { generateContextText } from "../services/contextTextService";
+import { synthesizeContextAudio } from "../services/contextAudioService";
 
 export async function processContextJob(job: Job<ContextJobInput, ContextJobResult>) {
     await job.updateProgress(5);
-    const result = await generateContextText(job.data);
+    const { text, translation } = await generateContextText(job.data);
+    await job.updateProgress(60);
+
+    let hasAudio = false;
+    if (job.id) {
+        hasAudio = await synthesizeContextAudio(job.id, text);
+    }
+
     await job.updateProgress(100);
-    return result;
+    return { text, translation, hasAudio };
 }
 
 const worker = new Worker<ContextJobInput, ContextJobResult>(
@@ -24,4 +32,3 @@ worker.on("completed", (job) => {
 worker.on("failed", (job, err) => {
     console.error(`[context-worker] failed job ${job?.id}:`, err?.message);
 });
-

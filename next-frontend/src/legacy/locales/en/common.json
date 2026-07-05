@@ -430,7 +430,8 @@
     "folderRequired": "Folder ID is required",
     "noWordsLeft": "There are no more words in this folder to build context reading content.",
     "backToFolder": "Back to folder",
-    "createContentAgain": "Create content again"
+    "createContentAgain": "Create content again",
+    "listen": "Listen"
   },
   "telegram": {
     "connect": {

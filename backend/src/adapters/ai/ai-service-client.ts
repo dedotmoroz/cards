@@ -92,6 +92,7 @@ export type ContextJobResponse = {
 export type ContextJobStatusText = {
   text: string;
   translation: string;
+  hasAudio?: boolean;
 };
 
 export type ContextJobStatusResponse = {
@@ -116,6 +117,24 @@ export async function fetchContextGenerationStatus(jobId: string): Promise<Conte
   return callAiService<ContextJobStatusResponse>(`/jobs/${jobId}?queue=context`, {
     method: 'GET',
   });
+}
+
+export async function fetchContextAudio(jobId: string): Promise<Response> {
+  const url = new URL(`/jobs/${jobId}/audio?queue=context`, aiServiceBaseUrl);
+  const response = await fetch(url);
+
+  if (response.status === 404) {
+    throw new Error(`[ai-service] Context audio not found for job ${jobId}`);
+  }
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(
+      `[ai-service] Unexpected status ${response.status} for ${url.href}. Body: ${body}`,
+    );
+  }
+
+  return response;
 }
 
 

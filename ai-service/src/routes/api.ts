@@ -2,6 +2,10 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { generateQueue, GenerateJobInput, GenerateJobResult } from "../queues/generateQueue.js";
 import { contextQueue, ContextJobInput, ContextJobResult } from "../queues/contextQueue.js";
+import {
+    contextAudioFileExists,
+    createContextAudioReadStream,
+} from "../services/contextAudioService.js";
 import { Job, QueueEvents } from "bullmq";
 import { redis } from "../redis/connection.js";
 import type { FastifySchema } from "fastify";
@@ -135,6 +139,7 @@ const JobStatusSchema = {
                             properties: {
                                 text: { type: "string" },
                                 translation: { type: "string" },
+                                hasAudio: { type: "boolean" },
                             },
                         },
                         { type: "null" },
@@ -308,6 +313,46 @@ export default async function registerApi(app: FastifyInstance) {
             const failedReason = state === "failed" ? job.failedReason : undefined;
 
             return reply.send({ id, state, progress, result, error: failedReason, queueType });
+        },
+    });
+
+    app.get<{ Params: { id: string } }>("/jobs/:id/audio", {
+        schema: {
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string" },
+                },
+            },
+        } as unknown as FastifySchema,
+        handler: async (req, reply) => {
+            const { id } = req.params;
+            const queueParam = (req.query as { queue?: string }).queue;
+
+            const job =
+                queueParam === "generate"
+                    ? null
+                    : ((await Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id)) ??
+                      null);
+
+            if (!job) {
+                return reply.code(404).send({ error: "job not found" });
+            }
+
+            const state = await job.getState();
+            if (state !== "completed") {
+                return reply.code(404).send({ error: "audio not ready" });
+            }
+
+            const result = job.returnvalue as ContextJobResult | undefined;
+            if (!result?.hasAudio || !contextAudioFileExists(id)) {
+                return reply.code(404).send({ error: "audio not found" });
+            }
+
+            reply.header("Content-Type", "audio/mpeg");
+            reply.header("Cache-Control", "private, max-age=3600");
+            return reply.send(createContextAudioReadStream(id));
         },
     });
 

@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase } from '../../../application/context-reading-service';
-import { fetchContextGenerationStatus } from '../../ai/ai-service-client';
+import { fetchContextGenerationStatus, fetchContextAudio } from '../../ai/ai-service-client';
 import { CardDTO } from '../dto';
 import { CONTEXT_READING_POOL_MODE_MISMATCH } from '../../../domain/context-reading';
 
@@ -271,6 +271,56 @@ export function registerContextReadingRoutes(
             } catch (error) {
                 if (error instanceof Error && error.message.includes('404')) {
                     return reply.code(404).send({ message: 'Job not found' });
+                }
+                throw error;
+            }
+        }
+    );
+
+    /**
+     * Контекстное обучение - аудио сгенерированного текста
+     */
+    fastify.get(
+        '/context-reading/audio',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['jobId'],
+                    properties: {
+                        jobId: { type: 'string' },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Stream context text audio (mp3)',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Querystring: { jobId: string };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const { jobId } = req.query;
+
+            try {
+                const audioResponse = await fetchContextAudio(jobId);
+
+                reply.header('Content-Type', 'audio/mpeg');
+                reply.header('Cache-Control', 'private, max-age=3600');
+
+                if (audioResponse.body) {
+                    return reply.send(audioResponse.body);
+                }
+
+                return reply.code(404).send({ message: 'Audio not found' });
+            } catch (error) {
+                if (
+                    error instanceof Error &&
+                    (error.message.includes('404') || error.message.includes('not found'))
+                ) {
+                    return reply.code(404).send({ message: 'Audio not found' });
                 }
                 throw error;
             }

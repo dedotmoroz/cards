@@ -27,3 +27,6 @@ backup
 
 # Service token generator
 backend/src/gen-service-token.ts
+
+# Generated context TTS audio (local dev)
+ai-service/data/

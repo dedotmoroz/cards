@@ -6,12 +6,14 @@ import { TEST_FOLDER_LANGUAGES } from './test-folder-defaults';
 jest.mock('../adapters/ai/ai-service-client', () => ({
     requestContextGeneration: jest.fn(),
     fetchContextGenerationStatus: jest.fn(),
+    fetchContextAudio: jest.fn(),
 }));
 
-import { requestContextGeneration, fetchContextGenerationStatus } from '../adapters/ai/ai-service-client';
+import { requestContextGeneration, fetchContextGenerationStatus, fetchContextAudio } from '../adapters/ai/ai-service-client';
 
 const mockedRequestContextGeneration = requestContextGeneration as jest.MockedFunction<typeof requestContextGeneration>;
 const mockedFetchContextGenerationStatus = fetchContextGenerationStatus as jest.MockedFunction<typeof fetchContextGenerationStatus>;
+const mockedFetchContextAudio = fetchContextAudio as jest.MockedFunction<typeof fetchContextAudio>;
 
 describe('📖 Context Reading API (e2e)', () => {
     let fastify: FastifyInstance;
@@ -627,6 +629,60 @@ describe('📖 Context Reading API (e2e)', () => {
                 .get('/context-reading/generate-status')
                 .set('Cookie', authCookie)
                 .query({ jobId: 'non-existent-job-id' });
+
+            expect(res.status).toBe(404);
+        });
+    });
+
+    describe('GET /context-reading/audio', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('проксирует mp3 из ai-service', async () => {
+            mockedFetchContextAudio.mockResolvedValue(
+                new Response(Buffer.from('fake-mp3'), {
+                    status: 200,
+                    headers: { 'Content-Type': 'audio/mpeg' },
+                }),
+            );
+
+            const res = await request(fastify.server)
+                .get('/context-reading/audio')
+                .set('Cookie', authCookie)
+                .query({ jobId: 'context-job-123' });
+
+            expect(res.status).toBe(200);
+            expect(res.headers['content-type']).toContain('audio/mpeg');
+            expect(res.body).toEqual(Buffer.from('fake-mp3'));
+            expect(mockedFetchContextAudio).toHaveBeenCalledWith('context-job-123');
+        });
+
+        it('требует jobId в query', async () => {
+            const res = await request(fastify.server)
+                .get('/context-reading/audio')
+                .set('Cookie', authCookie);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('требует аутентификации', async () => {
+            const res = await request(fastify.server)
+                .get('/context-reading/audio')
+                .query({ jobId: 'context-job-123' });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('возвращает 404 если ai-service не нашёл аудио', async () => {
+            mockedFetchContextAudio.mockRejectedValue(
+                new Error('[ai-service] Context audio not found for job missing-audio'),
+            );
+
+            const res = await request(fastify.server)
+                .get('/context-reading/audio')
+                .set('Cookie', authCookie)
+                .query({ jobId: 'missing-audio' });
 
             expect(res.status).toBe(404);
         });

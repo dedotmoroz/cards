@@ -32,6 +32,10 @@ COPY --from=build /app/dist ./dist
 
 # порт, на котором слушает сервис
 ENV PORT=4000
+ENV AUDIO_STORAGE_DIR=/app/data/context-audio
+ENV OPENAI_TTS_MODEL=tts-1
+ENV OPENAI_TTS_VOICE=nova
+RUN mkdir -p /app/data/context-audio
 EXPOSE 4000
 
 CMD ["node", "dist/index.js"]

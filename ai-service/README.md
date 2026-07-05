@@ -38,6 +38,44 @@ brew services start redis  # или redis-server в отдельном окне
 7. **Результат**  
    После `completed` результат включает массив сгенерированных предложений; клиент использует их для создания карточек/вспомогательных данных.
 
+## Контекстное чтение и TTS
+
+1. **POST /generate-context** — ставит задачу в очередь `context`.
+2. **context-worker** — генерирует текст (`generateContextText`), затем mp3 через OpenAI TTS (`contextAudioService`).
+3. **GET /jobs/:id?queue=context** — статус и `{ text, translation, hasAudio }`.
+4. **GET /jobs/:id/audio?queue=context** — mp3 основного текста (если `hasAudio=true`).
+
+### Переменные окружения (TTS)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OPENAI_API_KEY` | — | ключ OpenAI (общий с chat) |
+| `OPENAI_TTS_MODEL` | `tts-1` | `tts-1-hd` для лучшего качества |
+| `OPENAI_TTS_VOICE` | `nova` | alloy, echo, fable, onyx, nova, shimmer |
+| `AUDIO_STORAGE_DIR` | `./data/context-audio` | каталог mp3 |
+
+### Docker volume (обязательно для TTS)
+
+API (`ai`) и worker (`ai-worker-context`) должны использовать **один и тот же** volume:
+
+```yaml
+services:
+  ai:
+    environment:
+      AUDIO_STORAGE_DIR: /app/data/context-audio
+    volumes:
+      - context-audio:/app/data/context-audio
+
+  ai-worker-context:
+    environment:
+      AUDIO_STORAGE_DIR: /app/data/context-audio
+    volumes:
+      - context-audio:/app/data/context-audio
+
+volumes:
+  context-audio:
+```
+
 ## Документация
 
 

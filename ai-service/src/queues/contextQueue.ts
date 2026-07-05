@@ -13,6 +13,7 @@ export type ContextJobInput = {
 export type ContextJobResult = {
     text: string;
     translation: string;
+    hasAudio?: boolean;
 };
 
 export const queueName = "context";

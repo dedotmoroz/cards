@@ -1,10 +1,13 @@
 import Fastify from "fastify";
+import { Readable } from "stream";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
     addMock: vi.fn(),
     addContextMock: vi.fn(),
     jobFromIdMock: vi.fn(),
+    contextAudioFileExists: vi.fn(),
+    createContextAudioReadStream: vi.fn(),
 }));
 
 vi.mock("../src/queues/generateQueue", () => {
@@ -24,6 +27,11 @@ vi.mock("../src/queues/contextQueue", () => {
         queueName: "context",
     };
 });
+
+vi.mock("../src/services/contextAudioService", () => ({
+    contextAudioFileExists: mocks.contextAudioFileExists,
+    createContextAudioReadStream: mocks.createContextAudioReadStream,
+}));
 
 vi.mock("bullmq", () => {
     return {
@@ -46,6 +54,8 @@ describe("API routes", () => {
         mocks.addMock.mockReset();
         mocks.addContextMock.mockReset();
         mocks.jobFromIdMock.mockReset();
+        mocks.contextAudioFileExists.mockReset();
+        mocks.createContextAudioReadStream.mockReset();
     });
 
     it("enqueues generate job and returns job id", async () => {
@@ -298,6 +308,63 @@ describe("API routes", () => {
             queueType: "context",
         });
         expect(mocks.jobFromIdMock).toHaveBeenCalledTimes(1);
+
+        await app.close();
+    });
+
+    it("streams context audio when job is completed and file exists", async () => {
+        const jobStub = {
+            id: "context-job-audio",
+            getState: vi.fn().mockResolvedValue("completed"),
+            returnvalue: {
+                text: "Hello world test",
+                translation: "Привет мир тест",
+                hasAudio: true,
+            },
+        };
+        mocks.jobFromIdMock.mockResolvedValue(jobStub);
+        mocks.contextAudioFileExists.mockReturnValue(true);
+        mocks.createContextAudioReadStream.mockReturnValue(
+            Readable.from([Buffer.from("fake-mp3")]),
+        );
+
+        const app = Fastify();
+        await registerApi(app);
+
+        const response = await app.inject({
+            method: "GET",
+            url: "/jobs/context-job-audio/audio?queue=context",
+        });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.headers["content-type"]).toBe("audio/mpeg");
+        expect(response.rawPayload).toEqual(Buffer.from("fake-mp3"));
+
+        await app.close();
+    });
+
+    it("returns 404 for context audio when file is missing", async () => {
+        const jobStub = {
+            id: "context-job-no-audio",
+            getState: vi.fn().mockResolvedValue("completed"),
+            returnvalue: {
+                text: "Hello world test",
+                translation: "Привет мир тест",
+                hasAudio: false,
+            },
+        };
+        mocks.jobFromIdMock.mockResolvedValue(jobStub);
+
+        const app = Fastify();
+        await registerApi(app);
+
+        const response = await app.inject({
+            method: "GET",
+            url: "/jobs/context-job-no-audio/audio?queue=context",
+        });
+
+        expect(response.statusCode).toBe(404);
+        expect(response.json()).toEqual({ error: "audio not found" });
 
         await app.close();
     });

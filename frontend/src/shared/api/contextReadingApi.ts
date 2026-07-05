@@ -38,10 +38,16 @@ export type ContextReadingGenerateStatusResponse = {
   result: {
     text: string;
     translation: string;
+    hasAudio?: boolean;
   } | null;
   error?: string;
   queueType?: 'generate' | 'context';
 };
+
+export function getContextAudioUrl(jobId: string): string {
+  const params = new URLSearchParams({ jobId });
+  return `${API_BASE_URL}/context-reading/audio?${params.toString()}`;
+}
 
 export const contextReadingApi = {
   /**

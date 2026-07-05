@@ -1,8 +1,9 @@
 import type { RefObject, ReactNode } from 'react';
-import { Typography, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, Typography, AccordionSummary, AccordionDetails } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
+import { ContextReadingAudioPlayer } from '@/widgets/context-reading/context-audio-player';
 import {
   StyledContainerWrapper,
   StyledHeaderRow,
@@ -81,6 +82,8 @@ export type ContextReadingContentOutputProps = {
   onChipClick: (index: number) => void;
   text: string;
   translation: string;
+  jobId?: string | null;
+  hasAudio?: boolean;
   progress: { used: number; total: number } | null;
   generatedTextBlockRef: RefObject<HTMLDivElement | null>;
   onReset: () => void;
@@ -96,6 +99,8 @@ export const ContextReadingContentOutput = ({
   onChipClick,
   text,
   translation,
+  jobId,
+  hasAudio,
   progress,
   generatedTextBlockRef,
   onReset,
@@ -145,9 +150,16 @@ export const ContextReadingContentOutput = ({
       <StyledAccordionsStack>
         <StyledContentAccordion defaultExpanded disableGutters elevation={0}>
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <StyledAccordionSectionTitle variant="h6" component="span">
-              {t('contextReading.text')}
-            </StyledAccordionSectionTitle>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', pr: 1 }}>
+              <StyledAccordionSectionTitle variant="h6" component="span">
+                {t('contextReading.text')}
+              </StyledAccordionSectionTitle>
+              <ContextReadingAudioPlayer
+                jobId={jobId ?? ''}
+                hasAudio={hasAudio}
+                disabled={loading || generating}
+              />
+            </Box>
           </AccordionSummary>
           <AccordionDetails>
             <StyledAccordionBodyText

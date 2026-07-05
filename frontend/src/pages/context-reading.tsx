@@ -31,6 +31,7 @@ export const ContextReadingPage = () => {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<ContextReadingGenerateStatusResponse | null>(null);
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [currentCards, setCurrentCards] = useState<Array<{ question: string; answer: string }>>([]);
   const [progress, setProgress] = useState<{ used: number; total: number } | null>(null);
   const [languageLevel, setLanguageLevel] = useState<string>('B1');
@@ -99,6 +100,7 @@ export const ContextReadingPage = () => {
       setLoading(true);
       setError(null);
       setStatus(null);
+      setCurrentJobId(null);
       setHighlightedChipIndex(null);
 
       // 1. Получаем карточки
@@ -127,6 +129,7 @@ export const ContextReadingPage = () => {
         level: languageLevel,
       });
 
+      setCurrentJobId(generateResponse.jobId);
       setGenerating(true);
       setLoading(false);
 
@@ -185,6 +188,7 @@ export const ContextReadingPage = () => {
     setGenerating(false);
     setError(null);
     setStatus(null);
+    setCurrentJobId(null);
     setCurrentCards([]);
     setProgress(null);
     setHighlightedChipIndex(null);
@@ -212,6 +216,7 @@ export const ContextReadingPage = () => {
       setGenerating(false);
       setError(null);
       setStatus(null);
+      setCurrentJobId(null);
       setCurrentCards([]);
       setProgress(null);
       setHighlightedChipIndex(null);
@@ -259,6 +264,7 @@ export const ContextReadingPage = () => {
       setGenerating(false);
       setError(null);
       setStatus(null);
+      setCurrentJobId(null);
       setCurrentCards([]);
       setProgress(null);
       setHighlightedChipIndex(null);
@@ -271,6 +277,7 @@ export const ContextReadingPage = () => {
     setGenerating(false);
     setError(null);
     setStatus(null);
+    setCurrentJobId(null);
     setCurrentCards([]);
     setProgress(null);
     setHighlightedChipIndex(null);
@@ -357,6 +364,8 @@ export const ContextReadingPage = () => {
         onChipClick={index => setHighlightedChipIndex(prev => (prev === index ? null : index))}
         text={status.result.text}
         translation={status.result.translation}
+        jobId={currentJobId}
+        hasAudio={status.result.hasAudio}
         progress={progress}
         generatedTextBlockRef={generatedTextBlockRef}
         onReset={handleReset}
