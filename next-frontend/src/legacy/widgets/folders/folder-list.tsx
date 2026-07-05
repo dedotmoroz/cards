@@ -11,9 +11,7 @@ import { DeleteFolderMenuItem } from '@/features/delete-folder';
 import { PinFolderMenuItem } from '@/features/pin-folder';
 import { useAuthStore } from '@/shared/store/authStore';
 
-import { StyledListItemButton, StyledIconButton, StyledMenuBox, StyledList, StyledFolderCounter, StyledPinIcon } from "./styled-components.ts"
-
-const VIRTUAL_FOLDER_COLOR = '#9810fa';
+import { StyledListItemButton, StyledIconButton, StyledMenuBox, StyledList, StyledFolderCounter, StyledPinIcon, VIRTUAL_FOLDER_COLOR } from "./styled-components.ts"
 
 export interface Folder {
     id: string;

@@ -1,6 +1,8 @@
 import { styled } from "@mui/material/styles";
 import { Box, Typography, ListItemButton, IconButton, List } from "@mui/material";
 
+export const VIRTUAL_FOLDER_COLOR = '#9810fa';
+
 export const StyledWrappedBox = styled(Box)`
     padding: 20px;
     height: 100%;
@@ -64,7 +66,7 @@ export const StyledPinIcon = styled(Box)`
     display: flex;
     align-items: center;
     margin-right: 4px;
-    color: rgba(0, 0, 0, 0.42);
+    color: ${VIRTUAL_FOLDER_COLOR};
 
     svg {
         font-size: 14px;
