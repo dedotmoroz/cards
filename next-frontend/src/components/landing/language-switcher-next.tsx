@@ -1,6 +1,7 @@
 "use client";
 
 import type { AppLocale } from "@app/lib/i18n";
+import { persistLocalePreference } from "@app/lib/i18n/locale-preference";
 import { localePath } from "@app/lib/i18n/server";
 import styles from "./landing.module.css";
 
@@ -28,7 +29,9 @@ export function LanguageSwitcherNext({ locale }: Props) {
         value={locale}
         aria-label="Language"
         onChange={(event) => {
-          window.location.assign(localePath(event.target.value as AppLocale));
+          const nextLocale = event.target.value as AppLocale;
+          persistLocalePreference(nextLocale);
+          window.location.assign(localePath(nextLocale));
         }}
       >
         {languages.map((lang) => (
