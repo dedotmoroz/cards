@@ -19,3 +19,4 @@ Open http://localhost:7777 (backend on :3000, Strapi on :1337)
 **Google Sign-In:** set `NEXT_PUBLIC_GOOGLE_CLIENT_ID` in `.env.local` (same as `VITE_GOOGLE_CLIENT_ID` for the Vite app). Without it the Google button is hidden on `/signin` and in the login dialog.
 
 See [ROLLOUT.md](./ROLLOUT.md) for parallel deployment with the old frontend.
+
