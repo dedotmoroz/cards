@@ -17,7 +17,7 @@ export function LandingHeader({ locale, loginLabel, logoutLabel }: Props) {
       <Link href={localePath(locale)} className={styles.logoLink} aria-label="KotCat">
         <span
           style={{
-            fontSize: 24,
+            fontSize: 18,
             fontWeight: 700,
             background: "linear-gradient(90deg, #fff 0%, #f0e6ff 100%)",
             WebkitBackgroundClip: "text",
