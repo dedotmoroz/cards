@@ -1,0 +1,19 @@
+import React from 'react';
+
+export const ReplayIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M12 5V1L7 6L12 11V7A6 6 0 0 1 18 13A6 6 0 0 1 12 19A6 6 0 0 1 6 13H4A8 8 0 0 0 12 21A8 8 0 0 0 20 13A8 8 0 0 0 12 5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};

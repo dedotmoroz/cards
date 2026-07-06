@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { WordIcon } from "@/shared/icons";
+import { PlayIcon, PlayPauseIcon } from "@/shared/icons";
 
 export const StyledButton = styled(Button)`
     display: flex;
@@ -37,7 +37,12 @@ export const StyledButton = styled(Button)`
     }
 `;
 
-export const StyledWordIcon = styled(WordIcon)`
-    margin: 0;
+export const StyledPlayIcon = styled(PlayIcon)`
+    width: 16px;
+    height: 16px;
 `;
 
+export const StyledPlayPauseIcon = styled(PlayPauseIcon)`
+    width: 16px;
+    height: 16px;
+`;

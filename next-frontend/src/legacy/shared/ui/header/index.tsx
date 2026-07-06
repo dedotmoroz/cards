@@ -7,17 +7,15 @@ import { StyledNavigationBox, StyledToolbar } from './styled-components.ts'
 
 interface HeaderToolbarProps {
     learnWordsButton: ReactNode;
-    learnPhrasesButton: ReactNode;
-    learnWordsMoreButton: ReactNode;
+    // learnPhrasesButton: ReactNode;
     selectSide: ReactNode;
     onDrawerToggle?: () => void;
 }
 
 export const HeaderToolbar = ({
                                   learnWordsButton,
-                                  learnPhrasesButton,
-                                  // learnWordsMoreButton,
-                                  // selectSide,
+                                  // learnPhrasesButton,
+                                  selectSide,
                                   onDrawerToggle
                               }: HeaderToolbarProps) => {
     const navigate = useAppNavigate();
@@ -38,10 +36,9 @@ export const HeaderToolbar = ({
                 )}
                 <Box sx={{ flexGrow: 1 }} />
                 <StyledNavigationBox>
-                    {/*{selectSide}*/}
+                    {selectSide}
                     {learnWordsButton}
-                    {learnPhrasesButton}
-                    {/*{learnWordsMoreButton}*/}
+                    {/*{learnPhrasesButton}*/}
                 </StyledNavigationBox>
                 <UserProfile />
             </StyledToolbar>

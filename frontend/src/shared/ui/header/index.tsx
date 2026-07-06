@@ -8,7 +8,6 @@ import { StyledNavigationBox, StyledToolbar } from './styled-components.ts'
 interface HeaderToolbarProps {
     learnWordsButton: ReactNode;
     learnPhrasesButton: ReactNode;
-    learnWordsMoreButton: ReactNode;
     selectSide: ReactNode;
     onDrawerToggle?: () => void;
 }
@@ -16,7 +15,6 @@ interface HeaderToolbarProps {
 export const HeaderToolbar = ({
                                   learnWordsButton,
                                   learnPhrasesButton,
-                                  // learnWordsMoreButton,
                                   // selectSide,
                                   onDrawerToggle
                               }: HeaderToolbarProps) => {
@@ -41,7 +39,6 @@ export const HeaderToolbar = ({
                     {/*{selectSide}*/}
                     {learnWordsButton}
                     {learnPhrasesButton}
-                    {/*{learnWordsMoreButton}*/}
                 </StyledNavigationBox>
                 <UserProfile />
             </StyledToolbar>

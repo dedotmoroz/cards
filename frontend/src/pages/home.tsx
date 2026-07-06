@@ -12,7 +12,6 @@ import { useSEO } from '@/shared/hooks/useSEO';
 import { HeaderToolbar } from '@/shared/ui/header';
 import { LearnWordsButton } from '@/features/learn-words';
 import { LearnPhrasesButton } from '@/features/learn-phrases';
-import { LearnWordsMoreButton } from '@/features/learn-words-more';
 import { SelectSide } from '@/features/select-side';
 
 import { StyledGrid, StyledMobileVersionBox, StyledCardsBox, StyledLogoPlace } from './styled-components.ts'
@@ -154,7 +153,6 @@ export const HomePage = () => {
                 selectSide={<SelectSide />}
                 learnWordsButton={<LearnWordsButton />}
                 learnPhrasesButton={<LearnPhrasesButton />}
-                learnWordsMoreButton={<LearnWordsMoreButton />}
                 onDrawerToggle={handleDrawerToggle}
             />
             {!isMobile ?

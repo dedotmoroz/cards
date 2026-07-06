@@ -12,3 +12,6 @@ export * from './file-replace-outline-icon.tsx';
 export * from './cloud-in-icon.tsx';
 export * from './cloud-out-icon.tsx';
 export * from './ai-content-icon.tsx';
+export * from './play-icon.tsx';
+export * from './play-pause-icon.tsx';
+export * from './replay-icon.tsx';
