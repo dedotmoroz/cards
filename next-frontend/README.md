@@ -20,3 +20,4 @@ Open http://localhost:7777 (backend on :3000, Strapi on :1337)
 
 See [ROLLOUT.md](./ROLLOUT.md) for parallel deployment with the old frontend.
 
+
