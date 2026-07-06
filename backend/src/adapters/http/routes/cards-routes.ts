@@ -195,6 +195,62 @@ export function registerCardsRoutes(
     );
 
     /**
+     * Массово изменить статус изучения всех карточек в папке
+     */
+    fastify.patch('/cards/folder/:folderId/learn-status',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                params: {
+                    type: 'object',
+                    properties: {
+                        folderId: { type: 'string', format: 'uuid' },
+                    },
+                    required: ['folderId'],
+                },
+                body: {
+                    type: 'object',
+                    required: ['isLearned'],
+                    properties: {
+                        isLearned: { type: 'boolean' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            status: { type: 'string' },
+                            updatedCount: { type: 'number' },
+                        },
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Change learn status for all cards in folder',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Params: { folderId: string }; Body: { isLearned: boolean } }>,
+            reply: FastifyReply
+        ) => {
+            const { folderId } = req.params;
+            const { isLearned } = req.body;
+            const userId = (req.user as { userId?: string }).userId;
+
+            const folder = await folderRepo.findById(folderId);
+            if (!folder) {
+                return reply.code(404).send({ message: 'Folder not found' });
+            }
+
+            if (!userId || folder.userId !== userId) {
+                return reply.code(403).send({ message: 'Access denied. Folder does not belong to user' });
+            }
+
+            const updatedCount = await cardService.setFolderLearnStatus(folderId, isLearned);
+            return reply.send({ status: 'ok', updatedCount });
+        }
+    );
+
+    /**
      * Ответ пользователя в обучении (заполняет статистику + SM-2)
      */
     fastify.post(

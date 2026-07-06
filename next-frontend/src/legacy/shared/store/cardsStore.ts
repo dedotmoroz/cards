@@ -53,6 +53,7 @@ interface CardsState {
     createCard: (folderId: string, question: string, answer: string) => Promise<void>
     updateCardApi: (id: string, updates: { question?: string; answer?: string; questionSentences?: string | null; answerSentences?: string | null }) => Promise<void>
     updateCardLearnStatus: (id: string, isLearned: boolean) => Promise<void>
+    updateFolderLearnStatus: (folderId: string, isLearned: boolean) => Promise<void>
     reviewCard: (id: string, outcome: ReviewOutcome) => Promise<void>
     deleteCard: (id: string) => Promise<void>
     moveCardToFolder: (cardId: string, targetFolderId: string) => Promise<void>
@@ -181,6 +182,20 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         } catch (error) {
             console.error('Error updating card learn status:', error)
             set({ error: 'Failed to update card learn status' })
+        }
+    },
+
+    updateFolderLearnStatus: async (folderId: string, isLearned: boolean) => {
+        set({ error: null })
+        try {
+            await cardsApi.updateFolderLearnStatus(folderId, { isLearned })
+            set((state) => ({
+                cards: state.cards.map((card) => ({ ...card, isLearned })),
+            }))
+            await useFoldersStore.getState().refreshVirtualFolderCounts()
+        } catch (error) {
+            console.error('Error updating folder learn status:', error)
+            set({ error: 'Failed to update folder learn status' })
         }
     },
 

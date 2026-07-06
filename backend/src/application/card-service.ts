@@ -92,6 +92,10 @@ export class CardService {
     return card;
   }
 
+  async setFolderLearnStatus(folderId: string, isLearned: boolean): Promise<number> {
+    return this.cardRepo.updateLearnStatusByFolderId(folderId, isLearned);
+  }
+
   async reviewCard(id: string, outcome: 'know' | 'dontknow'): Promise<Card | null> {
     const card = await this.cardRepo.findById(id);
     if (!card) return null;

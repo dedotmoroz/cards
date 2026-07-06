@@ -285,6 +285,7 @@
     "allLearned": "Toutes les cartes apprises",
     "completedCycle": "Il ne reste plus de cartes",
     "wantToContinue": "Continuer à apprendre",
+    "restart": "Recommencer",
     "showAnswer": "Face B",
     "showQuestion": "Face A",
     "initialSide": "Face initiale",

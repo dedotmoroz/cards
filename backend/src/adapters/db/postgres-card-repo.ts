@@ -83,6 +83,20 @@ export class PostgresCardRepository implements CardRepository {
         return rows.map(toCard);
     }
 
+    async updateLearnStatusByFolderId(folderId: string, isLearned: boolean): Promise<number> {
+        const result = await db
+            .update(cards)
+            .set(
+                isLearned
+                    ? { isLearned: true, lastLearnedAt: sql`now()` }
+                    : { isLearned: false }
+            )
+            .where(eq(cards.folderId, folderId))
+            .returning({ id: cards.id });
+
+        return result.length;
+    }
+
     async delete(id: string): Promise<void> {
         await db.delete(cards).where(eq(cards.id, id));
     }

@@ -305,6 +305,7 @@
     "allLearned": "All cards learned",
     "completedCycle": "There are no cards left",
     "wantToContinue": "Continue learning",
+    "restart": "Start over",
     "showAnswer": "Side B",
     "showQuestion": "Side A",
     "initialSide": "Initial side",

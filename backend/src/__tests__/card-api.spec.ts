@@ -160,6 +160,64 @@ describe('📦 Card Repository (e2e)', () => {
         expect(learnedCard.isLearned).toBe(true);
     });
 
+    it('массово отмечает все карточки папки как изученные', async () => {
+        const createRes1 = await request(fastify.server)
+            .post('/cards')
+            .set('Cookie', authCookie)
+            .send({
+                folderId,
+                question: 'Bulk 1',
+                answer: 'A1',
+            });
+        const createRes2 = await request(fastify.server)
+            .post('/cards')
+            .set('Cookie', authCookie)
+            .send({
+                folderId,
+                question: 'Bulk 2',
+                answer: 'A2',
+            });
+
+        const patchRes = await request(fastify.server)
+            .patch(`/cards/folder/${folderId}/learn-status`)
+            .set('Cookie', authCookie)
+            .send({ isLearned: true });
+
+        expect(patchRes.status).toBe(200);
+        expect(patchRes.body.status).toBe('ok');
+        expect(patchRes.body.updatedCount).toBeGreaterThanOrEqual(2);
+
+        const getRes = await request(fastify.server)
+            .get(`/cards/folder/${folderId}`)
+            .set('Cookie', authCookie);
+
+        const card1 = getRes.body.find((c: { id: string }) => c.id === createRes1.body.id);
+        const card2 = getRes.body.find((c: { id: string }) => c.id === createRes2.body.id);
+        expect(card1?.isLearned).toBe(true);
+        expect(card2?.isLearned).toBe(true);
+    });
+
+    it('массово сбрасывает статус изучения в папке', async () => {
+        await request(fastify.server)
+            .patch(`/cards/folder/${folderId}/learn-status`)
+            .set('Cookie', authCookie)
+            .send({ isLearned: true });
+
+        const resetRes = await request(fastify.server)
+            .patch(`/cards/folder/${folderId}/learn-status`)
+            .set('Cookie', authCookie)
+            .send({ isLearned: false });
+
+        expect(resetRes.status).toBe(200);
+        expect(resetRes.body.status).toBe('ok');
+
+        const getRes = await request(fastify.server)
+            .get(`/cards/folder/${folderId}`)
+            .set('Cookie', authCookie);
+
+        expect(getRes.body.every((c: { isLearned: boolean }) => !c.isLearned)).toBe(true);
+    });
+
     it('перемещает карточку в другую папку (PATCH /cards/:id/move)', async () => {
         const userId = '00000000-0000-0000-0000-000000000001';
 

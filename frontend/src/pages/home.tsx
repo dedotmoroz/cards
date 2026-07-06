@@ -11,6 +11,7 @@ import {Cards} from "@/widgets/cards";
 import { useSEO } from '@/shared/hooks/useSEO';
 import { HeaderToolbar } from '@/shared/ui/header';
 import { LearnWordsButton } from '@/features/learn-words';
+import { RestartLearningButton } from '@/features/restart-learning';
 import { LearnPhrasesButton } from '@/features/learn-phrases';
 import { SelectSide } from '@/features/select-side';
 
@@ -152,6 +153,7 @@ export const HomePage = () => {
             <HeaderToolbar
                 selectSide={<SelectSide />}
                 learnWordsButton={<LearnWordsButton />}
+                restartLearningButton={<RestartLearningButton />}
                 learnPhrasesButton={<LearnPhrasesButton />}
                 onDrawerToggle={handleDrawerToggle}
             />

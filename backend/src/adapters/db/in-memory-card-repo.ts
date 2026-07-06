@@ -26,6 +26,22 @@ export class InMemoryCardRepository implements CardRepository {
         return result;
     }
 
+    async updateLearnStatusByFolderId(folderId: string, isLearned: boolean): Promise<number> {
+        let updated = 0;
+
+        for (const card of this.cards) {
+            if (card.folderId !== folderId) continue;
+            if (isLearned) {
+                card.markAsLearned();
+            } else {
+                card.markAsUnlearned();
+            }
+            updated += 1;
+        }
+
+        return updated;
+    }
+
     async delete(id: string): Promise<void> {
         this.cards = this.cards.filter(card => card.id !== id);
     }

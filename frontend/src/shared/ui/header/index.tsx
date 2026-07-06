@@ -3,10 +3,11 @@ import {useNavigate} from "react-router-dom";
 import {Box, AppBar, useMediaQuery, useTheme} from '@mui/material';
 import {UserProfile} from "@/widgets/user-profile";
 import {Logo, MobileMenuIcon} from "@/shared/ui";
-import { StyledNavigationBox, StyledToolbar } from './styled-components.ts'
+import { StyledNavigationBox, StyledToolbar, StyledLearnActionsBox } from './styled-components.ts'
 
 interface HeaderToolbarProps {
     learnWordsButton: ReactNode;
+    restartLearningButton?: ReactNode;
     learnPhrasesButton: ReactNode;
     selectSide: ReactNode;
     onDrawerToggle?: () => void;
@@ -14,6 +15,7 @@ interface HeaderToolbarProps {
 
 export const HeaderToolbar = ({
                                   learnWordsButton,
+                                  restartLearningButton,
                                   learnPhrasesButton,
                                   // selectSide,
                                   onDrawerToggle
@@ -37,7 +39,10 @@ export const HeaderToolbar = ({
                 <Box sx={{ flexGrow: 1 }} />
                 <StyledNavigationBox>
                     {/*{selectSide}*/}
-                    {learnWordsButton}
+                    <StyledLearnActionsBox>
+                        {learnWordsButton}
+                        {restartLearningButton}
+                    </StyledLearnActionsBox>
                     {learnPhrasesButton}
                 </StyledNavigationBox>
                 <UserProfile />

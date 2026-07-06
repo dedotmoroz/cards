@@ -47,6 +47,17 @@ export const cardsApi = {
     return response.data;
   },
 
+  updateFolderLearnStatus: async (
+    folderId: string,
+    data: UpdateCardLearnStatusData,
+  ): Promise<{ status: string; updatedCount: number }> => {
+    const response = await axios.patch(
+      `${API_BASE_URL}/cards/folder/${folderId}/learn-status`,
+      data,
+    );
+    return response.data;
+  },
+
   /**
    * Ответ в обучении (заполняет статистику/SM-2 на backend)
    */

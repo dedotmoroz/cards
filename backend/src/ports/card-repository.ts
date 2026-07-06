@@ -4,6 +4,7 @@ export interface CardRepository {
   save(card: Card): Promise<void>;
   findById(id: string): Promise<Card | null>;
   findAll(folderId?: string, filter?: { isLearned?: boolean }): Promise<Card[]>;
+  updateLearnStatusByFolderId(folderId: string, isLearned: boolean): Promise<number>;
   delete(id: string): Promise<void>;
   deleteByFolderIds(folderIds: string[], executor?: any): Promise<void>;
   countByFolderIds(folderIds: string[]): Promise<Record<string, number>>;

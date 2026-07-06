@@ -18,25 +18,35 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
     const [displayFilter, setDisplayFilter] = useState<'A' | 'AB' | 'B'>('AB');
     const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
+    const [isBulkUpdating, setIsBulkUpdating] = useState(false);
     const [isCreatingCard, setIsCreatingCard] = useState(false);
     const [googleSheetsNotice, setGoogleSheetsNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
     const {
         cards,
-        updateCardLearnStatus,
+        updateFolderLearnStatus,
     } = useCardsStore();
     
     const {
         folders,
         selectedFolderId,
     } = useFoldersStore();
+
+    const isRegularFolder = Boolean(
+        selectedFolderId && !selectedFolderId.startsWith('virtual:')
+    );
     
     const selectedFolder = folders.find(f => f.id === selectedFolderId);
 
     // Сбрасываем форму создания при смене папки
     useEffect(() => {
         setIsCreatingCard(false);
+        setSelectAll(false);
     }, [selectedFolderId]);
+
+    useEffect(() => {
+        setSelectAll(cards.length > 0 && cards.every((card) => card.isLearned));
+    }, [cards]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -73,11 +83,17 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
     };
 
     const handleSelectAllChange = async (isChecked: boolean) => {
+        if (!selectedFolderId || !isRegularFolder || isBulkUpdating) return;
+
+        setIsBulkUpdating(true);
         setSelectAll(isChecked);
-        
-        // Массово обновляем статус всех карточек
-        for (const card of cards) {
-            await updateCardLearnStatus(card.id, isChecked);
+
+        try {
+            await updateFolderLearnStatus(selectedFolderId, isChecked);
+        } catch {
+            setSelectAll(cards.length > 0 && cards.every((card) => card.isLearned));
+        } finally {
+            setIsBulkUpdating(false);
         }
     };
 
@@ -142,7 +158,7 @@ export const Cards = ({ isLoading = false }: CardsProps) => {
                 showOnlyUnlearned={showOnlyUnlearned}
                 onFilterChange={handleFilterChange}
                 selectAll={selectAll}
-                onSelectAllChange={handleSelectAllChange}
+                onSelectAllChange={isRegularFolder ? handleSelectAllChange : undefined}
                 onToggleShowOnlyUnlearned={handleUnlearnedToggle}
                 isCreatingCard={isCreatingCard}
                 folderId={selectedFolderId ?? undefined}

@@ -305,6 +305,7 @@
     "allLearned": "Все карточки выучены",
     "completedCycle": "Карточки закончились",
     "wantToContinue": "Продолжить обучение",
+    "restart": "Начать заново",
     "showAnswer": "Сторона B",
     "showQuestion": "Сторона A",
     "initialSide": "Начальная сторона",

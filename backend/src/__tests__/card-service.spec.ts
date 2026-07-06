@@ -6,6 +6,7 @@ const createMockRepo = (): jest.Mocked<CardRepository> => ({
     save: jest.fn(),
     findById: jest.fn(),
     findAll: jest.fn(),
+    updateLearnStatusByFolderId: jest.fn().mockResolvedValue(0),
     delete: jest.fn(),
     deleteByFolderIds: jest.fn(),
     countByFolderIds: jest.fn().mockResolvedValue({}),
@@ -120,6 +121,15 @@ describe('CardService', () => {
         expect(card.isLearned).toBe(false);
         expect(updated?.isLearned).toBe(false);
         expect(repo.save).toHaveBeenCalledWith(card);
+    });
+
+    it('массово обновляет статус изучения в папке', async () => {
+        repo.updateLearnStatusByFolderId.mockResolvedValue(3);
+
+        const updatedCount = await service.setFolderLearnStatus('folder1', true);
+
+        expect(updatedCount).toBe(3);
+        expect(repo.updateLearnStatusByFolderId).toHaveBeenCalledWith('folder1', true);
     });
 
     it('создает карточку с текущей датой', async () => {
