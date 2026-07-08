@@ -1,7 +1,8 @@
 import { generateText, type LanguageModel } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 
-type MLProvider = "openai" | "deepseek";
+type MLProvider = "openai" | "deepseek" | "google";
 
 const openai = createOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -17,6 +18,10 @@ export function resolveModel(): LanguageModel {
 
     if (provider === "deepseek") {
         return deepseek.chat(process.env.DEEPSEEK_MODEL ?? "deepseek-chat");
+    }
+
+    if (provider === "google") {
+        return google(process.env.GOOGLE_MODEL ?? "gemini-2.0-flash");
     }
 
     return openai(process.env.OPENAI_MODEL ?? "gpt-4o-mini");

@@ -29,10 +29,11 @@ brew services start redis  # или redis-server в отдельном окне
    - При успешном выполнении результат сохраняется в задаче; ошибки логируются.
 
 5. **Интеграция с LLM (Vercel AI SDK)**  
-   Chat-генерация (`generateSentences`, `generateContextText`) идёт через [Vercel AI SDK](https://sdk.vercel.ai/) (`ai` + `@ai-sdk/openai`) в `src/services/llm.ts`.  
-   Провайдер переключается через `ML_PROVIDER` (`openai` или `deepseek`).  
+   Chat-генерация (`generateSentences`, `generateContextText`) идёт через [Vercel AI SDK](https://sdk.vercel.ai/) в `src/services/llm.ts`.  
+   Провайдер переключается через `ML_PROVIDER` (`openai`, `deepseek` или `google`).  
    Для OpenAI: `OPENAI_API_KEY`, `OPENAI_MODEL` (по умолчанию `gpt-4o-mini`).  
    Для DeepSeek: `DEEPSEEK_API_KEY`, `DEEPSEEK_MODEL` (по умолчанию `deepseek-chat`).  
+   Для Google Gemini: `GOOGLE_GENERATIVE_AI_API_KEY`, `GOOGLE_MODEL` (по умолчанию `gemini-2.0-flash`).  
    Функции формируют промпт, просят JSON с результатом, парсят ответ и возвращают его воркеру.
 
 6. **Проверка статуса**  
@@ -52,11 +53,13 @@ brew services start redis  # или redis-server в отдельном окне
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `ML_PROVIDER` | `openai` | Провайдер chat: `openai` или `deepseek` |
+| `ML_PROVIDER` | `openai` | Провайдер chat: `openai`, `deepseek` или `google` |
 | `OPENAI_API_KEY` | — | ключ OpenAI (chat при `ML_PROVIDER=openai` + TTS) |
 | `OPENAI_MODEL` | `gpt-4o-mini` | модель OpenAI для chat |
 | `DEEPSEEK_API_KEY` | — | ключ DeepSeek (при `ML_PROVIDER=deepseek`) |
-| `DEEPSEEK_MODEL` | `deepseek-chat` | модель DeepSeek (`deepseek-reasoner` и др.) |
+| `DEEPSEEK_MODEL` | `deepseek-chat` | модель DeepSeek (`deepseek-v4-flash`, `deepseek-reasoner` и др.) |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | — | ключ Google AI Studio (при `ML_PROVIDER=google`) |
+| `GOOGLE_MODEL` | `gemini-2.0-flash` | модель Gemini (`gemini-2.5-pro` и др.) |
 | `OPENAI_TTS_MODEL` | `tts-1` | `tts-1-hd` для лучшего качества |
 | `OPENAI_TTS_VOICE` | `nova` | alloy, echo, fable, onyx, nova, shimmer |
 | `AUDIO_STORAGE_DIR` | `./data/context-audio` | каталог mp3 |
