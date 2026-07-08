@@ -14,8 +14,10 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.8",
     "@fastify/swagger": "^9.4.2",
     "@fastify/swagger-ui": "^5.2.3",
+    "ai": "^7.0.16",
     "bullmq": "^5.63.0",
     "dotenv": "^17.2.3",
     "fastify": "^5.0.0",

@@ -1,14 +1,8 @@
-// src/services/openaiService.ts
-
 import fs from "fs";
 import path from "path";
-import OpenAI from "openai";
 import { getRandomTopic } from "./randomTopic";
 import type { Level } from "./topics";
-
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY!,
-});
+import { generateChatText } from "./llm";
 
 // читаем файлы один раз при загрузке модуля
 const systemPrompt = fs.readFileSync(
@@ -58,16 +52,11 @@ export async function generateSentences(input: GenerateJobInput) {
         TRANSLATION_SAMPLE: translationSample || "",
     });
 
-    const res = await client.chat.completions.create({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-        ],
+    const text = await generateChatText({
+        system: systemPrompt,
+        prompt: userPrompt,
         temperature: 0.7,
     });
-
-    const text = res.choices?.[0]?.message?.content ?? "";
 
     // пробуем распарсить JSON из ответа
     try {

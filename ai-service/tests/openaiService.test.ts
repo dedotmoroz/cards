@@ -1,20 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-    create: vi.fn(),
+    generateText: vi.fn(),
 }));
 
-vi.mock("openai", () => ({
-    default: class {
-        chat = {
-            completions: {
-                create: mocks.create,
-            },
-        };
-        constructor() {
-            // set in tests if needed
-        }
-    },
+vi.mock("ai", () => ({
+    generateText: mocks.generateText,
 }));
 
 import { generateSentences } from "../src/services/generateService";
@@ -22,7 +13,7 @@ import { generateSentences } from "../src/services/generateService";
 describe("generateSentences", () => {
     beforeEach(() => {
         process.env.OPENAI_API_KEY = "test-key";
-        mocks.create.mockReset();
+        mocks.generateText.mockReset();
     });
 
     it("parses JSON response from OpenAI", async () => {
@@ -30,14 +21,8 @@ describe("generateSentences", () => {
             sentences: [{ text: "Hello", translation: "Привет" }],
         };
 
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify(expected),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify(expected),
         });
 
         const result = await generateSentences({
@@ -47,18 +32,12 @@ describe("generateSentences", () => {
         });
 
         expect(result).toEqual(expected);
-        expect(mocks.create).toHaveBeenCalledTimes(1);
+        expect(mocks.generateText).toHaveBeenCalledTimes(1);
     });
 
     it("falls back to text when JSON cannot be parsed", async () => {
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: "non-json response",
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: "non-json response",
         });
 
         const result = await generateSentences({
@@ -71,4 +50,3 @@ describe("generateSentences", () => {
         expect(result.sentences[0].text).toBe("non-json response");
     });
 });
-

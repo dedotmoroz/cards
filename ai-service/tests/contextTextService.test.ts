@@ -12,22 +12,13 @@ const mocks = vi.hoisted(() => {
     });
     
     return {
-        create: vi.fn(),
+        generateText: vi.fn(),
         readFileSync: readFileSyncMock,
     };
 });
 
-vi.mock("openai", () => ({
-    default: class {
-        chat = {
-            completions: {
-                create: mocks.create,
-            },
-        };
-        constructor() {
-            // set in tests if needed
-        }
-    },
+vi.mock("ai", () => ({
+    generateText: mocks.generateText,
 }));
 
 vi.mock("fs", () => ({
@@ -50,7 +41,7 @@ describe("generateContextText", () => {
     beforeEach(() => {
         process.env.OPENAI_API_KEY = "test-key";
         process.env.OPENAI_MODEL = "gpt-4o-mini";
-        mocks.create.mockReset();
+        mocks.generateText.mockReset();
     });
 
     it("parses JSON response from OpenAI with text and translation", async () => {
@@ -59,14 +50,8 @@ describe("generateContextText", () => {
             translation: "Привет мир! Это тестовое предложение.",
         };
 
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify(expected),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify(expected),
         });
 
         const result = await generateContextText({
@@ -81,13 +66,11 @@ describe("generateContextText", () => {
         });
 
         expect(result).toEqual(expected);
-        expect(mocks.create).toHaveBeenCalledTimes(1);
+        expect(mocks.generateText).toHaveBeenCalledTimes(1);
         
-        const callArgs = mocks.create.mock.calls[0][0];
-        expect(callArgs.model).toBe("gpt-4o-mini");
-        expect(callArgs.messages).toHaveLength(2);
-        expect(callArgs.messages[0].role).toBe("system");
-        expect(callArgs.messages[1].role).toBe("user");
+        const callArgs = mocks.generateText.mock.calls[0][0];
+        expect(callArgs.system).toBe("System prompt for context generation");
+        expect(callArgs.prompt).toContain("en");
         expect(callArgs.temperature).toBe(0.7);
     });
 
@@ -97,14 +80,8 @@ describe("generateContextText", () => {
             translation: "Hello world test",
         };
 
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify(expected),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify(expected),
         });
 
         const result = await generateContextText({
@@ -118,9 +95,7 @@ describe("generateContextText", () => {
 
         expect(result).toEqual(expected);
         
-        const userPrompt = mocks.create.mock.calls[0][0].messages[1].content;
-        // Проверяем, что translationLang используется (по умолчанию равен lang)
-        // В упрощенном моке значения просто добавляются в конец, проверяем наличие "en"
+        const userPrompt = mocks.generateText.mock.calls[0][0].prompt;
         expect(userPrompt).toContain(", en");
     });
 
@@ -130,14 +105,8 @@ describe("generateContextText", () => {
             translation: "Привет мир тест",
         };
 
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify(expected),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify(expected),
         });
 
         await generateContextText({
@@ -150,9 +119,7 @@ describe("generateContextText", () => {
             translationLang: "ru",
         });
 
-        const userPrompt = mocks.create.mock.calls[0][0].messages[1].content;
-        // Проверяем, что level B1 используется (по умолчанию)
-        // В упрощенном моке значения просто добавляются в конец, проверяем наличие "B1"
+        const userPrompt = mocks.generateText.mock.calls[0][0].prompt;
         expect(userPrompt).toMatch(/, B1$/);
     });
 
@@ -162,14 +129,8 @@ describe("generateContextText", () => {
             translation: "Привет мир тест",
         };
 
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify(expected),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify(expected),
         });
 
         await generateContextText({
@@ -181,7 +142,7 @@ describe("generateContextText", () => {
             translationLang: "ru",
         });
 
-        const userPrompt = mocks.create.mock.calls[0][0].messages[1].content;
+        const userPrompt = mocks.generateText.mock.calls[0][0].prompt;
         expect(userPrompt).toContain("en");
         expect(userPrompt).toContain("ru");
     });
@@ -192,14 +153,8 @@ describe("generateContextText", () => {
             translation: "Привет мир тест",
         };
 
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify(expected),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify(expected),
         });
 
         await generateContextText({
@@ -211,7 +166,7 @@ describe("generateContextText", () => {
             translationLang: "ru",
         });
 
-        const userPrompt = mocks.create.mock.calls[0][0].messages[1].content;
+        const userPrompt = mocks.generateText.mock.calls[0][0].prompt;
         expect(userPrompt).toContain('"hello" (привет)');
         expect(userPrompt).toContain('"world" (мир)');
     });
@@ -222,14 +177,8 @@ describe("generateContextText", () => {
             translation: "Привет мир тест",
         };
 
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: `Some text before\n${JSON.stringify(expected)}`,
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: `Some text before\n${JSON.stringify(expected)}`,
         });
 
         const result = await generateContextText({
@@ -246,16 +195,10 @@ describe("generateContextText", () => {
     });
 
     it("throws error when response is missing text field", async () => {
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify({
-                            translation: "Only translation",
-                        }),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify({
+                translation: "Only translation",
+            }),
         });
 
         await expect(
@@ -272,16 +215,10 @@ describe("generateContextText", () => {
     });
 
     it("throws error when response is missing translation field", async () => {
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify({
-                            text: "Only text",
-                        }),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify({
+                text: "Only text",
+            }),
         });
 
         await expect(
@@ -298,14 +235,8 @@ describe("generateContextText", () => {
     });
 
     it("throws error when response is not valid JSON", async () => {
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: "This is not JSON at all",
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: "This is not JSON at all",
         });
 
         await expect(

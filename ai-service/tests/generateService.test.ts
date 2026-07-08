@@ -12,22 +12,13 @@ const mocks = vi.hoisted(() => {
     });
 
     return {
-        create: vi.fn(),
+        generateText: vi.fn(),
         readFileSync: readFileSyncMock,
     };
 });
 
-vi.mock("openai", () => ({
-    default: class {
-        chat = {
-            completions: {
-                create: mocks.create,
-            },
-        };
-        constructor() {
-            // set in tests if needed
-        }
-    },
+vi.mock("ai", () => ({
+    generateText: mocks.generateText,
 }));
 
 vi.mock("fs", () => ({
@@ -54,20 +45,14 @@ describe("generateSentences", () => {
     beforeEach(() => {
         process.env.OPENAI_API_KEY = "test-key";
         process.env.OPENAI_MODEL = "gpt-4o-mini";
-        mocks.create.mockReset();
+        mocks.generateText.mockReset();
     });
 
     it("includes TARGET_LANGUAGE and TRANSLATION_LANGUAGE in user prompt", async () => {
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify({
-                            sentences: [{ text: "Hello world", translation: "Привет мир" }],
-                        }),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify({
+                sentences: [{ text: "Hello world", translation: "Привет мир" }],
+            }),
         });
 
         await generateSentences({
@@ -79,24 +64,18 @@ describe("generateSentences", () => {
             level: "B1",
         });
 
-        const userMessage = mocks.create.mock.calls[0][0].messages[1].content as string;
-        expect(userMessage).toContain("lang: en");
-        expect(userMessage).toContain("translation: ru");
-        expect(userMessage).toContain("Word: hello");
-        expect(userMessage).toContain("sample: привет");
+        const userPrompt = mocks.generateText.mock.calls[0][0].prompt as string;
+        expect(userPrompt).toContain("lang: en");
+        expect(userPrompt).toContain("translation: ru");
+        expect(userPrompt).toContain("Word: hello");
+        expect(userPrompt).toContain("sample: привет");
     });
 
     it("falls back translation language to lang when translationLang is missing", async () => {
-        mocks.create.mockResolvedValue({
-            choices: [
-                {
-                    message: {
-                        content: JSON.stringify({
-                            sentences: [{ text: "Hallo", translation: "Hallo" }],
-                        }),
-                    },
-                },
-            ],
+        mocks.generateText.mockResolvedValue({
+            text: JSON.stringify({
+                sentences: [{ text: "Hallo", translation: "Hallo" }],
+            }),
         });
 
         await generateSentences({
@@ -105,8 +84,8 @@ describe("generateSentences", () => {
             count: 1,
         });
 
-        const userMessage = mocks.create.mock.calls[0][0].messages[1].content as string;
-        expect(userMessage).toContain("lang: de");
-        expect(userMessage).toContain("translation: de");
+        const userPrompt = mocks.generateText.mock.calls[0][0].prompt as string;
+        expect(userPrompt).toContain("lang: de");
+        expect(userPrompt).toContain("translation: de");
     });
 });

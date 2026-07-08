@@ -28,9 +28,12 @@ brew services start redis  # или redis-server в отдельном окне
    - Основная работа — вызов `generateSentences`.
    - При успешном выполнении результат сохраняется в задаче; ошибки логируются.
 
-5. **Интеграция с OpenAI**  
-   `generateSentences` обращается к OpenAI Chat Completions (модель настраивается через `OPENAI_MODEL`, ключ — `OPENAI_API_KEY`).  
-   Функция формирует промпт, просит JSON с массивом предложений вида `{ text, translation }`, парсит ответ и возвращает его воркеру.
+5. **Интеграция с LLM (Vercel AI SDK)**  
+   Chat-генерация (`generateSentences`, `generateContextText`) идёт через [Vercel AI SDK](https://sdk.vercel.ai/) (`ai` + `@ai-sdk/openai`) в `src/services/llm.ts`.  
+   Провайдер переключается через `ML_PROVIDER` (`openai` или `deepseek`).  
+   Для OpenAI: `OPENAI_API_KEY`, `OPENAI_MODEL` (по умолчанию `gpt-4o-mini`).  
+   Для DeepSeek: `DEEPSEEK_API_KEY`, `DEEPSEEK_MODEL` (по умолчанию `deepseek-chat`).  
+   Функции формируют промпт, просят JSON с результатом, парсят ответ и возвращают его воркеру.
 
 6. **Проверка статуса**  
    Клиент может вызывать `GET /jobs/:id`, чтобы узнать состояние (`waiting`, `active`, `completed`, `failed` и др.), текущий прогресс и результат (если задача завершена).
@@ -41,15 +44,19 @@ brew services start redis  # или redis-server в отдельном окне
 ## Контекстное чтение и TTS
 
 1. **POST /generate-context** — ставит задачу в очередь `context`.
-2. **context-worker** — генерирует текст (`generateContextText`), затем mp3 через OpenAI TTS (`contextAudioService`).
+2. **context-worker** — генерирует текст (`generateContextText` через Vercel AI SDK), затем mp3 через OpenAI TTS (`contextAudioService`, raw `openai` SDK).
 3. **GET /jobs/:id?queue=context** — статус и `{ text, translation, hasAudio }`.
 4. **GET /jobs/:id/audio?queue=context** — mp3 основного текста (если `hasAudio=true`).
 
-### Переменные окружения (TTS)
+### Переменные окружения
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `OPENAI_API_KEY` | — | ключ OpenAI (общий с chat) |
+| `ML_PROVIDER` | `openai` | Провайдер chat: `openai` или `deepseek` |
+| `OPENAI_API_KEY` | — | ключ OpenAI (chat при `ML_PROVIDER=openai` + TTS) |
+| `OPENAI_MODEL` | `gpt-4o-mini` | модель OpenAI для chat |
+| `DEEPSEEK_API_KEY` | — | ключ DeepSeek (при `ML_PROVIDER=deepseek`) |
+| `DEEPSEEK_MODEL` | `deepseek-chat` | модель DeepSeek (`deepseek-reasoner` и др.) |
 | `OPENAI_TTS_MODEL` | `tts-1` | `tts-1-hd` для лучшего качества |
 | `OPENAI_TTS_VOICE` | `nova` | alloy, echo, fable, onyx, nova, shimmer |
 | `AUDIO_STORAGE_DIR` | `./data/context-audio` | каталог mp3 |
