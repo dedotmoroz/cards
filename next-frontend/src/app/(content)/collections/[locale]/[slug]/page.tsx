@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CollectionDetailClient } from "@app/components/collection-detail-client";
 import { getCollection, getCollections } from "@app/lib/cms/collections";
 import { isSupportedLocale } from "@app/lib/i18n";
-import { SITE_BASE_URL } from "@app/lib/i18n";
+import { buildLocaleSegmentHreflangAlternates } from "@app/lib/i18n/hreflang";
 
 export const revalidate = 60;
 
@@ -23,14 +23,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (!isSupportedLocale(locale)) return {};
   const collection = await getCollection(locale, slug).catch(() => null);
   if (!collection) return { title: "Collection not found" };
   return {
     title: collection.seoTitle ?? collection.title,
     description: collection.seoDescription ?? undefined,
-    alternates: {
-      canonical: `${SITE_BASE_URL}/collections/${locale}/${slug}`,
-    },
+    alternates: buildLocaleSegmentHreflangAlternates(locale, "/collections", slug),
   };
 }
 

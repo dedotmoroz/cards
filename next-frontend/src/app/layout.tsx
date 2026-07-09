@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DEFAULT_LOCALE, SITE_BASE_URL, SUPPORTED_LOCALES } from "@app/lib/i18n";
+import { DEFAULT_LOCALE, SITE_BASE_URL } from "@app/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -9,14 +9,6 @@ export const metadata: Metadata = {
     template: "%s | KotCat",
   },
   description: "Language learning with flashcards",
-  alternates: {
-    languages: Object.fromEntries(
-      SUPPORTED_LOCALES.map((lang) => [
-        lang,
-        lang === DEFAULT_LOCALE ? "/" : `/${lang}`,
-      ])
-    ),
-  },
 };
 
 export default function RootLayout({

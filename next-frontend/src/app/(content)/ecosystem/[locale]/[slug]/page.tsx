@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EcosystemDetailClient } from "@app/components/ecosystem-detail-client";
 import { getEcosystem, getEcosystems } from "@app/lib/cms/ecosystems";
-import { isSupportedLocale, SITE_BASE_URL } from "@app/lib/i18n";
+import { isSupportedLocale } from "@app/lib/i18n";
+import { buildLocaleSegmentHreflangAlternates } from "@app/lib/i18n/hreflang";
 
 export const revalidate = 60;
 
@@ -22,12 +23,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (!isSupportedLocale(locale)) return {};
   const item = await getEcosystem(locale, slug).catch(() => null);
   if (!item) return { title: "Not found" };
   return {
     title: item.seoTitle ?? item.title ?? slug,
     description: item.seoDescription ?? undefined,
-    alternates: { canonical: `${SITE_BASE_URL}/ecosystem/${locale}/${slug}` },
+    alternates: buildLocaleSegmentHreflangAlternates(locale, "/ecosystem", slug),
   };
 }
 

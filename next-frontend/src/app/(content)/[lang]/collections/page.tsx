@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CollectionsListShell } from "@app/components/collections-list-shell";
 import { getCollections } from "@app/lib/cms/collections";
 import { isSupportedLocale } from "@app/lib/i18n";
+import { buildLocalizedHreflangAlternates } from "@app/lib/i18n/hreflang";
 
 export const revalidate = 60;
 
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!isSupportedLocale(lang)) return {};
   return {
     title: "Vocabulary Collections",
-    alternates: { canonical: `/${lang}/collections` },
+    alternates: buildLocalizedHreflangAlternates(lang, "/collections"),
   };
 }
 

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { EcosystemsListShell } from "@app/components/ecosystems-list-shell";
 import { getEcosystems } from "@app/lib/cms/ecosystems";
 import { isSupportedLocale } from "@app/lib/i18n";
+import { buildLocalizedHreflangAlternates } from "@app/lib/i18n/hreflang";
 
 export const revalidate = 60;
 
@@ -11,7 +12,10 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!isSupportedLocale(lang)) return {};
-  return { title: "Ecosystem", alternates: { canonical: `/${lang}/ecosystem` } };
+  return {
+    title: "Ecosystem",
+    alternates: buildLocalizedHreflangAlternates(lang, "/ecosystem"),
+  };
 }
 
 export default async function LocalizedEcosystemListPage({ params }: Props) {
