@@ -7,9 +7,9 @@
     "appName": "Vokabelkarten",
     "firstScreen": {
       "tag": "Ein neuer Ansatz zum Sprachenlernen",
-      "title1": "Lerne",
-      "title2": "Wörter im Kontext,",
-      "title3": "nicht aus Listen",
+      "title1": "Lernen Sie",
+      "title2": "Fremdwörter im Kontext",
+      "title3": "mit KI-Karteikarten",
       "description": "Erstellen Sie lebendige Beispiele mit KI, speichern Sie Sätze direkt aus dem Browser und lernen Sie die Sprache anhand echter Situationen.",
       "button1": "Lernen beginnen",
       "button2": "So funktioniert's"
@@ -97,7 +97,7 @@
   "seo": {
     "keywords": "Lernkarten, Lernen, Gedächtnis, Bildung, Studium, Karteikarten",
     "landing": {
-      "title": "KotCat",
+      "title": "KotCat — Englische Wörter im Kontext mit KI-Karteikarten lernen",
       "description": "Effektives Lernkartensystem. Merken Sie sich Informationen schneller und länger."
     },
     "learn": {

@@ -7,9 +7,9 @@
     "appName": "Cartões de vocabulário",
     "firstScreen": {
       "tag": "Uma nova abordagem para aprender idiomas",
-      "title1": "Memorize",
-      "title2": "palavras no contexto,",
-      "title3": "não por listas",
+      "title1": "Aprenda",
+      "title2": "palavras estrangeiras no contexto",
+      "title3": "com cartões de IA",
       "description": "Crie exemplos vivos com IA, salve frases direto do navegador e aprenda o idioma em situações reais.",
       "button1": "Começar a aprender",
       "button2": "Como funciona"
@@ -97,7 +97,7 @@
   "seo": {
     "keywords": "cartões, aprendizagem, memória, educação, estudo, flash cards",
     "landing": {
-      "title": "KotCat",
+      "title": "KotCat — memorize palavras em inglês no contexto com cartões de IA",
       "description": "Sistema eficaz de aprendizagem com cartões. Memorize informações mais rapidamente e por mais tempo."
     },
     "learn": {

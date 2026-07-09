@@ -7,9 +7,9 @@
     "appName": "Vocabulary Cards",
     "firstScreen": {
       "tag": "A new approach to language learning",
-      "title1": "Memorize",
-      "title2": "words in context,",
-      "title3": "not by lists",
+      "title1": "Learn",
+      "title2": "foreign words in context",
+      "title3": "with AI flashcards",
       "description": "KotCat helps you create natural examples with AI, save phrases right from your browser, and learn the language through real-life situations.",
       "button1": "Start Learning",
       "button2": "How it works"
@@ -97,7 +97,7 @@
   "seo": {
     "keywords": "flashcards, learning, memory, education, study, flash cards",
     "landing": {
-      "title": "KotCat",
+      "title": "KotCat — Learn Words in Context with AI Flashcards",
       "description": "Effective flashcard learning system. Remember information faster and longer."
     },
     "learn": {

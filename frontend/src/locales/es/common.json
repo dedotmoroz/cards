@@ -7,9 +7,9 @@
     "appName": "Tarjetas de vocabulario",
     "firstScreen": {
       "tag": "Un nuevo enfoque para aprender idiomas",
-      "title1": "Memoriza",
-      "title2": "palabras en contexto,",
-      "title3": "no por listas",
+      "title1": "Aprenda",
+      "title2": "palabras extranjeras en contexto",
+      "title3": "con tarjetas de IA",
       "description": "Crea ejemplos vivos con IA, guarda frases directamente desde el navegador y aprende el idioma en situaciones reales.",
       "button1": "Comenzar a aprender",
       "button2": "Cómo funciona"
@@ -97,7 +97,7 @@
   "seo": {
     "keywords": "tarjetas, aprendizaje, memoria, educación, estudio, flash cards",
     "landing": {
-      "title": "KotCat",
+      "title": "KotCat — aprende palabras en inglés en contexto con tarjetas IA",
       "description": "Sistema eficaz de aprendizaje con tarjetas. Recuerda información más rápido y durante más tiempo."
     },
     "learn": {

@@ -7,9 +7,9 @@
     "appName": "Karty słownictwa",
     "firstScreen": {
       "tag": "Nowe podejście do nauki języków",
-      "title1": "Zapamiętuj",
-      "title2": "słowa w kontekście,",
-      "title3": "nie z list",
+      "title1": "Ucz się",
+      "title2": "obcych słów w kontekście",
+      "title3": "z fiszkami AI",
       "description": "Twórz żywe przykłady z AI, zapisuj zwroty prosto z przeglądarki i ucz się języka na realnych sytuacjach.",
       "button1": "Rozpocznij naukę",
       "button2": "Jak to działa"
@@ -97,7 +97,7 @@
   "seo": {
     "keywords": "fiszki, nauka, pamięć, edukacja, studia, karty",
     "landing": {
-      "title": "KotCat",
+      "title": "KotCat — zapamiętuj angielskie słowa w kontekście z fiszkami AI",
       "description": "Skuteczny system nauki za pomocą kart. Zapamiętuj informacje szybciej i na dłużej."
     },
     "learn": {

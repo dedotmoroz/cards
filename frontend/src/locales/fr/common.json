@@ -7,9 +7,9 @@
     "appName": "Cartes de vocabulaire",
     "firstScreen": {
       "tag": "Une nouvelle approche de l'apprentissage des langues",
-      "title1": "Mémorisez",
-      "title2": "les mots en contexte,",
-      "title3": "pas par listes",
+      "title1": "Apprenez",
+      "title2": "des mots étrangers en contexte",
+      "title3": "grâce à des cartes IA",
       "description": "Créez des exemples vivants avec l’IA, enregistrez des phrases depuis le navigateur et apprenez la langue dans des situations réelles.",
       "button1": "Commencer à apprendre",
       "button2": "Comment ça marche"
@@ -97,7 +97,7 @@
   "seo": {
     "keywords": "cartes, apprentissage, mémoire, éducation, étude, flash cards",
     "landing": {
-      "title": "KotCat",
+      "title": "KotCat — mémorisez les mots anglais en contexte grâce à des cartes IA",
       "description": "Système efficace d'apprentissage par cartes. Mémorisez les informations plus rapidement et plus longtemps."
     },
     "learn": {

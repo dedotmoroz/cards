@@ -7,9 +7,9 @@
     "appName": "词汇卡片",
     "firstScreen": {
       "tag": "语言学习的新方法",
-      "title1": "记忆",
-      "title2": "单词在上下文中，",
-      "title3": "而不是通过列表",
+      "title1": "借助 AI 卡片",
+      "title2": "在语境中",
+      "title3": "学习外语单词",
       "description": "用 AI 生成地道例句，从浏览器直接保存短语，在真实情境中学语言。",
       "button1": "开始学习",
       "button2": "工作原理"
@@ -97,7 +97,7 @@
   "seo": {
     "keywords": "卡片, 学习, 记忆, 教育, 研究, 闪卡",
     "landing": {
-      "title": "KotCat",
+      "title": "KotCat — 借助 AI 卡片在语境中学习英语单词",
       "description": "有效的卡片学习系统。更快、更持久地记住信息。"
     },
     "learn": {
