@@ -30,7 +30,7 @@ export const StyledHeader = styled(Box)`
     flex-wrap: wrap;
 `
 
-export const StyledTitle = styled(Box)`
+export const StyledTitle = styled('h3')`
     color: #101828;
     font-size: 30px;
     line-height: 35px;
@@ -41,7 +41,7 @@ export const StyledTitle = styled(Box)`
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-bottom: 5px;
+    margin: 0 0 5px;
 `;
 
 export const StyledDescription = styled(Box)`
@@ -411,14 +411,14 @@ export const StyledFS = styled(Box)`
     -webkit-text-fill-color: transparent;
 `
 
-export const StyledFirstScreenTitle = styled(Box)(({ theme }) => ({
+export const StyledFirstScreenTitle = styled('h1')(({ theme }) => ({
     color: '#101828',
     fontSize: '54px',
     fontStyle: 'normal',
     fontWeight: 400,
     lineHeight: '60px',
     letterSpacing: '0.264px',
-    marginTop: '32px',
+    margin: '32px 0 0',
     [theme.breakpoints.down('md')]: {
         fontSize: '40px',
         lineHeight: '48px',

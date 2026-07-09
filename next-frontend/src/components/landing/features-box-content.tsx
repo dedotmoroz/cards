@@ -59,7 +59,7 @@ export function FeaturesBoxContent({ locale, dict }: Props) {
             <div className={feature.iconClass}>{feature.icon}</div>
           </div>
           <div className={styles.featureDescription}>
-            <div className={styles.featureTitle}>{feature.title}</div>
+            <h3 className={styles.featureTitle}>{feature.title}</h3>
             <div className={styles.featureSubtitle}>{feature.subtitle}</div>
             {feature.text}
             {feature.link ? (
