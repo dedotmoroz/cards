@@ -1,27 +1,24 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { Route, Routes } from "react-router-dom";
+import type { EcosystemItem } from "@app/lib/cms/ecosystems";
 import { LocaleSync } from "@app/components/locale-sync";
 import { NextReactRouterBridge } from "@app/components/next-react-router-bridge";
-import { ClientPageLoader } from "@app/components/client-page-loader";
+import { EcosystemDetailPage } from "@/pages/ecosystem";
 
-const EcosystemDetailPage = dynamic(
-  () => import("@/pages/ecosystem").then((m) => ({ default: m.EcosystemDetailPage })),
-  { ssr: false, loading: () => <ClientPageLoader /> }
-);
-
-export function EcosystemDetailClient({ locale }: { locale: string }) {
+export function EcosystemDetailClient({
+  locale,
+  slug,
+  item,
+}: {
+  locale: string;
+  slug: string;
+  item: EcosystemItem;
+}) {
   return (
     <>
       <LocaleSync locale={locale} />
       <NextReactRouterBridge>
-        <Routes>
-          <Route
-            path="/ecosystem/:locale/:slug"
-            element={<EcosystemDetailPage />}
-          />
-        </Routes>
+        <EcosystemDetailPage locale={locale} slug={slug} initialItem={item} />
       </NextReactRouterBridge>
     </>
   );

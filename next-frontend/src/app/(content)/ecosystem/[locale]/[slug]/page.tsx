@@ -40,5 +40,7 @@ export default async function EcosystemDetailPage({ params }: Props) {
   const item = await getEcosystem(locale, slug).catch(() => null);
   if (!item) notFound();
 
-  return <EcosystemDetailClient locale={locale} />;
+  return (
+    <EcosystemDetailClient locale={locale} slug={slug} item={item} />
+  );
 }

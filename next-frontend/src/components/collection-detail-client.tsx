@@ -1,27 +1,28 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { Route, Routes } from "react-router-dom";
+import type { CollectionItem } from "@app/lib/cms/collections";
 import { LocaleSync } from "@app/components/locale-sync";
 import { NextReactRouterBridge } from "@app/components/next-react-router-bridge";
-import { ClientPageLoader } from "@app/components/client-page-loader";
+import { CollectionDetailPage } from "@/pages/collection";
 
-const CollectionDetailPage = dynamic(
-  () => import("@/pages/collection").then((m) => ({ default: m.CollectionDetailPage })),
-  { ssr: false, loading: () => <ClientPageLoader /> }
-);
-
-export function CollectionDetailClient({ locale }: { locale: string }) {
+export function CollectionDetailClient({
+  locale,
+  slug,
+  collection,
+}: {
+  locale: string;
+  slug: string;
+  collection: CollectionItem;
+}) {
   return (
     <>
       <LocaleSync locale={locale} />
       <NextReactRouterBridge>
-        <Routes>
-          <Route
-            path="/collections/:locale/:slug"
-            element={<CollectionDetailPage />}
-          />
-        </Routes>
+        <CollectionDetailPage
+          locale={locale}
+          slug={slug}
+          initialCollection={collection}
+        />
       </NextReactRouterBridge>
     </>
   );

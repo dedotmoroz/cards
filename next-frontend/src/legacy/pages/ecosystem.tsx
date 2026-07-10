@@ -12,17 +12,24 @@ import { Footer } from '@/widgets/landing/footer.tsx';
 
 type ImgMeta = { src: string; width?: number; height?: number; alt?: string };
 
-function getImages(images: EcosystemItem['images']): ImgMeta[] {
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    const base = STRAPI_URL.startsWith('http') ? STRAPI_URL : origin;
+function resolveAssetUrl(url: string): string {
+    if (!url || url.startsWith('http')) return url;
+    if (STRAPI_URL.startsWith('http')) {
+        return `${STRAPI_URL.replace(/\/$/, '')}${url.startsWith('/') ? url : `/${url}`}`;
+    }
+    // Production uses Next rewrite `/cms` → Strapi
+    if (url.startsWith('/cms')) return url;
+    return `/cms${url.startsWith('/') ? url : `/${url}`}`;
+}
 
+function getImages(images: EcosystemItem['images']): ImgMeta[] {
     // Strapi v5 often returns array of files: [{ url: "/uploads/..." }, ...]
     if (Array.isArray(images)) {
         return images
             .map((x) => x as { url?: string; width?: number; height?: number; alternativeText?: string } | null)
             .filter((x): x is { url?: string; width?: number; height?: number; alternativeText?: string } => Boolean(x))
             .map((x) => ({
-                src: x.url ? (x.url.startsWith('http') ? x.url : `${base}${x.url}`) : '',
+                src: x.url ? resolveAssetUrl(x.url) : '',
                 width: x.width,
                 height: x.height,
                 alt: x.alternativeText ?? '',
@@ -46,7 +53,7 @@ function getImages(images: EcosystemItem['images']): ImgMeta[] {
                 Boolean(a)
         )
         .map((a) => ({
-            src: a.url ? (a.url.startsWith('http') ? a.url : `${base}${a.url}`) : '',
+            src: a.url ? resolveAssetUrl(a.url) : '',
             width: a.width,
             height: a.height,
             alt: a.alternativeText ?? '',
@@ -54,17 +61,35 @@ function getImages(images: EcosystemItem['images']): ImgMeta[] {
         .filter((x) => Boolean(x.src));
 }
 
-export function EcosystemDetailPage() {
-    const { locale, slug } = useParams<{ locale: string; slug: string }>();
-    const [item, setItem] = useState<EcosystemItem | null>(null);
-    const [loading, setLoading] = useState(true);
+type EcosystemDetailPageProps = {
+    locale?: string;
+    slug?: string;
+    initialItem?: EcosystemItem | null;
+};
+
+export function EcosystemDetailPage({
+    locale: localeProp,
+    slug: slugProp,
+    initialItem,
+}: EcosystemDetailPageProps = {}) {
+    const params = useParams<{ locale: string; slug: string }>();
+    const locale = localeProp ?? params.locale;
+    const slug = slugProp ?? params.slug;
+    const [item, setItem] = useState<EcosystemItem | null>(initialItem ?? null);
+    const [loading, setLoading] = useState(!initialItem);
 
     useEffect(() => {
+        if (initialItem) {
+            setItem(initialItem);
+            setLoading(false);
+            return;
+        }
         if (!locale || !slug) return;
+        setLoading(true);
         getEcosystem(locale, slug)
             .then(setItem)
             .finally(() => setLoading(false));
-    }, [locale, slug]);
+    }, [locale, slug, initialItem]);
 
     useSEO({
         title: item ? (item.seoTitle ?? item.title ?? undefined) : undefined,

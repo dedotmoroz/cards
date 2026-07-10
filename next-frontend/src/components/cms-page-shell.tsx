@@ -1,16 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import type { CmsPage } from "@app/lib/cms/pages";
 import { LocaleSync } from "@app/components/locale-sync";
-
-const CmsPageView = dynamic(
-  () =>
-    import("@app/components/cms-page-view").then((m) => ({
-      default: m.CmsPageView,
-    })),
-  { ssr: false }
-);
+import { CmsPageView } from "@app/components/cms-page-view";
 
 export function CmsPageShell({
   page,

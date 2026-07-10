@@ -1,16 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import type { EcosystemListItem } from "@app/lib/cms/ecosystems";
 import { LocaleSync } from "@app/components/locale-sync";
-
-const EcosystemsListView = dynamic(
-  () =>
-    import("@app/components/ecosystems-list-view").then((m) => ({
-      default: m.EcosystemsListView,
-    })),
-  { ssr: false }
-);
+import { EcosystemsListView } from "@app/components/ecosystems-list-view";
 
 export function EcosystemsListShell(props: {
   locale: string;

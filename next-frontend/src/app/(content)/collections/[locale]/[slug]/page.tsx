@@ -40,5 +40,11 @@ export default async function CollectionPage({ params }: Props) {
   const collection = await getCollection(locale, slug).catch(() => null);
   if (!collection) notFound();
 
-  return <CollectionDetailClient locale={locale} />;
+  return (
+    <CollectionDetailClient
+      locale={locale}
+      slug={slug}
+      collection={collection}
+    />
+  );
 }

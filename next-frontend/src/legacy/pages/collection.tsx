@@ -66,13 +66,27 @@ function parseCollectionWords(
     return { folderName, items: [] };
 }
 
-export function CollectionDetailPage() {
-    const { locale, slug } = useParams<{ locale: string; slug: string }>();
+type CollectionDetailPageProps = {
+    locale?: string;
+    slug?: string;
+    initialCollection?: CollectionItem | null;
+};
+
+export function CollectionDetailPage({
+    locale: localeProp,
+    slug: slugProp,
+    initialCollection,
+}: CollectionDetailPageProps = {}) {
+    const params = useParams<{ locale: string; slug: string }>();
+    const locale = localeProp ?? params.locale;
+    const slug = slugProp ?? params.slug;
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const { user, createGuest } = useAuthStore();
-    const [collection, setCollection] = useState<CollectionItem | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [collection, setCollection] = useState<CollectionItem | null>(
+        initialCollection ?? null
+    );
+    const [loading, setLoading] = useState(!initialCollection);
     const [checked, setChecked] = useState<Record<string, boolean>>({});
     const [isImporting, setIsImporting] = useState(false);
     const [importError, setImportError] = useState<string | null>(null);
@@ -81,11 +95,17 @@ export function CollectionDetailPage() {
     const [showGuestPrompt, setShowGuestPrompt] = useState(false);
 
     useEffect(() => {
+        if (initialCollection) {
+            setCollection(initialCollection);
+            setLoading(false);
+            return;
+        }
         if (!locale || !slug) return;
+        setLoading(true);
         getCollection(locale, slug)
             .then(setCollection)
             .finally(() => setLoading(false));
-    }, [locale, slug]);
+    }, [locale, slug, initialCollection]);
 
     useSEO({
         title: collection ? (collection.seoTitle ?? collection.title) : undefined,

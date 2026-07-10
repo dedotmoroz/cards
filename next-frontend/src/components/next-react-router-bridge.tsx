@@ -1,9 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState, type ReactNode } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Router, type To } from "react-router-dom";
-import { ClientPageLoader } from "@app/components/client-page-loader";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Router, type To, type NavigationType } from "react-router-dom";
 
 function toHref(to: To): string {
   if (typeof to === "string") return to;
@@ -23,37 +22,43 @@ type NavigatorOptions = {
   state?: unknown;
 };
 
-function RouterBridgeInner({ children }: { children: ReactNode }) {
+/**
+ * Bridges react-router-dom hooks (useNavigate, Link) to Next.js App Router.
+ * Avoids useSearchParams so content can SSR without Suspense bailout to a loader.
+ */
+export function NextReactRouterBridge({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
 
-  const search = searchParams.toString();
-  const searchWithPrefix = search ? `?${search}` : "";
+  const [searchWithPrefix, setSearchWithPrefix] = useState(() =>
+    typeof window !== "undefined" ? window.location.search : ""
+  );
 
   const [state, setState] = useState(() => ({
-    action: "POP" as const,
+    action: "POP" as NavigationType,
     location: {
       pathname,
-      search: searchWithPrefix,
+      search: typeof window !== "undefined" ? window.location.search : "",
       hash: "",
-      state: null,
+      state: null as unknown,
       key: "default",
     },
   }));
 
   useEffect(() => {
+    const search = window.location.search;
+    setSearchWithPrefix(search);
     setState({
-      action: "POP",
+      action: "POP" as NavigationType,
       location: {
         pathname,
-        search: searchWithPrefix,
-        hash: typeof window !== "undefined" ? window.location.hash : "",
+        search,
+        hash: window.location.hash,
         state: null,
-        key: `${pathname}${searchWithPrefix}`,
+        key: `${pathname}${search}`,
       },
     });
-  }, [pathname, searchWithPrefix]);
+  }, [pathname]);
 
   const navigator = useMemo(
     () => ({
@@ -82,24 +87,18 @@ function RouterBridgeInner({ children }: { children: ReactNode }) {
     [router]
   );
 
+  const location = useMemo(
+    () => ({
+      ...state.location,
+      pathname,
+      search: searchWithPrefix || state.location.search,
+    }),
+    [pathname, searchWithPrefix, state.location]
+  );
+
   return (
-    <Router
-      location={state.location}
-      navigationType={state.action}
-      navigator={navigator}
-    >
+    <Router location={location} navigationType={state.action} navigator={navigator}>
       {children}
     </Router>
-  );
-}
-
-/**
- * Bridges react-router-dom hooks (useNavigate, Link) to Next.js App Router.
- */
-export function NextReactRouterBridge({ children }: { children: ReactNode }) {
-  return (
-    <Suspense fallback={<ClientPageLoader />}>
-      <RouterBridgeInner>{children}</RouterBridgeInner>
-    </Suspense>
   );
 }
