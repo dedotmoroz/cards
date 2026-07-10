@@ -83,11 +83,14 @@ export default function App() {
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/collections" element={<CollectionsListPage />} />
                             <Route path="/:lang/collections" element={<CollectionsListPage />} />
-                            <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
+                            <Route path="/collections/:slug" element={<CollectionDetailPage />} />
+                            <Route path="/:lang/collections/:slug" element={<CollectionDetailPage />} />
                             <Route path="/ecosystem" element={<EcosystemsListPage />} />
                             <Route path="/:lang/ecosystem" element={<EcosystemsListPage />} />
-                            <Route path="/ecosystem/:locale/:slug" element={<EcosystemDetailPage />} />
-                            <Route path="/p/:locale/:slug" element={<StrapiPage />} />
+                            <Route path="/ecosystem/:slug" element={<EcosystemDetailPage />} />
+                            <Route path="/:lang/ecosystem/:slug" element={<EcosystemDetailPage />} />
+                            <Route path="/p/:slug" element={<StrapiPage />} />
+                            <Route path="/:lang/p/:slug" element={<StrapiPage />} />
                             {isAdmin && (
                                 <>
                                     <Route path="/admin" element={<AdminUsersPage />} />
@@ -105,11 +108,14 @@ export default function App() {
                             <Route path="/telegram-connect" element={<TelegramConnectPage />} />
                             <Route path="/collections" element={<CollectionsListPage />} />
                             <Route path="/:lang/collections" element={<CollectionsListPage />} />
-                            <Route path="/collections/:locale/:slug" element={<CollectionDetailPage />} />
+                            <Route path="/collections/:slug" element={<CollectionDetailPage />} />
+                            <Route path="/:lang/collections/:slug" element={<CollectionDetailPage />} />
                             <Route path="/ecosystem" element={<EcosystemsListPage />} />
                             <Route path="/:lang/ecosystem" element={<EcosystemsListPage />} />
-                            <Route path="/ecosystem/:locale/:slug" element={<EcosystemDetailPage />} />
-                            <Route path="/p/:locale/:slug" element={<StrapiPage />} />
+                            <Route path="/ecosystem/:slug" element={<EcosystemDetailPage />} />
+                            <Route path="/:lang/ecosystem/:slug" element={<EcosystemDetailPage />} />
+                            <Route path="/p/:slug" element={<StrapiPage />} />
+                            <Route path="/:lang/p/:slug" element={<StrapiPage />} />
                             <Route path="/:lang" element={<LanguageLandingPage />} />
                             <Route path="*" element={<LandingPage />} />
                         </>

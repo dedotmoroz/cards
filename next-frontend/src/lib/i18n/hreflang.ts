@@ -5,7 +5,7 @@ import {
   SUPPORTED_LOCALES,
   type AppLocale,
 } from "@app/lib/i18n";
-import { localizedPath, localePath } from "@app/lib/i18n/server";
+import { localizedPath, localePath } from "@app/lib/i18n";
 
 function absoluteUrl(path: string): string {
   return `${SITE_BASE_URL}${path}`;
@@ -33,7 +33,7 @@ export function buildHomeHreflangAlternates(
   };
 }
 
-/** List pages: `/collections` for en, `/ru/collections` for ru, etc. */
+/** List and detail pages: `/collections` for en, `/ru/collections` for ru, etc. */
 export function buildLocalizedHreflangAlternates(
   locale: AppLocale,
   path: string
@@ -49,24 +49,5 @@ export function buildLocalizedHreflangAlternates(
   return {
     canonical: absoluteUrl(localizedPath(locale, path)),
     languages: withXDefault(languages, defaultUrl),
-  };
-}
-
-/** Detail pages with locale in the path: `/collections/{locale}/{slug}` */
-export function buildLocaleSegmentHreflangAlternates(
-  locale: AppLocale,
-  basePath: string,
-  slug: string
-): NonNullable<Metadata["alternates"]> {
-  const urlFor = (lang: AppLocale) =>
-    absoluteUrl(`${basePath}/${lang}/${slug}`);
-
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((lang) => [lang, urlFor(lang)])
-  );
-
-  return {
-    canonical: urlFor(locale),
-    languages: withXDefault(languages, urlFor(DEFAULT_LOCALE)),
   };
 }

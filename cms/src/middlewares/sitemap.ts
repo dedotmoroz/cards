@@ -116,6 +116,18 @@ function listEcosystemPath(locale: string): string {
   return locale === 'en' ? '/ecosystem' : `/${locale}/ecosystem`;
 }
 
+function detailCollectionsPath(locale: string, slug: string): string {
+  return locale === 'en' ? `/collections/${slug}` : `/${locale}/collections/${slug}`;
+}
+
+function detailEcosystemPath(locale: string, slug: string): string {
+  return locale === 'en' ? `/ecosystem/${slug}` : `/${locale}/ecosystem/${slug}`;
+}
+
+function detailPagePath(locale: string, slug: string): string {
+  return locale === 'en' ? `/p/${slug}` : `/${locale}/p/${slug}`;
+}
+
 function pickXDefault(alternates: Record<string, string>): string | undefined {
   return alternates.en ?? Object.values(alternates)[0];
 }
@@ -175,9 +187,9 @@ const middleware: Core.MiddlewareFactory = (_config, { strapi }) => {
       items: Array<{ documentId?: string; locale?: string; slug: string; updatedAt?: string }>;
       pathFor: (locale: string, slug: string) => string;
     }> = [
-      { items: pages, pathFor: (locale, slug) => `/p/${locale}/${slug}` },
-      { items: collections, pathFor: (locale, slug) => `/collections/${locale}/${slug}` },
-      { items: ecosystems, pathFor: (locale, slug) => `/ecosystem/${locale}/${slug}` },
+      { items: pages, pathFor: detailPagePath },
+      { items: collections, pathFor: detailCollectionsPath },
+      { items: ecosystems, pathFor: detailEcosystemPath },
     ];
 
     for (const { items, pathFor } of uids) {

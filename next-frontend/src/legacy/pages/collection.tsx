@@ -77,8 +77,8 @@ export function CollectionDetailPage({
     slug: slugProp,
     initialCollection,
 }: CollectionDetailPageProps = {}) {
-    const params = useParams<{ locale: string; slug: string }>();
-    const locale = localeProp ?? params.locale;
+    const params = useParams<{ locale?: string; lang?: string; slug: string }>();
+    const locale = localeProp ?? params.locale ?? params.lang;
     const slug = slugProp ?? params.slug;
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
@@ -110,7 +110,9 @@ export function CollectionDetailPage({
     useSEO({
         title: collection ? (collection.seoTitle ?? collection.title) : undefined,
         description: collection?.seoDescription ?? undefined,
-        canonical: locale && slug ? `${SITE_BASE_URL}/collections/${locale}/${slug}` : undefined,
+        canonical: locale && slug
+            ? `${SITE_BASE_URL}${locale === 'en' ? `/collections/${slug}` : `/${locale}/collections/${slug}`}`
+            : undefined,
         lang: locale ?? undefined,
     });
 
@@ -373,7 +375,7 @@ export function CollectionDetailPage({
                             ) : null}
                         </Box>
                     }
-                    backTo="/collections"
+                    backTo={locale === 'en' || !locale ? '/collections' : `/${locale}/collections`}
                 />
             </Box>
             <Box sx={{ mt: 'auto', pt: 5 }}>

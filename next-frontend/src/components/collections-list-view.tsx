@@ -13,6 +13,7 @@ import {
   getCollectionCoverUrl,
   type CollectionListItem,
 } from "@app/lib/cms/collections";
+import { type AppLocale, localizedPath } from "@app/lib/i18n";
 import { ContentShell } from "./content-shell";
 
 type Props = {
@@ -35,7 +36,7 @@ export function CollectionsListView({ locale, collections }: Props) {
               return (
                 <StyledListItem key={item.id}>
                   <Link
-                    href={`/collections/${locale}/${item.slug}`}
+                    href={localizedPath(locale as AppLocale, `/collections/${item.slug}`)}
                     style={{ textDecoration: "none", color: "inherit", display: "flex", gap: 16, alignItems: "center" }}
                   >
                     {coverUrl ? <StyledCover src={coverUrl} alt="" /> : null}

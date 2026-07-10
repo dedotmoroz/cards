@@ -29,7 +29,7 @@ export function FeaturesBoxContent({ locale, dict }: Props) {
       subtitle: t("landing.features.chrome.subtitle"),
       text: `${t("landing.features.chrome.description")}\n${t("landing.features.chrome.item1")}\n${t("landing.features.chrome.item2")}\n${t("landing.features.chrome.item3")}`,
       link: {
-        href: localizedPath(locale, `/ecosystem/${locale}/chrome_extension`),
+        href: localizedPath(locale, "/ecosystem/chrome_extension"),
         label: t("landing.features.chrome.accent"),
       },
     },

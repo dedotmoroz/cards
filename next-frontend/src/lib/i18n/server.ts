@@ -1,6 +1,8 @@
 import type { AppLocale } from "@app/lib/i18n";
 import { DEFAULT_LOCALE, isSupportedLocale } from "@app/lib/i18n";
 
+export { localePath, localizedPath } from "@app/lib/i18n";
+
 import enCommon from "@/locales/en/common.json";
 import ruCommon from "@/locales/ru/common.json";
 import ukCommon from "@/locales/uk/common.json";
@@ -49,13 +51,4 @@ export function createTranslator(dict: LandingDictionary): Translator {
 export function getLocaleFromParams(lang?: string): AppLocale {
   if (!lang) return DEFAULT_LOCALE;
   return isSupportedLocale(lang) ? lang : DEFAULT_LOCALE;
-}
-
-export function localePath(locale: AppLocale): string {
-  return locale === DEFAULT_LOCALE ? "/" : `/${locale}`;
-}
-
-export function localizedPath(locale: AppLocale, path: string): string {
-  if (locale === DEFAULT_LOCALE) return path;
-  return `/${locale}${path === "/" ? "" : path}`;
 }

@@ -10,7 +10,12 @@ import { Box } from '@mui/material';
 import { Footer } from '@/widgets/landing/footer.tsx';
 
 export default function Page() {
-    const { locale, slug } = useParams<{ locale: string; slug: string }>();
+    const { locale: localeParam, lang, slug } = useParams<{
+        locale?: string;
+        lang?: string;
+        slug: string;
+    }>();
+    const locale = localeParam ?? lang;
 
     const [page, setPage] = useState<{
         title: string;
@@ -32,7 +37,9 @@ export default function Page() {
     useSEO({
         title: page ? (page.seoTitle ?? page.title) : undefined,
         description: page?.seoDescription ?? undefined,
-        canonical: locale && slug ? `${SITE_BASE_URL}/p/${locale}/${slug}` : undefined,
+        canonical: locale && slug
+            ? `${SITE_BASE_URL}${locale === 'en' ? `/p/${slug}` : `/${locale}/p/${slug}`}`
+            : undefined,
         lang: locale ?? undefined,
     });
 

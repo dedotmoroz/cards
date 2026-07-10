@@ -58,7 +58,7 @@ export const Footer = () => {
                         </Link>
                     )}
                     {pages.map((page) => (
-                        <Link key={page.slug} to={`/p/${locale}/${page.slug}`}>
+                        <Link key={page.slug} to={locale === 'en' ? `/p/${page.slug}` : `/${locale}/p/${page.slug}`}>
                             <Typography component="span" variant="body2">
                                 {page.title}
                             </Typography>

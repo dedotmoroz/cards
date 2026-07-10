@@ -13,6 +13,7 @@ import {
   getEcosystemPreviewUrl,
   type EcosystemListItem,
 } from "@app/lib/cms/ecosystems";
+import { type AppLocale, localizedPath } from "@app/lib/i18n";
 import { ContentShell } from "./content-shell";
 
 type Props = {
@@ -35,7 +36,7 @@ export function EcosystemsListView({ locale, items }: Props) {
               return (
                 <StyledListItem key={item.id}>
                   <Link
-                    href={`/ecosystem/${locale}/${item.slug}`}
+                    href={localizedPath(locale as AppLocale, `/ecosystem/${item.slug}`)}
                     style={{ textDecoration: "none", color: "inherit", display: "flex", gap: 16, alignItems: "center" }}
                   >
                     {imgUrl ? <StyledCover src={imgUrl} alt="" /> : null}

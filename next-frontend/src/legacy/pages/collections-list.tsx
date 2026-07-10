@@ -75,7 +75,7 @@ export function CollectionsListPage() {
                                 const coverUrl = getCoverUrl(item);
                                 return (
                                     <StyledListItem key={item.id}>
-                                        <StyledLink to={`/collections/${locale}/${item.slug}`}>
+                                        <StyledLink to={locale === 'en' ? `/collections/${item.slug}` : `/${locale}/collections/${item.slug}`}>
                                             {coverUrl ? <StyledCover src={coverUrl} alt="" /> : null}
                                             <Typography variant="h6">{item.title}</Typography>
                                         </StyledLink>

@@ -15,10 +15,10 @@
 |---------------|---------|-------|
 | `/`, `/:lang` | SSG + client landing | SEO metadata on server |
 | `/collections`, `/:lang/collections` | ISR (60s) | Strapi list |
-| `/collections/:locale/:slug` | ISR + CSR detail | Import cards still client |
+| `/collections/:slug`, `/:lang/collections/:slug` | ISR + CSR detail | Import cards still client |
 | `/ecosystem`, `/:lang/ecosystem` | ISR | |
-| `/ecosystem/:locale/:slug` | ISR + CSR detail | |
-| `/p/:locale/:slug` | ISR | Strapi pages |
+| `/ecosystem/:slug`, `/:lang/ecosystem/:slug` | ISR + CSR detail | |
+| `/p/:slug`, `/:lang/p/:slug` | ISR | Strapi pages |
 | `/learn/**` | CSR only | `src/legacy` modules (`@/` alias) |
 | `/signin`, `/signup` | CSR | |
 

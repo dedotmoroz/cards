@@ -79,7 +79,7 @@ export function EcosystemsListPage() {
                                 const imageUrl = getImageUrl(item);
                                 return (
                                     <StyledListItem key={item.id}>
-                                        <StyledLink to={`/ecosystem/${locale}/${item.slug}`}>
+                                        <StyledLink to={locale === 'en' ? `/ecosystem/${item.slug}` : `/${locale}/ecosystem/${item.slug}`}>
                                             {imageUrl ? <StyledCover src={imageUrl} alt="" /> : null}
                                             <Box sx={{ minWidth: 0 }}>
                                                 <Typography variant="h6">

@@ -72,8 +72,8 @@ export function EcosystemDetailPage({
     slug: slugProp,
     initialItem,
 }: EcosystemDetailPageProps = {}) {
-    const params = useParams<{ locale: string; slug: string }>();
-    const locale = localeProp ?? params.locale;
+    const params = useParams<{ locale?: string; lang?: string; slug: string }>();
+    const locale = localeProp ?? params.locale ?? params.lang;
     const slug = slugProp ?? params.slug;
     const [item, setItem] = useState<EcosystemItem | null>(initialItem ?? null);
     const [loading, setLoading] = useState(!initialItem);
@@ -94,7 +94,9 @@ export function EcosystemDetailPage({
     useSEO({
         title: item ? (item.seoTitle ?? item.title ?? undefined) : undefined,
         description: item?.seoDescription ?? undefined,
-        canonical: locale && slug ? `${SITE_BASE_URL}/ecosystem/${locale}/${slug}` : undefined,
+        canonical: locale && slug
+            ? `${SITE_BASE_URL}${locale === 'en' ? `/ecosystem/${slug}` : `/${locale}/ecosystem/${slug}`}`
+            : undefined,
         lang: locale ?? undefined,
     });
 
@@ -117,7 +119,7 @@ export function EcosystemDetailPage({
             <Box sx={{ flex: '1 1 auto' }}>
                 <PageLayout
                     title={item.title ?? ''}
-                    backTo="/ecosystem"
+                    backTo={locale === 'en' || !locale ? '/ecosystem' : `/${locale}/ecosystem`}
                     content={
                         <Box>
                             {images.length > 0 ? (

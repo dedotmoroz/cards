@@ -59,7 +59,7 @@ export const FeaturesBox = () => {
                     <StyledTitle>{features[1].title}</StyledTitle>
                     <StyledHeight>{t('landing.features.chrome.subtitle')}</StyledHeight>
                     {features[1].text}
-                    <StyledAccentLink href={`/ecosystem/${locale}/chrome_extension`}>
+                    <StyledAccentLink href={locale === 'en' ? '/ecosystem/chrome_extension' : `/${locale}/ecosystem/chrome_extension`}>
                         {t('landing.features.chrome.accent')}
                     </StyledAccentLink>
                 </StyledDescription>

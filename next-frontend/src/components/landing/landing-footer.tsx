@@ -34,7 +34,7 @@ export function LandingFooter({ locale, dict, footerData }: Props) {
           </Link>
         ) : null}
         {pages.map((page) => (
-          <Link key={page.slug} href={`/p/${locale}/${page.slug}`}>
+          <Link key={page.slug} href={localizedPath(locale, `/p/${page.slug}`)}>
             {page.title}
           </Link>
         ))}
