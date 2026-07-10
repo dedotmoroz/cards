@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AnalyticsScripts } from "@app/components/analytics-scripts";
 import { DEFAULT_LOCALE, SITE_BASE_URL } from "@app/lib/i18n";
 import "./globals.css";
 
@@ -18,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={DEFAULT_LOCALE}>
-      <body>{children}</body>
+      <body>
+        <AnalyticsScripts />
+        {children}
+      </body>
     </html>
   );
 }
