@@ -20,9 +20,41 @@ export async function strapiFetch<T>(path: string, init?: RequestInit): Promise<
   return res.json() as Promise<T>;
 }
 
+/** Browser-facing CMS asset URL (via /cms rewrite or public base). */
 export function cmsAssetUrl(path: string | undefined | null): string {
   if (!path) return "";
-  if (path.startsWith("http")) return path;
-  const base = getStrapiServerUrl().replace(/\/$/, "");
-  return `${base}${path.startsWith("/") ? path : `/${path}`}`;
+
+  let assetPath = path;
+  if (/^https?:\/\//i.test(path)) {
+    try {
+      const u = new URL(path);
+      let serverHost = "";
+      try {
+        serverHost = new URL(getStrapiServerUrl()).host;
+      } catch {
+        /* ignore */
+      }
+      const isInternal =
+        u.hostname === "localhost" ||
+        u.hostname === "127.0.0.1" ||
+        u.hostname === "strapi" ||
+        (serverHost !== "" && u.host === serverHost);
+      if (!isInternal) return path;
+      assetPath = `${u.pathname}${u.search}`;
+    } catch {
+      return path;
+    }
+  }
+
+  if (assetPath.startsWith("/cms")) return assetPath;
+
+  const publicBase = process.env.NEXT_PUBLIC_STRAPI_PUBLIC_URL?.replace(
+    /\/$/,
+    ""
+  );
+  if (publicBase) {
+    return `${publicBase}${assetPath.startsWith("/") ? assetPath : `/${assetPath}`}`;
+  }
+
+  return `/cms${assetPath.startsWith("/") ? assetPath : `/${assetPath}`}`;
 }

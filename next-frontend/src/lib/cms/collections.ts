@@ -1,4 +1,4 @@
-import { strapiFetch } from "./strapi-server";
+import { cmsAssetUrl, strapiFetch } from "./strapi-server";
 
 export type CollectionListItem = {
   id: number;
@@ -48,11 +48,5 @@ export async function getCollection(
 export function getCollectionCoverUrl(item: CollectionListItem): string {
   const url =
     item.cover?.data?.attributes?.url ?? item.cover?.url ?? "";
-  if (!url) return "";
-  if (url.startsWith("http")) return url;
-  const publicBase =
-    process.env.NEXT_PUBLIC_STRAPI_PUBLIC_URL ??
-    process.env.STRAPI_SERVER_URL ??
-    "";
-  return publicBase ? `${publicBase.replace(/\/$/, "")}${url}` : url;
+  return cmsAssetUrl(url);
 }

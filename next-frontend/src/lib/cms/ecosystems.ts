@@ -48,8 +48,6 @@ export async function getEcosystem(
 
 export function getEcosystemPreviewUrl(item: EcosystemListItem): string {
   const url = item.prevImg?.data?.attributes?.url ?? item.prevImg?.url ?? "";
-  if (!url) return "";
-  if (url.startsWith("http")) return url;
   return cmsAssetUrl(url);
 }
 

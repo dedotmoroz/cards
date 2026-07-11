@@ -13,7 +13,18 @@ import { Footer } from '@/widgets/landing/footer.tsx';
 type ImgMeta = { src: string; width?: number; height?: number; alt?: string };
 
 function resolveAssetUrl(url: string): string {
-    if (!url || url.startsWith('http')) return url;
+    if (!url) return url;
+    if (url.startsWith('http')) {
+        try {
+            const u = new URL(url);
+            if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+                return `/cms${u.pathname}${u.search}`;
+            }
+        } catch {
+            /* keep as-is */
+        }
+        return url;
+    }
     if (STRAPI_URL.startsWith('http')) {
         return `${STRAPI_URL.replace(/\/$/, '')}${url.startsWith('/') ? url : `/${url}`}`;
     }

@@ -20,9 +20,23 @@ import { Footer } from '@/widgets/landing/footer.tsx';
 function getImageUrl(item: EcosystemListItem): string {
     const url = item.prevImg?.data?.attributes?.url ?? item.prevImg?.url ?? '';
     if (!url) return '';
-    if (url.startsWith('http')) return url;
+    if (url.startsWith('http')) {
+        try {
+            const u = new URL(url);
+            if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+                return `/cms${u.pathname}${u.search}`;
+            }
+        } catch {
+            /* keep as-is */
+        }
+        return url;
+    }
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const base = STRAPI_URL.startsWith('http') ? STRAPI_URL : origin;
+    // Production: STRAPI_URL is "/cms" — prefer rewrite path over origin alone
+    if (!STRAPI_URL.startsWith('http')) {
+        return `/cms${url.startsWith('/') ? url : `/${url}`}`;
+    }
     return `${base}${url}`;
 }
 
