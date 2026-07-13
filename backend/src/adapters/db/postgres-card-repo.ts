@@ -16,6 +16,8 @@ export class PostgresCardRepository implements CardRepository {
                 answer: card.answer,
                 questionSentences: card.questionSentences,
                 answerSentences: card.answerSentences,
+                contexts: card.contexts,
+                activeContextId: card.activeContextId,
                 folderId: card.folderId,
                 isLearned: card.isLearned,
                 // Интервальное повторение
@@ -40,6 +42,8 @@ export class PostgresCardRepository implements CardRepository {
                 answer: card.answer,
                 questionSentences: card.questionSentences,
                 answerSentences: card.answerSentences,
+                contexts: card.contexts,
+                activeContextId: card.activeContextId,
                 folderId: card.folderId,
                 isLearned: card.isLearned,
                 createdAt: card.createdAt,

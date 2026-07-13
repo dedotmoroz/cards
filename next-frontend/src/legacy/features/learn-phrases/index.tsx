@@ -5,6 +5,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import { useFoldersStore } from '@/shared/store/foldersStore';
 import { useCardsStore } from '@/shared/store/cardsStore';
 import { useAuthStore } from '@/shared/store/authStore';
+import { getCardContexts } from '@/shared/types/cards';
 import { StyledButton, StyledPhrasesIcon } from './styled-components'
 
 export const LearnPhrasesButton = () => {
@@ -39,7 +40,7 @@ export const LearnPhrasesButton = () => {
     };
 
     const hasCardsWithPhrases = cards.some(
-        card => card.questionSentences && card.answerSentences
+        (card) => getCardContexts(card).length > 0
     );
 
     return (

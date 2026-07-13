@@ -141,11 +141,21 @@ export const cardsApi = {
    */
   getCardGenerationStatus: async (
     id: string,
-    params: { jobId: string },
+    params: { jobId: string; replaceOldest?: boolean },
   ): Promise<CardGenerationStatusResponse> => {
     const response = await axios.get(`${API_BASE_URL}/cards/${id}/generate-status`, {
       params,
     });
+    return response.data;
+  },
+
+  /**
+   * Удаление одного сохранённого контекста
+   */
+  deleteCardContext: async (id: string, contextId: string): Promise<Card> => {
+    const response = await axios.delete(
+      `${API_BASE_URL}/cards/${id}/contexts/${contextId}`,
+    );
     return response.data;
   },
 

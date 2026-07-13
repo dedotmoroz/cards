@@ -182,6 +182,86 @@ describe('AI routes (e2e)', () => {
             expect(res.body.status).toBe('completed');
             expect(res.body.card.questionSentences).toContain('self-driven');
             expect(res.body.card.answerSentences).toContain('самостоятельным');
+            expect(res.body.card.contexts).toHaveLength(1);
+            expect(res.body.card.activeContextId).toBe(res.body.card.contexts[0].id);
+        });
+
+        it('appends a second context instead of overwriting', async () => {
+            const createRes = await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'run',
+                    answer: 'бежать',
+                    questionSentences: 'I run daily.',
+                    answerSentences: 'Я бегаю каждый день.',
+                });
+
+            const cardId = createRes.body.id;
+            expect(createRes.body.contexts).toHaveLength(1);
+
+            mockedFetchGenerationStatus.mockResolvedValue({
+                id: 'job-append',
+                state: 'completed',
+                progress: 100,
+                queueType: 'generate',
+                result: {
+                    sentences: [
+                        {
+                            text: 'They run together.',
+                            translation: 'Они бегут вместе.',
+                        },
+                    ],
+                },
+            });
+
+            const res = await request(fastify.server)
+                .get(`/cards/${cardId}/generate-status`)
+                .query({ jobId: 'job-append' })
+                .set('Cookie', authCookie);
+
+            expect(res.status).toBe(200);
+            expect(res.body.card.contexts).toHaveLength(2);
+            expect(res.body.card.questionSentences).toBe('They run together.');
+        });
+
+        it('rejects generate when context limit reached without replaceOldest', async () => {
+            const createRes = await request(fastify.server)
+                .post('/cards')
+                .set('Cookie', authCookie)
+                .send({
+                    folderId,
+                    question: 'limit',
+                    answer: 'лимит',
+                });
+
+            const cardId = createRes.body.id;
+
+            for (let i = 0; i < 5; i++) {
+                mockedFetchGenerationStatus.mockResolvedValueOnce({
+                    id: `job-fill-${i}`,
+                    state: 'completed',
+                    progress: 100,
+                    queueType: 'generate',
+                    result: {
+                        sentences: [{ text: `s${i}`, translation: `t${i}` }],
+                    },
+                });
+                await request(fastify.server)
+                    .get(`/cards/${cardId}/generate-status`)
+                    .query({ jobId: `job-fill-${i}` })
+                    .set('Cookie', authCookie);
+            }
+
+            const res = await request(fastify.server)
+                .post(`/cards/${cardId}/generate`)
+                .set('Cookie', authCookie)
+                .send({});
+
+            expect(res.status).toBe(400);
+            expect(res.body.code).toBe('CONTEXT_LIMIT_REACHED');
+            expect(mockedRequestGeneration).not.toHaveBeenCalled();
         });
 
         it('rejects context job type', async () => {

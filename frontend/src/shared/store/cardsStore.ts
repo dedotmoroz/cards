@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Card, CardGenerationRequest, ReviewOutcome } from '../types/cards'
+import type { Card, CardGenerationRequest, ReviewOutcome, UpdateCardData } from '../types/cards'
 import { cardsApi } from '../api/cardsApi'
 import { useFoldersStore } from './foldersStore'
 
@@ -51,7 +51,8 @@ interface CardsState {
     fetchCards: (folderId: string) => Promise<void>
     fetchVirtualCards: (kind: 'remember' | 'hard', limit?: number) => Promise<void>
     createCard: (folderId: string, question: string, answer: string) => Promise<void>
-    updateCardApi: (id: string, updates: { question?: string; answer?: string; questionSentences?: string | null; answerSentences?: string | null }) => Promise<void>
+    updateCardApi: (id: string, updates: UpdateCardData) => Promise<void>
+    deleteCardContext: (cardId: string, contextId: string) => Promise<void>
     updateCardLearnStatus: (id: string, isLearned: boolean) => Promise<void>
     updateFolderLearnStatus: (folderId: string, isLearned: boolean) => Promise<void>
     reviewCard: (id: string, outcome: ReviewOutcome) => Promise<void>
@@ -157,7 +158,7 @@ export const useCardsStore = create<CardsState>((set, get) => ({
         }
     },
 
-    updateCardApi: async (id: string, updates: { question?: string; answer?: string; questionSentences?: string | null; answerSentences?: string | null }) => {
+    updateCardApi: async (id: string, updates: UpdateCardData) => {
         set({ error: null })
         try {
             const updated = await cardsApi.updateCard(id, updates)
@@ -165,11 +166,29 @@ export const useCardsStore = create<CardsState>((set, get) => ({
                 question: updated.question,
                 answer: updated.answer,
                 questionSentences: updated.questionSentences,
-                answerSentences: updated.answerSentences
+                answerSentences: updated.answerSentences,
+                contexts: updated.contexts,
+                activeContextId: updated.activeContextId,
             })
         } catch (error) {
             console.error('Error updating card:', error)
             set({ error: 'Failed to update card' })
+        }
+    },
+
+    deleteCardContext: async (cardId: string, contextId: string) => {
+        set({ error: null })
+        try {
+            const updated = await cardsApi.deleteCardContext(cardId, contextId)
+            get().updateCard(cardId, {
+                questionSentences: updated.questionSentences,
+                answerSentences: updated.answerSentences,
+                contexts: updated.contexts,
+                activeContextId: updated.activeContextId,
+            })
+        } catch (error) {
+            console.error('Error deleting card context:', error)
+            set({ error: 'Failed to delete card context' })
         }
     },
 
@@ -208,6 +227,8 @@ export const useCardsStore = create<CardsState>((set, get) => ({
                 answer: updated.answer,
                 questionSentences: updated.questionSentences,
                 answerSentences: updated.answerSentences,
+                contexts: updated.contexts,
+                activeContextId: updated.activeContextId,
                 isLearned: updated.isLearned,
                 folderId: updated.folderId,
             })
@@ -271,7 +292,10 @@ export const useCardsStore = create<CardsState>((set, get) => ({
 
             const poll = async (): Promise<void> => {
                 try {
-                    const response = await cardsApi.getCardGenerationStatus(id, { jobId })
+                    const response = await cardsApi.getCardGenerationStatus(id, {
+                        jobId,
+                        replaceOldest: options?.replaceOldest,
+                    })
                     const progressValue =
                         typeof response.progress === 'number' ? response.progress : 0
 

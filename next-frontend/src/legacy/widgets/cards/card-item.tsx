@@ -1,11 +1,13 @@
 import { Typography } from "@mui/material";
-import type { Card } from "@/shared/types/cards";
+import type { Card, CardGenerationRequest } from "@/shared/types/cards";
+import { getCardContexts } from "@/shared/types/cards";
 import type { CardGenerationState } from "@/shared/store/cardsStore";
 import { GenerateAiSentencesButton } from '@/features/generate-ai-sentences';
 import { ToggleCardLearned } from '@/features/toggle-card-learned';
 import { CardMenuButton } from '@/features/card-menu-button';
 import { PronunciationButton } from '@/features/pronunciation-button';
 import { CardSkeleton } from "@/entities/cards";
+import { ContextCarousel } from '@/features/context-carousel';
 import {
     StyledListItem,
     StyledCardContainer,
@@ -17,7 +19,6 @@ import {
     StyledCardActions,
     StyledSentencesContainer,
     StyledCardText,
-    StyledCardSentencesText,
     StyledMargin,
     StyledBoxAnswer,
     StyledBoxQuestion,
@@ -31,7 +32,8 @@ interface CardItemProps {
     highlighted?: boolean;
     updateCardLearnStatus: (cardId: string, isLearned: boolean) => void;
     handleMenuOpen: (event: React.MouseEvent<HTMLElement>, cardId: string) => void;
-    onReload?: (cardId: string) => void;
+    onReload?: (cardId: string, options?: CardGenerationRequest) => void;
+    onSelectContext?: (cardId: string, contextId: string) => void;
     generationStatus?: CardGenerationState;
 }
 
@@ -44,6 +46,7 @@ export const CardItem: React.FC<CardItemProps> = ({
                              updateCardLearnStatus,
                              handleMenuOpen,
                              onReload,
+                             onSelectContext,
                              generationStatus,
                          }) => {
     
@@ -52,6 +55,11 @@ export const CardItem: React.FC<CardItemProps> = ({
     const hasError = state.status === 'failed' && state.error;
     const isQuestionVisible = displayFilter === 'A' || displayFilter === 'AB' || expandedCardId === card.id;
     const isAnswerVisible = displayFilter === 'B' || displayFilter === 'AB' || expandedCardId === card.id;
+    const contexts = getCardContexts(card);
+
+    const handleSelectContext = (contextId: string) => {
+        onSelectContext?.(card.id, contextId);
+    };
 
     return (
         <StyledListItem
@@ -77,16 +85,13 @@ export const CardItem: React.FC<CardItemProps> = ({
                                 {isGenerating ? (
                                     <CardSkeleton />
                                 ) : (
-                                    card.questionSentences && (
-                                    <>
-                                        <StyledCardSentencesText
-                                            variant="body2"
-                                            color="text.secondary"
-                                        >
-                                            {card.questionSentences}
-                                        </StyledCardSentencesText>
-                                        {/*<PronunciationButton text={card.questionSentences} lang={'en'} />*/}
-                                    </>
+                                    contexts.length > 0 && (
+                                        <ContextCarousel
+                                            contexts={contexts}
+                                            activeContextId={card.activeContextId}
+                                            side="text"
+                                            onSelect={handleSelectContext}
+                                        />
                                     )
                                 )}
                             </StyledSentencesContainer>
@@ -110,13 +115,13 @@ export const CardItem: React.FC<CardItemProps> = ({
                             {isGenerating ? (
                                 <CardSkeleton />
                             ) : (
-                                card.answerSentences && (
-                                    <StyledCardSentencesText
-                                        variant="body2"
-                                        color="text.secondary"
-                                    >
-                                        {card.answerSentences}
-                                    </StyledCardSentencesText>
+                                contexts.length > 0 && (
+                                    <ContextCarousel
+                                        contexts={contexts}
+                                        activeContextId={card.activeContextId}
+                                        side="translation"
+                                        onSelect={handleSelectContext}
+                                    />
                                 )
                             )}
                         </StyledCardColumnContent>
@@ -137,6 +142,7 @@ export const CardItem: React.FC<CardItemProps> = ({
                         <StyledMargin>
                             <GenerateAiSentencesButton
                                 cardId={card.id}
+                                contextCount={contexts.length}
                                 generationStatus={generationStatus}
                                 onGenerate={onReload}
                             />

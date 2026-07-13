@@ -1,5 +1,11 @@
-import { Card } from '../domain/card';
+import {
+  Card,
+  ContextLimitReachedError,
+  MAX_CARD_CONTEXTS,
+} from '../domain/card';
 import { CardRepository } from '../ports/card-repository';
+
+export { ContextLimitReachedError, MAX_CARD_CONTEXTS };
 
 export class CardService {
   constructor(private readonly cardRepo: CardRepository) {}
@@ -34,9 +40,15 @@ export class CardService {
       2.5,
       null,
       0,
-      questionSentences ?? null,
-      answerSentences ?? null
+      null,
+      null,
     );
+    if (questionSentences || answerSentences) {
+      card.replaceLegacySentences(
+        questionSentences ?? null,
+        answerSentences ?? null,
+      );
+    }
     await this.cardRepo.save(card);
     return card;
   }
@@ -48,18 +60,61 @@ export class CardService {
       answer?: string;
       questionSentences?: string | null;
       answerSentences?: string | null;
+      activeContextId?: string | null;
     }
   ): Promise<Card | null> {
     const card = await this.cardRepo.findById(id);
     if (!card) return null;
     if (updates.question !== undefined) card.question = updates.question;
     if (updates.answer !== undefined) card.answer = updates.answer;
-    if (updates.questionSentences !== undefined) {
-      card.setQuestionSentences(updates.questionSentences);
+
+    if (
+      updates.questionSentences !== undefined ||
+      updates.answerSentences !== undefined
+    ) {
+      const nextQuestion =
+        updates.questionSentences !== undefined
+          ? updates.questionSentences
+          : card.questionSentences;
+      const nextAnswer =
+        updates.answerSentences !== undefined
+          ? updates.answerSentences
+          : card.answerSentences;
+      card.replaceLegacySentences(nextQuestion, nextAnswer);
     }
-    if (updates.answerSentences !== undefined) {
-      card.setAnswerSentences(updates.answerSentences);
+
+    if (updates.activeContextId !== undefined && updates.activeContextId !== null) {
+      card.setActiveContext(updates.activeContextId);
     }
+
+    await this.cardRepo.save(card);
+    return card;
+  }
+
+  async appendContext(
+    id: string,
+    input: { text: string; translation: string },
+    options: { replaceOldest?: boolean } = {},
+  ): Promise<Card | null> {
+    const card = await this.cardRepo.findById(id);
+    if (!card) return null;
+    card.appendContext(input, options);
+    await this.cardRepo.save(card);
+    return card;
+  }
+
+  async setActiveContext(id: string, contextId: string): Promise<Card | null> {
+    const card = await this.cardRepo.findById(id);
+    if (!card) return null;
+    card.setActiveContext(contextId);
+    await this.cardRepo.save(card);
+    return card;
+  }
+
+  async removeContext(id: string, contextId: string): Promise<Card | null> {
+    const card = await this.cardRepo.findById(id);
+    if (!card) return null;
+    card.removeContext(contextId);
     await this.cardRepo.save(card);
     return card;
   }

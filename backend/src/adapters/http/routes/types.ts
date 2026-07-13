@@ -10,6 +10,7 @@ export const CardGenerateRequestDTO = z
         count: z.number().int().positive().max(20).optional(),
         target: z.string().optional(),
         sample: z.string().optional(),
+        replaceOldest: z.boolean().optional(),
     })
     .describe('CardGenerateRequestDTO');
 export type CardGenerateRequestInput = z.infer<typeof CardGenerateRequestDTO>;
@@ -17,6 +18,14 @@ export type CardGenerateRequestInput = z.infer<typeof CardGenerateRequestDTO>;
 export const CardGenerateStatusQueryDTO = z
     .object({
         jobId: z.string().min(1),
+        replaceOldest: z
+            .union([z.boolean(), z.enum(['true', 'false'])])
+            .optional()
+            .transform((value) => {
+                if (value === undefined) return undefined;
+                if (typeof value === 'boolean') return value;
+                return value === 'true';
+            }),
     })
     .describe('CardGenerateStatusQueryDTO');
 export type CardGenerateStatusQuery = z.infer<typeof CardGenerateStatusQueryDTO>;

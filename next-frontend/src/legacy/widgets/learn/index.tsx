@@ -8,6 +8,8 @@ import {CompletionScreen} from "@/widgets/learn/learning-completion/ui/completio
 import {useNavigate} from "react-router-dom";
 import { useFoldersStore } from '@/shared/store/foldersStore';
 import type { Card } from "@/shared/types/cards";
+import { getActiveCardContext, getCardContexts } from "@/shared/types/cards";
+import { useCardsStore } from '@/shared/store/cardsStore';
 import {
     StyledCardFlipBox,
     StyledLearningWrapper,
@@ -105,6 +107,11 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
     const handleContinueLearning = () => learning.setLearningMode(true);
     const handlePrevious = () => learning.navigateToCard(learning.currentIndex - 1);
     const handleNext = () => learning.navigateToCard(learning.currentIndex + 1);
+    const updateCardApi = useCardsStore((s) => s.updateCardApi);
+    const activeContext = currentCard ? getActiveCardContext(currentCard) : null;
+    const hasContexts = currentCard ? getCardContexts(currentCard).length > 0 : false;
+    const phraseQuestion = learning.phrasesMode && activeContext ? activeContext.text : currentCard?.question;
+    const phraseAnswer = learning.phrasesMode && activeContext ? activeContext.translation : currentCard?.answer;
 
 
     return (
@@ -130,23 +137,28 @@ export const LearnProcess: React.FC<LearnProcessProps> = ({ learning }) => {
                             onNext={handleNext}
                             initialSide={learning.initialSide}
                             onSideChange={learning.setInitialSide}
-                            pronunciationText={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
+                            pronunciationText={learning.phrasesMode && activeContext ? activeContext.text : currentCard?.question}
                             isQuestionSideVisible={learning.showAnswer}
                             onTogglePhrasesMode={() => learning.setPhrasesMode(!learning.phrasesMode)}
                             phrasesMode={learning.phrasesMode}
-                            hasPhrasesForCurrentCard={!!(currentCard?.questionSentences && currentCard?.answerSentences)}
+                            hasPhrasesForCurrentCard={hasContexts}
                         />
                     </StyledNavigationBox>
                     <StyledCardFlipBox>
                         <CardFlip
-                            question={learning.phrasesMode && currentCard?.questionSentences ? currentCard.questionSentences : currentCard?.question}
-                            answer={learning.phrasesMode && currentCard?.answerSentences ? currentCard.answerSentences : currentCard?.answer}
+                            question={phraseQuestion}
+                            answer={phraseAnswer}
                             showAnswer={showAnswer}
                             toggleAnswer={toggleAnswer}
                             handleKnow={handleKnow}
                             handleDontKnow={handleDontKnow}
                             phrasesMode={learning.phrasesMode}
                             currentCard={currentCard}
+                            onSelectContext={(contextId) => {
+                                if (currentCard) {
+                                    void updateCardApi(currentCard.id, { activeContextId: contextId });
+                                }
+                            }}
                         />
                     </StyledCardFlipBox>
                     {/* Controls - только для десктопа */}

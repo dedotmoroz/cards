@@ -521,11 +521,66 @@ export function registerCardsRoutes(
             reply: FastifyReply
         ) => {
             const { id } = req.params;
-            const updatedCard = await cardService.updateCard(id, req.body);
-            if (!updatedCard) {
-                return reply.code(404).send({ message: 'Card not found' });
+            try {
+                const updatedCard = await cardService.updateCard(id, req.body);
+                if (!updatedCard) {
+                    return reply.code(404).send({ message: 'Card not found' });
+                }
+                return reply.code(200).send(updatedCard.toPublicDTO());
+            } catch (error) {
+                if (error instanceof Error && error.message === 'Context not found') {
+                    return reply.code(404).send({ message: 'Context not found' });
+                }
+                throw error;
             }
-            return reply.code(200).send(updatedCard.toPublicDTO());
+        }
+    );
+
+    /**
+     * Удалить один сохранённый контекст карточки
+     */
+    fastify.delete('/cards/:id/contexts/:contextId',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                params: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'string', format: 'uuid' },
+                        contextId: { type: 'string', format: 'uuid' },
+                    },
+                    required: ['id', 'contextId'],
+                },
+                response: {
+                    200: zodToJsonSchema(CardDTO),
+                    404: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        },
+                    },
+                },
+                tags: ['cards'],
+                summary: 'Delete a card context',
+            },
+        },
+        async (
+            req: FastifyRequest<{ Params: { id: string; contextId: string } }>,
+            reply: FastifyReply
+        ) => {
+            const { id, contextId } = req.params;
+            try {
+                const updated = await cardService.removeContext(id, contextId);
+                if (!updated) {
+                    return reply.code(404).send({ message: 'Card not found' });
+                }
+                return reply.code(200).send(updated.toPublicDTO());
+            } catch (error) {
+                if (error instanceof Error && error.message === 'Context not found') {
+                    return reply.code(404).send({ message: 'Context not found' });
+                }
+                throw error;
+            }
         }
     );
 

@@ -40,6 +40,9 @@ describe('CardService', () => {
 
         expect(card.questionSentences).toBe('Q sentences');
         expect(card.answerSentences).toBe('A sentences');
+        expect(card.contexts).toHaveLength(1);
+        expect(card.contexts[0].text).toBe('Q sentences');
+        expect(card.activeContextId).toBe(card.contexts[0].id);
         expect(repo.save).toHaveBeenCalledWith(card);
     });
 
@@ -58,11 +61,13 @@ describe('CardService', () => {
         expect(updated?.answer).toBe('New A');
         expect(updated?.questionSentences).toBe('New QS');
         expect(updated?.answerSentences).toBe('New AS');
+        expect(updated?.contexts).toHaveLength(1);
         expect(repo.save).toHaveBeenCalledWith(card);
     });
 
     it('очищает предложения карточки', async () => {
-        const card = new Card('id123', 'folder1', 'Q', 'A', false, new Date(), null, null, null, 0, 0, 0, 0, 0, 2.5, null, 0, 'QS', 'AS');
+        const card = new Card('id123', 'folder1', 'Q', 'A', false, new Date());
+        card.replaceLegacySentences('QS', 'AS');
         repo.findById.mockResolvedValue(card);
 
         const updated = await service.updateCard('id123', {
@@ -72,7 +77,57 @@ describe('CardService', () => {
 
         expect(updated?.questionSentences).toBeNull();
         expect(updated?.answerSentences).toBeNull();
+        expect(updated?.contexts).toHaveLength(0);
         expect(repo.save).toHaveBeenCalledWith(card);
+    });
+
+    it('добавляет контекст и заменяет самый старый при лимите', async () => {
+        const card = new Card('id123', 'folder1', 'Q', 'A', false, new Date());
+        repo.findById.mockResolvedValue(card);
+
+        for (let i = 0; i < 5; i++) {
+            await service.appendContext('id123', {
+                text: `t${i}`,
+                translation: `tr${i}`,
+            });
+        }
+        expect(card.contexts).toHaveLength(5);
+        const oldestId = card.contexts[0].id;
+
+        await service.appendContext(
+            'id123',
+            { text: 'newest', translation: 'новый' },
+            { replaceOldest: true },
+        );
+
+        expect(card.contexts).toHaveLength(5);
+        expect(card.contexts.find((c) => c.id === oldestId)).toBeUndefined();
+        expect(card.questionSentences).toBe('newest');
+        expect(card.activeContextId).toBe(card.contexts[card.contexts.length - 1].id);
+    });
+
+    it('переключает активный контекст', async () => {
+        const card = new Card('id123', 'folder1', 'Q', 'A', false, new Date());
+        repo.findById.mockResolvedValue(card);
+        await service.appendContext('id123', { text: 'one', translation: 'один' });
+        await service.appendContext('id123', { text: 'two', translation: 'два' });
+        const firstId = card.contexts[0].id;
+
+        const updated = await service.setActiveContext('id123', firstId);
+        expect(updated?.activeContextId).toBe(firstId);
+        expect(updated?.questionSentences).toBe('one');
+    });
+
+    it('удаляет контекст', async () => {
+        const card = new Card('id123', 'folder1', 'Q', 'A', false, new Date());
+        repo.findById.mockResolvedValue(card);
+        await service.appendContext('id123', { text: 'one', translation: 'один' });
+        await service.appendContext('id123', { text: 'two', translation: 'два' });
+        const removeId = card.contexts[0].id;
+
+        const updated = await service.removeContext('id123', removeId);
+        expect(updated?.contexts).toHaveLength(1);
+        expect(updated?.questionSentences).toBe('two');
     });
 
     it('перемещает карточку в другую папку', async () => {
@@ -182,17 +237,20 @@ describe('CardService', () => {
             question: 'Q',
             answer: 'A',
             isLearned: false,
-            createdAt: card.createdAt
+            createdAt: card.createdAt,
+            contexts: [],
+            activeContextId: null,
         });
         expect(publicDTO).not.toHaveProperty('lastShownAt');
         expect(publicDTO).not.toHaveProperty('reviewCount');
     });
 
     it('возвращает публичные поля с предложениями при их наличии', () => {
-        const card = new Card('1', 'folder1', 'Q', 'A', false, new Date(), null, null, null, 0, 0, 0, 0, 0, 2.5, null, 0, 'QS', 'AS');
+        const card = new Card('1', 'folder1', 'Q', 'A', false, new Date());
+        card.replaceLegacySentences('QS', 'AS');
         const publicDTO = card.toPublicDTO();
 
-        expect(publicDTO).toEqual({
+        expect(publicDTO).toMatchObject({
             id: '1',
             folderId: 'folder1',
             question: 'Q',
@@ -200,7 +258,13 @@ describe('CardService', () => {
             questionSentences: 'QS',
             answerSentences: 'AS',
             isLearned: false,
-            createdAt: card.createdAt
+            createdAt: card.createdAt,
+            activeContextId: card.activeContextId,
+        });
+        expect(publicDTO.contexts).toHaveLength(1);
+        expect(publicDTO.contexts[0]).toMatchObject({
+            text: 'QS',
+            translation: 'AS',
         });
     });
 });

@@ -7,6 +7,13 @@ export const cards = pgTable('cards', {
   answer: text('answer').notNull(),
   questionSentences: text('question_sentences'),
   answerSentences: text('answer_sentences'),
+  contexts: jsonb('contexts').$type<Array<{
+    id: string;
+    text: string;
+    translation: string;
+    createdAt: string;
+  }>>().notNull().default([]),
+  activeContextId: uuid('active_context_id'),
   isLearned: boolean('is_learned').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   

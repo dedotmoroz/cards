@@ -7,6 +7,13 @@ import {
 const FolderSideALanguageSchema = z.enum(FOLDER_SIDE_A_LANGUAGE_CODES);
 const FolderSideBLanguageSchema = z.enum(FOLDER_SIDE_B_LANGUAGE_CODES);
 
+export const CardContextDTO = z.object({
+  id: z.string().uuid(),
+  text: z.string(),
+  translation: z.string(),
+  createdAt: z.string(),
+}).describe('CardContextDTO');
+
 export const CreateCardDTO = z.object({
   folderId: z.string().uuid(),
   question: z.string().min(1),
@@ -22,6 +29,8 @@ export const CardDTO = z.object({
   answer: z.string(),
   questionSentences: z.string().optional(),
   answerSentences: z.string().optional(),
+  contexts: z.array(CardContextDTO).optional(),
+  activeContextId: z.string().uuid().nullable().optional(),
   isLearned: z.boolean(),
   createdAt: z.date(),
 }).describe('CardDTO');
@@ -35,6 +44,7 @@ export const UpdateCardDTO = z.object({
   answer: z.string().min(1).optional(),
   questionSentences: z.string().nullable().optional(),
   answerSentences: z.string().nullable().optional(),
+  activeContextId: z.string().uuid().nullable().optional(),
 }).describe('UpdateCardDTO');
 
 export const MarkAsLearnedDTO = z.object({}).describe('MarkAsLearnedDTO'); // пустая схема

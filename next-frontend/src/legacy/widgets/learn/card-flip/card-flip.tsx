@@ -5,6 +5,8 @@ import {useCardSwipe} from "@/features/card-swipe/model/useCardSwipe.ts";
 import {StyledEmptyCardPlace} from './styled-components';
 import {useTranslation} from 'react-i18next';
 import type {Card} from '@/shared/types/cards';
+import { getCardContexts } from '@/shared/types/cards';
+import { ContextCarousel } from '@/features/context-carousel';
 import { StyledTipBox, StyleWrapperBox, StyledSecondContextBox } from './styled-components.ts'
 
 interface CardFlipProps {
@@ -16,6 +18,7 @@ interface CardFlipProps {
     handleDontKnow: () => void;
     phrasesMode?: boolean;
     currentCard?: Card;
+    onSelectContext?: (contextId: string) => void;
 }
 
 export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
@@ -28,9 +31,11 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
        handleDontKnow,
        phrasesMode = false,
        currentCard,
+       onSelectContext,
   }, ref) => {
       const { t } = useTranslation();
       const [showAlternateContent, setShowAlternateContent] = useState(false);
+      const contexts = currentCard ? getCardContexts(currentCard) : [];
       
       // Сбрасываем состояние при изменении карточки или переключении стороны
       useEffect(() => {
@@ -186,7 +191,7 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                     </Box>
                 </StyleWrapperBox>
             {/* В контекстном режиме без контекста — только подпись */}
-            {phrasesMode && !(currentCard?.questionSentences && currentCard?.answerSentences) && (
+            {phrasesMode && contexts.length === 0 && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                     <Box sx={{ minHeight: '50px', display: 'flex', alignItems: 'center' }}>
                         {t('cards.noContext', 'Контекст отсутствует')}
@@ -194,8 +199,8 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                 </Box>
             )}
             {/* Кнопка показа контекста/слова */}
-            {((phrasesMode && currentCard?.question && currentCard?.answer && currentCard?.questionSentences && currentCard?.answerSentences) || 
-              (!phrasesMode && currentCard?.questionSentences && currentCard?.answerSentences)) && (
+            {((phrasesMode && currentCard?.question && currentCard?.answer && contexts.length > 0) ||
+              (!phrasesMode && contexts.length > 0)) && (
                 <StyledSecondContextBox>
                     {!showAlternateContent ? (
                         <Box
@@ -219,8 +224,22 @@ export const CardFlip = forwardRef<HTMLDivElement, CardFlipProps>(
                                     {showAnswer ? currentCard?.question : currentCard?.answer}
                                 </Box>
                             ) : (
-                                <Box onClick={() => setShowAlternateContent(false)}>
-                                    {showAnswer ? currentCard?.questionSentences : currentCard?.answerSentences}
+                                <Box>
+                                    <ContextCarousel
+                                        contexts={contexts}
+                                        activeContextId={currentCard?.activeContextId}
+                                        side={showAnswer ? 'text' : 'translation'}
+                                        onSelect={(contextId) => {
+                                            onSelectContext?.(contextId);
+                                        }}
+                                        enableTapCycle
+                                    />
+                                    <Box
+                                        onClick={() => setShowAlternateContent(false)}
+                                        sx={{ mt: 1, cursor: 'pointer', opacity: 0.7, fontSize: '0.85rem' }}
+                                    >
+                                        {t('cards.hideContext', 'Hide')}
+                                    </Box>
                                 </Box>
                             )}
                         </StyledTipBox>

@@ -1,12 +1,19 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { randomUUID } from 'crypto';
-import { CardService } from '../../../application/card-service';
+import {
+    CardService,
+    ContextLimitReachedError,
+    MAX_CARD_CONTEXTS,
+} from '../../../application/card-service';
 import { UserService } from '../../../application/user-service';
 import { FolderRepository } from '../../../ports/folder-repository';
 import { requestGeneration, fetchGenerationStatus } from '../../ai/ai-service-client';
 import { CardDTO } from '../dto';
 import { CardGenerateRequestDTO, CardGenerateRequestInput, CardGenerateStatusQueryDTO, CardGenerateStatusQuery } from './types';
+
+/** Pending generate options keyed by jobId (in-process; lost on restart is OK for this UX). */
+const pendingGenerateOptions = new Map<string, { replaceOldest: boolean }>();
 
 export function registerAIRoutes(
     fastify: FastifyInstance,
@@ -37,6 +44,13 @@ export function registerAIRoutes(
                             jobId: { type: 'string' },
                         },
                     },
+                    400: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                            code: { type: 'string' },
+                        },
+                    },
                     404: {
                         type: 'object',
                         properties: {
@@ -61,7 +75,7 @@ export function registerAIRoutes(
                 return reply.code(404).send({ message: 'Card not found' });
             }
 
-            const { lang, level, count, target, sample } = req.body ?? {};
+            const { lang, level, count, target, sample, replaceOldest } = req.body ?? {};
             const userId = (req.user as any).userId as string;
 
             const folder = await folderRepo.findById(card.folderId);
@@ -70,6 +84,13 @@ export function registerAIRoutes(
             }
             if (folder.userId !== userId) {
                 return reply.code(403).send({ message: 'Access denied' });
+            }
+
+            if (card.contexts.length >= MAX_CARD_CONTEXTS && !replaceOldest) {
+                return reply.code(400).send({
+                    message: 'Card already has the maximum number of contexts',
+                    code: 'CONTEXT_LIMIT_REACHED',
+                });
             }
 
             const payload = {
@@ -83,6 +104,7 @@ export function registerAIRoutes(
                 traceId: randomUUID(),
             };
             const { jobId } = await requestGeneration(payload);
+            pendingGenerateOptions.set(jobId, { replaceOldest: !!replaceOldest });
             return reply.code(202).send({ jobId });
         },
     );
@@ -135,7 +157,7 @@ export function registerAIRoutes(
             reply: FastifyReply,
         ) => {
             const { id } = req.params;
-            const { jobId } = req.query;
+            const { jobId, replaceOldest: replaceOldestQuery } = req.query;
 
             const card = await cardService.getById(id);
             if (!card) {
@@ -146,6 +168,7 @@ export function registerAIRoutes(
             const progress = typeof status.progress === 'number' ? status.progress : 0;
 
             if (status.state === 'failed') {
+                pendingGenerateOptions.delete(jobId);
                 return reply.send({
                     status: 'failed',
                     progress,
@@ -167,29 +190,54 @@ export function registerAIRoutes(
                 Array.isArray(status.result.sentences)
             ) {
                 const sentences = status.result.sentences;
-                const questionSentences = sentences
+                const text = sentences
                     .map((item) => item.text.trim())
                     .filter(Boolean)
                     .join('\n');
-                const answerSentences = sentences
+                const translation = sentences
                     .map((item) => item.translation.trim())
                     .filter(Boolean)
                     .join('\n');
 
-                const updatedCard = await cardService.updateCard(id, {
-                    questionSentences: questionSentences.length ? questionSentences : null,
-                    answerSentences: answerSentences.length ? answerSentences : null,
-                });
-
-                if (!updatedCard) {
-                    return reply.code(404).send({ message: 'Card not found' });
+                if (!text && !translation) {
+                    pendingGenerateOptions.delete(jobId);
+                    return reply.send({
+                        status: 'completed',
+                        progress: 100,
+                        card: card.toPublicDTO(),
+                    });
                 }
 
-                return reply.send({
-                    status: 'completed',
-                    progress: 100,
-                    card: updatedCard.toPublicDTO(),
-                });
+                const pending = pendingGenerateOptions.get(jobId);
+                const replaceOldest =
+                    replaceOldestQuery ?? pending?.replaceOldest ?? false;
+                pendingGenerateOptions.delete(jobId);
+
+                try {
+                    const updatedCard = await cardService.appendContext(
+                        id,
+                        { text, translation },
+                        { replaceOldest },
+                    );
+
+                    if (!updatedCard) {
+                        return reply.code(404).send({ message: 'Card not found' });
+                    }
+
+                    return reply.send({
+                        status: 'completed',
+                        progress: 100,
+                        card: updatedCard.toPublicDTO(),
+                    });
+                } catch (error) {
+                    if (error instanceof ContextLimitReachedError) {
+                        return reply.code(400).send({
+                            message: error.message,
+                            code: error.code,
+                        });
+                    }
+                    throw error;
+                }
             }
 
             return reply.send({

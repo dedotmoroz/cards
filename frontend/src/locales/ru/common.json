@@ -212,7 +212,11 @@
     "pronounce": "Произнести",
     "switchMode": "Переключить режим",
     "noPhrasesForCard": "Нет контекстных фраз для этой карточки",
-    "generateSentences": "Создать контент для слова"
+    "generateSentences": "Создать контент для слова",
+    "replaceOldestContextTitle": "Заменить самый старый контекст?",
+    "replaceOldestContextBody": "У этого слова уже {{max}} сохранённых контекстов. Сгенерировать новый и заменить самый старый?",
+    "replaceOldestContextConfirm": "Заменить",
+    "hideContext": "Скрыть"
   },
   "folders": {
     "title": "Папки",

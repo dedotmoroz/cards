@@ -212,7 +212,11 @@
     "pronounce": "Pronounce",
     "switchMode": "Switch mode",
     "noPhrasesForCard": "No contextual phrases for this card",
-    "generateSentences": "Create content for word"
+    "generateSentences": "Create content for word",
+    "replaceOldestContextTitle": "Replace oldest context?",
+    "replaceOldestContextBody": "This word already has {{max}} saved contexts. Generate a new one and replace the oldest?",
+    "replaceOldestContextConfirm": "Replace",
+    "hideContext": "Hide"
   },
   "folders": {
     "title": "Folders",

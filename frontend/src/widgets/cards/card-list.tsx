@@ -302,6 +302,9 @@ export const CardList: React.FC<CardListProps> = ({
                   updateCardLearnStatus={updateCardLearnStatus}
                   handleMenuOpen={handleMenuOpen}
                   onReload={generateCardSentences}
+                  onSelectContext={(cardId, contextId) => {
+                    void updateCardApi(cardId, { activeContextId: contextId });
+                  }}
                   generationStatus={generationStatuses[card.id]}
               />
             ))
