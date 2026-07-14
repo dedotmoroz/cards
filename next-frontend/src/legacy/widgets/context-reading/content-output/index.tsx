@@ -83,6 +83,7 @@ export type ContextReadingContentOutputProps = {
   text: string;
   translation: string;
   jobId?: string | null;
+  artifactId?: string | null;
   hasAudio?: boolean;
   progress: { used: number; total: number } | null;
   generatedTextBlockRef: RefObject<HTMLDivElement | null>;
@@ -100,6 +101,7 @@ export const ContextReadingContentOutput = ({
   text,
   translation,
   jobId,
+  artifactId,
   hasAudio,
   progress,
   generatedTextBlockRef,
@@ -155,7 +157,8 @@ export const ContextReadingContentOutput = ({
                 {t('contextReading.text')}
               </StyledAccordionSectionTitle>
               <ContextReadingAudioPlayer
-                jobId={jobId ?? ''}
+                jobId={jobId}
+                artifactId={artifactId}
                 hasAudio={hasAudio}
                 disabled={loading || generating}
               />

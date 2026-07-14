@@ -20,6 +20,8 @@ vi.mock("openai", () => ({
 import {
     contextAudioFileExists,
     getAudioFilePath,
+    promoteContextAudio,
+    deleteContextAudioFile,
     synthesizeContextAudio,
 } from "../src/services/contextAudioService";
 
@@ -70,5 +72,26 @@ describe("contextAudioService", () => {
 
         expect(ok).toBe(false);
         expect(contextAudioFileExists("job-3")).toBe(false);
+    });
+
+    it("promotes job audio to artifact id", () => {
+        fs.writeFileSync(getAudioFilePath("job-4"), Buffer.from([9, 8, 7]));
+
+        expect(promoteContextAudio("job-4", "artifact-4")).toBe(true);
+        expect(contextAudioFileExists("artifact-4")).toBe(true);
+        expect(fs.readFileSync(getAudioFilePath("artifact-4"))).toEqual(Buffer.from([9, 8, 7]));
+        expect(contextAudioFileExists("job-4")).toBe(true);
+    });
+
+    it("returns false when promoting missing job audio", () => {
+        expect(promoteContextAudio("missing", "artifact-x")).toBe(false);
+        expect(contextAudioFileExists("artifact-x")).toBe(false);
+    });
+
+    it("deletes artifact audio file", () => {
+        fs.writeFileSync(getAudioFilePath("artifact-del"), Buffer.from([1]));
+        expect(deleteContextAudioFile("artifact-del")).toBe(true);
+        expect(contextAudioFileExists("artifact-del")).toBe(false);
+        expect(deleteContextAudioFile("artifact-del")).toBe(false);
     });
 });

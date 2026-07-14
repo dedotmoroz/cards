@@ -44,9 +44,34 @@ export type ContextReadingGenerateStatusResponse = {
   queueType?: 'generate' | 'context';
 };
 
-export function getContextAudioUrl(jobId: string): string {
-  const params = new URLSearchParams({ jobId });
-  return `${API_BASE_URL}/context-reading/audio?${params.toString()}`;
+export type ContextReadingArtifact = {
+  id: string;
+  folderId: string;
+  jobId: string;
+  cardIds: string[];
+  cardsSnapshot: Array<{ question: string; answer: string }>;
+  text: string;
+  translation: string;
+  level: string;
+  hasAudio: boolean;
+  createdAt: string;
+};
+
+export type ContextReadingPersistRequest = {
+  jobId: string;
+  folderId: string;
+  cardIds: string[];
+  level?: string;
+};
+
+export function getContextAudioUrl(params: { jobId?: string; artifactId?: string }): string {
+  const search = new URLSearchParams();
+  if (params.artifactId) {
+    search.set('artifactId', params.artifactId);
+  } else if (params.jobId) {
+    search.set('jobId', params.jobId);
+  }
+  return `${API_BASE_URL}/context-reading/audio?${search.toString()}`;
 }
 
 export const contextReadingApi = {
@@ -92,5 +117,23 @@ export const contextReadingApi = {
     });
     return response.data;
   },
-};
 
+  getLatest: async (folderId: string): Promise<ContextReadingArtifact | null> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/context-reading/latest`, {
+        params: { folderId },
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
+  },
+
+  persist: async (data: ContextReadingPersistRequest): Promise<ContextReadingArtifact> => {
+    const response = await axios.post(`${API_BASE_URL}/context-reading/persist`, data);
+    return response.data;
+  },
+};

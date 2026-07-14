@@ -17,16 +17,37 @@ export function ensureAudioStorageDir(): void {
     fs.mkdirSync(getAudioStorageDir(), { recursive: true });
 }
 
-export function getAudioFilePath(jobId: string): string {
-    return path.join(getAudioStorageDir(), `${jobId}.mp3`);
+export function getAudioFilePath(id: string): string {
+    return path.join(getAudioStorageDir(), `${id}.mp3`);
 }
 
-export function contextAudioFileExists(jobId: string): boolean {
-    return fs.existsSync(getAudioFilePath(jobId));
+export function contextAudioFileExists(id: string): boolean {
+    return fs.existsSync(getAudioFilePath(id));
 }
 
-export function createContextAudioReadStream(jobId: string): fs.ReadStream {
-    return fs.createReadStream(getAudioFilePath(jobId));
+export function createContextAudioReadStream(id: string): fs.ReadStream {
+    return fs.createReadStream(getAudioFilePath(id));
+}
+
+export function deleteContextAudioFile(id: string): boolean {
+    const filePath = getAudioFilePath(id);
+    if (!fs.existsSync(filePath)) {
+        return false;
+    }
+    fs.unlinkSync(filePath);
+    return true;
+}
+
+/**
+ * Copy job-keyed mp3 to durable artifact id so playback survives BullMQ job eviction.
+ */
+export function promoteContextAudio(jobId: string, artifactId: string): boolean {
+    if (!contextAudioFileExists(jobId)) {
+        return false;
+    }
+    ensureAudioStorageDir();
+    fs.copyFileSync(getAudioFilePath(jobId), getAudioFilePath(artifactId));
+    return true;
 }
 
 export async function synthesizeContextAudio(

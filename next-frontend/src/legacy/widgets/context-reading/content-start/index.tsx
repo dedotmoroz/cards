@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
 import { SetLanguageLevel } from '@/features/set-language-level';
 import { CreateContentButton } from '@/features/create-content';
+import { ButtonUI } from '@/shared/ui/button-ui';
 import {
   StyledContainerWrapper,
   StyledHeaderRow,
@@ -17,7 +18,7 @@ import {
   StyledControlsBlock,
   StyledControlsRow,
   StyledChipsLoading,
-    StyledButtonContainer,
+  StyledButtonContainer,
 } from './styled-components';
 
 export type ContextReadingFolderCard = {
@@ -36,6 +37,8 @@ export type ContextReadingContentStartProps = {
   languageLevel: string;
   onLanguageLevelChange: (level: string) => void;
   onCreateContent: () => void | Promise<void>;
+  hasLatest?: boolean;
+  onOpenLatest?: () => void;
   loading: boolean;
   generating: boolean;
 };
@@ -49,6 +52,8 @@ export const ContextReadingContentStart = ({
   languageLevel,
   onLanguageLevelChange,
   onCreateContent,
+  hasLatest,
+  onOpenLatest,
   loading,
   generating,
 }: ContextReadingContentStartProps) => {
@@ -121,31 +126,39 @@ export const ContextReadingContentStart = ({
       )}
 
       <StyledControlsBlock>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={onlyUnlearnedWords}
-                onChange={(_, checked) => onOnlyUnlearnedWordsChange(checked)}
-                disabled={loading || generating}
-              />
-            }
-            label={t('contextReading.onlyUnlearned', { defaultValue: 'Only unlearned words' })}
-          />
-          <StyledControlsRow>
-            <SetLanguageLevel
-              value={languageLevel}
-              onChange={onLanguageLevelChange}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={onlyUnlearnedWords}
+              onChange={(_, checked) => onOnlyUnlearnedWordsChange(checked)}
               disabled={loading || generating}
             />
-          </StyledControlsRow>
-          <StyledButtonContainer>
-            <CreateContentButton
-                onClick={onCreateContent}
-                disabled={loading || generating}
-            />
-          </StyledButtonContainer>
+          }
+          label={t('contextReading.onlyUnlearned', { defaultValue: 'Only unlearned words' })}
+        />
+        <StyledControlsRow>
+          <SetLanguageLevel
+            value={languageLevel}
+            onChange={onLanguageLevelChange}
+            disabled={loading || generating}
+          />
+        </StyledControlsRow>
+        <StyledButtonContainer>
+          <CreateContentButton
+            onClick={onCreateContent}
+            disabled={loading || generating}
+          />
+          {hasLatest && onOpenLatest && (
+            <ButtonUI
+              onClick={onOpenLatest}
+              disabled={loading || generating}
+              sx={{ ml: 1 }}
+            >
+              {t('contextReading.openLatest', { defaultValue: 'Open last' })}
+            </ButtonUI>
+          )}
+        </StyledButtonContainer>
       </StyledControlsBlock>
-
     </StyledContainerWrapper>
   );
 };

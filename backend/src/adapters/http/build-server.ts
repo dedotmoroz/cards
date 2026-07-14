@@ -18,15 +18,22 @@ import { UserService } from '../../application/user-service';
 import { PostgresCardRepository } from '../db/postgres-card-repo';
 import { PostgresFolderRepository } from '../db/postgres-folder-repo';
 import { PostgresUserRepository } from '../db/postgres-user-repo';
-import { requestContextGeneration } from '../ai/ai-service-client';
+import { requestContextGeneration, fetchContextGenerationStatus, promoteContextAudio, deleteContextArtifactAudio } from '../ai/ai-service-client';
 import { PostgresTelegramNonceRepository } from '../db/postgres-telegram-nonce-repo';
 import { PostgresExternalAccountRepository } from '../db/postgres-external-account-repo';
 
-import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase }
-    from '../../application/context-reading-service';
+import {
+    GetNextContextCardsUseCase,
+    ResetContextReadingUseCase,
+    GenerateContextTextUseCase,
+    GetLatestContextReadingArtifactUseCase,
+    PersistContextReadingArtifactUseCase,
+} from '../../application/context-reading-service';
 
 import { PostgresContextReadingStateRepository, PostgresContextReadingCardRepository }
     from '../db/postgres-context-reading-repo';
+import { PostgresContextReadingArtifactRepository }
+    from '../db/postgres-context-reading-artifact-repo';
 
 import { TelegramAuthService } from '../../application/telegram-auth-service';
 import { ExternalAccountService } from '../../application/external-account-service';
@@ -162,6 +169,9 @@ export async function buildServer() {
     const contextReadingStateRepo =
         new PostgresContextReadingStateRepository();
 
+    const contextReadingArtifactRepo =
+        new PostgresContextReadingArtifactRepository();
+
     // Use-cases
     const getNextContextCardsUseCase =
         new GetNextContextCardsUseCase(
@@ -181,6 +191,22 @@ export async function buildServer() {
             requestContextGeneration
         );
 
+    const getLatestContextReadingArtifactUseCase =
+        new GetLatestContextReadingArtifactUseCase(
+            contextReadingArtifactRepo,
+            folderRepo
+        );
+
+    const persistContextReadingArtifactUseCase =
+        new PersistContextReadingArtifactUseCase(
+            contextReadingArtifactRepo,
+            cardRepo,
+            folderRepo,
+            fetchContextGenerationStatus,
+            promoteContextAudio,
+            deleteContextArtifactAudio
+        );
+
     const telegramNonceRepository = new PostgresTelegramNonceRepository();
     const externalAccountRepo = new PostgresExternalAccountRepository();
     const externalAccountService = new ExternalAccountService(externalAccountRepo);
@@ -197,7 +223,8 @@ export async function buildServer() {
         cardRepo,
         contextReadingStateRepo,
         googleSheetsTokensRepo,
-        externalAccountRepo
+        externalAccountRepo,
+        contextReadingArtifactRepo
     );
     const googleClientId = process.env.GOOGLE_CLIENT_ID;
     const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -214,7 +241,9 @@ export async function buildServer() {
         fastify,
         getNextContextCardsUseCase,
         resetContextReadingUseCase,
-        generateContextTextUseCase
+        generateContextTextUseCase,
+        getLatestContextReadingArtifactUseCase,
+        persistContextReadingArtifactUseCase
     );
     const adminService = new AdminService(adminRepo, userService);
 

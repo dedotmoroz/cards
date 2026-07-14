@@ -8,6 +8,8 @@ const mocks = vi.hoisted(() => ({
     jobFromIdMock: vi.fn(),
     contextAudioFileExists: vi.fn(),
     createContextAudioReadStream: vi.fn(),
+    promoteContextAudio: vi.fn(),
+    deleteContextAudioFile: vi.fn(),
 }));
 
 vi.mock("../src/queues/generateQueue", () => {
@@ -31,6 +33,8 @@ vi.mock("../src/queues/contextQueue", () => {
 vi.mock("../src/services/contextAudioService", () => ({
     contextAudioFileExists: mocks.contextAudioFileExists,
     createContextAudioReadStream: mocks.createContextAudioReadStream,
+    promoteContextAudio: mocks.promoteContextAudio,
+    deleteContextAudioFile: mocks.deleteContextAudioFile,
 }));
 
 vi.mock("bullmq", () => {
@@ -56,6 +60,8 @@ describe("API routes", () => {
         mocks.jobFromIdMock.mockReset();
         mocks.contextAudioFileExists.mockReset();
         mocks.createContextAudioReadStream.mockReset();
+        mocks.promoteContextAudio.mockReset();
+        mocks.deleteContextAudioFile.mockReset();
     });
 
     it("enqueues generate job and returns job id", async () => {
@@ -365,6 +371,65 @@ describe("API routes", () => {
 
         expect(response.statusCode).toBe(404);
         expect(response.json()).toEqual({ error: "audio not found" });
+
+        await app.close();
+    });
+
+    it("promotes job audio to artifact id", async () => {
+        mocks.promoteContextAudio.mockReturnValue(true);
+
+        const app = Fastify();
+        await registerApi(app);
+
+        const response = await app.inject({
+            method: "POST",
+            url: "/jobs/context-job-1/promote-audio",
+            payload: { artifactId: "artifact-1" },
+        });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.json()).toEqual({ ok: true, hasAudio: true });
+        expect(mocks.promoteContextAudio).toHaveBeenCalledWith("context-job-1", "artifact-1");
+
+        await app.close();
+    });
+
+    it("streams artifact audio without bullmq job", async () => {
+        mocks.contextAudioFileExists.mockReturnValue(true);
+        mocks.createContextAudioReadStream.mockReturnValue(
+            Readable.from([Buffer.from("artifact-mp3")]),
+        );
+
+        const app = Fastify();
+        await registerApi(app);
+
+        const response = await app.inject({
+            method: "GET",
+            url: "/artifacts/artifact-1/audio",
+        });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.headers["content-type"]).toBe("audio/mpeg");
+        expect(response.rawPayload).toEqual(Buffer.from("artifact-mp3"));
+        expect(mocks.jobFromIdMock).not.toHaveBeenCalled();
+
+        await app.close();
+    });
+
+    it("deletes artifact audio file", async () => {
+        mocks.deleteContextAudioFile.mockReturnValue(true);
+
+        const app = Fastify();
+        await registerApi(app);
+
+        const response = await app.inject({
+            method: "DELETE",
+            url: "/artifacts/artifact-1/audio",
+        });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.json()).toEqual({ ok: true, deleted: true });
+        expect(mocks.deleteContextAudioFile).toHaveBeenCalledWith("artifact-1");
 
         await app.close();
     });

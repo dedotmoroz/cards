@@ -4,6 +4,7 @@ import { UserRepository } from '../ports/user-repository';
 import { FolderRepository } from '../ports/folder-repository';
 import { CardRepository } from '../ports/card-repository';
 import { ContextReadingStateRepository } from '../ports/context-reading-repository';
+import { ContextReadingArtifactRepository } from '../ports/context-reading-artifact-repository';
 import { GoogleSheetsTokensRepository } from '../ports/google-sheets-tokens-repository';
 import { ExternalAccountRepository } from './external-account-service';
 import { hash, compare } from 'bcryptjs';
@@ -21,7 +22,8 @@ export class UserService {
         private cardRepo?: CardRepository,
         private contextReadingStateRepo?: ContextReadingStateRepository,
         private googleSheetsTokensRepo?: GoogleSheetsTokensRepository,
-        private externalAccountRepo?: ExternalAccountRepository
+        private externalAccountRepo?: ExternalAccountRepository,
+        private contextReadingArtifactRepo?: ContextReadingArtifactRepository
     ) {
         const JWT_SECRET = process.env.JWT_SECRET;
         if (!JWT_SECRET) {
@@ -160,7 +162,8 @@ export class UserService {
             !this.cardRepo ||
             !this.contextReadingStateRepo ||
             !this.googleSheetsTokensRepo ||
-            !this.externalAccountRepo
+            !this.externalAccountRepo ||
+            !this.contextReadingArtifactRepo
         ) {
             throw new Error('Delete account dependencies are not configured');
         }
@@ -169,6 +172,7 @@ export class UserService {
             const userFolders = await this.folderRepo!.findAll(userId);
             const folderIds = userFolders.map((folder) => folder.id);
 
+            await this.contextReadingArtifactRepo!.deleteByUserId(userId, tx);
             await this.contextReadingStateRepo!.deleteByUserId(userId, tx);
             await this.googleSheetsTokensRepo!.deleteByUserId(userId, tx);
             await this.externalAccountRepo!.deleteByUserId(userId, tx);

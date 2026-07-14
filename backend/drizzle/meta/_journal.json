@@ -36,6 +36,13 @@
       "when": 1770000000000,
       "tag": "0006_context_reading_only_unlearned",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783960000000,
+      "tag": "0010_context_reading_artifacts",
+      "breakpoints": true
     }
   ]
 }

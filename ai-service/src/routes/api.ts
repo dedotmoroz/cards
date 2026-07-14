@@ -5,6 +5,8 @@ import { contextQueue, ContextJobInput, ContextJobResult } from "../queues/conte
 import {
     contextAudioFileExists,
     createContextAudioReadStream,
+    deleteContextAudioFile,
+    promoteContextAudio,
 } from "../services/contextAudioService.js";
 import { Job, QueueEvents } from "bullmq";
 import { redis } from "../redis/connection.js";
@@ -353,6 +355,79 @@ export default async function registerApi(app: FastifyInstance) {
             reply.header("Content-Type", "audio/mpeg");
             reply.header("Cache-Control", "private, max-age=3600");
             return reply.send(createContextAudioReadStream(id));
+        },
+    });
+
+    app.post<{
+        Params: { id: string };
+        Body: { artifactId: string };
+    }>("/jobs/:id/promote-audio", {
+        schema: {
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string" },
+                },
+            },
+            body: {
+                type: "object",
+                required: ["artifactId"],
+                properties: {
+                    artifactId: { type: "string" },
+                },
+            },
+        } as unknown as FastifySchema,
+        handler: async (req, reply) => {
+            const jobId = req.params.id;
+            const { artifactId } = req.body;
+
+            if (!artifactId?.trim()) {
+                return reply.code(400).send({ error: "artifactId is required" });
+            }
+
+            const promoted = promoteContextAudio(jobId, artifactId);
+            return reply.send({ ok: true, hasAudio: promoted });
+        },
+    });
+
+    app.get<{ Params: { artifactId: string } }>("/artifacts/:artifactId/audio", {
+        schema: {
+            params: {
+                type: "object",
+                required: ["artifactId"],
+                properties: {
+                    artifactId: { type: "string" },
+                },
+            },
+        } as unknown as FastifySchema,
+        handler: async (req, reply) => {
+            const { artifactId } = req.params;
+
+            if (!contextAudioFileExists(artifactId)) {
+                return reply.code(404).send({ error: "audio not found" });
+            }
+
+            reply.header("Content-Type", "audio/mpeg");
+            reply.header("Cache-Control", "private, max-age=3600");
+            return reply.send(createContextAudioReadStream(artifactId));
+        },
+    });
+
+    app.delete<{ Params: { artifactId: string } }>("/artifacts/:artifactId/audio", {
+        schema: {
+            params: {
+                type: "object",
+                required: ["artifactId"],
+                properties: {
+                    artifactId: { type: "string" },
+                },
+            },
+        } as unknown as FastifySchema,
+        handler: async (req, reply) => {
+            const { artifactId } = req.params;
+            const deleted = deleteContextAudioFile(artifactId);
+            return reply.send({ ok: true, deleted });
         },
     });
 

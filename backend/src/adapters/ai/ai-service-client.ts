@@ -137,4 +137,45 @@ export async function fetchContextAudio(jobId: string): Promise<Response> {
   return response;
 }
 
+export async function promoteContextAudio(
+  jobId: string,
+  artifactId: string,
+): Promise<{ ok: boolean; hasAudio: boolean }> {
+  return callAiService<{ ok: boolean; hasAudio: boolean }>(
+    `/jobs/${jobId}/promote-audio`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ artifactId }),
+    },
+  );
+}
+
+export async function fetchContextArtifactAudio(artifactId: string): Promise<Response> {
+  const url = new URL(`/artifacts/${artifactId}/audio`, aiServiceBaseUrl);
+  const response = await fetch(url);
+
+  if (response.status === 404) {
+    throw new Error(`[ai-service] Context audio not found for artifact ${artifactId}`);
+  }
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(
+      `[ai-service] Unexpected status ${response.status} for ${url.href}. Body: ${body}`,
+    );
+  }
+
+  return response;
+}
+
+export async function deleteContextArtifactAudio(
+  artifactId: string,
+): Promise<{ ok: boolean; deleted: boolean }> {
+  return callAiService<{ ok: boolean; deleted: boolean }>(
+    `/artifacts/${artifactId}/audio`,
+    {
+      method: 'DELETE',
+    },
+  );
+}
 

@@ -436,7 +436,8 @@
     "noWordsLeft": "Слова для создания контента в этой папке закончились.",
     "backToFolder": "Вернуться в папку",
     "createContentAgain": "Создать контент заново",
-    "listen": "Прослушать"
+    "listen": "Прослушать",
+    "openLatest": "Открыть последний"
   },
   "telegram": {
     "connect": {

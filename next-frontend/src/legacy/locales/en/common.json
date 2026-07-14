@@ -436,7 +436,8 @@
     "noWordsLeft": "There are no more words in this folder to build context reading content.",
     "backToFolder": "Back to folder",
     "createContentAgain": "Create content again",
-    "listen": "Listen"
+    "listen": "Listen",
+    "openLatest": "Open last"
   },
   "telegram": {
     "connect": {

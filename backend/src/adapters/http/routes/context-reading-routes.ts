@@ -1,7 +1,17 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { GetNextContextCardsUseCase, ResetContextReadingUseCase, GenerateContextTextUseCase } from '../../../application/context-reading-service';
-import { fetchContextGenerationStatus, fetchContextAudio } from '../../ai/ai-service-client';
+import {
+    GetNextContextCardsUseCase,
+    ResetContextReadingUseCase,
+    GenerateContextTextUseCase,
+    GetLatestContextReadingArtifactUseCase,
+    PersistContextReadingArtifactUseCase,
+} from '../../../application/context-reading-service';
+import {
+    fetchContextGenerationStatus,
+    fetchContextAudio,
+    fetchContextArtifactAudio,
+} from '../../ai/ai-service-client';
 import { CardDTO } from '../dto';
 import { CONTEXT_READING_POOL_MODE_MISMATCH } from '../../../domain/context-reading';
 
@@ -9,7 +19,9 @@ export function registerContextReadingRoutes(
     fastify: FastifyInstance,
     getNextContextCardsUseCase: GetNextContextCardsUseCase,
     resetContextReadingUseCase: ResetContextReadingUseCase,
-    generateContextTextUseCase: GenerateContextTextUseCase
+    generateContextTextUseCase: GenerateContextTextUseCase,
+    getLatestContextReadingArtifactUseCase: GetLatestContextReadingArtifactUseCase,
+    persistContextReadingArtifactUseCase: PersistContextReadingArtifactUseCase
 ) {
     /**
      * Контекстное обучение - получение карточек
@@ -278,6 +290,133 @@ export function registerContextReadingRoutes(
     );
 
     /**
+     * Persist completed generation as the latest folder artifact
+     */
+    fastify.post(
+        '/context-reading/persist',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['jobId', 'folderId', 'cardIds'],
+                    properties: {
+                        jobId: { type: 'string' },
+                        folderId: { type: 'string', format: 'uuid' },
+                        cardIds: {
+                            type: 'array',
+                            items: { type: 'string', format: 'uuid' },
+                            minItems: 1,
+                            maxItems: 5,
+                        },
+                        level: { type: 'string' },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Persist latest context reading artifact for folder',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Body: {
+                    jobId: string;
+                    folderId: string;
+                    cardIds: string[];
+                    level?: string;
+                };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const userId = (req.user as any).userId;
+            const { jobId, folderId, cardIds, level } = req.body;
+
+            try {
+                const artifact = await persistContextReadingArtifactUseCase.execute({
+                    userId,
+                    jobId,
+                    folderId,
+                    cardIds,
+                    level,
+                });
+                return reply.send(artifact.toPublicDTO());
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (
+                        error.message === 'Folder not found' ||
+                        error.message === 'Some cards not found'
+                    ) {
+                        return reply.code(404).send({ message: error.message });
+                    }
+                    if (error.message === 'Access denied') {
+                        return reply.code(403).send({ message: error.message });
+                    }
+                    if (
+                        error.message === 'Cards must belong to the same folder' ||
+                        error.message === 'Invalid job type' ||
+                        error.message === 'Job not completed'
+                    ) {
+                        return reply.code(400).send({ message: error.message });
+                    }
+                }
+                throw error;
+            }
+        }
+    );
+
+    /**
+     * Latest saved context artifact for folder
+     */
+    fastify.get(
+        '/context-reading/latest',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['folderId'],
+                    properties: {
+                        folderId: { type: 'string', format: 'uuid' },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Get latest context reading artifact for folder',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Querystring: { folderId: string };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const userId = (req.user as any).userId;
+            const { folderId } = req.query;
+
+            try {
+                const artifact = await getLatestContextReadingArtifactUseCase.execute({
+                    userId,
+                    folderId,
+                });
+
+                if (!artifact) {
+                    return reply.code(404).send({ message: 'No saved context' });
+                }
+
+                return reply.send(artifact.toPublicDTO());
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error.message === 'Folder not found') {
+                        return reply.code(404).send({ message: error.message });
+                    }
+                    if (error.message === 'Access denied') {
+                        return reply.code(403).send({ message: error.message });
+                    }
+                }
+                throw error;
+            }
+        }
+    );
+
+    /**
      * Контекстное обучение - аудио сгенерированного текста
      */
     fastify.get(
@@ -287,25 +426,33 @@ export function registerContextReadingRoutes(
             schema: {
                 querystring: {
                     type: 'object',
-                    required: ['jobId'],
                     properties: {
                         jobId: { type: 'string' },
+                        artifactId: { type: 'string', format: 'uuid' },
                     },
                 },
                 tags: ['context-reading'],
-                summary: 'Stream context text audio (mp3)',
+                summary: 'Stream context text audio (mp3) by jobId or artifactId',
             },
         },
         async (
             req: FastifyRequest<{
-                Querystring: { jobId: string };
+                Querystring: { jobId?: string; artifactId?: string };
             }>,
             reply: FastifyReply
         ) => {
-            const { jobId } = req.query;
+            const { jobId, artifactId } = req.query;
+
+            if ((!jobId && !artifactId) || (jobId && artifactId)) {
+                return reply.code(400).send({
+                    message: 'Provide exactly one of jobId or artifactId',
+                });
+            }
 
             try {
-                const audioResponse = await fetchContextAudio(jobId);
+                const audioResponse = artifactId
+                    ? await fetchContextArtifactAudio(artifactId)
+                    : await fetchContextAudio(jobId!);
 
                 reply.header('Content-Type', 'audio/mpeg');
                 reply.header('Cache-Control', 'private, max-age=3600');

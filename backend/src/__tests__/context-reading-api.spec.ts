@@ -7,13 +7,26 @@ jest.mock('../adapters/ai/ai-service-client', () => ({
     requestContextGeneration: jest.fn(),
     fetchContextGenerationStatus: jest.fn(),
     fetchContextAudio: jest.fn(),
+    fetchContextArtifactAudio: jest.fn(),
+    promoteContextAudio: jest.fn(),
+    deleteContextArtifactAudio: jest.fn(),
 }));
 
-import { requestContextGeneration, fetchContextGenerationStatus, fetchContextAudio } from '../adapters/ai/ai-service-client';
+import {
+    requestContextGeneration,
+    fetchContextGenerationStatus,
+    fetchContextAudio,
+    fetchContextArtifactAudio,
+    promoteContextAudio,
+    deleteContextArtifactAudio,
+} from '../adapters/ai/ai-service-client';
 
 const mockedRequestContextGeneration = requestContextGeneration as jest.MockedFunction<typeof requestContextGeneration>;
 const mockedFetchContextGenerationStatus = fetchContextGenerationStatus as jest.MockedFunction<typeof fetchContextGenerationStatus>;
 const mockedFetchContextAudio = fetchContextAudio as jest.MockedFunction<typeof fetchContextAudio>;
+const mockedFetchContextArtifactAudio = fetchContextArtifactAudio as jest.MockedFunction<typeof fetchContextArtifactAudio>;
+const mockedPromoteContextAudio = promoteContextAudio as jest.MockedFunction<typeof promoteContextAudio>;
+const mockedDeleteContextArtifactAudio = deleteContextArtifactAudio as jest.MockedFunction<typeof deleteContextArtifactAudio>;
 
 describe('📖 Context Reading API (e2e)', () => {
     let fastify: FastifyInstance;
@@ -658,12 +671,31 @@ describe('📖 Context Reading API (e2e)', () => {
             expect(mockedFetchContextAudio).toHaveBeenCalledWith('context-job-123');
         });
 
-        it('требует jobId в query', async () => {
+        it('требует jobId или artifactId в query', async () => {
             const res = await request(fastify.server)
                 .get('/context-reading/audio')
                 .set('Cookie', authCookie);
 
             expect(res.status).toBe(400);
+        });
+
+        it('проксирует mp3 по artifactId', async () => {
+            mockedFetchContextArtifactAudio.mockResolvedValue(
+                new Response(Buffer.from('artifact-mp3'), {
+                    status: 200,
+                    headers: { 'Content-Type': 'audio/mpeg' },
+                }),
+            );
+
+            const artifactId = '11111111-1111-1111-1111-111111111111';
+            const res = await request(fastify.server)
+                .get('/context-reading/audio')
+                .set('Cookie', authCookie)
+                .query({ artifactId });
+
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual(Buffer.from('artifact-mp3'));
+            expect(mockedFetchContextArtifactAudio).toHaveBeenCalledWith(artifactId);
         });
 
         it('требует аутентификации', async () => {
@@ -685,6 +717,203 @@ describe('📖 Context Reading API (e2e)', () => {
                 .query({ jobId: 'missing-audio' });
 
             expect(res.status).toBe(404);
+        });
+    });
+
+    describe('POST /context-reading/persist and GET /context-reading/latest', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            mockedPromoteContextAudio.mockResolvedValue({ ok: true, hasAudio: true });
+            mockedDeleteContextArtifactAudio.mockResolvedValue({ ok: true, deleted: true });
+        });
+
+        it('сохраняет артефакт и отдаёт его как latest', async () => {
+            mockedFetchContextGenerationStatus.mockResolvedValue({
+                id: 'persist-job-1',
+                state: 'completed',
+                progress: 100,
+                result: {
+                    text: 'Persisted text',
+                    translation: 'Сохранённый текст',
+                    hasAudio: true,
+                },
+                queueType: 'context',
+            });
+
+            const persistRes = await request(fastify.server)
+                .post('/context-reading/persist')
+                .set('Cookie', authCookie)
+                .send({
+                    jobId: 'persist-job-1',
+                    folderId,
+                    cardIds: cardIds.slice(0, 3),
+                    level: 'B1',
+                });
+
+            expect(persistRes.status).toBe(200);
+            expect(persistRes.body.text).toBe('Persisted text');
+            expect(persistRes.body.hasAudio).toBe(true);
+            expect(persistRes.body.cardsSnapshot).toHaveLength(3);
+            expect(mockedPromoteContextAudio).toHaveBeenCalled();
+
+            const latestRes = await request(fastify.server)
+                .get('/context-reading/latest')
+                .set('Cookie', authCookie)
+                .query({ folderId });
+
+            expect(latestRes.status).toBe(200);
+            expect(latestRes.body.id).toBe(persistRes.body.id);
+            expect(latestRes.body.jobId).toBe('persist-job-1');
+        });
+
+        it('идемпотентен для того же jobId', async () => {
+            mockedFetchContextGenerationStatus.mockResolvedValue({
+                id: 'persist-job-2',
+                state: 'completed',
+                progress: 100,
+                result: {
+                    text: 'Same job',
+                    translation: 'Тот же job',
+                    hasAudio: false,
+                },
+                queueType: 'context',
+            });
+
+            const first = await request(fastify.server)
+                .post('/context-reading/persist')
+                .set('Cookie', authCookie)
+                .send({
+                    jobId: 'persist-job-2',
+                    folderId,
+                    cardIds: cardIds.slice(0, 3),
+                });
+
+            const second = await request(fastify.server)
+                .post('/context-reading/persist')
+                .set('Cookie', authCookie)
+                .send({
+                    jobId: 'persist-job-2',
+                    folderId,
+                    cardIds: cardIds.slice(0, 3),
+                });
+
+            expect(first.status).toBe(200);
+            expect(second.status).toBe(200);
+            expect(second.body.id).toBe(first.body.id);
+        });
+
+        it('заменяет предыдущий артефакт новым jobId', async () => {
+            mockedFetchContextGenerationStatus
+                .mockResolvedValueOnce({
+                    id: 'persist-job-old',
+                    state: 'completed',
+                    progress: 100,
+                    result: {
+                        text: 'Old',
+                        translation: 'Старый',
+                        hasAudio: true,
+                    },
+                    queueType: 'context',
+                })
+                .mockResolvedValueOnce({
+                    id: 'persist-job-new',
+                    state: 'completed',
+                    progress: 100,
+                    result: {
+                        text: 'New',
+                        translation: 'Новый',
+                        hasAudio: true,
+                    },
+                    queueType: 'context',
+                });
+
+            const oldRes = await request(fastify.server)
+                .post('/context-reading/persist')
+                .set('Cookie', authCookie)
+                .send({
+                    jobId: 'persist-job-old',
+                    folderId,
+                    cardIds: cardIds.slice(0, 3),
+                });
+
+            const newRes = await request(fastify.server)
+                .post('/context-reading/persist')
+                .set('Cookie', authCookie)
+                .send({
+                    jobId: 'persist-job-new',
+                    folderId,
+                    cardIds: cardIds.slice(0, 3),
+                });
+
+            expect(oldRes.status).toBe(200);
+            expect(newRes.status).toBe(200);
+            expect(newRes.body.id).not.toBe(oldRes.body.id);
+            expect(newRes.body.text).toBe('New');
+            expect(mockedDeleteContextArtifactAudio).toHaveBeenCalledWith(oldRes.body.id);
+
+            const latestRes = await request(fastify.server)
+                .get('/context-reading/latest')
+                .set('Cookie', authCookie)
+                .query({ folderId });
+
+            expect(latestRes.body.id).toBe(newRes.body.id);
+        });
+
+        it('reset прогресса не удаляет latest', async () => {
+            mockedFetchContextGenerationStatus.mockResolvedValue({
+                id: 'persist-job-reset',
+                state: 'completed',
+                progress: 100,
+                result: {
+                    text: 'Keep me',
+                    translation: 'Оставь',
+                    hasAudio: false,
+                },
+                queueType: 'context',
+            });
+
+            await request(fastify.server)
+                .post('/context-reading/persist')
+                .set('Cookie', authCookie)
+                .send({
+                    jobId: 'persist-job-reset',
+                    folderId,
+                    cardIds: cardIds.slice(0, 3),
+                });
+
+            await request(fastify.server)
+                .post('/context-reading/reset')
+                .set('Cookie', authCookie)
+                .send({ folderId });
+
+            const latestRes = await request(fastify.server)
+                .get('/context-reading/latest')
+                .set('Cookie', authCookie)
+                .query({ folderId });
+
+            expect(latestRes.status).toBe(200);
+            expect(latestRes.body.text).toBe('Keep me');
+        });
+
+        it('возвращает 400 если job не completed', async () => {
+            mockedFetchContextGenerationStatus.mockResolvedValue({
+                id: 'persist-job-active',
+                state: 'active',
+                progress: 40,
+                result: null,
+                queueType: 'context',
+            });
+
+            const res = await request(fastify.server)
+                .post('/context-reading/persist')
+                .set('Cookie', authCookie)
+                .send({
+                    jobId: 'persist-job-active',
+                    folderId,
+                    cardIds: cardIds.slice(0, 3),
+                });
+
+            expect(res.status).toBe(400);
         });
     });
 });

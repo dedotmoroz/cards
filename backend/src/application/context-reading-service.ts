@@ -1,10 +1,15 @@
 import { randomUUID } from 'crypto';
-import { ContextReadingState, CONTEXT_READING_POOL_MODE_MISMATCH } from '../domain/context-reading'
+import { ContextReadingState, ContextReadingArtifact, CONTEXT_READING_POOL_MODE_MISMATCH } from '../domain/context-reading'
 import { CardRepository as ContextReadingCardRepository, ContextReadingStateRepository } from '../ports/context-reading-repository'
+import { ContextReadingArtifactRepository } from '../ports/context-reading-artifact-repository'
 import { CardRepository } from '../ports/card-repository'
 import { FolderRepository } from '../ports/folder-repository'
 import { Card } from '../domain/card'
-import type { ContextRequestPayload, ContextJobResponse } from '../adapters/ai/ai-service-client'
+import type {
+    ContextRequestPayload,
+    ContextJobResponse,
+    ContextJobStatusResponse,
+} from '../adapters/ai/ai-service-client'
 
 function shuffle<T>(arr: T[]): T[] {
     return [...arr].sort(() => Math.random() - 0.5)
@@ -154,5 +159,127 @@ export class GenerateContextTextUseCase {
         });
 
         return { jobId };
+    }
+}
+
+export class GetLatestContextReadingArtifactUseCase {
+    constructor(
+        private readonly artifactRepo: ContextReadingArtifactRepository,
+        private readonly folderRepo: FolderRepository
+    ) {}
+
+    async execute(params: {
+        userId: string;
+        folderId: string;
+    }): Promise<ContextReadingArtifact | null> {
+        const folder = await this.folderRepo.findById(params.folderId);
+        if (!folder) {
+            throw new Error('Folder not found');
+        }
+        if (folder.userId !== params.userId) {
+            throw new Error('Access denied');
+        }
+
+        return this.artifactRepo.findLatest(params.userId, params.folderId);
+    }
+}
+
+export class PersistContextReadingArtifactUseCase {
+    constructor(
+        private readonly artifactRepo: ContextReadingArtifactRepository,
+        private readonly cardRepo: CardRepository,
+        private readonly folderRepo: FolderRepository,
+        private readonly fetchContextGenerationStatus: (jobId: string) => Promise<ContextJobStatusResponse>,
+        private readonly promoteContextAudio: (
+            jobId: string,
+            artifactId: string
+        ) => Promise<{ ok: boolean; hasAudio: boolean }>,
+        private readonly deleteContextArtifactAudio: (
+            artifactId: string
+        ) => Promise<{ ok: boolean; deleted: boolean }>
+    ) {}
+
+    async execute(params: {
+        userId: string;
+        jobId: string;
+        folderId: string;
+        cardIds: string[];
+        level?: string;
+    }): Promise<ContextReadingArtifact> {
+        const { userId, jobId, folderId, cardIds } = params;
+        const level = params.level ?? 'B1';
+
+        const folder = await this.folderRepo.findById(folderId);
+        if (!folder) {
+            throw new Error('Folder not found');
+        }
+        if (folder.userId !== userId) {
+            throw new Error('Access denied');
+        }
+
+        const existing = await this.artifactRepo.findLatest(userId, folderId);
+        if (existing && existing.jobId === jobId) {
+            return existing;
+        }
+
+        const status = await this.fetchContextGenerationStatus(jobId);
+        if (status.queueType && status.queueType !== 'context') {
+            throw new Error('Invalid job type');
+        }
+        if (status.state !== 'completed' || !status.result) {
+            throw new Error('Job not completed');
+        }
+
+        const cards = await Promise.all(cardIds.map(id => this.cardRepo.findById(id)));
+        const missing = cards.some(card => card === null);
+        if (missing) {
+            throw new Error('Some cards not found');
+        }
+        const resolvedCards = cards as NonNullable<(typeof cards)[0]>[];
+        if (resolvedCards.some(card => card.folderId !== folderId)) {
+            throw new Error('Cards must belong to the same folder');
+        }
+
+        const artifactId = randomUUID();
+        let hasAudio = Boolean(status.result.hasAudio);
+
+        if (hasAudio) {
+            try {
+                const promoted = await this.promoteContextAudio(jobId, artifactId);
+                hasAudio = promoted.hasAudio;
+            } catch {
+                hasAudio = false;
+            }
+        }
+
+        const { artifact, previousArtifactId } = await this.artifactRepo.upsertLatest({
+            id: artifactId,
+            userId,
+            folderId,
+            jobId,
+            cardIds,
+            cardsSnapshot: resolvedCards.map(card => ({
+                question: card.question,
+                answer: card.answer,
+            })),
+            text: status.result.text,
+            translation: status.result.translation,
+            level,
+            hasAudio,
+            createdAt: new Date(),
+        });
+
+        if (previousArtifactId) {
+            try {
+                await this.deleteContextArtifactAudio(previousArtifactId);
+            } catch (error) {
+                console.error(
+                    `[context-reading] failed to delete previous artifact audio ${previousArtifactId}`,
+                    error
+                );
+            }
+        }
+
+        return artifact;
     }
 }

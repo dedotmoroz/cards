@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey, bigint, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey, bigint, jsonb, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const cards = pgTable('cards', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -87,6 +87,32 @@ export const contextReadingStates = pgTable(
     },
     (table) => ({
         pk: primaryKey({ columns: [table.userId, table.folderId] }),
+    })
+);
+
+export const contextReadingArtifacts = pgTable(
+    'context_reading_artifacts',
+    {
+        id: uuid('id').primaryKey().defaultRandom(),
+        userId: text('user_id').notNull(),
+        folderId: text('folder_id').notNull(),
+        jobId: text('job_id').notNull(),
+        cardIds: text('card_ids').array().notNull(),
+        cardsSnapshot: jsonb('cards_snapshot').$type<Array<{
+            question: string;
+            answer: string;
+        }>>().notNull().default([]),
+        text: text('text').notNull(),
+        translation: text('translation').notNull(),
+        level: text('level').notNull(),
+        hasAudio: boolean('has_audio').notNull().default(false),
+        createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    },
+    (table) => ({
+        userFolderUidx: uniqueIndex('context_reading_artifacts_user_folder_uidx').on(
+            table.userId,
+            table.folderId
+        ),
     })
 );
 
