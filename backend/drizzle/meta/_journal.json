@@ -43,6 +43,13 @@
       "when": 1783960000000,
       "tag": "0010_context_reading_artifacts",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784040000000,
+      "tag": "0011_context_reading_artifact_history",
+      "breakpoints": true
     }
   ]
 }

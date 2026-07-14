@@ -45,12 +45,12 @@ export const ContextReadingPage = () => {
   const [folderCardsLoading, setFolderCardsLoading] = useState(false);
   /** false = все карточки папки; true = только невыученные (режим фиксируется до сброса). */
   const [onlyUnlearnedWords, setOnlyUnlearnedWords] = useState(false);
-  const [artifact, setArtifact] = useState<ContextReadingArtifact | null>(null);
+  const [artifacts, setArtifacts] = useState<ContextReadingArtifact[]>([]);
+  const [artifactIndex, setArtifactIndex] = useState(0);
   const [showStart, setShowStart] = useState(false);
 
   const generatedTextBlockRef = useRef<HTMLDivElement>(null);
 
-  // Используем ref для предотвращения повторных вызовов
   const lastProcessedKeyRef = useRef<string | null>(null);
   const pollingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -95,8 +95,11 @@ export const ContextReadingPage = () => {
     void loadFolderCards();
   }, [loadFolderCards]);
 
-  const applyArtifact = useCallback((next: ContextReadingArtifact) => {
-    setArtifact(next);
+  const applyArtifactAt = useCallback((list: ContextReadingArtifact[], index: number) => {
+    const next = list[index];
+    if (!next) return;
+    setArtifacts(list);
+    setArtifactIndex(index);
     setCurrentCards(next.cardsSnapshot);
     setLanguageLevel(next.level);
     setStatus({
@@ -130,25 +133,21 @@ export const ContextReadingPage = () => {
       setHighlightedChipIndex(null);
       setShowStart(false);
 
-      // 1. Получаем карточки
       const nextCardsResponse = await contextReadingApi.getNextCards(folderId, 5, onlyUnlearnedWords);
-      
+
       if (nextCardsResponse.completed || nextCardsResponse.cards.length === 0) {
         setError('No cards available for context reading');
         setLoading(false);
         return;
       }
 
-      // Сохраняем информацию о карточках для отображения
       setCurrentCards(nextCardsResponse.cards.map(card => ({
         question: card.question,
         answer: card.answer,
       })));
 
-      // Сохраняем информацию о прогрессе
       setProgress(nextCardsResponse.progress);
 
-      // 2. Запускаем генерацию текста
       const cardIds = nextCardsResponse.cards.map(card => card.id);
 
       const generateResponse = await contextReadingApi.generateText({
@@ -160,10 +159,8 @@ export const ContextReadingPage = () => {
       setGenerating(true);
       setLoading(false);
 
-      // 3. Начинаем опрос статуса
       const pollStatus = async (jobId: string) => {
         const poll = async (): Promise<void> => {
-          // Проверяем, не изменился ли ключ (folderId или language)
           const currentKey = `${folderId}-${i18n.language}-${onlyUnlearnedWords}`;
           if (lastProcessedKeyRef.current !== currentKey) {
             return;
@@ -181,7 +178,9 @@ export const ContextReadingPage = () => {
                   cardIds,
                   level: languageLevel,
                 });
-                applyArtifact(saved);
+                const list = await contextReadingApi.getHistory(folderId);
+                const index = list.findIndex(a => a.id === saved.id);
+                applyArtifactAt(list, index >= 0 ? index : Math.max(0, list.length - 1));
               } catch (persistError) {
                 setError(
                   persistError instanceof Error
@@ -200,7 +199,6 @@ export const ContextReadingPage = () => {
               return;
             }
 
-            // Продолжаем опрос
             pollingTimeoutRef.current = setTimeout(poll, POLLING_INTERVAL);
           } catch (err) {
             setGenerating(false);
@@ -208,7 +206,6 @@ export const ContextReadingPage = () => {
           }
         };
 
-        // Начинаем опрос через небольшую задержку
         pollingTimeoutRef.current = setTimeout(poll, POLLING_INTERVAL);
       };
 
@@ -246,7 +243,6 @@ export const ContextReadingPage = () => {
     }
   };
 
-  // Обработчик кнопки "Сброс" — сброс прогресса и возврат к форме выбора уровня / создания контента
   const handleReset = async () => {
     if (!folderId) return;
 
@@ -276,22 +272,22 @@ export const ContextReadingPage = () => {
     }
   };
 
-  // Обработчик кнопки "Вперед"
   const handleNext = async () => {
     if (!folderId) return;
 
     try {
-      // Очищаем предыдущий таймер polling, если он есть
       if (pollingTimeoutRef.current) {
         clearTimeout(pollingTimeoutRef.current);
         pollingTimeoutRef.current = null;
       }
-      
-      // Обновляем ключ, чтобы разрешить новую генерацию
+
+      if (artifactIndex < artifacts.length - 1) {
+        applyArtifactAt(artifacts, artifactIndex + 1);
+        return;
+      }
+
       const currentKey = `${folderId}-${i18n.language}-${onlyUnlearnedWords}`;
       lastProcessedKeyRef.current = currentKey;
-      
-      // Запускаем генерацию следующей порции
       await startGeneration();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to get next cards');
@@ -314,7 +310,8 @@ export const ContextReadingPage = () => {
       setCurrentCards([]);
       setProgress(null);
       setHighlightedChipIndex(null);
-      setArtifact(null);
+      setArtifacts([]);
+      setArtifactIndex(0);
       setShowStart(false);
       lastProcessedKeyRef.current = null;
       setOnlyUnlearnedWords(false);
@@ -323,7 +320,7 @@ export const ContextReadingPage = () => {
 
     let cancelled = false;
 
-    const loadLatest = async () => {
+    const loadHistory = async () => {
       setInitialLoading(true);
       setLoading(false);
       setGenerating(false);
@@ -333,16 +330,17 @@ export const ContextReadingPage = () => {
       setCurrentCards([]);
       setProgress(null);
       setHighlightedChipIndex(null);
-      setArtifact(null);
+      setArtifacts([]);
+      setArtifactIndex(0);
       setShowStart(false);
       lastProcessedKeyRef.current = null;
       setOnlyUnlearnedWords(false);
 
       try {
-        const latest = await contextReadingApi.getLatest(folderId);
+        const list = await contextReadingApi.getHistory(folderId);
         if (cancelled) return;
-        if (latest) {
-          applyArtifact(latest);
+        if (list.length > 0) {
+          applyArtifactAt(list, 0);
         } else {
           setShowStart(true);
         }
@@ -358,7 +356,7 @@ export const ContextReadingPage = () => {
       }
     };
 
-    void loadLatest();
+    void loadHistory();
 
     return () => {
       cancelled = true;
@@ -367,7 +365,7 @@ export const ContextReadingPage = () => {
         pollingTimeoutRef.current = null;
       }
     };
-  }, [folderId, i18n.language, applyArtifact]);
+  }, [folderId, i18n.language, applyArtifactAt]);
 
   const handleCreateContent = async () => {
     if (!folderId) return;
@@ -389,9 +387,9 @@ export const ContextReadingPage = () => {
     await startGeneration();
   };
 
-  const handleOpenLatest = () => {
-    if (!artifact) return;
-    applyArtifact(artifact);
+  const handleOpenHistory = () => {
+    if (artifacts.length === 0) return;
+    applyArtifactAt(artifacts, 0);
   };
 
   useEffect(() => {
@@ -406,6 +404,8 @@ export const ContextReadingPage = () => {
     });
     return () => window.cancelAnimationFrame(frame);
   }, [highlightedChipIndex]);
+
+  const currentArtifact = artifacts[artifactIndex] ?? null;
 
   if (!folderId) {
     return (
@@ -431,12 +431,10 @@ export const ContextReadingPage = () => {
     );
   }
 
-  // Показываем процесс генерации (первый ответ статуса может прийти с задержкой)
   if (initialLoading || generating || loading) {
     return <ContextReadingContextLoading learnFolderPath={learnFolderPath} />;
   }
 
-  // Показываем результат с кнопками
   if (!showStart && status?.state === 'completed' && status.result) {
     return (
       <ContextReadingContentOutput
@@ -446,10 +444,15 @@ export const ContextReadingPage = () => {
         onChipClick={index => setHighlightedChipIndex(prev => (prev === index ? null : index))}
         text={status.result.text}
         translation={status.result.translation}
-        jobId={artifact ? null : currentJobId}
-        artifactId={artifact?.id ?? null}
+        jobId={currentArtifact ? null : currentJobId}
+        artifactId={currentArtifact?.id ?? null}
         hasAudio={status.result.hasAudio}
         progress={progress}
+        historyProgress={
+          artifacts.length > 0
+            ? { current: artifactIndex + 1, total: artifacts.length }
+            : null
+        }
         generatedTextBlockRef={generatedTextBlockRef}
         onReset={handleReset}
         onNext={handleNext}
@@ -469,8 +472,8 @@ export const ContextReadingPage = () => {
       languageLevel={languageLevel}
       onLanguageLevelChange={setLanguageLevel}
       onCreateContent={handleCreateContent}
-      hasLatest={Boolean(artifact)}
-      onOpenLatest={handleOpenLatest}
+      hasLatest={artifacts.length > 0}
+      onOpenLatest={handleOpenHistory}
       loading={loading}
       generating={generating}
     />

@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey, bigint, jsonb, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, vector, boolean, timestamp, integer, real, primaryKey, bigint, jsonb, index } from 'drizzle-orm/pg-core';
 
 export const cards = pgTable('cards', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -109,9 +109,10 @@ export const contextReadingArtifacts = pgTable(
         createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     },
     (table) => ({
-        userFolderUidx: uniqueIndex('context_reading_artifacts_user_folder_uidx').on(
+        userFolderCreatedIdx: index('context_reading_artifacts_user_folder_created_idx').on(
             table.userId,
-            table.folderId
+            table.folderId,
+            table.createdAt
         ),
     })
 );

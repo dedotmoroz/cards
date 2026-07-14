@@ -4,7 +4,7 @@ import {
     GetNextContextCardsUseCase,
     ResetContextReadingUseCase,
     GenerateContextTextUseCase,
-    GetLatestContextReadingArtifactUseCase,
+    GetContextReadingArtifactHistoryUseCase,
     PersistContextReadingArtifactUseCase,
 } from '../../../application/context-reading-service';
 import {
@@ -20,7 +20,7 @@ export function registerContextReadingRoutes(
     getNextContextCardsUseCase: GetNextContextCardsUseCase,
     resetContextReadingUseCase: ResetContextReadingUseCase,
     generateContextTextUseCase: GenerateContextTextUseCase,
-    getLatestContextReadingArtifactUseCase: GetLatestContextReadingArtifactUseCase,
+    getContextReadingArtifactHistoryUseCase: GetContextReadingArtifactHistoryUseCase,
     persistContextReadingArtifactUseCase: PersistContextReadingArtifactUseCase
 ) {
     /**
@@ -290,7 +290,7 @@ export function registerContextReadingRoutes(
     );
 
     /**
-     * Persist completed generation as the latest folder artifact
+     * Persist completed generation as a folder artifact (append to history)
      */
     fastify.post(
         '/context-reading/persist',
@@ -313,7 +313,7 @@ export function registerContextReadingRoutes(
                     },
                 },
                 tags: ['context-reading'],
-                summary: 'Persist latest context reading artifact for folder',
+                summary: 'Persist context reading artifact into folder history',
             },
         },
         async (
@@ -364,10 +364,10 @@ export function registerContextReadingRoutes(
     );
 
     /**
-     * Latest saved context artifact for folder
+     * Saved context artifact history for folder (oldest first)
      */
     fastify.get(
-        '/context-reading/latest',
+        '/context-reading/history',
         {
             preHandler: [fastify.authenticate],
             schema: {
@@ -379,7 +379,7 @@ export function registerContextReadingRoutes(
                     },
                 },
                 tags: ['context-reading'],
-                summary: 'Get latest context reading artifact for folder',
+                summary: 'Get context reading artifact history for folder',
             },
         },
         async (
@@ -392,16 +392,14 @@ export function registerContextReadingRoutes(
             const { folderId } = req.query;
 
             try {
-                const artifact = await getLatestContextReadingArtifactUseCase.execute({
+                const artifacts = await getContextReadingArtifactHistoryUseCase.execute({
                     userId,
                     folderId,
                 });
 
-                if (!artifact) {
-                    return reply.code(404).send({ message: 'No saved context' });
-                }
-
-                return reply.send(artifact.toPublicDTO());
+                return reply.send({
+                    artifacts: artifacts.map(a => a.toPublicDTO()),
+                });
             } catch (error) {
                 if (error instanceof Error) {
                     if (error.message === 'Folder not found') {

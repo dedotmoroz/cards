@@ -118,18 +118,11 @@ export const contextReadingApi = {
     return response.data;
   },
 
-  getLatest: async (folderId: string): Promise<ContextReadingArtifact | null> => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/context-reading/latest`, {
-        params: { folderId },
-      });
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        return null;
-      }
-      throw error;
-    }
+  getHistory: async (folderId: string): Promise<ContextReadingArtifact[]> => {
+    const response = await axios.get(`${API_BASE_URL}/context-reading/history`, {
+      params: { folderId },
+    });
+    return response.data.artifacts ?? [];
   },
 
   persist: async (data: ContextReadingPersistRequest): Promise<ContextReadingArtifact> => {

@@ -154,7 +154,7 @@ export const ContextReadingContentStart = ({
               disabled={loading || generating}
               sx={{ ml: 1 }}
             >
-              {t('contextReading.openLatest', { defaultValue: 'Open last' })}
+                {t('contextReading.openHistory', { defaultValue: 'Open saved' })}
             </ButtonUI>
           )}
         </StyledButtonContainer>

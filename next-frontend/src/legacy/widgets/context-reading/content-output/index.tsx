@@ -86,6 +86,7 @@ export type ContextReadingContentOutputProps = {
   artifactId?: string | null;
   hasAudio?: boolean;
   progress: { used: number; total: number } | null;
+  historyProgress?: { current: number; total: number } | null;
   generatedTextBlockRef: RefObject<HTMLDivElement | null>;
   onReset: () => void;
   onNext: () => void;
@@ -104,6 +105,7 @@ export const ContextReadingContentOutput = ({
   artifactId,
   hasAudio,
   progress,
+  historyProgress,
   generatedTextBlockRef,
   onReset,
   onNext,
@@ -194,6 +196,15 @@ export const ContextReadingContentOutput = ({
             <StyledResetButton onClick={onReset} disabled={loading || generating}>
                 {t('contextReading.reset')}
             </StyledResetButton>
+            {historyProgress && (
+                <StyledProgressText>
+                    {t('contextReading.historyProgress', {
+                        current: historyProgress.current,
+                        total: historyProgress.total,
+                        defaultValue: '{{current}}/{{total}} saved',
+                    })}
+                </StyledProgressText>
+            )}
             {progress && (
                 <StyledProgressText>
                     {t('contextReading.progress', {

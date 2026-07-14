@@ -720,14 +720,14 @@ describe('📖 Context Reading API (e2e)', () => {
         });
     });
 
-    describe('POST /context-reading/persist and GET /context-reading/latest', () => {
+    describe('POST /context-reading/persist and GET /context-reading/history', () => {
         beforeEach(() => {
             jest.clearAllMocks();
             mockedPromoteContextAudio.mockResolvedValue({ ok: true, hasAudio: true });
             mockedDeleteContextArtifactAudio.mockResolvedValue({ ok: true, deleted: true });
         });
 
-        it('сохраняет артефакт и отдаёт его как latest', async () => {
+        it('сохраняет артефакт и отдаёт его в history ASC', async () => {
             mockedFetchContextGenerationStatus.mockResolvedValue({
                 id: 'persist-job-1',
                 state: 'completed',
@@ -756,14 +756,14 @@ describe('📖 Context Reading API (e2e)', () => {
             expect(persistRes.body.cardsSnapshot).toHaveLength(3);
             expect(mockedPromoteContextAudio).toHaveBeenCalled();
 
-            const latestRes = await request(fastify.server)
-                .get('/context-reading/latest')
+            const historyRes = await request(fastify.server)
+                .get('/context-reading/history')
                 .set('Cookie', authCookie)
                 .query({ folderId });
 
-            expect(latestRes.status).toBe(200);
-            expect(latestRes.body.id).toBe(persistRes.body.id);
-            expect(latestRes.body.jobId).toBe('persist-job-1');
+            expect(historyRes.status).toBe(200);
+            expect(Array.isArray(historyRes.body.artifacts)).toBe(true);
+            expect(historyRes.body.artifacts.some((a: { id: string }) => a.id === persistRes.body.id)).toBe(true);
         });
 
         it('идемпотентен для того же jobId', async () => {
@@ -802,7 +802,7 @@ describe('📖 Context Reading API (e2e)', () => {
             expect(second.body.id).toBe(first.body.id);
         });
 
-        it('заменяет предыдущий артефакт новым jobId', async () => {
+        it('добавляет новый артефакт без удаления предыдущего', async () => {
             mockedFetchContextGenerationStatus
                 .mockResolvedValueOnce({
                     id: 'persist-job-old',
@@ -849,17 +849,58 @@ describe('📖 Context Reading API (e2e)', () => {
             expect(newRes.status).toBe(200);
             expect(newRes.body.id).not.toBe(oldRes.body.id);
             expect(newRes.body.text).toBe('New');
-            expect(mockedDeleteContextArtifactAudio).toHaveBeenCalledWith(oldRes.body.id);
+            expect(mockedDeleteContextArtifactAudio).not.toHaveBeenCalledWith(oldRes.body.id);
 
-            const latestRes = await request(fastify.server)
-                .get('/context-reading/latest')
+            const historyRes = await request(fastify.server)
+                .get('/context-reading/history')
                 .set('Cookie', authCookie)
                 .query({ folderId });
 
-            expect(latestRes.body.id).toBe(newRes.body.id);
+            const ids = historyRes.body.artifacts.map((a: { id: string }) => a.id);
+            expect(ids).toContain(oldRes.body.id);
+            expect(ids).toContain(newRes.body.id);
         });
 
-        it('reset прогресса не удаляет latest', async () => {
+        it('prune удаляет самый старый при превышении лимита 10', async () => {
+            const createdIds: string[] = [];
+
+            for (let i = 0; i < 11; i++) {
+                mockedFetchContextGenerationStatus.mockResolvedValueOnce({
+                    id: `persist-job-prune-${i}`,
+                    state: 'completed',
+                    progress: 100,
+                    result: {
+                        text: `Text ${i}`,
+                        translation: `Перевод ${i}`,
+                        hasAudio: true,
+                    },
+                    queueType: 'context',
+                });
+
+                const res = await request(fastify.server)
+                    .post('/context-reading/persist')
+                    .set('Cookie', authCookie)
+                    .send({
+                        jobId: `persist-job-prune-${i}`,
+                        folderId,
+                        cardIds: cardIds.slice(0, 3),
+                    });
+
+                expect(res.status).toBe(200);
+                createdIds.push(res.body.id);
+            }
+
+            const historyRes = await request(fastify.server)
+                .get('/context-reading/history')
+                .set('Cookie', authCookie)
+                .query({ folderId });
+
+            expect(historyRes.body.artifacts.length).toBeLessThanOrEqual(10);
+            expect(historyRes.body.artifacts.map((a: { id: string }) => a.id)).not.toContain(createdIds[0]);
+            expect(mockedDeleteContextArtifactAudio).toHaveBeenCalledWith(createdIds[0]);
+        });
+
+        it('reset прогресса не удаляет history', async () => {
             mockedFetchContextGenerationStatus.mockResolvedValue({
                 id: 'persist-job-reset',
                 state: 'completed',
@@ -886,13 +927,15 @@ describe('📖 Context Reading API (e2e)', () => {
                 .set('Cookie', authCookie)
                 .send({ folderId });
 
-            const latestRes = await request(fastify.server)
-                .get('/context-reading/latest')
+            const historyRes = await request(fastify.server)
+                .get('/context-reading/history')
                 .set('Cookie', authCookie)
                 .query({ folderId });
 
-            expect(latestRes.status).toBe(200);
-            expect(latestRes.body.text).toBe('Keep me');
+            expect(historyRes.status).toBe(200);
+            expect(
+                historyRes.body.artifacts.some((a: { text: string }) => a.text === 'Keep me')
+            ).toBe(true);
         });
 
         it('возвращает 400 если job не completed', async () => {

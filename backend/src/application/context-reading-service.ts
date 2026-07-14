@@ -1,5 +1,10 @@
 import { randomUUID } from 'crypto';
-import { ContextReadingState, ContextReadingArtifact, CONTEXT_READING_POOL_MODE_MISMATCH } from '../domain/context-reading'
+import {
+    ContextReadingState,
+    ContextReadingArtifact,
+    CONTEXT_READING_POOL_MODE_MISMATCH,
+    MAX_CONTEXT_READING_ARTIFACTS,
+} from '../domain/context-reading'
 import { CardRepository as ContextReadingCardRepository, ContextReadingStateRepository } from '../ports/context-reading-repository'
 import { ContextReadingArtifactRepository } from '../ports/context-reading-artifact-repository'
 import { CardRepository } from '../ports/card-repository'
@@ -162,7 +167,7 @@ export class GenerateContextTextUseCase {
     }
 }
 
-export class GetLatestContextReadingArtifactUseCase {
+export class GetContextReadingArtifactHistoryUseCase {
     constructor(
         private readonly artifactRepo: ContextReadingArtifactRepository,
         private readonly folderRepo: FolderRepository
@@ -171,7 +176,7 @@ export class GetLatestContextReadingArtifactUseCase {
     async execute(params: {
         userId: string;
         folderId: string;
-    }): Promise<ContextReadingArtifact | null> {
+    }): Promise<ContextReadingArtifact[]> {
         const folder = await this.folderRepo.findById(params.folderId);
         if (!folder) {
             throw new Error('Folder not found');
@@ -180,7 +185,7 @@ export class GetLatestContextReadingArtifactUseCase {
             throw new Error('Access denied');
         }
 
-        return this.artifactRepo.findLatest(params.userId, params.folderId);
+        return this.artifactRepo.listByFolder(params.userId, params.folderId);
     }
 }
 
@@ -217,9 +222,9 @@ export class PersistContextReadingArtifactUseCase {
             throw new Error('Access denied');
         }
 
-        const existing = await this.artifactRepo.findLatest(userId, folderId);
-        if (existing && existing.jobId === jobId) {
-            return existing;
+        const existingByJob = await this.artifactRepo.findByJobId(userId, folderId, jobId);
+        if (existingByJob) {
+            return existingByJob;
         }
 
         const status = await this.fetchContextGenerationStatus(jobId);
@@ -252,7 +257,7 @@ export class PersistContextReadingArtifactUseCase {
             }
         }
 
-        const { artifact, previousArtifactId } = await this.artifactRepo.upsertLatest({
+        const { artifact, alreadyExisted } = await this.artifactRepo.insertAppend({
             id: artifactId,
             userId,
             folderId,
@@ -269,12 +274,22 @@ export class PersistContextReadingArtifactUseCase {
             createdAt: new Date(),
         });
 
-        if (previousArtifactId) {
+        if (alreadyExisted) {
+            return artifact;
+        }
+
+        const prunedIds = await this.artifactRepo.pruneOldestBeyond(
+            userId,
+            folderId,
+            MAX_CONTEXT_READING_ARTIFACTS
+        );
+
+        for (const prunedId of prunedIds) {
             try {
-                await this.deleteContextArtifactAudio(previousArtifactId);
+                await this.deleteContextArtifactAudio(prunedId);
             } catch (error) {
                 console.error(
-                    `[context-reading] failed to delete previous artifact audio ${previousArtifactId}`,
+                    `[context-reading] failed to delete pruned artifact audio ${prunedId}`,
                     error
                 );
             }

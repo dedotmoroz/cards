@@ -437,7 +437,9 @@
     "backToFolder": "Back to folder",
     "createContentAgain": "Create content again",
     "listen": "Listen",
-    "openLatest": "Open last"
+    "openLatest": "Open last",
+    "openHistory": "Open saved",
+    "historyProgress": "{{current}}/{{total}} saved"
   },
   "telegram": {
     "connect": {

@@ -437,7 +437,9 @@
     "backToFolder": "Вернуться в папку",
     "createContentAgain": "Создать контент заново",
     "listen": "Прослушать",
-    "openLatest": "Открыть последний"
+    "openLatest": "Открыть последний",
+    "openHistory": "Открыть сохранённые",
+    "historyProgress": "{{current}}/{{total}} сохранённых"
   },
   "telegram": {
     "connect": {

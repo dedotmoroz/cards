@@ -46,3 +46,5 @@ export class ContextReadingArtifact {
 }
 
 export const CONTEXT_READING_POOL_MODE_MISMATCH = 'CONTEXT_READING_POOL_MODE_MISMATCH';
+
+export const MAX_CONTEXT_READING_ARTIFACTS = 10;

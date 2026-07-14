@@ -1,6 +1,6 @@
 import { ContextReadingArtifact } from '../domain/context-reading';
 
-export type UpsertContextReadingArtifactInput = {
+export type AppendContextReadingArtifactInput = {
     id: string;
     userId: string;
     folderId: string;
@@ -14,22 +14,37 @@ export type UpsertContextReadingArtifactInput = {
     createdAt: Date;
 };
 
-export type UpsertContextReadingArtifactResult = {
+export type AppendContextReadingArtifactResult = {
     artifact: ContextReadingArtifact;
-    previousArtifactId: string | null;
+    /** True when an existing row with the same jobId was returned. */
+    alreadyExisted: boolean;
 };
 
 export interface ContextReadingArtifactRepository {
-    findLatest(
+    listByFolder(
         userId: string,
         folderId: string
+    ): Promise<ContextReadingArtifact[]>;
+    findByJobId(
+        userId: string,
+        folderId: string,
+        jobId: string
     ): Promise<ContextReadingArtifact | null>;
     findByIdForUser(
         userId: string,
         artifactId: string
     ): Promise<ContextReadingArtifact | null>;
-    upsertLatest(
-        input: UpsertContextReadingArtifactInput
-    ): Promise<UpsertContextReadingArtifactResult>;
+    insertAppend(
+        input: AppendContextReadingArtifactInput
+    ): Promise<AppendContextReadingArtifactResult>;
+    /**
+     * Deletes oldest artifacts beyond `limit` for the folder.
+     * Returns ids of deleted artifacts (for audio cleanup).
+     */
+    pruneOldestBeyond(
+        userId: string,
+        folderId: string,
+        limit: number
+    ): Promise<string[]>;
     deleteByUserId(userId: string, executor?: any): Promise<void>;
 }

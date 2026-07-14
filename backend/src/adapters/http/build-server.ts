@@ -26,7 +26,7 @@ import {
     GetNextContextCardsUseCase,
     ResetContextReadingUseCase,
     GenerateContextTextUseCase,
-    GetLatestContextReadingArtifactUseCase,
+    GetContextReadingArtifactHistoryUseCase,
     PersistContextReadingArtifactUseCase,
 } from '../../application/context-reading-service';
 
@@ -191,8 +191,8 @@ export async function buildServer() {
             requestContextGeneration
         );
 
-    const getLatestContextReadingArtifactUseCase =
-        new GetLatestContextReadingArtifactUseCase(
+    const getContextReadingArtifactHistoryUseCase =
+        new GetContextReadingArtifactHistoryUseCase(
             contextReadingArtifactRepo,
             folderRepo
         );
@@ -242,7 +242,7 @@ export async function buildServer() {
         getNextContextCardsUseCase,
         resetContextReadingUseCase,
         generateContextTextUseCase,
-        getLatestContextReadingArtifactUseCase,
+        getContextReadingArtifactHistoryUseCase,
         persistContextReadingArtifactUseCase
     );
     const adminService = new AdminService(adminRepo, userService);
