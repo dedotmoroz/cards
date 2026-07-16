@@ -1,3 +1,4 @@
+/** Full-width waveform player for on-demand context-reading audio. */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import { Pause, PlayArrow } from '@mui/icons-material';
