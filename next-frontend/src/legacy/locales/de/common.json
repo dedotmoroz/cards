@@ -414,7 +414,8 @@
     "folderRequired": "Ordner-ID ist erforderlich",
     "noWordsLeft": "In diesem Ordner sind keine Wörter mehr zum Erstellen von Kontextlese-Inhalten vorhanden.",
     "backToFolder": "Zurück zum Ordner",
-    "createContentAgain": "Inhalt erneut erstellen"
+    "createContentAgain": "Inhalt erneut erstellen",
+    "createAudio": "Audio erstellen"
   },
   "telegram": {
     "connect": {

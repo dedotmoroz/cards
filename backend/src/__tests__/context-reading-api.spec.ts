@@ -8,6 +8,10 @@ jest.mock('../adapters/ai/ai-service-client', () => ({
     fetchContextGenerationStatus: jest.fn(),
     fetchContextAudio: jest.fn(),
     fetchContextArtifactAudio: jest.fn(),
+    fetchContextAudioExistsByJobId: jest.fn(),
+    fetchContextAudioExistsByArtifactId: jest.fn(),
+    generateContextAudio: jest.fn(),
+    generateAndPromoteContextAudio: jest.fn(),
     promoteContextAudio: jest.fn(),
     deleteContextArtifactAudio: jest.fn(),
 }));

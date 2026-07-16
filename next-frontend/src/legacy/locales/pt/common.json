@@ -414,7 +414,8 @@
     "folderRequired": "É necessário o ID da pasta",
     "noWordsLeft": "Já não há mais palavras nesta pasta para criar conteúdo de leitura contextual.",
     "backToFolder": "Voltar à pasta",
-    "createContentAgain": "Criar conteúdo novamente"
+    "createContentAgain": "Criar conteúdo novamente",
+    "createAudio": "Criar áudio"
   },
   "telegram": {
     "connect": {

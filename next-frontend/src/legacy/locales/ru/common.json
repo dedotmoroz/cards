@@ -439,7 +439,8 @@
     "listen": "Прослушать",
     "openLatest": "Открыть последний",
     "openHistory": "Открыть сохранённые",
-    "historyProgress": "{{current}}/{{total}} сохранённых"
+    "historyProgress": "{{current}}/{{total}} сохранённых",
+    "createAudio": "Создать аудио"
   },
   "telegram": {
     "connect": {

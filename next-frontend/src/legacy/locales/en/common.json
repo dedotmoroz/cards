@@ -439,7 +439,8 @@
     "listen": "Listen",
     "openLatest": "Open last",
     "openHistory": "Open saved",
-    "historyProgress": "{{current}}/{{total}} saved"
+    "historyProgress": "{{current}}/{{total}} saved",
+    "createAudio": "Create audio"
   },
   "telegram": {
     "connect": {

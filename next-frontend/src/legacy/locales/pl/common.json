@@ -414,7 +414,8 @@
     "folderRequired": "Wymagany identyfikator folderu",
     "noWordsLeft": "W tym folderze skończyły się słowa do tworzenia treści do czytania kontekstowego.",
     "backToFolder": "Wróć do folderu",
-    "createContentAgain": "Utwórz treść ponownie"
+    "createContentAgain": "Utwórz treść ponownie",
+    "createAudio": "Utwórz audio"
   },
   "telegram": {
     "connect": {

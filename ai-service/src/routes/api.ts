@@ -7,6 +7,7 @@ import {
     createContextAudioReadStream,
     deleteContextAudioFile,
     promoteContextAudio,
+    synthesizeContextAudio,
 } from "../services/contextAudioService.js";
 import { Job, QueueEvents } from "bullmq";
 import { redis } from "../redis/connection.js";
@@ -347,14 +348,101 @@ export default async function registerApi(app: FastifyInstance) {
                 return reply.code(404).send({ error: "audio not ready" });
             }
 
-            const result = job.returnvalue as ContextJobResult | undefined;
-            if (!result?.hasAudio || !contextAudioFileExists(id)) {
+            if (!contextAudioFileExists(id)) {
                 return reply.code(404).send({ error: "audio not found" });
             }
 
             reply.header("Content-Type", "audio/mpeg");
             reply.header("Cache-Control", "private, max-age=3600");
             return reply.send(createContextAudioReadStream(id));
+        },
+    });
+
+    // Проверка наличия mp3-файла (без зависимости от hasAudio в result).
+    app.get<{ Params: { id: string } }>("/jobs/:id/audio/exists", {
+        handler: async (req, reply) => {
+            const { id } = req.params;
+
+            const job = await Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id);
+            if (!job) {
+                return reply.code(404).send({ error: "job not found" });
+            }
+
+            const state = await job.getState();
+            if (state !== "completed") {
+                return reply.send({ hasAudio: false });
+            }
+
+            return reply.send({ hasAudio: contextAudioFileExists(id) });
+        },
+    });
+
+    app.post<{ Params: { id: string } }>("/jobs/:id/audio/generate", {
+        handler: async (req, reply) => {
+            const { id } = req.params;
+
+            const job = await Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id);
+            if (!job) {
+                return reply.code(404).send({ error: "job not found" });
+            }
+
+            const state = await job.getState();
+            if (state !== "completed") {
+                return reply.code(409).send({ error: "job must be completed before audio generation" });
+            }
+
+            const result = job.returnvalue as ContextJobResult | undefined;
+            const text = result?.text;
+            if (!text) {
+                return reply.code(400).send({ error: "missing generated text for job" });
+            }
+
+            if (contextAudioFileExists(id)) {
+                return reply.send({ ok: true, hasAudio: true });
+            }
+
+            const created = await synthesizeContextAudio(id, text);
+            return reply.send({ ok: true, hasAudio: created });
+        },
+    });
+
+    app.post<{
+        Params: { id: string };
+        Body: { artifactId: string };
+    }>("/jobs/:id/audio/generate-promote", {
+        handler: async (req, reply) => {
+            const { id } = req.params;
+            const { artifactId } = req.body;
+
+            if (!artifactId?.trim()) {
+                return reply.code(400).send({ error: "artifactId is required" });
+            }
+
+            const job = await Job.fromId<ContextJobInput, ContextJobResult>(contextQueue, id);
+            if (!job) {
+                return reply.code(404).send({ error: "job not found" });
+            }
+
+            const state = await job.getState();
+            if (state !== "completed") {
+                return reply.code(409).send({ error: "job must be completed before audio generation" });
+            }
+
+            const result = job.returnvalue as ContextJobResult | undefined;
+            const text = result?.text;
+            if (!text) {
+                return reply.code(400).send({ error: "missing generated text for job" });
+            }
+
+            if (!contextAudioFileExists(id)) {
+                const created = await synthesizeContextAudio(id, text);
+                if (!created) {
+                    return reply.send({ ok: true, hasAudio: false });
+                }
+            }
+
+            const promoted = promoteContextAudio(id, artifactId);
+            return reply.send({ ok: true, hasAudio: promoted });
         },
     });
 
@@ -411,6 +499,13 @@ export default async function registerApi(app: FastifyInstance) {
             reply.header("Content-Type", "audio/mpeg");
             reply.header("Cache-Control", "private, max-age=3600");
             return reply.send(createContextAudioReadStream(artifactId));
+        },
+    });
+
+    app.get<{ Params: { artifactId: string } }>("/artifacts/:artifactId/audio/exists", {
+        handler: async (req, reply) => {
+            const { artifactId } = req.params;
+            return reply.send({ hasAudio: contextAudioFileExists(artifactId) });
         },
     });
 

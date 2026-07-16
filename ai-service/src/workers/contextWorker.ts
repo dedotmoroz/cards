@@ -3,20 +3,15 @@ import { Worker, Job } from "bullmq";
 import { redis } from "../redis/connection";
 import { queueName, ContextJobInput, ContextJobResult } from "../queues/contextQueue";
 import { generateContextText } from "../services/contextTextService";
-import { synthesizeContextAudio } from "../services/contextAudioService";
 
 export async function processContextJob(job: Job<ContextJobInput, ContextJobResult>) {
     await job.updateProgress(5);
     const { text, translation } = await generateContextText(job.data);
     await job.updateProgress(60);
 
-    let hasAudio = false;
-    if (job.id) {
-        hasAudio = await synthesizeContextAudio(job.id, text);
-    }
-
+    // В ручном режиме аудио создаётся отдельно по кнопке.
     await job.updateProgress(100);
-    return { text, translation, hasAudio };
+    return { text, translation, hasAudio: false };
 }
 
 const worker = new Worker<ContextJobInput, ContextJobResult>(

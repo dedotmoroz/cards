@@ -11,6 +11,10 @@ import {
     fetchContextGenerationStatus,
     fetchContextAudio,
     fetchContextArtifactAudio,
+    fetchContextAudioExistsByJobId,
+    fetchContextAudioExistsByArtifactId,
+    generateContextAudio,
+    generateAndPromoteContextAudio,
 } from '../../ai/ai-service-client';
 import { CardDTO } from '../dto';
 import { CONTEXT_READING_POOL_MODE_MISMATCH } from '../../../domain/context-reading';
@@ -469,6 +473,106 @@ export function registerContextReadingRoutes(
                 }
                 throw error;
             }
+        }
+    );
+
+    /**
+     * Проверка наличия mp3 для jobId или artifactId.
+     */
+    fastify.get(
+        '/context-reading/audio/exists',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                querystring: {
+                    type: 'object',
+                    properties: {
+                        jobId: { type: 'string' },
+                        artifactId: { type: 'string', format: 'uuid' },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Check context reading audio existence',
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            hasAudio: { type: 'boolean' },
+                        },
+                    },
+                },
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Querystring: { jobId?: string; artifactId?: string };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const { jobId, artifactId } = req.query;
+
+            if ((!jobId && !artifactId) || (jobId && artifactId)) {
+                return reply.code(400).send({
+                    message: 'Provide exactly one of jobId or artifactId',
+                });
+            }
+
+            try {
+                if (jobId) {
+                    const res = await fetchContextAudioExistsByJobId(jobId);
+                    return reply.send(res);
+                }
+                const res = await fetchContextAudioExistsByArtifactId(artifactId!);
+                return reply.send(res);
+            } catch (error) {
+                // Для UX считаем “не найдено” как hasAudio=false.
+                return reply.send({ hasAudio: false });
+            }
+        }
+    );
+
+    /**
+     * Ручная генерация аудио для jobId (опционально с промоутом в artifactId).
+     */
+    fastify.post(
+        '/context-reading/audio/generate',
+        {
+            preHandler: [fastify.authenticate],
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['jobId'],
+                    properties: {
+                        jobId: { type: 'string' },
+                        artifactId: { type: 'string', format: 'uuid' },
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            ok: { type: 'boolean' },
+                            hasAudio: { type: 'boolean' },
+                        },
+                    },
+                },
+                tags: ['context-reading'],
+                summary: 'Generate context reading audio manually',
+            },
+        },
+        async (
+            req: FastifyRequest<{
+                Body: { jobId: string; artifactId?: string };
+            }>,
+            reply: FastifyReply
+        ) => {
+            const { jobId, artifactId } = req.body;
+
+            const result = artifactId
+                ? await generateAndPromoteContextAudio(jobId, artifactId)
+                : await generateContextAudio(jobId);
+
+            return reply.send(result);
         }
     );
 }

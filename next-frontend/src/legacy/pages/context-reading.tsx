@@ -444,7 +444,7 @@ export const ContextReadingPage = () => {
         onChipClick={index => setHighlightedChipIndex(prev => (prev === index ? null : index))}
         text={status.result.text}
         translation={status.result.translation}
-        jobId={currentArtifact ? null : currentJobId}
+          jobId={currentArtifact?.jobId ?? currentJobId}
         artifactId={currentArtifact?.id ?? null}
         hasAudio={status.result.hasAudio}
         progress={progress}

@@ -137,6 +137,36 @@ export async function fetchContextAudio(jobId: string): Promise<Response> {
   return response;
 }
 
+export async function fetchContextAudioExistsByJobId(jobId: string): Promise<{ hasAudio: boolean }> {
+  return callAiService<{ hasAudio: boolean }>(`/jobs/${jobId}/audio/exists`, {
+    method: 'GET',
+  });
+}
+
+export async function fetchContextAudioExistsByArtifactId(artifactId: string): Promise<{ hasAudio: boolean }> {
+  return callAiService<{ hasAudio: boolean }>(`/artifacts/${artifactId}/audio/exists`, {
+    method: 'GET',
+  });
+}
+
+export async function generateContextAudio(jobId: string): Promise<{ ok: boolean; hasAudio: boolean }> {
+  return callAiService<{ ok: boolean; hasAudio: boolean }>(`/jobs/${jobId}/audio/generate`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+    headers: {},
+  });
+}
+
+export async function generateAndPromoteContextAudio(
+  jobId: string,
+  artifactId: string,
+): Promise<{ ok: boolean; hasAudio: boolean }> {
+  return callAiService<{ ok: boolean; hasAudio: boolean }>(`/jobs/${jobId}/audio/generate-promote`, {
+    method: 'POST',
+    body: JSON.stringify({ artifactId }),
+  });
+}
+
 export async function promoteContextAudio(
   jobId: string,
   artifactId: string,

@@ -57,6 +57,15 @@ export type ContextReadingArtifact = {
   createdAt: string;
 };
 
+export type ContextReadingAudioExistsResponse = {
+  hasAudio: boolean;
+};
+
+export type ContextReadingAudioGenerateResponse = {
+  ok: boolean;
+  hasAudio: boolean;
+};
+
 export type ContextReadingPersistRequest = {
   jobId: string;
   folderId: string;
@@ -114,6 +123,23 @@ export const contextReadingApi = {
   getGenerateStatus: async (jobId: string): Promise<ContextReadingGenerateStatusResponse> => {
     const response = await axios.get(`${API_BASE_URL}/context-reading/generate-status`, {
       params: { jobId },
+    });
+    return response.data;
+  },
+
+  getAudioExists: async (params: { jobId?: string; artifactId?: string }): Promise<ContextReadingAudioExistsResponse> => {
+    const search = new URLSearchParams();
+    if (params.jobId) search.set('jobId', params.jobId);
+    if (params.artifactId) search.set('artifactId', params.artifactId);
+
+    const response = await axios.get(`${API_BASE_URL}/context-reading/audio/exists?${search.toString()}`);
+    return response.data;
+  },
+
+  generateAudio: async (data: { jobId: string; artifactId?: string | null }): Promise<ContextReadingAudioGenerateResponse> => {
+    const response = await axios.post(`${API_BASE_URL}/context-reading/audio/generate`, {
+      jobId: data.jobId,
+      ...(data.artifactId ? { artifactId: data.artifactId } : {}),
     });
     return response.data;
   },

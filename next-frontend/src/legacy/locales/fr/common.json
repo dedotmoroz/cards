@@ -414,7 +414,8 @@
     "folderRequired": "L'identifiant du dossier est requis",
     "noWordsLeft": "Il ne reste plus de mots dans ce dossier pour créer du contenu de lecture contextuelle.",
     "backToFolder": "Retour au dossier",
-    "createContentAgain": "Créer du contenu à nouveau"
+    "createContentAgain": "Créer du contenu à nouveau",
+    "createAudio": "Créer de l'audio"
   },
   "telegram": {
     "connect": {

@@ -1,9 +1,11 @@
+import { useEffect, useRef, useState } from 'react';
 import type { RefObject, ReactNode } from 'react';
-import { Box, Typography, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, Typography, AccordionSummary, AccordionDetails, Button, CircularProgress } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
 import { ContextReadingAudioPlayer } from '@/widgets/context-reading/context-audio-player';
+import { contextReadingApi } from '@/shared/api/contextReadingApi';
 import {
   StyledContainerWrapper,
   StyledHeaderRow,
@@ -114,6 +116,69 @@ export const ContextReadingContentOutput = ({
 }: ContextReadingContentOutputProps) => {
   const { t } = useTranslation();
 
+  const [audioExists, setAudioExists] = useState<boolean>(Boolean(hasAudio));
+  const [audioGenerating, setAudioGenerating] = useState(false);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  const audioRequestSeqRef = useRef(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const run = async () => {
+      setAudioError(null);
+      if (!jobId && !artifactId) {
+        setAudioExists(false);
+        return;
+      }
+
+      try {
+        const res = await contextReadingApi.getAudioExists({
+          jobId: artifactId ? undefined : jobId ?? undefined,
+          artifactId: artifactId ?? undefined,
+        });
+        if (!cancelled) {
+          setAudioExists(Boolean(res.hasAudio));
+        }
+      } catch {
+        if (!cancelled) {
+          setAudioExists(false);
+        }
+      }
+    };
+
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [jobId, artifactId]);
+
+  const handleCreateAudio = async () => {
+    if (!jobId || audioGenerating) return;
+
+    setAudioError(null);
+    const seq = ++audioRequestSeqRef.current;
+    setAudioGenerating(true);
+    try {
+      const res = await contextReadingApi.generateAudio({
+        jobId,
+        artifactId: artifactId ?? undefined,
+      });
+      if (audioRequestSeqRef.current === seq) {
+        setAudioExists(Boolean(res.hasAudio));
+      }
+    } catch (err) {
+      if (audioRequestSeqRef.current === seq) {
+        setAudioError(err instanceof Error ? err.message : 'Failed to generate audio');
+        setAudioExists(false);
+      }
+    } finally {
+      if (audioRequestSeqRef.current === seq) {
+        setAudioGenerating(false);
+      }
+    }
+  };
+
   return (
     <StyledContainerWrapper maxWidth="md">
       {learnFolderPath && <ProfileHeader navigateTo={learnFolderPath} />}
@@ -158,12 +223,37 @@ export const ContextReadingContentOutput = ({
               <StyledAccordionSectionTitle variant="h6" component="span">
                 {t('contextReading.text')}
               </StyledAccordionSectionTitle>
-              <ContextReadingAudioPlayer
-                jobId={jobId}
-                artifactId={artifactId}
-                hasAudio={hasAudio}
-                disabled={loading || generating}
-              />
+              {audioExists ? (
+                <ContextReadingAudioPlayer
+                  jobId={jobId}
+                  artifactId={artifactId}
+                  hasAudio={true}
+                  disabled={loading || generating || audioGenerating}
+                />
+              ) : (
+                <Box
+                  sx={{ ml: 1, flexShrink: 0 }}
+                  onClick={(event) => event.stopPropagation()}
+                  onFocus={(event) => event.stopPropagation()}
+                >
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    disabled={audioGenerating || loading || generating || !jobId}
+                    title={audioError ?? undefined}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void handleCreateAudio();
+                    }}
+                    startIcon={
+                      audioGenerating ? <CircularProgress size={16} color="inherit" /> : undefined
+                    }
+                    sx={{ minWidth: 130 }}
+                  >
+                    {t('contextReading.createAudio', { defaultValue: 'Создать аудио' })}
+                  </Button>
+                </Box>
+              )}
             </Box>
           </AccordionSummary>
           <AccordionDetails>
