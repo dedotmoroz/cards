@@ -223,37 +223,6 @@ export const ContextReadingContentOutput = ({
               <StyledAccordionSectionTitle variant="h6" component="span">
                 {t('contextReading.text')}
               </StyledAccordionSectionTitle>
-              {audioExists ? (
-                <ContextReadingAudioPlayer
-                  jobId={jobId}
-                  artifactId={artifactId}
-                  hasAudio={true}
-                  disabled={loading || generating || audioGenerating}
-                />
-              ) : (
-                <Box
-                  sx={{ ml: 1, flexShrink: 0 }}
-                  onClick={(event) => event.stopPropagation()}
-                  onFocus={(event) => event.stopPropagation()}
-                >
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    disabled={audioGenerating || loading || generating || !jobId}
-                    title={audioError ?? undefined}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      void handleCreateAudio();
-                    }}
-                    startIcon={
-                      audioGenerating ? <CircularProgress size={16} color="inherit" /> : undefined
-                    }
-                    sx={{ minWidth: 130 }}
-                  >
-                    {t('contextReading.createAudio', { defaultValue: 'Создать аудио' })}
-                  </Button>
-                </Box>
-              )}
             </Box>
           </AccordionSummary>
           <AccordionDetails>
@@ -266,6 +235,37 @@ export const ContextReadingContentOutput = ({
                 highlightedChipIndex === null ? null : (currentCards[highlightedChipIndex]?.question ?? null),
               )}
             </StyledAccordionBodyText>
+            <Box
+              sx={{ mt: 2, display: 'flex', justifyContent: 'flex-start' }}
+              onClick={(event) => event.stopPropagation()}
+              onFocus={(event) => event.stopPropagation()}
+            >
+              {audioExists ? (
+                <ContextReadingAudioPlayer
+                  jobId={jobId}
+                  artifactId={artifactId}
+                  hasAudio={true}
+                  disabled={loading || generating || audioGenerating}
+                />
+              ) : (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  disabled={audioGenerating || loading || generating || !jobId}
+                  title={audioError ?? undefined}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    void handleCreateAudio();
+                  }}
+                  startIcon={
+                    audioGenerating ? <CircularProgress size={16} color="inherit" /> : undefined
+                  }
+                  sx={{ minWidth: 130 }}
+                >
+                  {t('contextReading.createAudio', { defaultValue: 'Создать аудио' })}
+                </Button>
+              )}
+            </Box>
           </AccordionDetails>
         </StyledContentAccordion>
 
