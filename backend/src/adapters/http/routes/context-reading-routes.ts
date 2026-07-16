@@ -533,6 +533,7 @@ export function registerContextReadingRoutes(
 
     /**
      * Ручная генерация аудио для jobId (опционально с промоутом в artifactId).
+     * Вызывается из UI по кнопке «Создать аудио».
      */
     fastify.post(
         '/context-reading/audio/generate',
