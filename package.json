@@ -9,8 +9,5 @@
     "start:worker": "npm run worker --prefix ai-service",
     "start:telegram": "npm run dev --prefix telegram-bot",
     "start:strapi": "npm run dev --prefix cms"
-  },
-  "dependencies": {
-    "wavesurfer.js": "^7.12.10"
   }
 }
