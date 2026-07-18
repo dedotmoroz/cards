@@ -50,7 +50,7 @@ export function ContextReadingAudioPlayer({ jobId, artifactId, hasAudio, disable
     const waveSurfer = WaveSurfer.create({
       container,
       media: audio,
-      height: 56,
+      height: 28,
       waveColor: '#D3D8E4',
       progressColor: '#5B6CFF',
       cursorColor: '#1F2937',
@@ -122,7 +122,7 @@ export function ContextReadingAudioPlayer({ jobId, artifactId, hasAudio, disable
     void waveSurferRef.current?.play();
   };
 
-  if (!canRenderPlayer) {
+  if (!hasAudio || !audioSrc) {
     return null;
   }
 
@@ -139,41 +139,52 @@ export function ContextReadingAudioPlayer({ jobId, artifactId, hasAudio, disable
           border: '1px solid',
           borderColor: 'divider',
           borderRadius: 2,
-          px: 1.5,
-          py: 1.25,
+          px: 1,
+          py: 0.5,
           opacity: disabled ? 0.5 : 1,
           pointerEvents: disabled ? 'none' : 'auto',
           bgcolor: 'background.default',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-          <IconButton
-            onClick={handleTogglePlayback}
-            disabled={disabled}
-            aria-label={isPlaying ? t('common.pause', { defaultValue: 'Pause' }) : t('contextReading.listen')}
-            size="small"
-            sx={{
-              flexShrink: 0,
-              bgcolor: 'action.hover',
-            }}
-          >
-            {isPlaying ? <Pause fontSize="small" /> : <PlayArrow fontSize="small" />}
-          </IconButton>
-          <Typography variant="body2" color="text.secondary" sx={{ minWidth: 88, flexShrink: 0 }}>
-            {formatTime(currentTime)} / {formatTime(duration)}
-          </Typography>
-        </Box>
         <Box
-          ref={waveformRef}
           sx={{
-            width: '100%',
-            minHeight: 56,
-            '& wave': {
-              borderRadius: 1,
-              overflow: 'hidden',
-            },
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'stretch', sm: 'center' },
+            gap: { xs: 1, sm: 1.5 },
           }}
-        />
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexShrink: 0 }}>
+            <IconButton
+              onClick={handleTogglePlayback}
+              disabled={disabled}
+              aria-label={isPlaying ? t('common.pause', { defaultValue: 'Pause' }) : t('contextReading.listen')}
+              size="small"
+              sx={{
+                flexShrink: 0,
+                bgcolor: 'action.hover',
+              }}
+            >
+              {isPlaying ? <Pause fontSize="small" /> : <PlayArrow fontSize="small" />}
+            </IconButton>
+            <Typography variant="body2" color="text.secondary" sx={{ minWidth: 88, flexShrink: 0 }}>
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </Typography>
+          </Box>
+          <Box
+            ref={waveformRef}
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              width: { xs: '100%', sm: 'auto' },
+              minHeight: 28,
+              '& wave': {
+                borderRadius: 1,
+                overflow: 'hidden',
+              },
+            }}
+          />
+        </Box>
       </Box>
     </Box>
   );

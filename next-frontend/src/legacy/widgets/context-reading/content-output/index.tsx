@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject, ReactNode } from 'react';
-import { Box, Typography, AccordionSummary, AccordionDetails, Button, CircularProgress } from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
+import { Box, Typography, AccordionSummary, AccordionDetails, CircularProgress } from '@mui/material';
+import { ExpandMore, GraphicEq } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { ProfileHeader } from '@/entities/user';
 import { ContextReadingAudioPlayer } from '@/widgets/context-reading/context-audio-player';
 import { contextReadingApi } from '@/shared/api/contextReadingApi';
+import { ButtonBlack } from '@/shared/ui/button-black';
 import {
   StyledContainerWrapper,
   StyledHeaderRow,
@@ -248,9 +249,7 @@ export const ContextReadingContentOutput = ({
                   disabled={loading || generating || audioGenerating}
                 />
               ) : (
-                <Button
-                  variant="outlined"
-                  size="small"
+                <ButtonBlack
                   disabled={audioGenerating || loading || generating || !jobId}
                   title={audioError ?? undefined}
                   onClick={(event) => {
@@ -258,12 +257,11 @@ export const ContextReadingContentOutput = ({
                     void handleCreateAudio();
                   }}
                   startIcon={
-                    audioGenerating ? <CircularProgress size={16} color="inherit" /> : undefined
+                    audioGenerating ? <CircularProgress size={16} color="inherit" /> : <GraphicEq />
                   }
-                  sx={{ minWidth: 130 }}
                 >
                   {t('contextReading.createAudio', { defaultValue: 'Создать аудио' })}
-                </Button>
+                </ButtonBlack>
               )}
             </Box>
           </AccordionDetails>
