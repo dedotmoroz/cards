@@ -25,7 +25,7 @@ location = /sitemap.xml {
 
 ### robots.txt
 
-Во фронте добавлен `frontend/public/robots.txt` со строкой:
+Во фронте добавлен `next-frontend/public/robots.txt` со строкой:
 
 `Sitemap: https://kotcat.com/sitemap.xml`
 

@@ -1,8 +1,6 @@
 *
 !backend/
 !backend/**
-!frontend/
-!frontend/**
 !next-frontend/
 !next-frontend/**
 !ai-service/
