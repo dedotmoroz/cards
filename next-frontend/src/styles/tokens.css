@@ -77,6 +77,15 @@
     rgba(173, 70, 255, 0.2) 100%
   );
   --bg-outline-hover: rgba(106, 13, 173, 0.05);
+  --bg-overlay: rgba(255, 255, 255, 0.7);
+  --bg-suggestion-hover: var(--color-surface-hover);
+
+  --gradient-cards-header: linear-gradient(
+    90deg,
+    rgba(224, 231, 255, 0.6) 0%,
+    rgba(243, 232, 255, 0.6) 50%,
+    rgba(252, 231, 243, 0.6) 100%
+  );
 
   --text-primary: var(--color-slate-900);
   --text-secondary: var(--color-slate-600);
@@ -90,9 +99,15 @@
   --text-link-accent-hover: var(--color-purple-link-hover);
   --text-auth-outlined: rgba(0, 0, 0, 0.87);
   --text-brand-accent: var(--color-indigo-500);
+  --text-placeholder: rgba(0, 0, 0, 0.2);
+  --text-tertiary: #888888;
 
   --border-default: var(--color-border-subtle);
   --border-strong: var(--color-border-muted);
+  --border-cards-header: rgba(255, 255, 255, 0.9);
+  --border-card-row: rgba(227, 231, 237, 0.74);
+  --border-suggestion: #f0f0f0;
+  --border-learn-card: var(--color-surface-hover);
   --border-inverse: rgba(17, 24, 39, 0.3);
   --border-on-brand: rgba(255, 255, 255, 0.3);
   --border-on-brand-hover: rgba(255, 255, 255, 0.5);
@@ -163,6 +178,27 @@
     var(--color-orange-500) 0%,
     var(--color-red-600) 100%
   );
+  --gradient-learn-card: linear-gradient(
+    135deg,
+    var(--color-white) 0%,
+    var(--color-surface-muted) 100%
+  );
+  --gradient-learn-card-know: linear-gradient(
+    135deg,
+    var(--color-white) 0%,
+    #c4fad8 100%
+  );
+  --gradient-learn-card-dont-know: linear-gradient(
+    320deg,
+    #ffdada 0%,
+    var(--color-white) 100%
+  );
+  --gradient-learn-card-empty: linear-gradient(
+    135deg,
+    rgba(224, 231, 255, 0.5) 0%,
+    rgba(243, 232, 255, 0.5) 50%,
+    rgba(252, 231, 243, 0.5) 100%
+  );
 
   --success: var(--color-green-500);
   --success-strong: var(--color-green-600);
@@ -199,6 +235,8 @@
   --shadow-warning: 0 10px 15px -3px rgba(255, 105, 0, 0.3),
     0 4px 6px -4px rgba(255, 105, 0, 0.3);
   --shadow-inset-input: inset 1px 3px 5px 0 rgba(0, 0, 0, 0.2);
+  --shadow-focus-brand: 0 0 5px 3px rgba(97, 95, 255, 0.3);
+  --shadow-dropdown: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   /* Compat aliases used by body / legacy globals */
   --background: var(--bg-surface);
@@ -219,9 +257,9 @@
   --bg-inverse-solid: #ffffff;
   --bg-appbar: linear-gradient(
     135deg,
-    rgba(20, 16, 40, 0.7) 0%,
-    rgba(30, 16, 40, 0.7) 50%,
-    rgba(40, 16, 36, 0.7) 100%
+    rgba(20, 16, 40, 0.1) 0%,
+    rgba(30, 16, 40, 0.1) 50%,
+    rgba(40, 16, 36, 0) 100%
   );
   --bg-chip: linear-gradient(
     90deg,
@@ -229,6 +267,36 @@
     rgba(173, 70, 255, 0.25) 100%
   );
   --bg-outline-hover: rgba(173, 70, 255, 0.12);
+  --bg-overlay: rgba(22, 22, 34, 0.7);
+  --bg-suggestion-hover: #1a1a28;
+
+  --gradient-cards-header: linear-gradient(
+    90deg,
+    rgba(97, 95, 255, 0.22) 0%,
+    rgba(173, 70, 255, 0.22) 50%,
+    rgba(246, 51, 154, 0.18) 100%
+  );
+  --gradient-learn-card: linear-gradient(
+    135deg,
+    #1e1e2e 0%,
+    #161622 100%
+  );
+  --gradient-learn-card-know: linear-gradient(
+    135deg,
+    #1e1e2e 0%,
+    #0d3320 100%
+  );
+  --gradient-learn-card-dont-know: linear-gradient(
+    320deg,
+    #3a1518 0%,
+    #1e1e2e 100%
+  );
+  --gradient-learn-card-empty: linear-gradient(
+    135deg,
+    rgba(97, 95, 255, 0.2) 0%,
+    rgba(173, 70, 255, 0.2) 50%,
+    rgba(246, 51, 154, 0.15) 100%
+  );
 
   --text-primary: #f4f4f7;
   --text-secondary: #a1a1b5;
@@ -240,16 +308,22 @@
   --text-link-accent-hover: #d4b8ff;
   --text-auth-outlined: rgba(244, 244, 247, 0.9);
   --text-brand-accent: #8b87ff;
+  --text-placeholder: rgba(244, 244, 247, 0.35);
+  --text-tertiary: #8a8a9a;
 
   --border-default: rgba(255, 255, 255, 0.1);
   --border-strong: rgba(255, 255, 255, 0.18);
   --border-inverse: rgba(255, 255, 255, 0.25);
-  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-glass: rgba(255, 255, 255, 0);
   --border-glass-strong: rgba(255, 255, 255, 0.18);
   --border-auth: rgba(255, 255, 255, 0.25);
   --border-translate: rgba(97, 95, 255, 0.35);
   --border-footer: rgba(255, 255, 255, 0.1);
   --border-dashed: rgba(255, 255, 255, 0.4);
+  --border-cards-header: rgba(255, 255, 255, 0.12);
+  --border-card-row: rgba(255, 255, 255, 0.08);
+  --border-suggestion: rgba(255, 255, 255, 0.08);
+  --border-learn-card: rgba(255, 255, 255, 0.1);
 
   --brand-from: #6d5cff;
   --brand-mid: #a855f7;
@@ -268,6 +342,8 @@
   --shadow-ink: 0 10px 15px -3px rgba(0, 0, 0, 0.45),
     0 4px 6px -4px rgba(0, 0, 0, 0.35);
   --shadow-inset-input: inset 1px 3px 5px 0 rgba(0, 0, 0, 0.45);
+  --shadow-focus-brand: 0 0 5px 3px rgba(97, 95, 255, 0.4);
+  --shadow-dropdown: 0 4px 6px rgba(0, 0, 0, 0.4);
 
   --background: var(--bg-surface);
   --foreground: var(--text-primary);

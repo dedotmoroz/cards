@@ -7,12 +7,12 @@ interface StyledCardBoxProps {
 
 const getCardBackground = (direction: 'left' | 'right' | null | undefined) => {
     if (direction === 'right') {
-        return 'linear-gradient(135deg, #fff  0%, #c4fad8 100%)';
+        return 'var(--gradient-learn-card-know)';
     }
     if (direction === 'left') {
-        return 'linear-gradient(320deg, #ffdada 0%, #fff 100%)';
+        return 'var(--gradient-learn-card-dont-know)';
     }
-    return 'linear-gradient(135deg, #FFF 0%, #F9FAFB 100%)';
+    return 'var(--gradient-learn-card)';
 };
 
 export const StyledCardBox = styled(Card, {
@@ -28,13 +28,13 @@ export const StyledCardBox = styled(Card, {
     justify-content: center;
 
     border-radius: 24px;
-    border: 1px solid #F3F4F6;
+    border: 1px solid var(--border-learn-card);
     background: ${({$swipeDirection}) => getCardBackground($swipeDirection)};
     transition: background 0.15s ease;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-xl);
 
     &:hover {
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        box-shadow: var(--shadow-xl);
     }
 `;
 
@@ -64,7 +64,7 @@ export const StyledEmptyCardPlace = styled(Card)`
     width: 500px;
     box-shadow: none;
     border-radius: 20px;
-    background: linear-gradient(135deg, rgba(224, 231, 255, 0.50) 0%, rgba(243, 232, 255, 0.50) 50%, rgba(252, 231, 243, 0.50) 100%);
+    background: var(--gradient-learn-card-empty);
 `;
 
 export const StyledTipBox = styled(Box)`

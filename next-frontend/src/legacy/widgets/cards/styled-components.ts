@@ -40,9 +40,9 @@ export const StyledCardBoxHeader = styled(Box)`
     // gap: 16px;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(90deg, rgba(224, 231, 255, 0.60) 0%, rgba(243, 232, 255, 0.60) 50%, rgba(252, 231, 243, 0.60) 100%);
+    background: var(--gradient-cards-header);
     padding: 10px 19px;
-    border: 1px solid rgba(255, 255, 255, 0.90);
+    border: 1px solid var(--border-cards-header);
     border-bottom: none;
 
     border-top-left-radius: 16px;
@@ -54,8 +54,8 @@ export const StyledCardBoxHeader = styled(Box)`
 export const StyledBoxWrapper = styled(Box)`
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.50);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.10);
+    background: var(--bg-surface-glass-strong);
+    box-shadow: var(--shadow-lg);
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
     border-bottom-left-radius: 16px;
@@ -100,7 +100,7 @@ export const StyledListItem = styled(ListItem, {
     transition: background-color 0.2s ease-in-out;
     margin: 0;
     padding: 10px 20px;
-    border-bottom: 2px solid rgba(227, 231, 237, 0.74);
+    border-bottom: 2px solid var(--border-card-row);
     background-color: ${({ theme, $highlighted }) =>
         $highlighted ? theme.palette.action.selected : 'transparent'};
     &:last-child {
@@ -218,7 +218,7 @@ export const StyledColumnHeader = styled(Typography)`
 
 export const StyledColumnHeaderLang = styled('span')`
     font-weight: normal;
-    color: #888;
+    color: var(--text-tertiary);
 `;
 
 export const StyledMargin = styled(Box)`
@@ -279,7 +279,7 @@ BaseInput.displayName = 'BaseInput';
 // Обертываем его в styled
 export const StyledInput = styled(BaseInput)`
     width: 100%;
-    border: 2px solid #d5d5d5;
+    border: 2px solid var(--border-strong);
     outline: none;
     background: transparent;
     font-size: 20px;
@@ -291,23 +291,23 @@ export const StyledInput = styled(BaseInput)`
     margin-bottom: -1px;
 
     &::placeholder {
-        color: rgba(0, 0, 0, 0.2);
+        color: var(--text-placeholder);
         opacity: 1;
     }
 
     &:focus {
         outline: none;
-        background: #fff;
-        border: 2px solid #615FFF;
-        box-shadow: 0 0 5px 3px rgba(97, 95, 255, 0.3);
+        background: var(--bg-surface);
+        border: 2px solid var(--brand-primary);
+        box-shadow: var(--shadow-focus-brand);
     }
 `
 export const StyledSaveIconButton = styled(IconButton)`
-    background: #00A63E;
-    color: #fff;
+    background: var(--success-strong);
+    color: var(--text-on-brand);
 
     &:hover {
-        background: #00A63E;
+        background: var(--success-strong);
     }
 `
 
@@ -324,11 +324,11 @@ export const StyledSuggestionsList = styled(Box)`
     top: 100%;
     left: 0;
     right: 0;
-    background: white;
-    border: 1px solid #d5d5d5;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
     border-top: none;
     border-radius: 0 0 4px 4px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-dropdown);
     z-index: 1000;
     max-height: 200px;
     overflow-y: auto;
@@ -338,11 +338,11 @@ export const StyledSuggestionItem = styled(Box)`
     padding: 8px 12px;
     cursor: pointer;
     font-size: 16px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-suggestion);
     transition: background-color 0.2s;
 
     &:hover {
-        background-color: #f5f5f5;
+        background-color: var(--bg-suggestion-hover);
     }
 
     &:last-child {
@@ -352,14 +352,14 @@ export const StyledSuggestionItem = styled(Box)`
 
 export const StyledSuggestionMeta = styled(Box)`
     font-size: 12px;
-    color: #888;
+    color: var(--text-tertiary);
     margin-bottom: 2px;
 `
 
 export const StyledLoadingIndicator = styled(Box)`
     padding: 8px 12px;
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
     font-style: italic;
 `
 
@@ -369,7 +369,7 @@ export const StyledLoaderOverlay = styled(Box)`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: var(--bg-overlay);
 `
 
 export const StyledLoaderSpinner = styled(Box)`
