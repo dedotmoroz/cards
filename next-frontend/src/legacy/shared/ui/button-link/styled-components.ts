@@ -7,7 +7,7 @@ export const StyledButtonLink = styled(Button)`
     justify-content: center;
     align-items: center;
     border-radius: 8px;
-    color: #4A5565;
+    color: var(--text-secondary);
     text-transform: none;
     gap: 6px;
     font-size: 16px;

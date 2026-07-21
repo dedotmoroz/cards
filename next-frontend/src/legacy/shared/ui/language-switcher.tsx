@@ -75,18 +75,18 @@ export const LanguageSwitcher: React.FC = () => {
           value={i18n.language}
           onChange={handleLanguageChange}
           sx={{
-            color: 'white',
+            color: 'var(--text-on-brand)',
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'rgba(255, 255, 255, 0.3)',
+              borderColor: 'var(--border-on-brand)',
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'rgba(255, 255, 255, 0.5)',
+              borderColor: 'var(--border-on-brand-hover)',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'white',
+              borderColor: 'var(--border-on-brand-focus)',
             },
             '& .MuiSelect-icon': {
-              color: 'white',
+              color: 'var(--text-on-brand)',
             }
           }}
           MenuProps={{

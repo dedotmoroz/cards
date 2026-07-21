@@ -456,5 +456,9 @@
       "goToApp": "Go to app",
       "close": "Close"
     }
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
   }
 }

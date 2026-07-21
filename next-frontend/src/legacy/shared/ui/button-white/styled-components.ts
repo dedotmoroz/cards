@@ -7,18 +7,18 @@ export const StyledButtonWhite = styled(Button)`
     justify-content: center;
     align-items: center;
     border-radius: 14px;
-    border: 1px solid #E5E7EB;
-    background: #FFF;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    color: #364153;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    color: var(--text-body);
     width: 100%;
     
     &:hover {
-        box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.3), 0 4px 6px -4px rgba(17, 24, 39, 0.3);
+        box-shadow: var(--shadow-ink);
     }
     
     &:disabled {
-        background: #fff;
+        background: var(--bg-surface);
         opacity: 0.5;
     }
     

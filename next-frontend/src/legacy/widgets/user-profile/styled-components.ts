@@ -13,14 +13,13 @@ export const StyledUserCard = styled(Box)`
     gap: 12px;
     border: 1px solid transparent;
     border-radius: 8px;
-    // background: rgba(255, 255, 255, 0.50);
     
     margin-left: 18px;
 
     &:hover {
-        border: 1px solid rgba(255, 255, 255, 0.20);
-        background: rgba(255, 255, 255, 1);
-        box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.2), 0 4px 6px -4px rgba(17, 24, 39, 0.2);
+        border: 1px solid var(--border-glass);
+        background: var(--bg-surface);
+        box-shadow: var(--shadow-ink);
     }
 `;
 
@@ -32,5 +31,5 @@ export const StyledAvatar = styled(Avatar)`
 
 export const StyledAccountCircle = styled(AccountCircle)`
     font-size: 28px;
-    color: rgba(0, 0, 0, 0.9);
-`
+    color: var(--text-default);
+`;

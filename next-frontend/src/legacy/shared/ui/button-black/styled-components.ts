@@ -7,8 +7,8 @@ export const StyledButtonBlack = styled(Button)`
     justify-content: center;
     align-items: center;
     border-radius: 8px;
-    background: rgba(17, 24, 39, 0.8);
-    color: #ffffff;
+    background: var(--bg-inverse);
+    color: var(--text-on-inverse);
     text-transform: none;
     gap: 8px;
     font-family: inherit;
@@ -17,13 +17,13 @@ export const StyledButtonBlack = styled(Button)`
     font-weight: 500;
     
     &:hover {
-        background: rgba(17, 24, 39, 0.9);
-        box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.3), 0 4px 6px -4px rgba(17, 24, 39, 0.3);
+        background: var(--bg-inverse-hover);
+        box-shadow: var(--shadow-ink);
     }
     
     &:disabled {
-        background: #fff;
-        border: 1px dashed rgba(17, 24, 39, 0.3);
+        background: var(--bg-surface);
+        border: 1px dashed var(--border-inverse);
     }
 
     &::before {

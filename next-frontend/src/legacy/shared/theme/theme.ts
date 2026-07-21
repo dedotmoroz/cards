@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, type ThemeOptions } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -20,17 +20,47 @@ declare module '@mui/material/styles' {
   }
 }
 
-export const theme = createTheme({
+/**
+ * MUI palette values must be parseable colors (#rgb / rgb() / hsl()).
+ * CSS variables are fine in Emotion styled() and CSS modules, but not here —
+ * MUI calls color manipulators (alpha, contrast) on palette entries.
+ */
+const sharedComponents: ThemeOptions['components'] = {
+  MuiAppBar: {
+    styleOverrides: {
+      root: {
+        background: 'var(--bg-appbar)',
+        backdropFilter: 'blur(20px)',
+        boxShadow: 'none',
+        borderBottom: '1px solid var(--border-glass)',
+      },
+    },
+  },
+};
+
+export const lightTheme = createTheme({
   palette: {
+    mode: 'light',
     background: {
       default: 'linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 50%, #FDF2F8 100%)',
-      // paper: 'transparent',
+      paper: '#ffffff',
     },
     primary: {
-      main: '#1976d2',
+      main: '#615FFF',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#F6339A',
+    },
+    text: {
+      primary: '#101828',
+      secondary: '#4A5565',
+    },
+    divider: '#E5E7EB',
+    error: {
+      main: '#da4949',
+    },
+    success: {
+      main: '#00C950',
     },
     button: {
       bg: 'rgba(17, 24, 39, 0.8)',
@@ -39,19 +69,42 @@ export const theme = createTheme({
       text: '#ffffff',
     },
   },
-
-    components: {
-        MuiAppBar: {
-            styleOverrides: {
-                root: {
-                    background: 'linear-gradient(135deg, rgba(238, 242, 255, 0.4) 0%, rgba(250, 245, 255, 0.4) 50%, rgba(253, 242, 248, 0.4) 100%)', // полупрозрачный градиент
-                    backdropFilter: 'blur(20px)',                // стеклянный эффект
-                    boxShadow: 'none',                           // убираем тень
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.3)', // тонкая стеклянная граница
-                },
-            },
-        },
-    },
-
+  components: sharedComponents,
 });
 
+export const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: 'linear-gradient(135deg,rgb(78, 7, 106),rgb(6, 110, 145) 60%,rgb(0, 126, 124) 100%)',
+      paper: '#161622',
+    },
+    primary: {
+      main: '#8B87FF',
+    },
+    secondary: {
+      main: '#F472B6',
+    },
+    text: {
+      primary: '#F4F4F7',
+      secondary: '#A1A1B5',
+    },
+    divider: 'rgba(255, 255, 255, 0.12)',
+    error: {
+      main: '#da4949',
+    },
+    success: {
+      main: '#00C950',
+    },
+    button: {
+      bg: 'rgba(255, 255, 255, 0.9)',
+      hover: '#ffffff',
+      disabled: '#2a2a3a',
+      text: '#101828',
+    },
+  },
+  components: sharedComponents,
+});
+
+/** @deprecated Prefer lightTheme / darkTheme via theme store */
+export const theme = lightTheme;

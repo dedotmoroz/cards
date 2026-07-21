@@ -7,8 +7,8 @@ export const StyledCheckbox = styled(Checkbox)`
     padding: 2px;
     
     & .MuiSvgIcon-root {
-        color: rgba(17, 24, 39, 0.8);
-        fill: rgba(17, 24, 39, 0.8);
+        color: var(--bg-inverse);
+        fill: var(--bg-inverse);
         font-size: 16px;
         width: 20px;
         height: 20px;
@@ -16,9 +16,8 @@ export const StyledCheckbox = styled(Checkbox)`
     
     &.Mui-checked {
         & .MuiSvgIcon-root {
-            color: rgba(17, 24, 39, 0.8);
-            fill: rgba(17, 24, 39, 0.8);
+            color: var(--bg-inverse);
+            fill: var(--bg-inverse);
         }
     }
 `;
-

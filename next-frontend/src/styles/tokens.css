@@ -1,0 +1,274 @@
+/*
+ * Design tokens — CSS variables as source of truth.
+ * Primitives stay stable; semantic tokens switch with data-theme.
+ */
+
+:root,
+[data-theme="light"] {
+  /* ——— Primitives ——— */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-ink-900: #111827;
+  --color-ink-disabled: #030213;
+
+  --color-violet-600: #4f39f6;
+  --color-fuchsia-600: #9810fa;
+  --color-pink-600: #e60076;
+  --color-indigo-500: #615fff;
+  --color-indigo-600: #155dfc;
+  --color-magenta-500: #f6339a;
+  --color-purple-500: #ad46ff;
+  --color-purple-link: #6a0dad;
+  --color-purple-link-hover: #5a0b9d;
+
+  --color-slate-900: #101828;
+  --color-slate-700: #364153;
+  --color-slate-600: #4a5565;
+  --color-slate-500: #6a7282;
+  --color-slate-400: #99a1af;
+
+  --color-green-500: #00c950;
+  --color-green-600: #00a63e;
+  --color-green-700: #009966;
+  --color-red-500: #fb2c36;
+  --color-red-600: #e7000b;
+  --color-red-danger: #da4949;
+  --color-orange-500: #ff6900;
+
+  --color-border-subtle: #e5e7eb;
+  --color-border-muted: #d5d5d5;
+  --color-surface-muted: #f9fafb;
+  --color-surface-hover: #f3f4f6;
+  --color-surface-input: #fffeef;
+  --color-page-from: #eef2ff;
+  --color-page-mid: #faf5ff;
+  --color-page-to: #fdf2f8;
+
+  /* ——— Semantic (theme-switched) ——— */
+  --bg-page: linear-gradient(
+    135deg,
+    var(--color-page-from) 0%,
+    var(--color-page-mid) 50%,
+    var(--color-page-to) 100%
+  );
+  --bg-page-soft: linear-gradient(
+    135deg,
+    var(--color-page-from) 0%,
+    var(--color-page-mid) 100%
+  );
+  --bg-surface: var(--color-white);
+  --bg-surface-elevated: var(--color-white);
+  --bg-surface-glass: rgba(255, 255, 255, 0.4);
+  --bg-surface-glass-strong: rgba(255, 255, 255, 0.5);
+  --bg-muted: var(--color-surface-muted);
+  --bg-input: var(--color-surface-input);
+  --bg-inverse: rgba(17, 24, 39, 0.8);
+  --bg-inverse-hover: rgba(17, 24, 39, 0.9);
+  --bg-inverse-solid: var(--color-black);
+  --bg-appbar: linear-gradient(
+    135deg,
+    rgba(238, 242, 255, 0.4) 0%,
+    rgba(250, 245, 255, 0.4) 50%,
+    rgba(253, 242, 248, 0.4) 100%
+  );
+  --bg-chip: linear-gradient(
+    90deg,
+    rgba(97, 95, 255, 0.2) 0%,
+    rgba(173, 70, 255, 0.2) 100%
+  );
+  --bg-outline-hover: rgba(106, 13, 173, 0.05);
+
+  --text-primary: var(--color-slate-900);
+  --text-secondary: var(--color-slate-600);
+  --text-muted: var(--color-slate-500);
+  --text-body: var(--color-slate-700);
+  --text-on-brand: var(--color-white);
+  --text-on-inverse: var(--color-white);
+  --text-on-brand-muted: rgba(255, 255, 255, 0.9);
+  --text-default: var(--color-black);
+  --text-link-accent: var(--color-purple-link);
+  --text-link-accent-hover: var(--color-purple-link-hover);
+  --text-auth-outlined: rgba(0, 0, 0, 0.87);
+  --text-brand-accent: var(--color-indigo-500);
+
+  --border-default: var(--color-border-subtle);
+  --border-strong: var(--color-border-muted);
+  --border-inverse: rgba(17, 24, 39, 0.3);
+  --border-on-brand: rgba(255, 255, 255, 0.3);
+  --border-on-brand-hover: rgba(255, 255, 255, 0.5);
+  --border-on-brand-focus: var(--color-white);
+  --border-glass: rgba(255, 255, 255, 0.3);
+  --border-glass-strong: rgba(255, 255, 255, 0.4);
+  --border-auth: rgba(0, 0, 0, 0.23);
+  --border-translate: rgba(198, 210, 255, 0.5);
+  --border-footer: rgba(0, 0, 0, 0.1);
+  --border-dashed: rgba(0, 0, 0, 0.8);
+
+  --brand-primary: var(--color-indigo-500);
+  --brand-from: var(--color-violet-600);
+  --brand-mid: var(--color-fuchsia-600);
+  --brand-to: var(--color-pink-600);
+  --brand-secondary: var(--color-magenta-500);
+
+  --gradient-brand: linear-gradient(
+    90deg,
+    var(--brand-from) 0%,
+    var(--brand-mid) 50%,
+    var(--brand-to) 100%
+  );
+  --gradient-brand-header: linear-gradient(
+    90deg,
+    var(--brand-from) 0%,
+    var(--brand-mid) 100%
+  );
+  --gradient-brand-diagonal: linear-gradient(
+    135deg,
+    var(--brand-from) 0%,
+    var(--brand-mid) 50%,
+    var(--brand-to) 100%
+  );
+  --gradient-cta: linear-gradient(
+    90deg,
+    var(--color-indigo-500) 0%,
+    var(--color-magenta-500) 100%
+  );
+  --gradient-logo-icon: linear-gradient(
+    135deg,
+    var(--color-indigo-500) 0%,
+    var(--color-fuchsia-600) 100%
+  );
+  --gradient-progress: linear-gradient(
+    90deg,
+    var(--color-indigo-500) 0%,
+    var(--color-purple-500) 50%,
+    var(--color-magenta-500) 100%
+  );
+  --gradient-feature-ai: linear-gradient(
+    135deg,
+    var(--color-indigo-500) 0%,
+    var(--color-indigo-600) 100%
+  );
+  --gradient-feature-chrome: linear-gradient(
+    135deg,
+    var(--color-purple-500) 0%,
+    var(--color-pink-600) 100%
+  );
+  --gradient-feature-excel: linear-gradient(
+    135deg,
+    var(--color-green-500) 0%,
+    var(--color-green-700) 100%
+  );
+  --gradient-feature-monitor: linear-gradient(
+    135deg,
+    var(--color-orange-500) 0%,
+    var(--color-red-600) 100%
+  );
+
+  --success: var(--color-green-500);
+  --success-strong: var(--color-green-600);
+  --danger: var(--color-red-500);
+  --danger-strong: var(--color-red-600);
+  --danger-outline: var(--color-red-danger);
+  --gradient-know: linear-gradient(
+    90deg,
+    var(--success) 0%,
+    var(--success-strong) 100%
+  );
+  --gradient-dont-know: linear-gradient(
+    90deg,
+    var(--danger) 0%,
+    var(--danger-strong) 100%
+  );
+
+  --shadow-default: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-brand: 0 10px 15px -3px rgba(97, 95, 255, 0.3),
+    0 4px 6px -4px rgba(97, 95, 255, 0.3);
+  --shadow-brand-lg: 0 20px 25px -5px rgba(97, 95, 255, 0.3),
+    0 8px 10px -6px rgba(97, 95, 255, 0.3);
+  --shadow-ink: 0 10px 15px -3px rgba(17, 24, 39, 0.3),
+    0 4px 6px -4px rgba(17, 24, 39, 0.3);
+  --shadow-purple: 0 10px 15px -3px rgba(173, 70, 255, 0.3),
+    0 4px 6px -4px rgba(173, 70, 255, 0.3);
+  --shadow-success: 0 10px 15px -3px rgba(0, 201, 80, 0.3),
+    0 4px 6px -4px rgba(0, 201, 80, 0.3);
+  --shadow-warning: 0 10px 15px -3px rgba(255, 105, 0, 0.3),
+    0 4px 6px -4px rgba(255, 105, 0, 0.3);
+  --shadow-inset-input: inset 1px 3px 5px 0 rgba(0, 0, 0, 0.2);
+
+  /* Compat aliases used by body / legacy globals */
+  --background: var(--bg-surface);
+  --foreground: var(--text-primary);
+}
+
+[data-theme="dark"] {
+  --bg-page: linear-gradient(135deg, #0b0b14 0%, #12101f 50%, #1a1020 100%);
+  --bg-page-soft: linear-gradient(135deg, #12101f 0%, #1a1020 100%);
+  --bg-surface: #161622;
+  --bg-surface-elevated: #1e1e2e;
+  --bg-surface-glass: rgba(30, 30, 46, 0.55);
+  --bg-surface-glass-strong: rgba(30, 30, 46, 0.75);
+  --bg-muted: #1a1a28;
+  --bg-input: #1c1c2a;
+  --bg-inverse: rgba(255, 255, 255, 0.9);
+  --bg-inverse-hover: #ffffff;
+  --bg-inverse-solid: #ffffff;
+  --bg-appbar: linear-gradient(
+    135deg,
+    rgba(20, 16, 40, 0.7) 0%,
+    rgba(30, 16, 40, 0.7) 50%,
+    rgba(40, 16, 36, 0.7) 100%
+  );
+  --bg-chip: linear-gradient(
+    90deg,
+    rgba(97, 95, 255, 0.25) 0%,
+    rgba(173, 70, 255, 0.25) 100%
+  );
+  --bg-outline-hover: rgba(173, 70, 255, 0.12);
+
+  --text-primary: #f4f4f7;
+  --text-secondary: #a1a1b5;
+  --text-muted: #7a7a90;
+  --text-body: #c4c4d4;
+  --text-default: #f4f4f7;
+  --text-on-inverse: #101828;
+  --text-link-accent: #c4a0ff;
+  --text-link-accent-hover: #d4b8ff;
+  --text-auth-outlined: rgba(244, 244, 247, 0.9);
+  --text-brand-accent: #8b87ff;
+
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-inverse: rgba(255, 255, 255, 0.25);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-glass-strong: rgba(255, 255, 255, 0.18);
+  --border-auth: rgba(255, 255, 255, 0.25);
+  --border-translate: rgba(97, 95, 255, 0.35);
+  --border-footer: rgba(255, 255, 255, 0.1);
+  --border-dashed: rgba(255, 255, 255, 0.4);
+
+  --brand-from: #6d5cff;
+  --brand-mid: #a855f7;
+  --brand-to: #f472b6;
+
+  --shadow-default: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
+    0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.45),
+    0 8px 10px -6px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+  --shadow-brand: 0 10px 15px -3px rgba(97, 95, 255, 0.35),
+    0 4px 6px -4px rgba(97, 95, 255, 0.25);
+  --shadow-brand-lg: 0 20px 25px -5px rgba(97, 95, 255, 0.35),
+    0 8px 10px -6px rgba(97, 95, 255, 0.25);
+  --shadow-ink: 0 10px 15px -3px rgba(0, 0, 0, 0.45),
+    0 4px 6px -4px rgba(0, 0, 0, 0.35);
+  --shadow-inset-input: inset 1px 3px 5px 0 rgba(0, 0, 0, 0.45);
+
+  --background: var(--bg-surface);
+  --foreground: var(--text-primary);
+}

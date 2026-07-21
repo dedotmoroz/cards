@@ -431,5 +431,9 @@
       "goToApp": "Zur App gehen",
       "close": "Schließen"
     }
+  },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel"
   }
 }

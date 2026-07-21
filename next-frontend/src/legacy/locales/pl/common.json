@@ -431,5 +431,9 @@
       "goToApp": "Przejdź do aplikacji",
       "close": "Zamknij"
     }
+  },
+  "theme": {
+    "light": "Jasny",
+    "dark": "Ciemny"
   }
 }

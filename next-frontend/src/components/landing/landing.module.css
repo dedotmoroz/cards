@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #eef2ff 0%, #faf5ff 50%, #fdf2f8 100%);
+  background: var(--bg-page);
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: 0.00938em;
@@ -76,14 +76,14 @@
   align-items: center;
   margin: 0 auto;
   padding: 8px 24px;
-  border: 1px solid #000;
+  border: 1px solid var(--text-default);
   width: 100%;
-  background: linear-gradient(90deg, #4f39f6 0%, #9810fa 100%);
+  background: var(--gradient-brand-header);
 }
 
 @media (max-width: 900px) {
   .headerTop {
-    background: linear-gradient(90deg, #4f39f6 0%, #9810fa 100%);
+    background: var(--gradient-brand-header);
   }
 }
 
@@ -109,9 +109,9 @@
   padding: 6px 28px 6px 10px;
   font-family: inherit;
   font-size: 14px;
-  color: #fff;
+  color: var(--text-on-brand);
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border-on-brand);
   border-radius: 4px;
   cursor: pointer;
   appearance: none;
@@ -121,17 +121,17 @@
 }
 
 .langSelect:hover {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--border-on-brand-hover);
 }
 
 .langSelect:focus {
   outline: none;
-  border-color: #fff;
+  border-color: var(--border-on-brand-focus);
 }
 
 .langSelect option {
-  color: #000;
-  background: #fff;
+  color: var(--text-default);
+  background: var(--bg-surface);
 }
 
 .authButtonContained {
@@ -144,8 +144,8 @@
   border: none;
   min-width: 88px;
   line-height: 1.75;
-  background: #000;
-  color: #fff;
+  background: var(--bg-inverse-solid);
+  color: var(--text-on-inverse);
 }
 
 .authButtonOutlined {
@@ -157,9 +157,9 @@
   cursor: pointer;
   min-width: 88px;
   line-height: 1.75;
-  background: #fff;
-  color: rgba(0, 0, 0, 0.87);
-  border: 1px solid rgba(0, 0, 0, 0.23);
+  background: var(--bg-surface);
+  color: var(--text-auth-outlined);
+  border: 1px solid var(--border-auth);
 }
 
 .chip {
@@ -171,8 +171,8 @@
   justify-content: center;
   align-items: center;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: linear-gradient(90deg, rgba(97, 95, 255, 0.2) 0%, rgba(173, 70, 255, 0.2) 100%);
+  border: 1px solid var(--border-glass-strong);
+  background: var(--bg-chip);
 }
 
 .chipText {
@@ -180,14 +180,14 @@
   font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.312px;
-  background: linear-gradient(90deg, #4f39f6 0%, #9810fa 100%);
+  background: var(--gradient-brand-header);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .firstScreenTitle {
-  color: #101828;
+  color: var(--text-primary);
   font-size: 54px;
   font-weight: 400;
   font-style: normal;
@@ -211,7 +211,7 @@
   font-weight: inherit;
   line-height: inherit;
   letter-spacing: inherit;
-  background: linear-gradient(90deg, #4f39f6 0%, #9810fa 50%, #e60076 100%);
+  background: var(--gradient-brand);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -219,7 +219,7 @@
 }
 
 .firstScreenDescription {
-  color: #4a5565;
+  color: var(--text-secondary);
   font-size: 22px;
   font-weight: 400;
   line-height: 36px;
@@ -249,7 +249,7 @@
   justify-content: center;
   gap: 8px;
   padding: 16px 24px;
-  color: #fff;
+  color: var(--text-on-brand);
   text-align: center;
   font-family: inherit;
   font-size: 16px;
@@ -258,8 +258,8 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  background: linear-gradient(90deg, #4f39f6 0%, #9810fa 100%);
-  box-shadow: 0 20px 25px -5px rgba(97, 95, 255, 0.3), 0 8px 10px -6px rgba(97, 95, 255, 0.3);
+  background: var(--gradient-brand-header);
+  box-shadow: var(--shadow-brand-lg);
   min-width: 160px;
 }
 
@@ -274,22 +274,22 @@
   align-items: center;
   justify-content: center;
   padding: 16px 24px;
-  color: #6a0dad;
+  color: var(--text-link-accent);
   text-align: center;
   font-family: inherit;
   font-size: 16px;
   font-weight: 500;
   line-height: 20px;
   border-radius: 8px;
-  border: 1px solid #6a0dad;
+  border: 1px solid var(--text-link-accent);
   background: transparent;
   cursor: pointer;
   min-width: 160px;
 }
 
 .outlineButton:hover {
-  border-color: #5a0b9d;
-  background-color: rgba(106, 13, 173, 0.05);
+  border-color: var(--text-link-accent-hover);
+  background-color: var(--bg-outline-hover);
 }
 
 @media (max-width: 900px) {
@@ -306,12 +306,12 @@
   padding: 10px 24px;
   font-family: inherit;
   font-size: 16px;
-  color: #000;
+  color: var(--text-default);
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  background: #fff;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-lg);
 }
 
 .imagesBox {
@@ -332,11 +332,11 @@
 
 .exampleCard {
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: var(--bg-surface-glass-strong);
+  border: 1px solid var(--border-glass-strong);
   padding: 24px;
   max-width: 500px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-xl);
 }
 
 .exampleHeader {
@@ -352,12 +352,12 @@
   justify-content: center;
   align-items: center;
   border-radius: 14px;
-  background: linear-gradient(135deg, #615fff 0%, #9810fa 100%);
-  color: #fff;
+  background: var(--gradient-logo-icon);
+  color: var(--text-on-brand);
 }
 
 .sideA {
-  color: #101828;
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
@@ -365,7 +365,7 @@
 }
 
 .sideB {
-  color: #6a7282;
+  color: var(--text-muted);
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -377,13 +377,13 @@
   padding: 17px;
   margin-top: 24px;
   border-radius: 14px;
-  border: 1px solid rgba(198, 210, 255, 0.5);
-  background: linear-gradient(135deg, #eef2ff 0%, #faf5ff 100%);
+  border: 1px solid var(--border-translate);
+  background: var(--bg-page-soft);
 }
 
 .colorText {
   display: inline;
-  color: #615fff;
+  color: var(--text-brand-accent);
 }
 
 .whiteCard {
@@ -392,9 +392,9 @@
   flex-direction: column;
   align-items: center;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-glass-strong);
+  background: var(--bg-surface-glass);
+  box-shadow: var(--shadow-xl);
 }
 
 @media (max-width: 900px) {
@@ -410,7 +410,7 @@
 }
 
 .whiteHeader {
-  color: #101828;
+  color: var(--text-primary);
   text-align: center;
   font-size: 48px;
   font-weight: 400;
@@ -438,7 +438,7 @@
   text-align: center;
   line-height: 130%;
   letter-spacing: -0.439px;
-  background: linear-gradient(90deg, #4f39f6 0%, #9810fa 100%);
+  background: var(--gradient-brand-header);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -457,7 +457,7 @@
   line-height: 29.25px;
   letter-spacing: -0.439px;
   margin-bottom: 20px;
-  color: rgb(74, 85, 101);
+  color: var(--text-secondary);
 }
 
 @media (max-width: 900px) {
@@ -469,7 +469,7 @@
 
 .typographyBold {
   font-weight: 600;
-  color: rgb(0, 0, 0);
+  color: var(--text-default);
 }
 
 .featureBox {
@@ -480,9 +480,9 @@
   align-items: flex-start;
   gap: 24px;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-glass-strong);
+  background: var(--bg-surface-glass);
+  box-shadow: var(--shadow-lg);
 }
 
 @media (max-width: 600px) {
@@ -510,31 +510,31 @@
   justify-content: center;
   align-items: center;
   border-radius: 16px;
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .featureIconAi {
-  background: linear-gradient(135deg, #615fff 0%, #155dfc 100%);
-  box-shadow: 0 10px 15px -3px rgba(97, 95, 255, 0.3), 0 4px 6px -4px rgba(97, 95, 255, 0.3);
+  background: var(--gradient-feature-ai);
+  box-shadow: var(--shadow-brand);
 }
 
 .featureIconChrome {
-  background: linear-gradient(135deg, #ad46ff 0%, #e60076 100%);
-  box-shadow: 0 10px 15px -3px rgba(173, 70, 255, 0.3), 0 4px 6px -4px rgba(173, 70, 255, 0.3);
+  background: var(--gradient-feature-chrome);
+  box-shadow: var(--shadow-purple);
 }
 
 .featureIconExcel {
-  background: linear-gradient(135deg, #00c950 0%, #096 100%);
-  box-shadow: 0 10px 15px -3px rgba(0, 201, 80, 0.3), 0 4px 6px -4px rgba(0, 201, 80, 0.3);
+  background: var(--gradient-feature-excel);
+  box-shadow: var(--shadow-success);
 }
 
 .featureIconMonitor {
-  background: linear-gradient(135deg, #ff6900 0%, #e7000b 100%);
-  box-shadow: 0 10px 15px -3px rgba(255, 105, 0, 0.3), 0 4px 6px -4px rgba(255, 105, 0, 0.3);
+  background: var(--gradient-feature-monitor);
+  box-shadow: var(--shadow-warning);
 }
 
 .featureTitle {
-  color: #101828;
+  color: var(--text-primary);
   font-size: 30px;
   line-height: 35px;
   font-weight: 400;
@@ -547,7 +547,7 @@
 }
 
 .featureDescription {
-  color: #4a5565;
+  color: var(--text-secondary);
   font-size: 18px;
   font-weight: 400;
   line-height: 28px;
@@ -562,7 +562,7 @@
   margin-top: 12px;
   margin-bottom: 22px;
   text-align: center;
-  background: linear-gradient(90deg, #4f39f6 0%, #9810fa 100%);
+  background: var(--gradient-brand-header);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -572,7 +572,7 @@
   display: block;
   font-weight: bold;
   margin-top: 12px;
-  color: #000;
+  color: var(--text-default);
   text-decoration: none;
 }
 
@@ -581,12 +581,12 @@
 }
 
 .gradientCard {
-  background: linear-gradient(135deg, #4f39f6 0%, #9810fa 50%, #e60076 100%);
+  background: var(--gradient-brand-diagonal);
   border-radius: 24px;
   padding: 48px 40px;
   margin: 0 auto;
   position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-xl);
   overflow: hidden;
 }
 
@@ -603,7 +603,7 @@
 }
 
 .redHeader {
-  color: #fff;
+  color: var(--text-on-brand);
   text-align: center;
   font-size: 48px;
   font-weight: 400;
@@ -621,7 +621,7 @@
 }
 
 .redDescription {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-on-brand-muted);
   max-width: 550px;
   text-align: center;
   font-size: 20px;
@@ -639,8 +639,8 @@
 .footer {
   margin-top: auto;
   padding: 24px 16px;
-  background: linear-gradient(90deg, #4f39f6 0%, #9810fa 100%);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--gradient-brand-header);
+  border-top: 1px solid var(--border-footer);
 }
 
 .footerLinks {
@@ -652,7 +652,7 @@
 }
 
 .footerLinks a {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-on-brand-muted);
   text-decoration: none;
   font-size: 14px;
 }
