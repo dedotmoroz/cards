@@ -244,7 +244,7 @@
 }
 
 [data-theme="dark"] {
-  --bg-page: linear-gradient(135deg, #0b0b14 0%, #12101f 50%, #1a1020 100%);
+  --bg-page: linear-gradient(135deg,rgb(78, 7, 106),rgb(4, 87, 114),rgb(30, 2, 78) 70%);
   --bg-page-soft: linear-gradient(135deg, #12101f 0%, #1a1020 100%);
   --bg-surface: #161622;
   --bg-surface-elevated: #1e1e2e;

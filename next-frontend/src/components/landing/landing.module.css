@@ -76,7 +76,6 @@
   align-items: center;
   margin: 0 auto;
   padding: 8px 24px;
-  border: 1px solid var(--text-default);
   width: 100%;
   background: var(--gradient-brand-header);
 }
