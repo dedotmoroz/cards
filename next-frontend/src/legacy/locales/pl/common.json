@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "przeciętniak, wybitny uczeń",
-      "example": "Bycie overachiever może czasami prowadzić do problemów w komunikacji, ponieważ inni mogą czuć presję, aby sprostać Twoim wysokim standardom."
+      "word": "inside out",
+      "translation": "na lewą stronę; na wylot",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Wywróć sweter na lewą stronę przed praniem."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "Zna Londyn na wylot po dziesięciu latach życia tam."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "To doświadczenie zmieniło go do szpiku kości."
+        }
+      ]
     }
   },
   "footer": {

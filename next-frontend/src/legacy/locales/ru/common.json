@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "сверхуспевающий, отличник",
-      "example": "Быть overachiever может иногда приводить к проблемам в общении, потому что другие могут чувствовать давление необходимости соответствовать вашим высоким стандартам."
+      "word": "inside out",
+      "translation": "наизнанку; вдоль и поперёк",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Выверни свитер наизнанку перед стиркой."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "Она знает Лондон вдоль и поперёк после десяти лет жизни там."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "Этот опыт изменил его до основания."
+        }
+      ]
     }
   },
   "footer": {

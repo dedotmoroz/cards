@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "高成就者，优等生",
-      "example": "作为一个overachiever有时可能会导致沟通问题，因为其他人可能会感到压力，需要满足你的高标准。"
+      "word": "inside out",
+      "translation": "里面朝外；了如指掌",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "洗衣前把毛衣翻到里面朝外。"
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "在伦敦住了十年后，她对这座城市了如指掌。"
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "这段经历彻底改变了他。"
+        }
+      ]
     }
   },
   "footer": {

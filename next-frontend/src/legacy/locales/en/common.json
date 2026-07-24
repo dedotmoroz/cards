@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "overachiever, high achiever",
-      "example": "Being an overachiever can sometimes lead to communication issues because others may feel pressured to meet your high standards."
+      "word": "inside out",
+      "translation": "inside out; thoroughly",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Turn your sweater inside out before washing it."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "She knows London thoroughly after living there for ten years."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "The experience completely transformed him."
+        }
+      ]
     }
   },
   "footer": {

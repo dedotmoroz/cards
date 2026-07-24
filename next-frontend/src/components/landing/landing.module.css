@@ -380,6 +380,99 @@
   background: var(--bg-page-soft);
 }
 
+.contextViewport {
+  position: relative;
+  overflow: hidden;
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+}
+
+.contextLoader {
+  width: 100%;
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contextSpinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--border-translate);
+  border-top-color: var(--text-brand-accent);
+  animation: contextSpin 0.8s linear infinite;
+}
+
+@keyframes contextSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contextSlide {
+  width: 100%;
+  will-change: transform, opacity;
+}
+
+.contextColumns {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+  align-items: start;
+  width: 100%;
+}
+
+.contextText {
+  color: var(--text-primary);
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.contextTranslation {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 22px;
+}
+
+@media (max-width: 600px) {
+  .contextColumns {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.contextSlideIn {
+  animation: contextSlideIn var(--example-card-slide-ms, 0.45s) ease both;
+}
+
+.contextSlideOut {
+  animation: contextSlideOut var(--example-card-slide-ms, 0.45s) ease both;
+}
+
+@keyframes contextSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes contextSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
 .colorText {
   display: inline;
   color: var(--text-brand-accent);

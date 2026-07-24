@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "sobrerrealizador, triunfador",
-      "example": "Ser un overachiever a veces puede llevar a problemas de comunicación porque otros pueden sentirse presionados a cumplir con tus altos estándares."
+      "word": "inside out",
+      "translation": "al revés; a fondo",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Dale la vuelta al jersey antes de lavarlo."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "Conoce Londres a fondo después de vivir allí diez años."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "La experiencia lo cambió por completo."
+        }
+      ]
     }
   },
   "footer": {

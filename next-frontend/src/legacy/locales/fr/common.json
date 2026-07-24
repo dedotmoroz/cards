@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "surdoué, surperformant",
-      "example": "Être un overachiever peut parfois mener à des problèmes de communication parce que les autres peuvent se sentir pressés de répondre à vos hauts standards."
+      "word": "inside out",
+      "translation": "à l'envers; sur le bout des doigts",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Retourne ton pull à l'envers avant de le laver."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "Elle connaît Londres sur le bout des doigts après y avoir vécu dix ans."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "L'expérience l'a transformé de fond en comble."
+        }
+      ]
     }
   },
   "footer": {

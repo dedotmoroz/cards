@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "наддосягач, відмінник",
-      "example": "Бути overachiever може іноді призводити до проблем у спілкуванні, тому що інші можуть відчувати тиск необхідності відповідати вашим високим стандартам."
+      "word": "inside out",
+      "translation": "навиворіт; вздовж і впоперек",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Виверни светр навиворіт перед пранням."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "Вона знає Лондон вздовж і впоперек після десяти років життя там."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "Цей досвід змінив його до глибини."
+        }
+      ]
     }
   },
   "footer": {

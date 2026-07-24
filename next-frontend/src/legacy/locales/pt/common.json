@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "sobrerrealizador, alto desempenho",
-      "example": "Ser um overachiever às vezes pode levar a problemas de comunicação porque outros podem se sentir pressionados a atender aos seus altos padrões."
+      "word": "inside out",
+      "translation": "do avesso; de cabo a rabo",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Vire o suéter do avesso antes de lavá-lo."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "Ela conhece Londres de cabo a rabo depois de viver lá por dez anos."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "A experiência o mudou por completo."
+        }
+      ]
     }
   },
   "footer": {

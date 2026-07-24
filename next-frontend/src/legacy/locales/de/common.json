@@ -69,9 +69,22 @@
       }
     },
     "exampleCard": {
-      "word": "overachiever",
-      "translation": "Überflieger, Überleister",
-      "example": "Ein overachiever zu sein kann manchmal zu Kommunikationsproblemen führen, weil andere sich möglicherweise unter Druck gesetzt fühlen, Ihre hohen Standards zu erfüllen."
+      "word": "inside out",
+      "translation": "von innen nach außen; in- und auswendig",
+      "contexts": [
+        {
+          "text": "Turn your sweater inside out before washing it.",
+          "translation": "Dreh deinen Pullover vor dem Waschen auf links."
+        },
+        {
+          "text": "She knows London inside out after living there for ten years.",
+          "translation": "Sie kennt London in- und auswendig, nachdem sie zehn Jahre dort gelebt hat."
+        },
+        {
+          "text": "The experience changed him inside out.",
+          "translation": "Die Erfahrung hat ihn von Grund auf verändert."
+        }
+      ]
     }
   },
   "footer": {
